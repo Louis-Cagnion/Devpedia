@@ -88,6 +88,74 @@ Math.abs(a - b) < 0.0001;
 
 **Quel epsilon choisir ?** Il dépend du domaine, pas du langage. Pour des prix au centime, `0.001` suffit. Ne prenez pas systématiquement l'« epsilon machine » (le plus petit écart représentable autour de 1, `2,22e-16` en double précision) : il est correct pour des valeurs proches de 1, mais **trop strict** pour de grandes valeurs, où l'écart naturel entre deux flottants le dépasse déjà largement.
 
+## L'absorption et l'annulation : quand un calcul perd ses chiffres
+
+L'écart entre deux flottants consécutifs grandit avec la valeur (voir plus haut). Un résultat exact qui tombe entre deux flottants est **arrondi** au plus proche : ajouter un petit nombre à un grand peut donc ne **rien changer**, c'est l'**absorption**.
+
+| Type | Premier entier qui n'existe plus | Ajouter 1 est toujours perdu à partir de |
+|---|---|---|
+| `float` | 2²⁴ + 1 = 16 777 217 | 2²⁵ = 33 554 432 |
+| `double` | 2⁵³ + 1 = 9 007 199 254 740 993 | 2⁵⁴ = 18 014 398 509 481 984 |
+
+Résultats mesurés en C (`float`, 32 bits) :
+
+```c
+float big = 16777216.0f;      /* 2^24 */
+big + 1.0f == big;            /* vrai : 16 777 217 n'existe pas, arrondi à 16 777 216 */
+big + 2.0f == big;            /* faux : 16 777 218 existe */
+
+float sum = 16777216.0f;
+for (int i = 0; i < 1000; i++)
+	sum += 1.0f;              /* chaque +1 est perdu : sum vaut toujours 16 777 216, pas 16 778 216 */
+```
+
+La parade est d'**additionner d'abord les petites valeurs entre elles** : 1000 additions de `1.0f` donnent 1000 exactement, puis `16777216.0f + 1000.0f` vaut 16 778 216 (un nombre pair, représentable à cette échelle). Passer en `double` repousse seulement le seuil.
+
+L'**annulation** est le piège inverse : soustraire deux grands nombres proches détruit les chiffres fiables. Ici l'erreur est déjà commise à la conversion, la soustraction la rend visible :
+
+```c
+float distance = 100000000.0f;    /* 10^8 */
+float radius = 99999999.0f;       /* stocké 100 000 000 : l'écart entre deux float vaut 8 à cette taille */
+float near = distance - radius;   /* 0.0 au lieu de 1.0 */
+```
+
+Un `near` valant 0 là où le calcul en aval exige un nombre strictement positif (division, plan de projection) produit un résultat infini ou absurde, sans message d'erreur. Contrôler le résultat d'une soustraction dont les deux termes sont proches, ou calculer en `double`.
+
+**Comparer avec une marge relative.** Une constante absolue (`0.0001`) dépend de l'unité des valeurs : trop grande pour des objets de 0,001, trop petite pour des valeurs de 10⁸ (où l'écart naturel est de 8). On compare donc à une fraction de la plus grande des deux valeurs :
+
+```c
+/* Vrai si a et b diffèrent d'au plus la fraction rel de la plus grande des deux (valeur absolue). */
+static int close_enough(double a, double b, double rel)
+{
+	return fabs(a - b) <= rel * fmax(fabs(a), fabs(b));   /* fabs : valeur absolue ; fmax : le plus grand des deux */
+}
+```
+
+Pour comparer à 0 exactement, cette formule ne convient pas (la marge devient nulle) : ajouter alors un plancher absolu choisi selon l'unité du domaine.
+
+**`NaN` et l'infini traversent les comparaisons sans erreur.** Une comparaison avec `NaN` est toujours fausse (voir [valeurs particulières](#valeurs-particulieres)), et l'infini est plus grand que tout :
+
+| Expression | `NaN` | `+inf` (infini positif) |
+|---|---|---|
+| `x < 0` | faux | faux |
+| `x > 10` | faux | vrai |
+| `x > 0` | faux | vrai |
+| `x == x` | faux | vrai |
+
+Le contrôle habituel « refuser si hors plage » laisse donc passer `NaN` (les deux conditions sont fausses). On écrit le contrôle **dans le sens de l'acceptation** : n'accepter que ce qui est fini et dans la plage.
+
+```c
+/* Vrai si x est un nombre fini dans [min, max] ; faux pour NaN, +inf et -inf. */
+static int in_range(double x, double min, double max)
+{
+	return isfinite(x) && x >= min && x <= max;   /* isfinite : faux pour NaN et pour l'infini */
+}
+```
+
+`inf - inf` donne `NaN` : une seule valeur infinie produit ensuite des `NaN` dans toute la suite du calcul.
+
+> **Piège :** aucun de ces cas ne produit d'erreur ou de plantage : le calcul continue avec une valeur fausse. Vérifier les entrées numériques dès leur arrivée (`isfinite`, plage du domaine) plutôt que de supposer des valeurs saines.
+
 ## Le cas de l'argent : ne pas utiliser de flottants
 
 Pour des montants, la bonne réponse n'est pas d'ajuster l'epsilon mais de **changer de représentation** : compter en centimes, avec des entiers.
@@ -152,7 +220,7 @@ Retenez surtout que ces différences ne changent rien au fond : c'est le matéri
 
 | | |
 |---|---|
-| **À retenir** | Un flottant (norme IEEE 754) stocke une approximation, pas une valeur exacte : `0.1 + 0.2 != 0.3` dans tous les langages, sans exception. La précision est relative : plus un nombre est grand, plus l'écart entre deux flottants consécutifs grandit. Les entiers restent exacts jusqu'à 2⁵³ en double précision (52 bits de mantisse) ; au-delà, des entiers voisins deviennent indiscernables. |
+| **À retenir** | Un flottant (norme IEEE 754) stocke une approximation, pas une valeur exacte : `0.1 + 0.2 != 0.3` dans tous les langages, sans exception. La précision est relative : plus un nombre est grand, plus l'écart entre deux flottants consécutifs grandit. Les entiers restent exacts jusqu'à 2⁵³ en double précision (52 bits de mantisse) ; au-delà, des entiers voisins deviennent indiscernables ; en `float`, dès 2²⁴. Un petit nombre ajouté à un grand peut être absorbé, et une soustraction de grands nombres proches peut donner 0. |
 | **Outils utilisables** | Comparaison par epsilon (`math.isclose`, `fabs(a-b) < epsilon`), types `DECIMAL` pour des montants exacts. La virgule fixe pour un résultat reproductible bit à bit sans FPU. |
-| **Pièges à éviter** | Comparer deux flottants avec `==` (y compris `NaN`, qui n'égale jamais rien, pas même lui-même) ; stocker un montant monétaire en flottant plutôt qu'en entiers (centimes) ou `DECIMAL`. |
-| **Bonnes pratiques** | Choisir un epsilon adapté à l'ordre de grandeur manipulé, jamais l'epsilon machine par défaut pour de grandes valeurs. |
+| **Pièges à éviter** | Comparer deux flottants avec `==` (y compris `NaN`, qui n'égale jamais rien, pas même lui-même) ; stocker un montant monétaire en flottant plutôt qu'en entiers (centimes) ou `DECIMAL`. Contrôler une entrée par « refuser si hors plage » : `NaN` passe, et l'infini passe un test `x > 0`. Ajouter un à un de petits termes à un grand total. |
+| **Bonnes pratiques** | Choisir un epsilon adapté à l'ordre de grandeur manipulé, jamais l'epsilon machine par défaut pour de grandes valeurs. Comparer avec une marge relative plutôt qu'une constante absolue. Additionner les petites valeurs entre elles avant de les ajouter au grand total. N'accepter une entrée que si `isfinite(x)` et dans la plage du domaine. |
