@@ -114,13 +114,102 @@ This is exactly the mechanism that the chapter on shell architecture uses to imp
 
 When [`fork()`](/?c=langages-de-programmation&s=c&p=processus) creates a child process, the child receives a **copy** of its parent’s descriptor table: the same numbers, pointing to the same open resources. This is precisely what allows a shell to perform a `dup2()` on a pipe descriptor **in the child process**, just before calling `execve()`: the new program inherits this descriptor, which has already been repointed, without knowing anything about the mechanism that set it up.
 
+## Special files: when `open()` does not land on an ordinary file
+
+On Unix (Linux, macOS), `open()` accepts anything that has a path, not only data files stored on disk (**ordinary** files). The type of what was actually opened is read with `fstat()`, which fills a `struct stat` describing the descriptor (type, size, permissions):
+
+| Type | Test on `info.st_mode` | Example | Behavior of `read()` |
+|---|---|---|---|
+| Ordinary file | `S_ISREG` | `notes.txt` | Reads the content, then `0` at the end |
+| Directory | `S_ISDIR` | `/tmp` | Fails (`EISDIR`) |
+| “Character” device | `S_ISCHR` | `/dev/zero`: supplies null bytes **endlessly** | Never returns `0`: the read never ends |
+| Named pipe (FIFO) | `S_ISFIFO` | `canal` created by `mkfifo` | Waits for another process to write |
+
+### The named pipe (FIFO)
+
+An anonymous [pipe](/?c=shells&s=bash&p=architecture-dun-shell) (the shell's `|`, or `pipe()` above) has no name: it exists only for the processes that inherited it through `fork()`. A **named pipe** (or **FIFO**, for *First In, First Out*: the order of a [queue](/?c=fondamentaux&s=algorithmes&p=pile-et-file)) is the same mechanism with a name in the file tree, so two unrelated programs can use it. Bytes written on one side come out in the same order on the other, without ever being stored on disk.
+
+```bash
+mkfifo canal              # creates the named pipe "canal" (the C function of the same name does the same)
+ls -l canal               # the first character is "p" (pipe): prw-r--r-- ...
+echo "bonjour" > canal &  # writer started in the background (&): it waits for a reader to show up
+cat canal                 # reader: prints "bonjour"; both sides unblock
+```
+
+> **Note:** a FIFO cannot be created on any disk. Under WSL (Linux inside Windows), the `/mnt/c` folder fails; use a folder of the Linux system, such as `/tmp`.
+
+### The trap: opening blocks
+
+By default, `open()` on a FIFO is **blocking**: the kernel pauses the program until an event happens (see [blocking and non-blocking I/O](/?c=infrastructure-devops&s=reseaux&p=sockets-et-io-non-bloquante)). Opening for reading waits for a writer to open the other end, and vice versa. A program that thinks it is receiving an ordinary file therefore stays frozen with no message at all if it is handed a FIFO. Same effect with `/dev/zero`: reading “until the end of the file” never stops and fills the memory.
+
+| What is passed to the program | Plain `open()` | Result |
+|---|---|---|
+| `notes.txt` | Returns immediately | Normal read |
+| `canal` (FIFO with no writer) | **Blocks forever** | Frozen program |
+| `/dev/zero` | Returns immediately | The read never ends, memory saturated |
+| `/tmp` (directory) | Returns immediately | `read()` fails later, far from the real cause |
+
+### The remedy: open without blocking, check the type, then switch to `FILE *`
+
+The `O_NONBLOCK` option asks `open()` to return immediately instead of waiting. The type is then checked with `fstat()`, and `fdopen()` converts the validated descriptor into a `FILE *`, the object used by the [file reading](/?c=langages-de-programmation&s=c&p=lecture-de-fichiers) functions (`fgets`, `fread`...):
+
+```c
+#include <errno.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+FILE *open_regular_file(const char *path)
+{
+    struct stat info;                                  // receives type, size, permissions
+    int         fd;
+    FILE       *file;
+
+    fd = open(path, O_RDONLY | O_NONBLOCK);            // never blocks, even on a FIFO
+    if (fd == -1) {
+        fprintf(stderr, "%s : %s\n", path, strerror(errno));   // the real cause
+        return (NULL);
+    }
+    if (fstat(fd, &info) == -1) {                      // queries the already open descriptor
+        fprintf(stderr, "%s : %s\n", path, strerror(errno));
+        close(fd);
+        return (NULL);
+    }
+    if (!S_ISREG(info.st_mode)) {                      // FIFO, /dev/zero, directory: refused
+        fprintf(stderr, "%s : not an ordinary file\n", path);
+        close(fd);                                   // release the descriptor on every failure
+        return (NULL);
+    }
+    file = fdopen(fd, "r");                            // the FILE * now owns fd
+    if (file == NULL) {
+        fprintf(stderr, "%s : %s\n", path, strerror(errno));
+        close(fd);
+    }
+    return (file);                                     // close with fclose(), not close()
+}
+```
+
+Result checked with a small `main` that calls this function on each command-line argument (an ordinary file, a FIFO, `/dev/zero`, a directory and a missing path):
+
+```text
+reg.txt : opened
+canal : not an ordinary file
+/dev/zero : not an ordinary file
+. : not an ordinary file
+absent : No such file or directory
+```
+
+Two details matter. First, `fstat()` is called on the **descriptor** and not `stat()` on the path: between the two calls, someone could replace the file with a FIFO, whereas the descriptor still designates what was really opened. Second, each failure cause has its own message (missing file, wrong type, `fdopen()` failure), so the user knows what to fix.
+
 ---
 
 ## 📋 Summary
 
 | | |
 |---|---|
-| **Key Points** | A system call asks the kernel to act on the program's behalf (files, processes, network): a controlled shift from user space to kernel space. A file descriptor is a simple integer, the index of a per-process table. |
-| **Available Tools** | `open`/`close`/`read`/`write`, `open()`'s `O_CREAT`/`O_TRUNC`/`O_APPEND` flags, `dup2`, `errno`/`strerror` to diagnose a failure. |
-| **Pitfalls to Avoid** | Confusing a library function (`printf`) with an actual system call (`write`): the former wraps the latter. |
-| **Best Practices** | Always check the return value of a system call (`-1` or `NULL`) and consult `errno`/`strerror()` to diagnose a failure. |
+| **Key Points** | A system call asks the kernel to act on the program's behalf (files, processes, network): a controlled shift from user space to kernel space. A file descriptor is a simple integer, the index of a per-process table. A path is not always an ordinary file: FIFOs, devices and directories can be opened too. |
+| **Available Tools** | `open`/`close`/`read`/`write`, `open()`'s `O_CREAT`/`O_TRUNC`/`O_APPEND`/`O_NONBLOCK` flags, `dup2`, `errno`/`strerror` to diagnose a failure, `mkfifo`, `fstat` + `S_ISREG`, `fdopen`. |
+| **Pitfalls to Avoid** | Confusing a library function (`printf`) with an actual system call (`write`): the former wraps the latter. Opening a user-supplied path unchecked: a FIFO freezes the program, `/dev/zero` saturates the memory. |
+| **Best Practices** | Always check the return value of a system call (`-1` or `NULL`) and consult `errno`/`strerror()` to diagnose a failure. Open with `O_NONBLOCK`, check with `fstat()` + `S_ISREG()`, then `fdopen()`. |
