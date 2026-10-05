@@ -85,6 +85,78 @@ def dibujar_frame(pantalla, escena, zonas_modificadas):
 
 Es la lógica del **dirty rectangle** (rectángulo sucio): la escena señala ella misma qué zonas han cambiado desde el último renderizado, y solo esas se redibujan. En un decorado 90 % estático, esto reduce el coste de cada frame a una fracción del de un renderizado completo, para un resultado visualmente idéntico.
 
+## Reparar el resultado anterior en lugar de recalcularlo todo
+
+Un solucionador repite la misma prueba cientos de miles de veces, sobre datos que apenas cambian de una prueba a la siguiente. Ejemplo: la restricción «todas distintas» se comprueba con un [emparejamiento bipartito](/?c=fondamentaux&s=algorithmes&p=couplage-biparti-et-theoreme-de-hall) tras cada retirada de un valor posible. Rehacer el emparejamiento desde cero reempieza todo el trabajo aunque haya desaparecido una sola arista.
+
+La idea es **conservar el emparejamiento anterior** y reparar solo lo que el cambio ha roto:
+
+| La arista retirada | Qué se hace |
+|---|---|
+| No estaba en el emparejamiento | Nada: el emparejamiento sigue siendo válido |
+| Estaba en el emparejamiento | Una sola casilla pierde su valor: una sola búsqueda de camino para recolocarla |
+
+```c
+// Retira el valor v de la casilla c y luego repara el emparejamiento en lugar de rehacerlo
+int tras_retirada(int c, int v)
+{
+    dom[c][v] = 0;
+    if (dueno[v] == c) {         // la arista retirada servía al emparejamiento
+        dueno[v] = -1;
+        valor_de[c] = -1;
+        memset(vista, 0, sizeof vista);
+        buscar(c);               // una sola casilla que recolocar
+    }
+    for (int k = 0; k < N; k++)  // una casilla sin valor: ya no hay emparejamiento completo
+        if (valor_de[k] < 0)
+            return 0;
+    return 1;
+}
+```
+
+`valor_de[c]` memoriza el valor de cada casilla (el `buscar()` del capítulo sobre el emparejamiento lo actualiza a la vez que `dueno`). Cuando se vuelve a poner el valor retirado, las casillas que se quedaron sin valor lo intentan de nuevo: sin eso, el emparejamiento conservado se quedaría demasiado pequeño para siempre.
+
+Medido con 200 000 retiradas sucesivas, 40 casillas, 40 valores, aceptando cada casilla el 12 % de los valores:
+
+| | Recalcularlo todo | Reparar |
+|---|---|---|
+| Casillas examinadas por las búsquedas | 61 566 318 | 832 601 (74 veces menos) |
+| Tiempo | alrededor de 1 s | unas decenas de ms |
+| Respuestas «¿emparejamiento completo?» | 198 112 sí | 198 112 sí, **idénticas prueba a prueba** (0 diferencias) |
+
+**Misma respuesta, no necesariamente el mismo emparejamiento.** Existen varios emparejamientos completos: el emparejamiento reparado difiere del que da un cálculo completo en 1 972 casos de 1 973 comparados. La respuesta sí/no es la misma; pero si el resto del programa depende del propio emparejamiento (una explicación, un orden, un resultado que debe reproducirse idéntico de una ejecución a otra), se **vuelve al cálculo completo** para producir ese resultado canónico, y se conserva la versión reparada para todas las pruebas que solo necesitan la respuesta. En el solucionador de la investigación rush01, esta combinación redujo el tiempo total un 6,2 %.
+
+> **Trampa:** reparar un estado que ya no es válido. El invariante «el emparejamiento actual es válido para los datos actuales» debe restablecerse tras **cada** tipo de cambio (retirada, reposición, vuelta atrás de una búsqueda): un caso olvidado da una respuesta errónea, sin error.
+>
+> **Buena práctica:** conservar el cálculo completo como referencia en una prueba y comparar las respuestas prueba a prueba (aquí 0 diferencias sobre 200 000) antes de medir el tiempo.
+
+## Recorrer solo los elementos marcados: el bitmap
+
+Cuando solo ha cambiado una pequeña parte de los elementos y se han marcado (como los «rectángulos sucios» anteriores), recorrer un array de indicadores de un byte por elemento cuesta una lectura por elemento, marcado o no. Un **bitmap** guarda un indicador por bit: una palabra de 64 bits contiene 64 (ver [el filtro por bitmap](/?c=qualite-performance-et-outils&s=performance&p=cache-cpu-et-simd)), y `__builtin_ctzll` da directamente la posición del siguiente bit a 1 ([funciones integradas](/?c=langages&s=c&p=operateurs-binaires)). Las palabras vacías cuestan una sola lectura.
+
+```c
+for (uint32_t w = 0; w < N / 64; w++)
+    for (uint64_t m = bitmap[w]; m; m &= m - 1)  // bits restantes de la palabra
+        procesar(w * 64 + __builtin_ctzll(m));   // índice del bit a 1 más bajo
+```
+
+`m &= m - 1` borra el bit a 1 más bajo: el bucle se detiene cuando la palabra queda vacía, y `__builtin_ctzll` nunca se llama con 0 (su resultado sería indefinido).
+
+Medido con 1 M de elementos, 200 recorridos, mediana de 7 rondas alternas, mismas sumas comprobadas (Intel Core Ultra 5 228V bajo WSL, gcc 13.3 en `-O2`):
+
+| Proporción de elementos marcados | Array de bytes | Bitmap | Diferencia |
+|---|---|---|---|
+| 0,1 % | 84 ms | 2,9 ms | −97 % |
+| 1 % | 63 ms | 16 ms | −74 % |
+| 10 % | 67 ms | 44 ms | −35 % |
+| 50 % | 68 ms | 130 ms | **+91 %** |
+
+La ganancia depende de la **densidad** de las marcas: con la mitad marcada, el bitmap es casi el doble de lento, porque cada marca cuesta más que un byte leído en secuencia. En el solucionador de la investigación rush01, este recorrido solo ganó un 2 % del tiempo total: solo el programa real dice lo que vale la optimización (ver [Medir antes de optimizar](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser)).
+
+> **Trampa:** adoptar el bitmap porque es más compacto o más rápido en el caso disperso, sin medir la densidad real de las marcas del programa.
+>
+> **Buena práctica:** medir la proporción de elementos marcados en el programa real antes de elegir; el bitmap vale para marcas escasas.
+
 ## Un ejemplo tomado de un scraper: no confirmar lo que ya está probado
 
 Un scraper de anuncios clasificados comparaba dos anuncios para saber si describían el mismo vehículo (duplicado) o dos vehículos diferentes. La verificación completa abría la página detallada de cada anuncio para comparar una decena de características (kilometraje, opciones, historial de mantenimiento): una llamada de red y un tiempo de renderizado nada desdeñables.
@@ -218,7 +290,7 @@ En los cuatro casos, la ganancia no viene de un cálculo hecho más rápido, sin
 
 | | |
 |---|---|
-| **Para recordar** | Nunca recalcular un resultado que nada ha podido cambiar desde su último cálculo: memoización, reprocesamiento incremental o dirty rectangle aplican todos la misma idea a escalas diferentes. Una caché de archivo añade dos técnicas: la escritura atómica (nunca una lectura a medio escribir) y el stale-while-revalidate (responder rápido, recalcular por detrás). Cuando el cálculo es inevitable (nada que meter en caché), el streaming HTTP progresivo es la única palanca que queda para mejorar la espera percibida. |
+| **Para recordar** | Nunca recalcular un resultado que nada ha podido cambiar desde su último cálculo: memoización, reprocesamiento incremental o dirty rectangle aplican todos la misma idea a escalas diferentes. Una caché de archivo añade dos técnicas: la escritura atómica (nunca una lectura a medio escribir) y el stale-while-revalidate (responder rápido, recalcular por detrás). Cuando el cálculo es inevitable (nada que meter en caché), el streaming HTTP progresivo es la única palanca que queda para mejorar la espera percibida. Reparar el resultado anterior (un emparejamiento conservado, una sola casilla que recolocar) da la misma respuesta que el cálculo completo con una fracción del trabajo; un bitmap solo recorre los elementos marcados, pero únicamente si las marcas son escasas. |
 | **Herramientas utilizables** | Una caché en memoria por entrada (memoización), una marca de progreso para solo reprocesar lo nuevo, una comparación "ligera" antes de una verificación costosa, `rename()`/`os.replace()` para una escritura atómica, un bloqueo anti-concurrencia para un recálculo en segundo plano, `flush()`/`ob_end_flush()` para un streaming HTTP progresivo. |
-| **Trampas a evitar** | Memoizar sin identificar qué invalidaría el resultado: una caché nunca invalidada se convierte en una fuente de datos obsoletos. Escribir directamente en un archivo de caché leído por otros procesos. Aplicar stale-while-revalidate sin bloqueo anti-concurrencia. Hacer streaming de una respuesta HTTP sin comprobar que ningún proxy intermedio vuelve a poner su propio búfer. |
-| **Buenas prácticas** | Siempre definir la condición de invalidación antes de memoizar; distinguir un recálculo evitable (este principio) de una pausa voluntaria de protección (a conservar); escribir un archivo de caché mediante un archivo temporal renombrado; solo hacer esperar al usuario en la primera llamada sin caché; hacer streaming de la respuesta HTTP en cuanto un cálculo largo e inevitable produce resultados progresivamente. |
+| **Trampas a evitar** | Memoizar sin identificar qué invalidaría el resultado: una caché nunca invalidada se convierte en una fuente de datos obsoletos. Escribir directamente en un archivo de caché leído por otros procesos. Aplicar stale-while-revalidate sin bloqueo anti-concurrencia. Hacer streaming de una respuesta HTTP sin comprobar que ningún proxy intermedio vuelve a poner su propio búfer. Reparar un estado cuyo invariante no se restablece tras cada tipo de cambio. Creer que el resultado reparado es idéntico al resultado canónico del cálculo completo. Adoptar un bitmap sin medir la densidad de las marcas (con la mitad marcada: +91 %). |
+| **Buenas prácticas** | Siempre definir la condición de invalidación antes de memoizar; distinguir un recálculo evitable (este principio) de una pausa voluntaria de protección (a conservar); escribir un archivo de caché mediante un archivo temporal renombrado; solo hacer esperar al usuario en la primera llamada sin caché; hacer streaming de la respuesta HTTP en cuanto un cálculo largo e inevitable produce resultados progresivamente. Comparar el resultado reparado con el cálculo completo prueba a prueba y volver al cálculo completo cuando importa el resultado exacto; medir la densidad real de las marcas antes de elegir un bitmap. |
