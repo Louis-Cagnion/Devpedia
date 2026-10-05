@@ -203,13 +203,112 @@ absent : No such file or directory
 
 Two details matter. First, `fstat()` is called on the **descriptor** and not `stat()` on the path: between the two calls, someone could replace the file with a FIFO, whereas the descriptor still designates what was really opened. Second, each failure cause has its own message (missing file, wrong type, `fdopen()` failure), so the user knows what to fix.
 
+## Finding the location of your own executable
+
+A program shipped with files of its own (for example the [shaders](/?c=fondamentaux&s=graphisme&p=tampons-textures-et-shaders-opengl), the small programs of a graphics application, stored in a `shaders/` folder next to the executable) must find them wherever it is launched from. Writing `fopen("shaders/basic.vert", "r")` only works if the program is launched **from its own folder**, because a path without a leading `/` is relative to the **current directory** (the folder the terminal is in at launch time, see [`cd` in the architecture of a shell](/?c=shells&s=bash&p=architecture-dun-shell)), not to the executable.
+
+```text
+~/project/
+├── scop              <- the executable
+└── shaders/basic.vert
+
+cd ~/project && ./scop     ->  "shaders/basic.vert" found
+cd ~ && project/scop       ->  "shaders/basic.vert" looked up in ~/shaders: not found
+```
+
+### Why `argv[0]` is not enough
+
+[`argv[0]`](/?c=langages-de-programmation&s=c&p=argc-et-argv) contains the name **as the user typed it**, not a verified path:
+
+| Launch | `argv[0]` | Problem |
+|---|---|---|
+| `./scop` | `./scop` | Relative to the current directory, usable as long as it does not change |
+| `scop` (found through the [`PATH`](/?c=shells&s=bash&p=variables-denvironnement) variable) | `scop` | No folder in the value: impossible to know where it is |
+| `link` (symbolic link to `scop`) | `link` | Designates the link, not the real folder of the executable |
+| Launched by `execve()` with an arbitrary `argv[0]` | anything | The calling program chooses this value freely |
+
+### The Linux solution: `/proc/self/exe`
+
+On Linux, `/proc` is a **virtual** folder: none of its files is on the disk, the kernel builds them when read to describe the running processes. `/proc/self` always designates the process that opens it, and `/proc/self/exe` is a **symbolic link** (a special file that only contains a path to another file, like a shortcut) that the kernel points to the real executable of the process, already cleaned of any `./`, `..` and other links. The `readlink()` system call reads the path stored in a symbolic link:
+
+```c
+#include <errno.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+
+// Writes the executable's folder into dir. Returns 0, or -1 (message already printed).
+int get_exe_dir(char *dir, size_t size)
+{
+    ssize_t len;                                           // signed integer: a byte count, or -1
+    char   *slash;
+
+    len = readlink("/proc/self/exe", dir, size - 1);      // copies the path, without a final '\0'
+    if (len == -1) {
+        fprintf(stderr, "/proc/self/exe: %s\n", strerror(errno));   // /proc missing?
+        return (-1);
+    }
+    if ((size_t)len == size - 1) {                         // buffer full: path possibly cut
+        fprintf(stderr, "executable path too long for %zu bytes\n", size);
+        return (-1);
+    }
+    dir[len] = '\0';                                       // readlink() never terminates the string
+    slash = strrchr(dir, '/');                             // last '/': separates folder and name
+    if (slash == dir)                                      // executable at the root: "/scop"
+        slash++;                                           // keep the "/" itself
+    *slash = '\0';                                         // cuts off the file name
+    return (0);
+}
+```
+
+The **buffer** is the memory area reserved to receive the result, here the `dir` array, whose size in bytes is given by `size` (see [the doubling buffer](/?c=langages-de-programmation&s=c&p=memoire)). The function is used to build the path of a file shipped with the program:
+
+```c
+char dir[4096];                                            // 4096: maximum path length on Linux
+char path[4200];                                           // large enough for dir + "/shaders/basic.vert"
+
+if (get_exe_dir(dir, sizeof dir) == -1)                    // sizeof dir: size of the array, 4096 bytes
+    return (1);
+// snprintf() writes into path and stops at sizeof path bytes, so it never overflows
+snprintf(path, sizeof path, "%s/shaders/basic.vert", dir);
+```
+
+Result checked on Linux with a small `main` that prints `argv[0]` and the folder found, launched four ways:
+
+```text
+(launched from /)       /tmp/exetest/where  ->  folder = /tmp/exetest
+(through link /tmp/lien) argv[0] = /tmp/lien ->  folder = /tmp/exetest
+(through PATH)          argv[0] = where     ->  folder = /tmp/exetest
+(without /proc)         /proc/self/exe : No such file or directory
+```
+
+Only the last case fails, with a message naming the real cause: we know what to fix instead of seeing `fopen()` fail later on an invented path.
+
+### The pitfalls
+
+| Pitfall | Why | Remedy |
+|---|---|---|
+| Forgetting the `'\0'` after `readlink()` | It copies the path characters without terminating the string: the rest of the buffer is read as text | Set `dir[len] = '\0'` yourself |
+| Passing `sizeof dir` to `readlink()` instead of `sizeof dir - 1` | No room is left for the `'\0'` | Reserve one byte |
+| Path longer than the buffer | `readlink()` **truncates silently** and returns the buffer size | Reject a result that fills the whole buffer |
+| Executable deleted while running | Linux appends ` (deleted)` to the end of the path read | Rare; check that the file exists before using it |
+| `/proc` missing (minimal system, some containers or isolated environments) | The link does not exist | Explicit message, or a path given by the user (environment variable, option) |
+| System other than Linux | `/proc/self/exe` is specific to Linux | See the table below |
+
+| System | Way to find your own executable |
+|---|---|
+| Linux | `readlink("/proc/self/exe", ...)` |
+| macOS | `_NSGetExecutablePath()` (declared in `<mach-o/dyld.h>`) |
+| Windows | `GetModuleFileNameA()` |
+| FreeBSD | `sysctl` with `KERN_PROC_PATHNAME` |
+
 ---
 
 ## 📋 Summary
 
 | | |
 |---|---|
-| **Key Points** | A system call asks the kernel to act on the program's behalf (files, processes, network): a controlled shift from user space to kernel space. A file descriptor is a simple integer, the index of a per-process table. A path is not always an ordinary file: FIFOs, devices and directories can be opened too. |
-| **Available Tools** | `open`/`close`/`read`/`write`, `open()`'s `O_CREAT`/`O_TRUNC`/`O_APPEND`/`O_NONBLOCK` flags, `dup2`, `errno`/`strerror` to diagnose a failure, `mkfifo`, `fstat` + `S_ISREG`, `fdopen`. |
-| **Pitfalls to Avoid** | Confusing a library function (`printf`) with an actual system call (`write`): the former wraps the latter. Opening a user-supplied path unchecked: a FIFO freezes the program, `/dev/zero` saturates the memory. |
+| **Key Points** | A system call asks the kernel to act on the program's behalf (files, processes, network): a controlled shift from user space to kernel space. A file descriptor is a simple integer, the index of a per-process table. A path is not always an ordinary file: FIFOs, devices and directories can be opened too. To find files shipped with the program, start from the real location of the executable (`/proc/self/exe` on Linux), never from the current directory or `argv[0]`. |
+| **Available Tools** | `open`/`close`/`read`/`write`, `open()`'s `O_CREAT`/`O_TRUNC`/`O_APPEND`/`O_NONBLOCK` flags, `dup2`, `errno`/`strerror` to diagnose a failure, `mkfifo`, `fstat` + `S_ISREG`, `fdopen`, `readlink`. |
+| **Pitfalls to Avoid** | Confusing a library function (`printf`) with an actual system call (`write`): the former wraps the latter. Opening a user-supplied path unchecked: a FIFO freezes the program, `/dev/zero` saturates the memory. Using the result of `readlink()` without setting the final `'\0'`. |
 | **Best Practices** | Always check the return value of a system call (`-1` or `NULL`) and consult `errno`/`strerror()` to diagnose a failure. Open with `O_NONBLOCK`, check with `fstat()` + `S_ISREG()`, then `fdopen()`. |

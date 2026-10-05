@@ -203,13 +203,112 @@ absent : No such file or directory
 
 Dos detalles importan. Primero, se llama a `fstat()` sobre el **descriptor** y no a `stat()` sobre la ruta: entre las dos llamadas, alguien podría sustituir el archivo por un FIFO, mientras que el descriptor sigue designando lo que realmente se abrió. Segundo, cada causa de fallo tiene su propio mensaje (archivo inexistente, tipo incorrecto, fallo de `fdopen()`), para que el usuario sepa qué corregir.
 
+## Encontrar la ubicación de su propio ejecutable
+
+Un programa que se entrega con archivos propios (por ejemplo los [shaders](/?c=fondamentaux&s=graphisme&p=tampons-textures-et-shaders-opengl), los pequeños programas de una aplicación gráfica, guardados en una carpeta `shaders/` junto al ejecutable) debe encontrarlos desde cualquier lugar donde se lance. Escribir `fopen("shaders/basic.vert", "r")` solo funciona si el programa se lanza **desde su propia carpeta**, porque una ruta sin `/` inicial es relativa al **directorio actual** (la carpeta en la que está la terminal en el momento del lanzamiento, véase [`cd` en la arquitectura de un shell](/?c=shells&s=bash&p=architecture-dun-shell)) y no al ejecutable.
+
+```text
+~/proyecto/
+├── scop              <- el ejecutable
+└── shaders/basic.vert
+
+cd ~/proyecto && ./scop     ->  "shaders/basic.vert" encontrado
+cd ~ && proyecto/scop       ->  "shaders/basic.vert" buscado en ~/shaders: no se encuentra
+```
+
+### Por qué `argv[0]` no basta
+
+[`argv[0]`](/?c=langages-de-programmation&s=c&p=argc-et-argv) contiene el nombre **tal como lo escribió el usuario**, no una ruta verificada:
+
+| Lanzamiento | `argv[0]` | Problema |
+|---|---|---|
+| `./scop` | `./scop` | Relativo al directorio actual, utilizable mientras no cambie |
+| `scop` (encontrado mediante la variable [`PATH`](/?c=shells&s=bash&p=variables-denvironnement)) | `scop` | Ninguna carpeta en el valor: imposible saber dónde está |
+| `enlace` (enlace simbólico a `scop`) | `enlace` | Designa el enlace, no la carpeta real del ejecutable |
+| Lanzado por `execve()` con un `argv[0]` cualquiera | cualquier cosa | El programa que llama elige libremente este valor |
+
+### La solución en Linux: `/proc/self/exe`
+
+En Linux, `/proc` es una carpeta **virtual**: ninguno de sus archivos está en el disco, el núcleo los fabrica al leerlos para describir los procesos en ejecución. `/proc/self` designa siempre al proceso que lo abre, y `/proc/self/exe` es un **enlace simbólico** (un archivo especial que solo contiene una ruta hacia otro archivo, como un acceso directo) que el núcleo hace apuntar al ejecutable real del proceso, ya limpio de `./`, `..` y otros enlaces. La llamada al sistema `readlink()` lee la ruta contenida en un enlace simbólico:
+
+```c
+#include <errno.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+
+// Escribe en dir la carpeta del ejecutable. Devuelve 0, o -1 (mensaje ya mostrado).
+int get_exe_dir(char *dir, size_t size)
+{
+    ssize_t len;                                           // entero con signo: número de bytes, o -1
+    char   *slash;
+
+    len = readlink("/proc/self/exe", dir, size - 1);      // copia la ruta, sin '\0' final
+    if (len == -1) {
+        fprintf(stderr, "/proc/self/exe: %s\n", strerror(errno));   // ¿falta /proc?
+        return (-1);
+    }
+    if ((size_t)len == size - 1) {                         // búfer lleno: ruta quizá cortada
+        fprintf(stderr, "ruta del ejecutable demasiado larga para %zu bytes\n", size);
+        return (-1);
+    }
+    dir[len] = '\0';                                       // readlink() nunca termina la cadena
+    slash = strrchr(dir, '/');                             // último '/': separa carpeta y nombre
+    if (slash == dir)                                      // ejecutable en la raíz: "/scop"
+        slash++;                                           // conservar el "/" mismo
+    *slash = '\0';                                         // corta el nombre del archivo
+    return (0);
+}
+```
+
+El **búfer** (*buffer*) es la zona de memoria reservada para recibir el resultado, aquí el arreglo `dir`, cuyo tamaño en bytes lo da `size` (véase [el búfer de duplicación](/?c=langages-de-programmation&s=c&p=memoire)). La función se usa para construir la ruta de un archivo entregado con el programa:
+
+```c
+char dir[4096];                                            // 4096: longitud máxima de una ruta en Linux
+char path[4200];                                           // suficiente para dir + "/shaders/basic.vert"
+
+if (get_exe_dir(dir, sizeof dir) == -1)                    // sizeof dir: tamaño del arreglo, 4096 bytes
+    return (1);
+// snprintf() escribe en path y se detiene en sizeof path bytes, por tanto sin desbordar
+snprintf(path, sizeof path, "%s/shaders/basic.vert", dir);
+```
+
+Resultado comprobado en Linux con un pequeño `main` que muestra `argv[0]` y la carpeta encontrada, lanzado de cuatro maneras:
+
+```text
+(lanzado desde /)        /tmp/exetest/where  ->  carpeta = /tmp/exetest
+(mediante enlace /tmp/lien) argv[0] = /tmp/lien ->  carpeta = /tmp/exetest
+(mediante PATH)          argv[0] = where     ->  carpeta = /tmp/exetest
+(sin /proc)              /proc/self/exe : No such file or directory
+```
+
+Solo el último caso falla, con un mensaje que nombra la causa real: se sabe qué corregir en lugar de ver fallar `fopen()` más adelante con una ruta inventada.
+
+### Las trampas
+
+| Trampa | Por qué | Remedio |
+|---|---|---|
+| Olvidar el `'\0'` tras `readlink()` | Copia los caracteres de la ruta sin terminar la cadena: el resto del búfer se lee como texto | Poner `dir[len] = '\0'` uno mismo |
+| Pasar `sizeof dir` a `readlink()` en lugar de `sizeof dir - 1` | No queda sitio para el `'\0'` | Reservar un byte |
+| Ruta más larga que el búfer | `readlink()` **trunca en silencio** y devuelve el tamaño del búfer | Rechazar un resultado que llena todo el búfer |
+| Ejecutable borrado durante la ejecución | Linux añade ` (deleted)` al final de la ruta leída | Raro; comprobar que el archivo existe antes de usarlo |
+| `/proc` ausente (sistema mínimo, algunos contenedores o entornos aislados) | El enlace no existe | Mensaje explícito, o ruta dada por el usuario (variable de entorno, opción) |
+| Sistema distinto de Linux | `/proc/self/exe` es propio de Linux | Véase la tabla siguiente |
+
+| Sistema | Medio de encontrar su propio ejecutable |
+|---|---|
+| Linux | `readlink("/proc/self/exe", ...)` |
+| macOS | `_NSGetExecutablePath()` (declarada en `<mach-o/dyld.h>`) |
+| Windows | `GetModuleFileNameA()` |
+| FreeBSD | `sysctl` con `KERN_PROC_PATHNAME` |
+
 ---
 
 ## 📋 Resumen
 
 | | |
 |---|---|
-| **Para recordar** | Una llamada al sistema solicita al núcleo que actúe en lugar del programa (archivos, procesos, red): un cambio controlado del espacio de usuario al espacio del núcleo. Un descriptor de archivo es un simple entero, índice de una tabla por proceso. Una ruta no es siempre un archivo ordinario: también se abren FIFO, dispositivos y directorios. |
-| **Herramientas utilizables** | `open`/`close`/`read`/`write`, flags `O_CREAT`/`O_TRUNC`/`O_APPEND`/`O_NONBLOCK` de `open()`, `dup2`, `errno`/`strerror` para diagnosticar un fallo, `mkfifo`, `fstat` + `S_ISREG`, `fdopen`. |
-| **Trampas a evitar** | Confundir una función de biblioteca (`printf`) con una llamada al sistema real (`write`): la primera encapsula la segunda. Abrir sin comprobar una ruta dada por el usuario: un FIFO congela el programa, `/dev/zero` satura la memoria. |
+| **Para recordar** | Una llamada al sistema solicita al núcleo que actúe en lugar del programa (archivos, procesos, red): un cambio controlado del espacio de usuario al espacio del núcleo. Un descriptor de archivo es un simple entero, índice de una tabla por proceso. Una ruta no es siempre un archivo ordinario: también se abren FIFO, dispositivos y directorios. Para encontrar los archivos entregados con el programa, partir de la ubicación real del ejecutable (`/proc/self/exe` en Linux), nunca del directorio actual ni de `argv[0]`. |
+| **Herramientas utilizables** | `open`/`close`/`read`/`write`, flags `O_CREAT`/`O_TRUNC`/`O_APPEND`/`O_NONBLOCK` de `open()`, `dup2`, `errno`/`strerror` para diagnosticar un fallo, `mkfifo`, `fstat` + `S_ISREG`, `fdopen`, `readlink`. |
+| **Trampas a evitar** | Confundir una función de biblioteca (`printf`) con una llamada al sistema real (`write`): la primera encapsula la segunda. Abrir sin comprobar una ruta dada por el usuario: un FIFO congela el programa, `/dev/zero` satura la memoria. Usar el resultado de `readlink()` sin poner el `'\0'` final. |
 | **Buenas prácticas** | Comprobar siempre el valor de retorno de una llamada al sistema (`-1` o `NULL`) y consultar `errno`/`strerror()` para diagnosticar un fallo. Abrir con `O_NONBLOCK`, comprobar con `fstat()` + `S_ISREG()` y después `fdopen()`. |
