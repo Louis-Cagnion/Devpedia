@@ -150,13 +150,206 @@ The 4 faces above all share vertex `5` and the same smoothing group: its normal 
 > ```
 > Resetting a vertex counter at every `o` silently breaks the indexing of every face as soon as a file contains more than one object.
 
+## Reading an `.obj` with tolerance
+
+`.obj` files come from different programs, which do not all follow the same variant of the format. A robust **parser** **accepts liberally** (any variant that makes sense) and **refuses with a precise message** (file, line, offending value) everything else, instead of crashing or silently carrying on with wrong data.
+
+| Variant encountered | What to do |
+|---|---|
+| `v x y z w` (4 values, `w` is a weight, 1.0 if absent) | Read `w`, then ignore it |
+| `v x y z r g b` (6 values, per-vertex colour, an extension of some exporters) | Keep the first 3, ignore or store the colour |
+| `vt u`, `vt u v`, `vt u v w` (1 to 3 values) | `v` is 0 if missing, `w` is useless for a 2D image |
+| Unknown directive (`l`, `p`, `cstype`...), empty line, `#` comment | Skip the line, no error |
+| Fewer values than expected, text instead of a number, `1e999` | Refuse, naming the file, the line and the value received |
+
+```c
+/* Reads 3, 4 or 6 numbers from a "v" line; returns how many were read, -1 if invalid. */
+static int parse_vertex(const char *s, double out[6])
+{
+	int n = 0;
+	char *end;
+
+	while (n < 6)
+	{
+		errno = 0;
+		out[n] = strtod(s, &end);        /* reads a number and moves to its end */
+		if (end == s)                    /* nothing readable: end of the numbers */
+			break;
+		if (errno || !isfinite(out[n]))  /* 1e999, inf or nan: refused */
+			return -1;
+		s = end;
+		n++;
+	}
+	while (*s == ' ' || *s == '\t' || *s == '\r')  /* trailing blanks */
+		s++;
+	return (*s == '\0' && (n == 3 || n == 4 || n == 6)) ? n : -1;
+}
+```
+
+Tested with `"1 2 3"` (3), `"1 2 3 1.0"` (4) and `"1 2 3 0.5 0.5 0.5"` (6): valid. `"1 2"`, `"1 2 x"`, `"1e999 0 0"` and `"1 2 3 4 5"` return -1. `strtod` is preferred over `atof`, which returns 0 for any text without reporting anything (see [converting a text to a number](/?c=langages-de-programmation&s=c&p=convertir-un-texte-en-nombre)).
+
+### Line endings and BOM
+
+| Case | What it contains | Consequence if not handled |
+|---|---|---|
+| LF (`\n`) | Unix line ending | None |
+| CRLF (`\r\n`) | Windows line ending | A `\r` stays stuck at the end of the line, so inside the last value read |
+| Lone CR (`\r`) | Line ending of very old Macs | `fgets` only splits at `\n`: the whole file becomes a single line |
+| UTF-8 BOM (bytes `EF BB BF` at the start of the file) | Encoding marker, see [text encodings](/?c=donnees&s=representation-des-donnees&p=encodage-des-textes) | It sticks to the first directive: `\xEF\xBB\xBFv` is not `v`, the line is taken for an unknown directive, **the first vertex disappears without any error** and every face index is shifted by one |
+
+> **Good practice:** read the whole file into memory, skip a possible BOM, then split at the three line endings (`\r\n`, `\r` and `\n`) instead of calling `fgets`: the same code then handles files from any system.
+
+## The PPM P6 format: a texture without a library
+
+The [`map_Kd` of the `.mtl`](#the-image-file-referenced-by-the-mtl) points to an image. **PPM** (*Portable PixMap*, [specification](https://netpbm.sourceforge.net/doc/ppm.html)) is the simplest image format to read by hand: a small text header, followed by the pixels in **binary** (raw bytes, which a text editor cannot display legibly). Its **P6** variant stores three channels (red, green, blue) per pixel.
+
+```text
+P6                  <- magic number: identifies the format
+# a comment         <- optional: # until the end of the line, to be ignored
+640 480             <- width and height, in pixels
+255                 <- maxval: maximum value of a channel
+<binary bytes>      <- width x height x 3 channels, row by row, from top to bottom
+```
+
+| `maxval` | Bytes per channel | To get back to 0 to 255 |
+|---|---|---|
+| 1 to 255 | 1 | `value x 255 / maxval` |
+| 256 to 65535 | 2, most significant byte first | `value x 255 / maxval` (same formula, 16-bit value) |
+
+```c
+/* Reads an integer of the PPM header, skipping blanks and comments; -1 if absent. */
+static long read_header_int(FILE *f)
+{
+	int c;
+
+	while ((c = fgetc(f)) != EOF)
+	{
+		if (c == '#')                    /* comment: ignored until the end of the line */
+			while ((c = fgetc(f)) != EOF && c != '\n' && c != '\r')
+				;
+		else if (!isspace(c))
+			break;
+	}
+	if (!isdigit(c))
+		return -1;
+	long n = 0;
+	for (; isdigit(c); c = fgetc(f))     /* the blank ending the number is consumed */
+	{
+		n = n * 10 + (c - '0');
+		if (n > 1000000)                 /* absurd dimension: refused */
+			return -1;
+	}
+	return n;
+}
+```
+
+The main function calls `read_header_int` three times (width, height, `maxval`):
+
+```c
+/* Returns width x height x 3 bytes (0 to 255), or NULL with a message on stderr. */
+unsigned char *read_ppm(const char *path, int *w, int *h)
+{
+	FILE *f = fopen(path, "rb");                 /* "b": binary mode, essential on Windows */
+	if (!f)
+		return fprintf(stderr, "%s: %s\n", path, strerror(errno)), NULL;
+	if (fgetc(f) != 'P' || fgetc(f) != '6')
+		return fprintf(stderr, "%s: not a P6 PPM\n", path), fclose(f), NULL;
+	long width = read_header_int(f);             /* skips blanks and comments, -1 if absent */
+	long height = read_header_int(f);
+	long maxval = read_header_int(f);            /* consumes the single blank that follows */
+	if (width < 1 || height < 1 || maxval < 1 || maxval > 65535)
+		return fprintf(stderr, "%s: invalid header\n", path), fclose(f), NULL;
+	size_t bytes = maxval < 256 ? 1 : 2;
+	size_t count = (size_t)width * (size_t)height * 3;
+	unsigned char *raw = malloc(count * bytes);
+	unsigned char *out = malloc(count);
+	if (!raw || !out || fread(raw, bytes, count, f) != count)
+	{                                            /* truncated, or out of memory */
+		fprintf(stderr, "%s: truncated data or out of memory\n", path);
+		return free(raw), free(out), fclose(f), NULL;
+	}
+	for (size_t i = 0; i < count; i++)
+	{
+		long v = bytes == 1 ? raw[i] : (raw[2 * i] << 8) | raw[2 * i + 1];
+		out[i] = (unsigned char)((v * 255 + maxval / 2) / maxval);  /* rounded to nearest */
+	}
+	free(raw);
+	fclose(f);
+	*w = (int)width;
+	*h = (int)height;
+	return out;
+}
+```
+
+Compiled with `-Wall -Wextra -pedantic` without a warning, then tried on four files: an 8-bit PPM with a comment and a 16-bit PPM both give the red pixel `255 0 0`; a file whose data stops too early, a `P5` file (greyscale) and a missing file are each refused with their own message.
+
+| Pitfall | Why | Remedy |
+|---|---|---|
+| Skipping all blanks after `maxval` | A pixel byte can be `0x20` or `0x0A` (a blank): it would be taken for whitespace | Consume **a single** blank, then read the data as is |
+| File converted to CRLF | Every binary `\n` becomes `\r\n`: the data grows and shifts | Detect the inconsistent size and refuse |
+| Truncated file | `fread` returns less than expected | Compare the count read with the expected count |
+| Huge `width x height x 3` | The product overflows or asks for gigabytes | Bound each dimension, compute in `size_t` |
+| Bottom row first | PPM stores the first row **at the top**, OpenGL expects the first row **at the bottom** | Flip the image vertically or invert `v` |
+
+## The normal of a polygon: Newell's method
+
+The ear clipping orientation test needs the normal of the face. The naive computation (cross product of the first two edges) fails in two ways: if the first three vertices are aligned, the product is the zero vector; if the first corner is reflex (interior angle above 180 degrees), the normal obtained is inverted, so the whole rest of the test is wrong.
+
+**Newell's method** adds one contribution per edge, over the **whole** outline, so no vertex is privileged:
+
+```text
+for each edge (a -> b) of the polygon:
+    nx += (a.y - b.y) * (a.z + b.z)
+    ny += (a.z - b.z) * (a.x + b.x)
+    nz += (a.x - b.x) * (a.y + b.y)
+normal = (nx, ny, nz) / length           <- its length is 2 times the polygon's area
+```
+
+```c
+/* Unit normal of a polygon (Newell's method); -1 if the surface is zero. */
+static int newell_normal(const double (*p)[3], int n, double out[3])
+{
+	double nx = 0, ny = 0, nz = 0;
+
+	for (int i = 0; i < n; i++)
+	{
+		const double *a = p[i];
+		const double *b = p[(i + 1) % n];      /* the last vertex links back to the first */
+		nx += (a[1] - b[1]) * (a[2] + b[2]);
+		ny += (a[2] - b[2]) * (a[0] + b[0]);
+		nz += (a[0] - b[0]) * (a[1] + b[1]);
+	}
+	double len = sqrt(nx * nx + ny * ny + nz * nz);
+	if (len == 0)                              /* aligned or coincident vertices */
+		return -1;
+	out[0] = nx / len;
+	out[1] = ny / len;
+	out[2] = nz / len;
+	return 0;
+}
+```
+
+Tried on a concave L-shaped polygon whose first three vertices are aligned (`(0,0) (1,0) (2,0) (2,1) (1,1) (1,2)`, in the z = 0 plane): the naive computation gives the zero vector, Newell gives `0 0 1`. On three aligned vertices only, it returns -1: a face of zero surface is refused with its own message, it has no normal. For the cross product, see [Vectors and dot product](/?c=fondamentaux&s=mathematiques&p=vecteurs-et-produit-scalaire).
+
+## Making ear clipping robust
+
+The algorithm described above is exact with exact numbers; floating-point numbers (see [floating-point representation](/?c=donnees&s=representation-des-donnees&p=nombres-flottants)) force three precautions:
+
+| Precaution | Why |
+|---|---|
+| Do the predicates (orientation, same side) in `double`, even if the vertices are stored as `float` | Near zero, a `float` flips the sign of the cross product: a valid ear is refused, an invalid one is accepted |
+| Compare to a **relative** tolerance (`abs(product) <= epsilon x length1 x length2`), never to an absolute constant | An absolute constant depends on the model's unit (an object of 0.001 or of 1000 units) |
+| Handle apart the vertex **aligned** with its neighbours or lying **on an edge** of the candidate triangle | Neither inside nor outside: the strict test accepts or refuses it at the whim of rounding |
+
+The cutting then runs in **two passes**: a strict pass (an ear must be strictly convex and contain no interior vertex nor vertex on its boundary); if it finds no ear while more than 3 vertices remain, a second pass tolerates vertices lying exactly on the boundary. If that fails too, the face is refused (degenerate or self-intersecting) with a message naming the file and the line, instead of looping forever.
+
 ---
 
 ## 📋 Summary
 
 | | |
 |---|---|
-| **Key takeaway** | An `.obj` lists instructions line by line (`v`, `vt`, `vn`, `f`, `s`...), with vertex indices starting at 1. Faces can have more than 3 vertices and must be triangulated to be drawn by the graphics card; ear clipping also handles concave faces thanks to an orientation test AND a "same-side" test for each remaining vertex. A face generally combines one index per list and per corner (`v/vt/vn`), because `v` and `vt` are two independent, unaligned lists -- necessary to represent a UV seam. The associated `.mtl` describes appearance via the 4 parameters of the Phong model (ambient, diffuse, specular, shininess) and can reference an image file (`map_Kd`) as a texture. `s` controls normal smoothing, independently of the geometry. |
-| **Usable tools** | The Phong model (`Ka`/`Kd`/`Ks`/`Ns`) for interpreting an `.mtl`. `map_Kd` for linking an `.mtl` to a texture image file. Smoothing groups (`s`) for choosing between flat and smooth rendering. The `n - 2` formula to verify the number of triangles produced by any triangulation. |
-| **Pitfalls to avoid** | 1-based rather than 0-based vertex indices. Faces with a variable number of vertices left untriangulated. Fan triangulation produces a wrong result on a concave face, and an orientation test alone (without a "same-side" test) can wrongly validate an ear that traps another vertex. Indexing a texture coordinate by vertex alone (rather than by a vertex/texture pair) silently breaks at a UV seam. A single-material `.mtl` doesn't provide a color per sub-part. `s`/`usemtl` are state directives to track throughout parsing, not attributes present on every `f` line. `o` never affects vertex numbering, which stays global to the file even with several objects. |
-| **Good practices** | Separate raw file reading and triangulation into two distinct, single-responsibility functions. Reuse the same geometric primitive (cross product + dot product with the normal) for the orientation test and the same-side test, rather than duplicating it. Verify a triangulation with the `n - 2` formula before judging the split correct. Duplicate a vertex per unique `(v, vt[, vn])` combination rather than by position alone, to handle UV seams. Keep the current state (material, smoothing group) in variables updated as parsing proceeds, and attach it to each face read. |
+| **Key takeaway** | An `.obj` lists instructions line by line (`v`, `vt`, `vn`, `f`, `s`...), with vertex indices starting at 1. Faces can have more than 3 vertices and must be triangulated to be drawn by the graphics card; ear clipping also handles concave faces thanks to an orientation test AND a "same-side" test for each remaining vertex. A face generally combines one index per list and per corner (`v/vt/vn`), because `v` and `vt` are two independent, unaligned lists -- necessary to represent a UV seam. The associated `.mtl` describes appearance via the 4 parameters of the Phong model (ambient, diffuse, specular, shininess) and can reference an image file (`map_Kd`) as a texture. `s` controls normal smoothing, independently of the geometry. A parser accepts liberally (`v` with 3, 4 or 6 values, unknown directives ignored, LF, CRLF or CR, BOM) and refuses the rest with a precise message. PPM P6 is a text header followed by binary pixels (`maxval` on 1 or 2 bytes). A polygon's normal is computed with Newell's method, over its whole outline. |
+| **Usable tools** | The Phong model (`Ka`/`Kd`/`Ks`/`Ns`) for interpreting an `.mtl`. `map_Kd` for linking an `.mtl` to a texture image file. Smoothing groups (`s`) for choosing between flat and smooth rendering. The `n - 2` formula to verify the number of triangles produced by any triangulation. `strtod` to read numbers, Newell's method for the normal, `double` predicates for ear clipping. |
+| **Pitfalls to avoid** | 1-based rather than 0-based vertex indices. Faces with a variable number of vertices left untriangulated. Fan triangulation produces a wrong result on a concave face, and an orientation test alone (without a "same-side" test) can wrongly validate an ear that traps another vertex. Indexing a texture coordinate by vertex alone (rather than by a vertex/texture pair) silently breaks at a UV seam. A single-material `.mtl` doesn't provide a color per sub-part. `s`/`usemtl` are state directives to track throughout parsing, not attributes present on every `f` line. `o` never affects vertex numbering, which stays global to the file even with several objects. A BOM stuck to the first directive (first vertex silently lost), a leftover `\r` from a CRLF file, `fgets` facing a lone CR. Skipping all blanks after a PPM's `maxval`, not checking the size of the data, forgetting that its first row is at the top while OpenGL expects the bottom one. Computing the normal from the first two edges only. Using an absolute tolerance in a geometric test. |
+| **Good practices** | Separate raw file reading and triangulation into two distinct, single-responsibility functions. Reuse the same geometric primitive (cross product + dot product with the normal) for the orientation test and the same-side test, rather than duplicating it. Verify a triangulation with the `n - 2` formula before judging the split correct. Duplicate a vertex per unique `(v, vt[, vn])` combination rather than by position alone, to handle UV seams. Keep the current state (material, smoothing group) in variables updated as parsing proceeds, and attach it to each face read. Read the whole file and split it at the three line endings after skipping the BOM. Refuse invalid input naming the file, the line and the value. Compute geometric predicates in `double` with a relative tolerance, in two passes, and refuse the face if no ear exists. |

@@ -63,12 +63,12 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Langages/C/exit-et-codes-de-retour` (section `atexit()`).
 - `Langages/C/convertir-un-texte-en-nombre` (nouveau).
 - `Langages/C/operateur-virgule` (section ordre d'évaluation des arguments non spécifié, points de séquence).
+- `Fondamentaux/Graphisme/wavefront-obj-et-modele-de-phong` (sections lire un `.obj` avec tolérance, fins de ligne et BOM, PPM P6, méthode de Newell, ear clipping robuste).
 
 ## 4. Notions du projet scop et de sa revue crash-test (01/10/2026, à rédiger, un chapitre à la fois)
 Source : toute la session (projet scop en C/OpenGL, revue crash-test, corrections vérifiées par exécution). Recherche faite dans `content/` : ce qui existe déjà est indiqué, le reste a 0 résultat. Ajouts à faire au fil des items de correction (les notions des items 11 à 20 s'ajouteront ici).
 
 **Fondamentaux > Graphisme** (chapitres existants : `wavefront-obj-et-modele-de-phong`, `glfw-glad-et-boucle-de-rendu`, `effets-de-rendu-et-interaction-3d`, `edition-de-maillage-et-selection-proportionnelle`)
-- `wavefront-obj-et-modele-de-phong` : format **PPM P6** (en-tête, commentaires `#`, CRLF, `maxval` 8 ou 16 bits et rééchelonnement vers 0–255, fichier tronqué) ; `v//vn`, `vt` à 1 à 3 valeurs, `v` à 4 ou 6 valeurs, directives inconnues ignorées ; **tolérance du parseur** (accepter large, refuser avec un message précis) ; fins de ligne LF/CRLF/CR et BOM ; normale d'un polygone par la **méthode de Newell** ; ear clipping robuste (prédicats en `double`, tolérance relative aux sommets alignés ou sur une arête, deux passes). Le chapitre couvre déjà l'ear clipping et `n - 2`.
 - Nouveau chapitre « Tampons, textures et shaders OpenGL » (VAO/VBO/EBO, 0 résultat ; `uniform` à peine) : `GL_UNPACK_ALIGNMENT` (lignes de pixels alignées sur 4 octets : toute largeur non multiple de 4 est lue de travers), `glGenerateMipmap`, modes de répétition et filtres ; étages vertex / **geometry** / fragment ; normale plate par triangle calculée au geometry shader.
 - Nouveau chapitre « Matrices et caméra » : model/view/projection, `lookat`, perspective et plans near/far, rotation accumulée, **formule de Rodrigues** (rotation autour d'un axe quelconque), extraction angle/axe d'une matrice de rotation et cas dégénéré à 180°, cadrage automatique par boîte englobante.
 - `glfw-glad-et-boucle-de-rendu` : **delta time** et vitesse indépendante du FPS (bug trouvé : pas de temps mis à jour toutes les 0,01 s, tout allait 1,5× trop vite à 144 FPS), `glfwSwapInterval`/vsync.
