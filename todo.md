@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : rédiger le point 4 en commençant par l'item `effets-de-rendu-et-interaction-3d` (Fondamentaux/Graphisme : dispersion chromatique, Fresnel, ray-marching...), puis les autres items dans l'ordre, un item à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : rédiger le point 4 en commençant par l'item `appels-systeme-et-descripteurs` (Langages/C : FIFO et tube nommé), puis les autres items dans l'ordre, un item à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -67,12 +67,10 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Fondamentaux/Graphisme/tampons-textures-et-shaders-opengl` (nouveau).
 - `Fondamentaux/Graphisme/matrices-et-camera` (nouveau).
 - `Fondamentaux/Graphisme/glfw-glad-et-boucle-de-rendu` (sections delta time et vsync).
+- `Fondamentaux/Graphisme/effets-de-rendu-et-interaction-3d` (sections reflet de Fresnel, ray-marching, objet transparent, ressort amorti, `tanh`, placage triplanaire).
 
 ## 4. Notions du projet scop et de sa revue crash-test (01/10/2026, à rédiger, un chapitre à la fois)
 Source : toute la session (projet scop en C/OpenGL, revue crash-test, corrections vérifiées par exécution). Recherche faite dans `content/` : ce qui existe déjà est indiqué, le reste a 0 résultat. Ajouts à faire au fil des items de correction (les notions des items 11 à 20 s'ajouteront ici).
-
-**Fondamentaux > Graphisme** (chapitres existants : `wavefront-obj-et-modele-de-phong`, `glfw-glad-et-boucle-de-rendu`, `effets-de-rendu-et-interaction-3d`, `edition-de-maillage-et-selection-proportionnelle`)
-- `effets-de-rendu-et-interaction-3d` (aberration chromatique, animation procédurale, picking : déjà là) : **dispersion chromatique** par indice de réfraction par canal, reflet de **Fresnel**, nuage intérieur par **ray-marching**, objets transparents (opaques d'abord puis cristal en deux passes dos/face, `GL_SRC_ALPHA`), `glCullFace`, ordre d'enroulement (face noire si inversé) ; **ressort amorti** (raideur, amortissement, pas de temps borné) et `tanh` pour borner une déformation ; **placage triplanaire** (texture sans UV, mélange par normale, motif « brique »).
 
 **Langages > C**
 - `appels-systeme-et-descripteurs` (ou nouveau chapitre « fichiers spéciaux ») : **FIFO / tube nommé** (`mkfifo`, différence avec le pipe anonyme `|`, ouverture bloquante tant qu'aucun écrivain), piège d'un programme qui croit ouvrir un fichier (`/dev/zero`, FIFO) ; parade : `open(O_NONBLOCK)`, `fstat()`, `S_ISREG()`, `fdopen()`. Renvoi vers `sockets-et-io-non-bloquante` et `pile-et-file`.
