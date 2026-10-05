@@ -67,6 +67,65 @@ trap 'echo "Clean shutdown"; rm -f file.tmp' SIGTERM
 
 An uncatchable signal like `SIGKILL` completely ignores `trap`, which is exactly why it remains the last resort mentioned above.
 
+## Deleting a Temporary File for Sure: `mktemp` and `trap`
+
+A script that creates a temporary file must delete it **however it ends**: normal end, error, Ctrl-C, `kill`. [`mktemp`](https://www.gnu.org/software/coreutils/manual/html_node/mktemp-invocation.html) creates an empty file with a unique, unpredictable name (of the form `/tmp/tmp.7nzzmlI0bS`) and prints its path; `mktemp -d` creates a directory the same way.
+
+```bash
+tmp=$(mktemp) || exit 1   # file with a unique name; stop if it cannot be created
+trap 'rm -f "$tmp"' EXIT  # delete on any exit of the script
+trap 'exit 130' INT       # Ctrl-C: exit, which triggers the EXIT trap
+trap 'exit 143' TERM      # SIGTERM (sent by kill): same
+```
+
+Codes 130 and 143 follow the "128 + signal number" convention (SIGINT is signal 2, SIGTERM is 15). Measured result: is the file created by `mktemp` deleted?
+
+| Interpreter | End of the script | No `trap` | `EXIT` alone | `EXIT` + `INT` + `TERM` |
+|---|---|---|---|---|
+| Bash | normal | stays | deleted | deleted |
+| Bash | Ctrl-C | stays | deleted | deleted |
+| Bash | SIGTERM | stays | deleted | deleted |
+| Zsh | normal | stays | deleted | deleted |
+| Zsh | Ctrl-C | stays | **stays** | deleted |
+| Zsh | SIGTERM | stays | **stays** | deleted |
+
+Bash runs the `EXIT` trap even when a signal stops it; zsh does not. Writing all three `trap`s makes the script correct in both shells.
+
+> **Pitfall:** a fixed name (`/tmp/my_script.tmp`). Two simultaneous runs trample each other, and another user of the machine who guesses the name can place a symbolic link there to a sensitive file, which the script will overwrite.
+>
+> **Best practice:** always `mktemp`, and set the `trap` before creating the file (with `tmp=` empty at the start: `rm -f ""` does nothing) so there is no window where a signal would leave the file behind.
+
+> **Note:** a script started in the background by a non-interactive shell (`script.sh &`) has `SIGINT` ignored from the start, and a signal ignored on entry cannot be caught ([signals in Bash](https://www.gnu.org/software/bash/manual/bash.html#Signals)). Test the cleanup with Ctrl-C in a real terminal, or with `kill -TERM`. `SIGKILL` still cannot be caught: the file then stays in place.
+
+## Limiting a Command's Duration: `timeout` and Ctrl-C
+
+`timeout` (GNU coreutils) runs a command and stops it if it exceeds a duration:
+
+```bash
+timeout 30 ./processing.sh               # stopped after 30 s: exit code 124
+timeout --foreground 30 ./processing.sh  # same, but Ctrl-C reaches it too
+timeout -k 5 30 ./processing.sh          # SIGKILL 5 s after SIGTERM if needed: code 137
+```
+
+| Situation | `timeout` exit code |
+|---|---|
+| The command finishes in time | Its own |
+| Time exceeded: SIGTERM sent | 124 |
+| Time exceeded, SIGTERM ignored, then SIGKILL (`-k`) | 137 |
+
+To be able to stop the command's whole descendance, `timeout` puts itself in its **own process group** (see [How a Shell Works](/?c=shells&s=bash&p=architecture-dun-shell)). Yet the terminal sends Ctrl-C (SIGINT) only to the **foreground** group: neither `timeout` nor the command receives it.
+
+Measured on `timeout 20 sleep 8` run by a script, Ctrl-C typed 0.8 s after the start:
+
+| Option | After Ctrl-C |
+|---|---|
+| None | Nothing stops: the script waits for `sleep` to end normally (7.2 s later) and carries on as if nothing had happened |
+| `--foreground` | Immediate stop |
+
+> **Pitfall:** `--foreground` no longer delegates the stop to a whole group: when the time is exceeded, the command's **children** are no longer stopped ([`timeout` manual](https://www.gnu.org/software/coreutils/manual/html_node/timeout-invocation.html)).
+>
+> **Best practice:** `--foreground` for a script that a human starts in a terminal and must be able to interrupt; without the option for a script with no terminal (scheduled task) that must cut the whole descendance when the time is exceeded.
+
 ## Detaching a process from the terminal (`nohup`)
 
 A process launched in the background with `&` still receives a shutdown signal if the terminal that launched it closes. `nohup` (*no hang up*) protects it from that:
@@ -93,7 +152,7 @@ pkill -f "long_process.sh"
 
 | | |
 |---|---|
-| **Key takeaways** | A trailing `&` launches a command in the background. `kill` sends a signal (SIGTERM by default, SIGKILL as a last resort); `trap` makes it possible to catch a signal for clean cleanup. |
+| **Key takeaways** | A trailing `&` launches a command in the background. `kill` sends a signal (SIGTERM by default, SIGKILL as a last resort); `trap` makes it possible to catch a signal for clean cleanup. `mktemp` creates a temporary file with a unique name; a `trap` on `EXIT`, `INT` and `TERM` deletes it however the script ends (`EXIT` alone is enough in Bash, not in zsh). `timeout` stops a command that runs too long (code 124), but Ctrl-C only reaches it with `--foreground`. |
 | **Tools you can use** | `jobs`/`fg`/`bg`, `ps`/`top`, `pgrep`/`pkill`, `nohup`. |
-| **Pitfalls to avoid** | Using `kill -9` (SIGKILL) as a reflex: the process then has no chance to clean up after itself. |
-| **Best practices** | Always try `kill` (SIGTERM) before `kill -9`; check `pkill`'s pattern before running it, to avoid targeting more processes than intended. |
+| **Pitfalls to avoid** | Using `kill -9` (SIGKILL) as a reflex: the process then has no chance to clean up after itself. A fixed temporary file name. Relying on `trap … EXIT` alone in zsh. Testing the cleanup with Ctrl-C on a script started with `&`. Forgetting `--foreground` on an interactive script, or using it where the whole descendance must be cut. |
+| **Best practices** | Always try `kill` (SIGTERM) before `kill -9`; check `pkill`'s pattern before running it, to avoid targeting more processes than intended. Set the `trap` before `mktemp` and write it on `EXIT`, `INT` and `TERM`; choose `--foreground` depending on whether the script is started by a human or by a scheduled task. |

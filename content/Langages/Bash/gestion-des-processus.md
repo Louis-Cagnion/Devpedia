@@ -67,6 +67,65 @@ trap 'echo "Arrêt propre"; rm -f fichier.tmp' SIGTERM
 
 Un signal non interceptable comme `SIGKILL` ignore totalement `trap` : c'est justement pour ça qu'il reste le dernier recours vu plus haut.
 
+## Supprimer un fichier temporaire à coup sûr : `mktemp` et `trap`
+
+Un script qui crée un fichier temporaire doit le supprimer **quelle que soit la façon dont il se termine** : fin normale, erreur, Ctrl-C, `kill`. [`mktemp`](https://www.gnu.org/software/coreutils/manual/html_node/mktemp-invocation.html) crée un fichier vide au nom unique et imprévisible (de la forme `/tmp/tmp.7nzzmlI0bS`) et affiche son chemin ; `mktemp -d` crée un dossier de la même façon.
+
+```bash
+tmp=$(mktemp) || exit 1   # fichier au nom unique ; on s'arrête s'il ne peut pas être créé
+trap 'rm -f "$tmp"' EXIT  # suppression à toute sortie du script
+trap 'exit 130' INT       # Ctrl-C : sortir, ce qui déclenche le trap EXIT
+trap 'exit 143' TERM      # SIGTERM (envoyé par kill) : idem
+```
+
+Les codes 130 et 143 suivent la convention « 128 + numéro du signal » (SIGINT est le signal 2, SIGTERM le 15). Résultat mesuré : le fichier créé par `mktemp` est-il supprimé ?
+
+| Interpréteur | Fin du script | Aucun `trap` | `EXIT` seul | `EXIT` + `INT` + `TERM` |
+|---|---|---|---|---|
+| Bash | normale | reste | supprimé | supprimé |
+| Bash | Ctrl-C | reste | supprimé | supprimé |
+| Bash | SIGTERM | reste | supprimé | supprimé |
+| Zsh | normale | reste | supprimé | supprimé |
+| Zsh | Ctrl-C | reste | **reste** | supprimé |
+| Zsh | SIGTERM | reste | **reste** | supprimé |
+
+Bash exécute le `trap` sur `EXIT` même quand un signal l'arrête ; zsh ne le fait pas. Écrire les trois `trap` rend le script correct dans les deux shells.
+
+> **Piège :** un nom fixe (`/tmp/mon_script.tmp`). Deux exécutions simultanées se marchent dessus, et un autre utilisateur de la machine qui devine le nom peut y placer un lien symbolique vers un fichier sensible, que le script écrasera.
+>
+> **Bonne pratique :** toujours `mktemp`, et poser le `trap` avant la création du fichier (avec `tmp=` vide au départ : `rm -f ""` ne fait rien) pour ne laisser aucune fenêtre où un signal laisserait le fichier derrière lui.
+
+> **Note :** un script lancé en arrière-plan par un shell non interactif (`script.sh &`) a `SIGINT` ignoré dès le départ, et un signal ignoré à l'entrée ne peut pas être intercepté ([signaux dans Bash](https://www.gnu.org/software/bash/manual/bash.html#Signals)). Tester le nettoyage par Ctrl-C dans un vrai terminal, ou avec `kill -TERM`. `SIGKILL` reste impossible à intercepter : le fichier reste alors en place.
+
+## Limiter la durée d'une commande : `timeout` et Ctrl-C
+
+`timeout` (GNU coreutils) lance une commande et l'arrête si elle dépasse une durée :
+
+```bash
+timeout 30 ./traitement.sh               # arrêté au bout de 30 s : code de sortie 124
+timeout --foreground 30 ./traitement.sh  # idem, mais Ctrl-C l'atteint aussi
+timeout -k 5 30 ./traitement.sh          # SIGKILL 5 s après SIGTERM si besoin : code 137
+```
+
+| Situation | Code de sortie de `timeout` |
+|---|---|
+| La commande finit à temps | Le sien |
+| Délai dépassé : SIGTERM envoyé | 124 |
+| Délai dépassé, SIGTERM ignoré, puis SIGKILL (`-k`) | 137 |
+
+Pour pouvoir arrêter toute la descendance de la commande, `timeout` se place dans son **propre groupe de processus** (voir [Comment fonctionne un shell](/?c=shells&s=bash&p=architecture-dun-shell)). Or le terminal envoie Ctrl-C (SIGINT) au seul groupe de **premier plan** : ni `timeout` ni la commande ne le reçoivent.
+
+Mesuré sur `timeout 20 sleep 8` lancé par un script, Ctrl-C tapé 0,8 s après le départ :
+
+| Option | Après Ctrl-C |
+|---|---|
+| Aucune | Rien ne s'arrête : le script attend la fin normale de `sleep` (7,2 s plus tard) et continue comme si de rien n'était |
+| `--foreground` | Arrêt immédiat |
+
+> **Piège :** `--foreground` ne délègue plus l'arrêt à tout un groupe : au dépassement du délai, les **enfants** de la commande ne sont plus arrêtés ([manuel de `timeout`](https://www.gnu.org/software/coreutils/manual/html_node/timeout-invocation.html)).
+>
+> **Bonne pratique :** `--foreground` pour un script qu'un humain lance dans un terminal et doit pouvoir interrompre ; sans l'option pour un script sans terminal (tâche planifiée) qui doit couper toute la descendance au dépassement du délai.
+
 ## Détacher un processus du terminal (`nohup`)
 
 Un processus lancé en arrière-plan avec `&` reçoit tout de même un signal d'arrêt si le terminal qui l'a lancé se ferme. `nohup` (*no hang up*) l'en protège :
@@ -93,7 +152,7 @@ pkill -f "long_traitement.sh"
 
 | | |
 |---|---|
-| **À retenir** | Un `&` final lance une commande en arrière-plan. `kill` envoie un signal (SIGTERM par défaut, SIGKILL en dernier recours) ; `trap` permet d'intercepter un signal pour un nettoyage propre. |
+| **À retenir** | Un `&` final lance une commande en arrière-plan. `kill` envoie un signal (SIGTERM par défaut, SIGKILL en dernier recours) ; `trap` permet d'intercepter un signal pour un nettoyage propre. `mktemp` crée un fichier temporaire au nom unique ; `trap` sur `EXIT`, `INT` et `TERM` le supprime quelle que soit la sortie du script (`EXIT` seul suffit en Bash, pas en zsh). `timeout` arrête une commande trop longue (code 124), mais Ctrl-C ne l'atteint qu'avec `--foreground`. |
 | **Outils utilisables** | `jobs`/`fg`/`bg`, `ps`/`top`, `pgrep`/`pkill`, `nohup`. |
-| **Pièges à éviter** | Utiliser `kill -9` (SIGKILL) par réflexe : le processus n'a alors aucune chance de nettoyer derrière lui. |
-| **Bonnes pratiques** | Toujours essayer `kill` (SIGTERM) avant `kill -9` ; vérifier le motif de `pkill` avant de l'exécuter, pour ne pas cibler plus de processus que prévu. |
+| **Pièges à éviter** | Utiliser `kill -9` (SIGKILL) par réflexe : le processus n'a alors aucune chance de nettoyer derrière lui. Un nom de fichier temporaire fixe. Compter sur `trap … EXIT` seul en zsh. Tester le nettoyage par Ctrl-C sur un script lancé avec `&`. Oublier `--foreground` sur un script interactif, ou l'utiliser là où il faut couper toute la descendance. |
+| **Bonnes pratiques** | Toujours essayer `kill` (SIGTERM) avant `kill -9` ; vérifier le motif de `pkill` avant de l'exécuter, pour ne pas cibler plus de processus que prévu. Poser le `trap` avant `mktemp` et l'écrire sur `EXIT`, `INT` et `TERM` ; choisir `--foreground` selon que le script est lancé par un humain ou par une tâche planifiée. |
