@@ -7,18 +7,12 @@ import {
     buildReadingPlan,
     stopReading,
     onPlaybackComplete,
-    onStatusChange,
-    getReaderStatus,
-    resumeReading,
-    pauseReading,
-    continueAfterCode,
-    nextParagraph,
-    previousParagraph,
     playAutoAdvanceSilence,
     stopAutoAdvanceSilence,
 } from "./reader.js";
 import { AUTO_ADVANCE_SILENCE_SECONDS } from "./reader-auto-advance-silence.js";
-import { logEvent } from "./reader-debug.js";
+import "./router-media-session.js";
+import { resolveNextChapterAcrossSite, resolvePreviousChapterAcrossSite } from "./router-chapter-order.js";
 import { t, tEntityLabel } from "./i18n.js";
 import { resolveAcrossLanguages } from "./router-language-fallback.js";
 import { PENDING_NAV_KEY, buildNavUrl, parseNavParams, pushNavUrl, replayingUrl } from "./nav-url.js";
@@ -202,67 +196,6 @@ function cancelAutoAdvance() {
     stopAutoAdvanceSilence();
 }
 
-/**
- * @brief Returns every chapter of the site in reading order, subjects and subject-less
- * categories both flattened to the same {categoryId, subjectId, id, label} shape.
- *
- * @returns {Array<{categoryId: string, subjectId: string|null, id: string, label: string}>}
- */
-function flattenChapters() {
-    const entries = [];
-    // Excludes "acceuil": a synthetic entry generate-struct.js adds only so internal home links
-    // validate, with no `folder` -- navigateToChapter() can't render it (cf. generateHomePage()).
-    appState.categories.filter(category => category.id !== "acceuil").forEach(category => {
-        (category.subjects ?? [{ id: null, chapters: category.chapters ?? [] }]).forEach(subject => {
-            (subject.chapters ?? []).forEach(chapter => {
-                entries.push({ categoryId: category.id, subjectId: subject.id, id: chapter.id, label: chapter.label });
-            });
-        });
-    });
-    return entries;
-}
-
-/**
- * @brief Returns the index, within the site-wide flattened chapter list, of the chapter currently
- * displayed.
- *
- * @param {Array<{categoryId: string, subjectId: string|null, id: string, label: string}>} entries
- *
- * @returns {number} -1 if the current page isn't a chapter (home, a category, a subject)
- */
-function curChapterIndex(entries) {
-    return entries.findIndex(entry =>
-        entry.categoryId === appState.curCategory && entry.subjectId === appState.curSubject && entry.id === appState.curPageId
-    );
-}
-
-/**
- * @brief Returns the chapter right after the one currently displayed, crossing subject and
- * category boundaries -- unlike currentNextChapter above, which stops at the end of the current
- * subject/category. Used by read-aloud's own auto-advance once a chapter finishes on its own, and
- * by renderChapter() as the on-page "next chapter" button's fallback at the end of a section.
- *
- * @returns {{categoryId: string, subjectId: string|null, id: string, label: string}|null} null past the site's last chapter
- */
-export function resolveNextChapterAcrossSite() {
-    const entries = flattenChapters();
-    const curIndex = curChapterIndex(entries);
-    return curIndex === -1 ? null : (entries[curIndex + 1] ?? null);
-}
-
-/**
- * @brief Returns the chapter right before the one currently displayed, crossing subject and
- * category boundaries the same way resolveNextChapterAcrossSite() does. Used by renderChapter()
- * as the on-page "previous chapter" button's fallback at the start of a section.
- *
- * @returns {{categoryId: string, subjectId: string|null, id: string, label: string}|null} null before the site's first chapter
- */
-export function resolvePreviousChapterAcrossSite() {
-    const entries = flattenChapters();
-    const curIndex = curChapterIndex(entries);
-    return curIndex <= 0 ? null : entries[curIndex - 1];
-}
-
 /* {s} carries the plural "s" (or none for 1) -- every language's own ui-strings.json entry
    pluralizes its own "second(s)" word the same way, so one shared marker covers all four. */
 function autoAdvanceNoticeText(secondsRemaining) {
@@ -296,54 +229,6 @@ onPlaybackComplete(() => {
 document.addEventListener("click", e => {
     if (e.target.closest(".readerControl")) cancelAutoAdvance();
 });
-
-/* Bluetooth headset media buttons (play/pause/next/previous), synced both ways with the reader
-   control: a Bluetooth press drives the same actions as the on-screen buttons, and any on-screen
-   change (including a manual chapter change) updates what the OS shows as the playback state. */
-if ("mediaSession" in navigator) {
-    navigator.mediaSession.setActionHandler("play", () => {
-        logEvent("mediaSession:play");
-        const status = getReaderStatus();
-        if (status.isPausedAtCode) continueAfterCode();
-        else if (status.isPaused) resumeReading();
-    });
-    navigator.mediaSession.setActionHandler("pause", () => {
-        logEvent("mediaSession:pause");
-        if (getReaderStatus().isPlaying) pauseReading();
-    });
-    navigator.mediaSession.setActionHandler("nexttrack", () => {
-        logEvent("mediaSession:nexttrack");
-        nextParagraph();
-    });
-    navigator.mediaSession.setActionHandler("previoustrack", () => {
-        logEvent("mediaSession:previoustrack");
-        previousParagraph();
-    });
-    let lastMetadataTitle = null;
-    onStatusChange(status => {
-        navigator.mediaSession.playbackState = status.isPlaying ? "playing"
-            : (status.isPaused || status.isPausedAtCode) ? "paused"
-            : "none";
-        /* Without metadata, iOS never recognizes this as a real "Now Playing" session -- Bluetooth
-           play/pause falls through to whatever app it considers active instead (e.g. Musique),
-           confirmed on a real iPhone (Louis, 2026-08-22). */
-        const title = document.querySelector(`.${appState.curPageId}Div .pageTitle`)?.textContent;
-        if (title && title !== lastMetadataTitle) {
-            /* Without artwork, iOS's lock-screen widget falls back to its own generic seek-±10s
-               buttons instead of the previoustrack/nexttrack ones registered above (Louis, 23/08/2026:
-               only saw skip-10s, play/pause, and the audio output picker -- no previous/next). */
-            navigator.mediaSession.metadata = new MediaMetadata({
-                title,
-                artist: "Devpedia",
-                artwork: [
-                    { src: "./icons/icon-192.png", sizes: "192x192", type: "image/png" },
-                    { src: "./icons/icon-512.png", sizes: "512x512", type: "image/png" },
-                ],
-            });
-            lastMetadataTitle = title;
-        }
-    });
-}
 
 /**
  * @brief Reports whether arrow keys should type a character at `target` rather than navigate.
