@@ -98,6 +98,63 @@ if command; then echo "OK"; else echo "FAILED"; fi
 
 A command placed to the left of an `&&` or an `||` is considered "tested": its failure **does not stop** the script even under `set -e`. This is what allows writing `grep pattern file || true` to deliberately neutralize an expected failure, but it's also a source of surprise if you thought `set -e` protected the whole line.
 
+## Mixing Output and Errors in a Pipe: the 4 KB Buffer
+
+`2>&1` sends errors (stderr) to the same place as normal output (stdout). To a terminal, the display order is the program's. To a pipe (`|`) or a file, that is no longer true: a C program keeps its normal output in memory in a 4096-byte **buffer** (a waiting area), which it only writes when full, while it writes its errors right away.
+
+```c
+#include <stdio.h>
+
+int main(void)
+{
+    for (int i = 1; i <= 300; i++) {
+        printf("line %03d: a line of text long enough to fill the buffer\n", i);
+        if (i == 150)
+            fprintf(stderr, "ERROR: problem at line 150\n");
+    }
+    return 0;
+}
+```
+
+```bash
+./program 2>&1 | grep -B1 -A1 ERROR             # normal output buffered in blocks
+stdbuf -oL ./program 2>&1 | grep -B1 -A1 ERROR  # line buffering
+```
+
+The program writes 300 lines of 56 bytes and an error after line 150. In a pipe, the error arrives **ahead of time** (it slips in after the 4096-byte blocks already written, before the lines still in the buffer) and **cuts a line in two**:
+
+```text
+line 146: a line of text long enough to fill the buffer
+line 147: a lineERROR: problem at line 150
+ of text long enough to fill the buffer
+```
+
+With line buffering, the order is the program's:
+
+```text
+line 150: a line of text long enough to fill the buffer
+ERROR: problem at line 150
+line 151: a line of text long enough to fill the buffer
+```
+
+| Output to | stdout buffer | Error and normal output |
+|---|---|---|
+| Terminal | Per line | In the program's order |
+| Pipe or file | In 4096-byte blocks | Error ahead of time, line cut in two |
+
+| Remedy | Effect |
+|---|---|
+| `stdbuf -oL command` | Forces line buffering, without touching the program; only works for C programs dynamically linked to the standard library ([`stdbuf` manual](https://www.gnu.org/software/coreutils/manual/html_node/stdbuf-invocation.html)) |
+| `setvbuf(stdout, NULL, _IOLBF, 0)` at the start of the program | Line buffering (tested: output in order) |
+| `fflush(stdout)` before writing to `stderr` | Empties the buffer first |
+| `python3 -u` | Unbuffered Python |
+
+> **Pitfall:** the defect does not show on screen, only in a log file, a pipeline output or a `| tee`: a manual diagnosis in a terminal does not reproduce it.
+>
+> **Pitfall:** an unflushed buffer is **lost** if the program crashes. Tested: a program that writes a message then calls `abort()` sends **no line** into a pipe, while the same message shows on a terminal. The last messages before the incident, the most useful ones, disappear.
+>
+> **Best practice:** for any output read live (log, continuous integration), ask for line buffering; and check the order of errors in a file, not only on screen.
+
 ## `tee`: redirecting while still displaying
 
 `tee` writes its output both to a file **and** to standard output (useful for seeing a result while also saving it):
@@ -128,5 +185,5 @@ ls -l | tee results.txt   # displays the result on screen AND saves it to result
 |---|---|
 | **Key takeaways** | `>`/`>>`/`<` redirect the stdin/stdout/stderr streams to or from a file; `\|` connects one command's output to the next one's input. `&&`/`\|\|`/`;` chain commands based on their exit code. |
 | **Tools you can use** | `2>&1` (merging stderr into stdout), `/dev/null` (discarding an output), `tee` (displaying and saving at once). |
-| **Pitfalls to avoid** | `>` silently overwriting an existing file; the order of `2>&1` relative to `>` (`2>&1 > file` doesn't do what you'd expect). |
-| **Best practices** | Write `> file 2>&1` (never the reverse); prefer an explicit `if` over `&& ... \|\| ...` as soon as the conditional logic actually matters. |
+| **Pitfalls to avoid** | `>` silently overwriting an existing file; the order of `2>&1` relative to `>` (`2>&1 > file` doesn't do what you'd expect). Mixing stdout and stderr with `2>&1` in a pipe or file without thinking about the buffer: error ahead of time, line cut, last messages lost on a crash. |
+| **Best practices** | Write `> file 2>&1` (never the reverse); prefer an explicit `if` over `&& ... \|\| ...` as soon as the conditional logic actually matters. Ask for line buffering (`stdbuf -oL`, `setvbuf`) for an output read live. |
