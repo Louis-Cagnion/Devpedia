@@ -216,6 +216,177 @@ free(p);
 p = NULL; // bonne pratique : empêche une utilisation accidentelle après libération
 ```
 
+## Un tableau de chaînes : le terminer avant de le remplir
+
+Un tableau de chaînes (`char **`) est un tableau de pointeurs, chacun désignant une chaîne allouée avec `malloc`. Par convention, il se termine par un pointeur `NULL`, comme le tableau `argv` de [`main`](/?c=langages&s=c&p=argc-et-argv) : une fonction `free_array` le libère en parcourant les cases **jusqu'au premier `NULL`**. L'exemple ci-dessous découpe un texte en mots (comme la fonction `split` d'un exercice classique) :
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+void	set_fail_at(long k);
+
+/* Libère un tableau de chaînes terminé par NULL : chaque chaîne, puis le tableau. */
+static void	free_array(char **tab)
+{
+	if (!tab)
+		return ;
+	for (size_t i = 0; tab[i]; i++)
+		free(tab[i]);
+	free(tab);
+}
+
+/* Nombre de mots (suites de caractères autres que l'espace) de s. */
+static size_t	count_words(const char *s)
+{
+	size_t	n = 0;
+
+	while (*s)
+	{
+		while (*s == ' ')
+			s++;
+		if (*s)
+			n++;
+		while (*s && *s != ' ')
+			s++;
+	}
+	return (n);
+}
+
+/* Copie le prochain mot de *s dans un nouveau bloc et avance *s après lui. */
+static char	*copy_word(const char **s)
+{
+	size_t	len;
+	char	*word;
+
+	while (**s == ' ')
+		(*s)++;
+	len = strcspn(*s, " ");
+	word = malloc(len + 1);
+	if (!word)
+		return (NULL);
+	memcpy(word, *s, len);
+	word[len] = '\0';
+	*s += len;
+	return (word);
+}
+
+char	**split_words(const char *s)
+{
+	size_t	n = count_words(s);
+#ifdef FIXED
+	char	**tab = calloc(n + 1, sizeof *tab);     /* toutes les cases à NULL */
+#else
+	char	**tab = malloc((n + 1) * sizeof *tab);  /* cases non initialisées */
+#endif
+
+	if (!tab)
+		return (NULL);
+	for (size_t i = 0; i < n; i++)
+	{
+		char	*word = copy_word(&s);
+
+		if (!word)
+		{
+			free_array(tab);                        /* parcourt jusqu'au premier NULL */
+			return (NULL);
+		}
+		tab[i] = word;                              /* la case i n'est écrite qu'ici */
+	}
+#ifndef FIXED
+	tab[n] = NULL;                                  /* terminaison posée seulement à la fin */
+#endif
+	return (tab);
+}
+
+int	main(void)
+{
+	char	**tab;
+	long	k;
+
+	setvbuf(stdout, NULL, _IONBF, 0);
+	for (k = 1; k <= 10; k++)
+	{
+		set_fail_at(k);
+		tab = split_words("un deux trois");
+		if (tab)
+			break ;
+		printf("k=%ld : échec géré\n", k);
+	}
+	set_fail_at(-1);
+	printf("k=%ld : %s %s %s\n", k, tab[0], tab[1], tab[2]);
+	free_array(tab);
+	return (0);
+}
+```
+
+Le défaut est dans `split_words`. `malloc` ne met rien à zéro : les cases du tableau contiennent ce que la mémoire contenait avant. Quand la copie d'un mot échoue, la case `tab[i]` n'a pas encore été écrite (`tab[i] = word` vient après le test), et `free_array`, qui s'arrête au premier `NULL`, **lit cette case non initialisée** : si elle ne vaut pas par hasard `NULL`, `free` reçoit une adresse au hasard.
+
+Pour exécuter ce chemin d'échec, on fait échouer la k-ième allocation avec `--wrap` (voir [Sanitizers et tests d'allocation](/?c=qualite-performance-et-outils&s=qualite-et-architecture-du-code&p=sanitizers-et-tests-d-allocation#injecter-des-echecs-d-allocation)). Ici `calloc` est aussi redirigé, car le correctif l'utilise :
+
+```c
+#include <stdlib.h>
+
+void	*__real_malloc(size_t size);
+void	*__real_calloc(size_t n, size_t size);
+
+static long	g_calls;                            /* appels à malloc ou calloc depuis le début */
+static long	g_fail_at = -1;                     /* numéro de l'appel à faire échouer (-1 : aucun) */
+
+void	set_fail_at(long k)
+{
+	g_calls = 0;
+	g_fail_at = k;
+}
+
+void	*__wrap_malloc(size_t size)
+{
+	if (++g_calls == g_fail_at)
+		return (NULL);
+	return (__real_malloc(size));
+}
+
+void	*__wrap_calloc(size_t n, size_t size)
+{
+	if (++g_calls == g_fail_at)
+		return (NULL);
+	return (__real_calloc(n, size));
+}
+```
+
+```bash
+gcc -g -fsanitize=address -Wl,--wrap=malloc -Wl,--wrap=calloc split.c wrap.c -o split_asan        # version fautive
+gcc -g -Wl,--wrap=malloc -Wl,--wrap=calloc split.c wrap.c -o split_plain
+gcc -g -fsanitize=address -Wl,--wrap=malloc -Wl,--wrap=calloc -DFIXED split.c wrap.c -o fixed_asan # version corrigée
+valgrind -q ./split_plain
+```
+
+Mesuré (`gcc` 12.4) :
+
+| Exécution | Version fautive | Version corrigée (`-DFIXED`) |
+|---|---|---|
+| Sans outil | **aucun symptôme** : `k=1` à `k=4 : échec géré`, puis `k=5 : un deux trois`, code 0 | identique |
+| ASan | `k=1 : échec géré`, puis `ERROR: AddressSanitizer: SEGV on unknown address` : `free_array` (ligne 13) appelée par `split_words` (ligne 69) lit une adresse élevée | `k=1` à `k=4 : échec géré`, `k=5 : un deux trois`, code 0 |
+| valgrind | `Conditional jump or move depends on uninitialised value(s)` dans `free_array` (ligne 12) | aucun rapport |
+
+Sans outil, la version fautive paraît correcte : le tas est neuf, donc à zéro ici, et la lecture non initialisée tombe sur `NULL` par chance. Sur un tas où de la mémoire a déjà servi, la case contient une ancienne adresse. ASan remplit la mémoire neuve avec un motif non nul, ce qui transforme la chance en plantage reproductible.
+
+Deux correctifs, tous deux sans rapport avec la quantité de mémoire :
+
+| Correctif | Principe | Mesuré |
+|---|---|---|
+| `calloc((n + 1), sizeof *tab)` à la place de `malloc` | Toutes les cases valent `NULL` au départ : `free_array` s'arrête sur la première case non remplie | Code 0 sous ASan, aucun rapport sous valgrind |
+| Écrire la case avant de la tester : `tab[i] = copy_word(&s); if (!tab[i]) ...` | La case de l'échec vaut `NULL` (le résultat de `malloc`), celles d'avant sont des chaînes valides | Même banc : aucun rapport sous ASan, valgrind et sans outil |
+
+Le principe général : **à chaque instant, toute case que le nettoyage peut lire doit être soit une chaîne valide, soit `NULL`**. Une autre façon de l'obtenir consiste à ne pas utiliser de sentinelle et à passer au nettoyage le nombre de cases déjà remplies (`free_n(tab, i)`), au prix d'un paramètre de plus.
+
+> **Piège :** poser la terminaison `tab[n] = NULL` seulement **après** la boucle de remplissage : elle protège le parcours d'un tableau complet, pas celui d'un tableau interrompu.
+>
+> **Piège :** oublier le `+ 1` de la case du `NULL` final (`malloc(n * sizeof *tab)`) : la terminaison s'écrit une case après la fin du bloc, un [débordement de tampon](/?c=langages&s=c&p=memoire#les-quatre-bugs-memoire-classiques).
+>
+> **Bonne pratique :** allouer un tableau de pointeurs avec `calloc`, pour qu'un tableau interrompu reste libérable sans cas particulier.
+
 ## Beaucoup de petits objets : l'allocation en arène
 
 Appeler `malloc()` pour chacun de millions de petits objets coûte cher : chaque appel prend du temps, et les objets finissent éparpillés en mémoire. Une **arène** range tous ces objets **à la suite dans un seul grand tableau**, agrandi par doublement avec `realloc()`, et chaque objet est désigné par sa **position** dans ce tableau.
@@ -380,5 +551,5 @@ Le dernier usage, lire les bits d'un `float` comme un entier (*type punning*), a
 |---|---|
 | **À retenir** | Le C laisse au développeur la responsabilité complète de la mémoire dynamique (heap) : `malloc`/`calloc`/`realloc` pour allouer, `free` pour libérer ; la stack (variables locales, VLA compris) est gérée automatiquement. |
 | **Outils utilisables** | `malloc`/`calloc`/`realloc`/`free`, `sizeof`, VLA (`int tab[n]`) pour un tableau de taille dynamique sans `free()`, Valgrind pour détecter fuites et accès invalides ; `memcpy`/`memset` pour copier ou remplir des octets ; une arène pour de très nombreux petits objets. |
-| **Pièges à éviter** | Fuite mémoire (jamais de `free`), use-after-free, double free, débordement de tampon, débordement de pile sur un VLA trop grand (aucune détection possible, contrairement à `malloc`), confusion entre `T (*)[n]` (VLA en paramètre) et `T **`, agrandir un tampon d'un élément à la fois (quadratique), `strlen()` dans la condition d'une boucle, lecture d'octets de `realloc()` jamais écrits. |
-| **Bonnes pratiques** | Toujours vérifier qu'un `malloc`/`realloc` n'a pas renvoyé `NULL` ; mettre un pointeur à `NULL` juste après son `free()` ; préférer `fgets`/`strncpy`/`snprintf` aux fonctions non bornées (`gets`/`strcpy`/`sprintf`) ; `strlcpy`/`strlcat` pour détecter une troncature via leur valeur de retour. |
+| **Pièges à éviter** | Fuite mémoire (jamais de `free`), use-after-free, double free, débordement de tampon, débordement de pile sur un VLA trop grand (aucune détection possible, contrairement à `malloc`), confusion entre `T (*)[n]` (VLA en paramètre) et `T **`, agrandir un tampon d'un élément à la fois (quadratique), `strlen()` dans la condition d'une boucle, lecture d'octets de `realloc()` jamais écrits, nettoyage d'un tableau de chaînes interrompu dont les cases n'ont pas été initialisées. |
+| **Bonnes pratiques** | Toujours vérifier qu'un `malloc`/`realloc` n'a pas renvoyé `NULL` ; mettre un pointeur à `NULL` juste après son `free()` ; préférer `fgets`/`strncpy`/`snprintf` aux fonctions non bornées (`gets`/`strcpy`/`sprintf`) ; `strlcpy`/`strlcat` pour détecter une troncature via leur valeur de retour ; allouer un tableau de pointeurs avec `calloc`. |

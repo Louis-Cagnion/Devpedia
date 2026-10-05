@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : rédiger les items restants du point 4 en commençant par `Langages > C` (tableau de chaînes non terminé), puis les autres items dans l'ordre, un item à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). Point 5 (vérifications GLSL et OpenGL non exécutées) : Louis a précisé qu'il n'a pas de rendu graphique sur cette machine, ne pas lui redemander tant qu'il n'a pas changé de machine. En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2), arbitrage des doublons (point 7).
+> Prochaine tâche : rédiger les items restants du point 4 en commençant par `Données > Représentation des données` (BOM UTF-16 et NUL), puis les autres items dans l'ordre, un item à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). Point 5 (vérifications GLSL et OpenGL non exécutées) : Louis a précisé qu'il n'a pas de rendu graphique sur cette machine, ne pas lui redemander tant qu'il n'a pas changé de machine. En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2), arbitrage des doublons (point 7).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -87,12 +87,10 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Infrastructure & DevOps/Administration système/touche-coincee-clavier-virtuel-xtest` (section mesurer ce que l'application affiche : capture `ffmpeg` et pixels).
 - `Qualité, performance et outils/Performance/mesurer-avant-d-optimiser` (section mesurer la complexité : doubler la taille, sur le build normal ; sanitizers et `realloc`).
 - Renvois vers `sanitizers-et-tests-d-allocation` ajoutés à `Langages/C/memoire` (note Valgrind), `Sécurité/Sécurité offensive/outils-de-fuzzing` (section sanitizers) et `Infrastructure & DevOps/Administration système/garde-fous-de-ressources` (ligne `ulimit -v` et ASan).
+- `Langages/C/memoire` (section tableau de chaînes : le terminer avant de le remplir).
 
 ## 4. Notions du projet scop et de sa revue crash-test (01/10/2026, à rédiger, un chapitre à la fois)
 Source : toute la session (projet scop en C/OpenGL, revue crash-test, corrections vérifiées par exécution). Recherche faite dans `content/` : ce qui existe déjà est indiqué, le reste a 0 résultat. Ajouts à faire au fil des items de correction (les notions des items 11 à 20 s'ajouteront ici).
-
-**Langages > C**
-- Un tableau de chaînes alloué par `malloc` sans le terminer : `free_array` qui parcourt jusqu'au `NULL` lit de la mémoire non initialisée si l'échec survient avant la terminaison (bug trouvé et corrigé dans `ft_split`).
 
 **Données > Représentation des données**
 - `encodage-des-textes` (BOM déjà couvert) : BOM UTF-16 (`FF FE` / `FE FF`), octets NUL qui coupent chaque ligne dans un lecteur C ; BOM UTF-8 collé à la première directive d'un fichier texte, qui la rend « inconnue » et la fait disparaître en silence.

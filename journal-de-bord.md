@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`todo.md`) garde les points restants ; `git log` garde le détail mécanique de ce qui a été fait. Ce qui a été traité et commité n'apparaît pas ici comme une reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Section « Un tableau de chaînes : le terminer avant de le remplir » dans C > Mémoire (2026-10-05)
+
+Le défaut du todo (`free_array` qui lit des cases non initialisées) n'apparaît que si la case en échec n'est pas écrite avant le test : avec `tab[i] = copy(...); if (!tab[i])`, la case vaut `NULL` et le parcours s'arrête juste, sans rapport sous ASan ni valgrind (mesuré, c'est donc le deuxième correctif du chapitre). Le défaut se voit seulement avec `word = copy(...); if (!word) { free_array(tab); } tab[i] = word;`. Sans outil, il reste silencieux (tas neuf à zéro) ; sous ASan, plantage reproductible (SEGV, adresse élevée, mémoire neuve remplie d'un motif non nul) ; sous valgrind, `Conditional jump or move depends on uninitialised value(s)`. Le banc doit rediriger `calloc` en plus de `malloc` (`-Wl,--wrap=calloc`), sinon le correctif par `calloc` échappe à l'injection.
+
 ## Chapitre « Un contexte de travail pour découper une grosse fonction » (2026-10-05)
 
 L'exemple n'est pas celui du todo (`Face_job` du projet scop, absent de cette machine) : un chargeur de fichier `nom;âge;ville`, écrit pour être rejoué ici. Son ancienne version fait 98 lignes, sous le plafond de 100 : le défaut mesuré n'est pas la longueur mais les sept blocs de nettoyage dupliqués, dont l'un (échec d'agrandissement du tableau) oubliait deux `free` (44 octets en 6 blocs, trouvés par injection d'échecs sur 13 allocations). Deux pièges mesurés sur la version corrigée : sans remise à `NULL` après le transfert, double libération détectée par ASan ; sans `= {0}`, ASan et UBSan ne disent rien sur cette exécution (la pile valait zéro) et seul valgrind signale la valeur non initialisée. Les tailles de fuite dépendent du mot de l'exemple (« London » en anglais : 43 octets au lieu de 44).

@@ -216,6 +216,177 @@ free(p);
 p = NULL; // buena práctica: evita un uso accidental tras la liberación
 ```
 
+## Un arreglo de cadenas: terminarlo antes de rellenarlo
+
+Un arreglo de cadenas (`char **`) es un arreglo de punteros, cada uno apuntando a una cadena asignada con `malloc`. Por convención, termina con un puntero `NULL`, como el arreglo `argv` de [`main`](/?c=langages&s=c&p=argc-et-argv): una función `free_array` lo libera recorriendo las celdas **hasta el primer `NULL`**. El ejemplo siguiente divide un texto en palabras (como la función `split` de un ejercicio clásico):
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+void	set_fail_at(long k);
+
+/* Libera un arreglo de cadenas terminado en NULL: cada cadena, luego el arreglo. */
+static void	free_array(char **tab)
+{
+	if (!tab)
+		return ;
+	for (size_t i = 0; tab[i]; i++)
+		free(tab[i]);
+	free(tab);
+}
+
+/* Número de palabras (secuencias de caracteres distintos del espacio) de s. */
+static size_t	count_words(const char *s)
+{
+	size_t	n = 0;
+
+	while (*s)
+	{
+		while (*s == ' ')
+			s++;
+		if (*s)
+			n++;
+		while (*s && *s != ' ')
+			s++;
+	}
+	return (n);
+}
+
+/* Copia la siguiente palabra de *s en un bloque nuevo y avanza *s tras ella. */
+static char	*copy_word(const char **s)
+{
+	size_t	len;
+	char	*word;
+
+	while (**s == ' ')
+		(*s)++;
+	len = strcspn(*s, " ");
+	word = malloc(len + 1);
+	if (!word)
+		return (NULL);
+	memcpy(word, *s, len);
+	word[len] = '\0';
+	*s += len;
+	return (word);
+}
+
+char	**split_words(const char *s)
+{
+	size_t	n = count_words(s);
+#ifdef FIXED
+	char	**tab = calloc(n + 1, sizeof *tab);     /* todas las celdas a NULL */
+#else
+	char	**tab = malloc((n + 1) * sizeof *tab);  /* celdas sin inicializar */
+#endif
+
+	if (!tab)
+		return (NULL);
+	for (size_t i = 0; i < n; i++)
+	{
+		char	*word = copy_word(&s);
+
+		if (!word)
+		{
+			free_array(tab);                        /* recorre hasta el primer NULL */
+			return (NULL);
+		}
+		tab[i] = word;                              /* la celda i solo se escribe aquí */
+	}
+#ifndef FIXED
+	tab[n] = NULL;                                  /* terminador puesto solo al final */
+#endif
+	return (tab);
+}
+
+int	main(void)
+{
+	char	**tab;
+	long	k;
+
+	setvbuf(stdout, NULL, _IONBF, 0);
+	for (k = 1; k <= 10; k++)
+	{
+		set_fail_at(k);
+		tab = split_words("uno dos tres");
+		if (tab)
+			break ;
+		printf("k=%ld: fallo gestionado\n", k);
+	}
+	set_fail_at(-1);
+	printf("k=%ld: %s %s %s\n", k, tab[0], tab[1], tab[2]);
+	free_array(tab);
+	return (0);
+}
+```
+
+El defecto está en `split_words`. `malloc` no pone nada a cero: las celdas del arreglo contienen lo que contenía la memoria antes. Cuando falla la copia de una palabra, la celda `tab[i]` aún no se ha escrito (`tab[i] = word` viene después de la comprobación), y `free_array`, que se detiene en el primer `NULL`, **lee esta celda sin inicializar**: si no vale `NULL` por casualidad, `free` recibe una dirección al azar.
+
+Para ejecutar este camino de fallo, se hace fallar la asignación número k con `--wrap` (véase [Sanitizers y pruebas de asignación](/?c=qualite-performance-et-outils&s=qualite-et-architecture-du-code&p=sanitizers-et-tests-d-allocation#inyectar-fallos-de-asignacion)). Aquí también se redirige `calloc`, porque la corrección lo usa:
+
+```c
+#include <stdlib.h>
+
+void	*__real_malloc(size_t size);
+void	*__real_calloc(size_t n, size_t size);
+
+static long	g_calls;                            /* llamadas a malloc o calloc desde el inicio */
+static long	g_fail_at = -1;                     /* número de la llamada que debe fallar (-1: ninguna) */
+
+void	set_fail_at(long k)
+{
+	g_calls = 0;
+	g_fail_at = k;
+}
+
+void	*__wrap_malloc(size_t size)
+{
+	if (++g_calls == g_fail_at)
+		return (NULL);
+	return (__real_malloc(size));
+}
+
+void	*__wrap_calloc(size_t n, size_t size)
+{
+	if (++g_calls == g_fail_at)
+		return (NULL);
+	return (__real_calloc(n, size));
+}
+```
+
+```bash
+gcc -g -fsanitize=address -Wl,--wrap=malloc -Wl,--wrap=calloc split.c wrap.c -o split_asan        # versión defectuosa
+gcc -g -Wl,--wrap=malloc -Wl,--wrap=calloc split.c wrap.c -o split_plain
+gcc -g -fsanitize=address -Wl,--wrap=malloc -Wl,--wrap=calloc -DFIXED split.c wrap.c -o fixed_asan # versión corregida
+valgrind -q ./split_plain
+```
+
+Medido (`gcc` 12.4):
+
+| Ejecución | Versión defectuosa | Versión corregida (`-DFIXED`) |
+|---|---|---|
+| Sin herramienta | **ningún síntoma**: de `k=1` a `k=4: fallo gestionado`, luego `k=5: uno dos tres`, código 0 | idéntico |
+| ASan | `k=1: fallo gestionado`, luego `ERROR: AddressSanitizer: SEGV on unknown address`: `free_array` (línea 13), llamada por `split_words` (línea 69), lee una dirección alta | de `k=1` a `k=4: fallo gestionado`, `k=5: uno dos tres`, código 0 |
+| valgrind | `Conditional jump or move depends on uninitialised value(s)` en `free_array` (línea 12) | ningún informe |
+
+Sin herramienta, la versión defectuosa parece correcta: el montón es nuevo, y por tanto vale cero aquí, y la lectura sin inicializar cae en `NULL` por suerte. En un montón donde ya se ha usado memoria, la celda contiene una dirección antigua. ASan rellena la memoria nueva con un patrón distinto de cero, lo que convierte la suerte en un fallo reproducible.
+
+Dos correcciones, ninguna relacionada con la cantidad de memoria:
+
+| Corrección | Principio | Medido |
+|---|---|---|
+| `calloc((n + 1), sizeof *tab)` en lugar de `malloc` | Todas las celdas valen `NULL` al principio: `free_array` se detiene en la primera celda sin rellenar | Código 0 bajo ASan, ningún informe bajo valgrind |
+| Escribir la celda antes de comprobarla: `tab[i] = copy_word(&s); if (!tab[i]) ...` | La celda del fallo vale `NULL` (el resultado de `malloc`), las anteriores son cadenas válidas | Mismo banco: ningún informe bajo ASan, valgrind y sin herramienta |
+
+El principio general: **en todo momento, toda celda que la limpieza pueda leer debe ser o una cadena válida o `NULL`**. Otra forma de lograrlo es no usar centinela y pasar a la limpieza el número de celdas ya rellenas (`free_n(tab, i)`), al precio de un parámetro más.
+
+> **Trampa:** poner el terminador `tab[n] = NULL` solo **después** del bucle de relleno: protege el recorrido de un arreglo completo, no el de uno interrumpido.
+>
+> **Trampa:** olvidar el `+ 1` de la celda del `NULL` final (`malloc(n * sizeof *tab)`): el terminador se escribe una celda después del final del bloque, un [desbordamiento de búfer](/?c=langages&s=c&p=memoire#los-cuatro-errores-de-memoria-clasicos).
+>
+> **Buena práctica:** asignar un arreglo de punteros con `calloc`, para que un arreglo interrumpido pueda liberarse sin caso particular.
+
 ## Muchos objetos pequeños: la asignación en arena
 
 Llamar a `malloc()` para cada uno de millones de objetos pequeños sale caro: cada llamada lleva tiempo, y los objetos acaban dispersos en memoria. Una **arena** guarda todos esos objetos **seguidos en un único array grande**, que crece duplicándose con `realloc()`, y cada objeto se designa por su **posición** en ese array.
@@ -380,5 +551,5 @@ El último uso, leer los bits de un `float` como un entero (*type punning*), tie
 |---|---|
 | **Para recordar** | C deja en manos del desarrollador toda la responsabilidad de la memoria dinámica (montón): `malloc`/`calloc`/`realloc` para asignar, `free` para liberar; la pila (variables locales, VLA incluidos) se gestiona automáticamente. |
 | **Herramientas utilizables** | `malloc`/`calloc`/`realloc`/`free`, `sizeof`, VLA (`int tab[n]`) para un array de tamaño dinámico sin `free()`, Valgrind para detectar fugas y accesos no válidos; `memcpy`/`memset` para copiar o rellenar bytes; una arena para muchísimos objetos pequeños. |
-| **Trampas a evitar** | Fuga de memoria (nunca se llama a `free`), use-after-free, double free, desbordamiento de búfer, desbordamiento de pila por un VLA demasiado grande (sin detección posible, a diferencia de `malloc`), confundir `T (*)[n]` (VLA como parámetro) con `T **`, agrandar un búfer de un elemento en un elemento (cuadrático), `strlen()` en la condición de un bucle, leer bytes de `realloc()` nunca escritos. |
-| **Buenas prácticas** | Comprobar siempre que un `malloc`/`realloc` no ha devuelto `NULL`; poner un puntero a `NULL` justo después de su `free()`; preferir `fgets`/`strncpy`/`snprintf` a las funciones no acotadas (`gets`/`strcpy`/`sprintf`); `strlcpy`/`strlcat` para detectar un truncamiento mediante su valor de retorno. |
+| **Trampas a evitar** | Fuga de memoria (nunca se llama a `free`), use-after-free, double free, desbordamiento de búfer, desbordamiento de pila por un VLA demasiado grande (sin detección posible, a diferencia de `malloc`), confundir `T (*)[n]` (VLA como parámetro) con `T **`, agrandar un búfer de un elemento en un elemento (cuadrático), `strlen()` en la condición de un bucle, leer bytes de `realloc()` nunca escritos, limpiar un arreglo de cadenas interrumpido cuyas celdas no se inicializaron. |
+| **Buenas prácticas** | Comprobar siempre que un `malloc`/`realloc` no ha devuelto `NULL`; poner un puntero a `NULL` justo después de su `free()`; preferir `fgets`/`strncpy`/`snprintf` a las funciones no acotadas (`gets`/`strcpy`/`sprintf`); `strlcpy`/`strlcat` para detectar un truncamiento mediante su valor de retorno; asignar un arreglo de punteros con `calloc`. |

@@ -215,6 +215,177 @@ free(p);
 p = NULL; // boa prática: impede um uso acidental após a liberação
 ```
 
+## Um vetor de strings: terminá-lo antes de preenchê-lo
+
+Um vetor de strings (`char **`) é um vetor de ponteiros, cada um apontando para uma string alocada com `malloc`. Por convenção, ele termina com um ponteiro `NULL`, como o vetor `argv` de [`main`](/?c=langages&s=c&p=argc-et-argv): uma função `free_array` o libera percorrendo as células **até o primeiro `NULL`**. O exemplo a seguir divide um texto em palavras (como a função `split` de um exercício clássico):
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+void	set_fail_at(long k);
+
+/* Libera um vetor de strings terminado em NULL: cada string, depois o vetor. */
+static void	free_array(char **tab)
+{
+	if (!tab)
+		return ;
+	for (size_t i = 0; tab[i]; i++)
+		free(tab[i]);
+	free(tab);
+}
+
+/* Número de palavras (sequências de caracteres diferentes de espaço) de s. */
+static size_t	count_words(const char *s)
+{
+	size_t	n = 0;
+
+	while (*s)
+	{
+		while (*s == ' ')
+			s++;
+		if (*s)
+			n++;
+		while (*s && *s != ' ')
+			s++;
+	}
+	return (n);
+}
+
+/* Copia a próxima palavra de *s em um bloco novo e avança *s depois dela. */
+static char	*copy_word(const char **s)
+{
+	size_t	len;
+	char	*word;
+
+	while (**s == ' ')
+		(*s)++;
+	len = strcspn(*s, " ");
+	word = malloc(len + 1);
+	if (!word)
+		return (NULL);
+	memcpy(word, *s, len);
+	word[len] = '\0';
+	*s += len;
+	return (word);
+}
+
+char	**split_words(const char *s)
+{
+	size_t	n = count_words(s);
+#ifdef FIXED
+	char	**tab = calloc(n + 1, sizeof *tab);     /* todas as células em NULL */
+#else
+	char	**tab = malloc((n + 1) * sizeof *tab);  /* células não inicializadas */
+#endif
+
+	if (!tab)
+		return (NULL);
+	for (size_t i = 0; i < n; i++)
+	{
+		char	*word = copy_word(&s);
+
+		if (!word)
+		{
+			free_array(tab);                        /* percorre até o primeiro NULL */
+			return (NULL);
+		}
+		tab[i] = word;                              /* a célula i só é escrita aqui */
+	}
+#ifndef FIXED
+	tab[n] = NULL;                                  /* terminador colocado só no fim */
+#endif
+	return (tab);
+}
+
+int	main(void)
+{
+	char	**tab;
+	long	k;
+
+	setvbuf(stdout, NULL, _IONBF, 0);
+	for (k = 1; k <= 10; k++)
+	{
+		set_fail_at(k);
+		tab = split_words("um dois três");
+		if (tab)
+			break ;
+		printf("k=%ld: falha tratada\n", k);
+	}
+	set_fail_at(-1);
+	printf("k=%ld: %s %s %s\n", k, tab[0], tab[1], tab[2]);
+	free_array(tab);
+	return (0);
+}
+```
+
+O defeito está em `split_words`. O `malloc` não zera nada: as células do vetor contêm o que a memória continha antes. Quando a cópia de uma palavra falha, a célula `tab[i]` ainda não foi escrita (`tab[i] = word` vem depois do teste), e `free_array`, que para no primeiro `NULL`, **lê essa célula não inicializada**: se ela não valer `NULL` por acaso, `free` recebe um endereço aleatório.
+
+Para executar esse caminho de falha, faz-se a alocação de número k falhar com `--wrap` (veja [Sanitizers e testes de alocação](/?c=qualite-performance-et-outils&s=qualite-et-architecture-du-code&p=sanitizers-et-tests-d-allocation#injetar-falhas-de-alocacao)). Aqui o `calloc` também é redirecionado, porque a correção o usa:
+
+```c
+#include <stdlib.h>
+
+void	*__real_malloc(size_t size);
+void	*__real_calloc(size_t n, size_t size);
+
+static long	g_calls;                            /* chamadas a malloc ou calloc desde o início */
+static long	g_fail_at = -1;                     /* número da chamada a fazer falhar (-1: nenhuma) */
+
+void	set_fail_at(long k)
+{
+	g_calls = 0;
+	g_fail_at = k;
+}
+
+void	*__wrap_malloc(size_t size)
+{
+	if (++g_calls == g_fail_at)
+		return (NULL);
+	return (__real_malloc(size));
+}
+
+void	*__wrap_calloc(size_t n, size_t size)
+{
+	if (++g_calls == g_fail_at)
+		return (NULL);
+	return (__real_calloc(n, size));
+}
+```
+
+```bash
+gcc -g -fsanitize=address -Wl,--wrap=malloc -Wl,--wrap=calloc split.c wrap.c -o split_asan        # versão com defeito
+gcc -g -Wl,--wrap=malloc -Wl,--wrap=calloc split.c wrap.c -o split_plain
+gcc -g -fsanitize=address -Wl,--wrap=malloc -Wl,--wrap=calloc -DFIXED split.c wrap.c -o fixed_asan # versão corrigida
+valgrind -q ./split_plain
+```
+
+Medido (`gcc` 12.4):
+
+| Execução | Versão com defeito | Versão corrigida (`-DFIXED`) |
+|---|---|---|
+| Sem ferramenta | **nenhum sintoma**: de `k=1` a `k=4: falha tratada`, depois `k=5: um dois três`, código 0 | idêntico |
+| ASan | `k=1: falha tratada`, depois `ERROR: AddressSanitizer: SEGV on unknown address`: `free_array` (linha 13), chamada por `split_words` (linha 69), lê um endereço alto | de `k=1` a `k=4: falha tratada`, `k=5: um dois três`, código 0 |
+| valgrind | `Conditional jump or move depends on uninitialised value(s)` em `free_array` (linha 12) | nenhum relatório |
+
+Sem ferramenta, a versão com defeito parece correta: o heap é novo, portanto zerado aqui, e a leitura não inicializada cai em `NULL` por sorte. Em um heap em que a memória já foi usada, a célula contém um endereço antigo. O ASan preenche a memória nova com um padrão diferente de zero, o que transforma a sorte em uma falha reproduzível.
+
+Duas correções, nenhuma relacionada à quantidade de memória:
+
+| Correção | Princípio | Medido |
+|---|---|---|
+| `calloc((n + 1), sizeof *tab)` no lugar de `malloc` | Todas as células valem `NULL` no início: `free_array` para na primeira célula não preenchida | Código 0 sob ASan, nenhum relatório sob valgrind |
+| Escrever a célula antes de testá-la: `tab[i] = copy_word(&s); if (!tab[i]) ...` | A célula da falha vale `NULL` (o resultado de `malloc`), as anteriores são strings válidas | Mesmo banco: nenhum relatório sob ASan, valgrind e sem ferramenta |
+
+O princípio geral: **a todo momento, toda célula que a limpeza possa ler deve ser ou uma string válida ou `NULL`**. Outra forma de obtê-lo é não usar sentinela e passar à limpeza o número de células já preenchidas (`free_n(tab, i)`), ao preço de um parâmetro a mais.
+
+> **Armadilha:** colocar o terminador `tab[n] = NULL` somente **depois** do laço de preenchimento: ele protege a varredura de um vetor completo, não a de um vetor interrompido.
+>
+> **Armadilha:** esquecer o `+ 1` da célula do `NULL` final (`malloc(n * sizeof *tab)`): o terminador é escrito uma célula depois do fim do bloco, um [estouro de buffer](/?c=langages&s=c&p=memoire#os-quatro-bugs-de-memoria-classicos).
+>
+> **Boa prática:** alocar um vetor de ponteiros com `calloc`, para que um vetor interrompido possa ser liberado sem caso particular.
+
 ## Muitos objetos pequenos: a alocação em arena
 
 Chamar `malloc()` para cada um de milhões de objetos pequenos custa caro: cada chamada leva tempo, e os objetos acabam espalhados na memória. Uma **arena** guarda todos esses objetos **em sequência em um único array grande**, que cresce dobrando com `realloc()`, e cada objeto é designado pela sua **posição** nesse array.
@@ -379,5 +550,5 @@ O último uso, ler os bits de um `float` como um inteiro (*type punning*), tem u
 |---|---|
 | **Para lembrar** | O C deixa ao desenvolvedor a responsabilidade completa da memória dinâmica (heap): `malloc`/`calloc`/`realloc` para alocar, `free` para liberar; a stack (variáveis locais, VLA incluídos) é gerenciada automaticamente. |
 | **Ferramentas utilizáveis** | `malloc`/`calloc`/`realloc`/`free`, `sizeof`, VLA (`int tab[n]`) para um array de tamanho dinâmico sem `free()`, Valgrind para detectar vazamentos e acessos inválidos; `memcpy`/`memset` para copiar ou preencher bytes; uma arena para muitíssimos objetos pequenos. |
-| **Armadilhas a evitar** | Vazamento de memória (nunca um `free`), use-after-free, double free, estouro de buffer, estouro de pilha em um VLA grande demais (sem detecção possível, diferente de `malloc`), confundir `T (*)[n]` (VLA como parâmetro) com `T **`, aumentar um buffer um elemento por vez (quadrático), `strlen()` na condição de um laço, ler bytes de `realloc()` nunca escritos. |
-| **Boas práticas** | Sempre verificar se um `malloc`/`realloc` não retornou `NULL`; colocar um ponteiro em `NULL` logo após seu `free()`; preferir `fgets`/`strncpy`/`snprintf` às funções sem limite (`gets`/`strcpy`/`sprintf`); `strlcpy`/`strlcat` para detectar um truncamento pelo valor de retorno. |
+| **Armadilhas a evitar** | Vazamento de memória (nunca um `free`), use-after-free, double free, estouro de buffer, estouro de pilha em um VLA grande demais (sem detecção possível, diferente de `malloc`), confundir `T (*)[n]` (VLA como parâmetro) com `T **`, aumentar um buffer um elemento por vez (quadrático), `strlen()` na condição de um laço, ler bytes de `realloc()` nunca escritos, limpar um vetor de strings interrompido cujas células não foram inicializadas. |
+| **Boas práticas** | Sempre verificar se um `malloc`/`realloc` não retornou `NULL`; colocar um ponteiro em `NULL` logo após seu `free()`; preferir `fgets`/`strncpy`/`snprintf` às funções sem limite (`gets`/`strcpy`/`sprintf`); `strlcpy`/`strlcat` para detectar um truncamento pelo valor de retorno; alocar um vetor de ponteiros com `calloc`. |
