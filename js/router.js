@@ -16,8 +16,8 @@ import {
     previousParagraph,
     playAutoAdvanceSilence,
     stopAutoAdvanceSilence,
-    AUTO_ADVANCE_SILENCE_SECONDS,
 } from "./reader.js";
+import { AUTO_ADVANCE_SILENCE_SECONDS } from "./reader-auto-advance-silence.js";
 import { logEvent } from "./reader-debug.js";
 import { t, tEntityLabel } from "./i18n.js";
 import { resolveAcrossLanguages } from "./router-language-fallback.js";
