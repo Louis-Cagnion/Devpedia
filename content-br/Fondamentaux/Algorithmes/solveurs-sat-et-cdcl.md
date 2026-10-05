@@ -158,6 +158,7 @@ O VMTF é o modo "focado" dos solucionadores [kissat](https://github.com/arminbi
 | Reutilização da trilha | No reinício, manter as decisões que o solucionador tomaria de novo de qualquer forma | van der Tak, Ramos e Heule, [*Reusing the Assignment Trail in CDCL Solvers*](https://doi.org/10.3233/sat190082) (2011) | Nula com VMTF (nada reutilizável), neutra a pior com VSIDS |
 | Fases-alvo e *rephasing* | Guardar a melhor atribuição parcial encontrada e voltar a ela regularmente | [kissat](https://github.com/arminbiere/kissat) (Biere, 2020) | Grades 56 × 56: de 6,8 s para 25 s em média, uma grade acima de 90 s |
 | *Shrinking* | Encurtar ainda mais as cláusulas aprendidas, depois da minimização | [kissat](https://github.com/arminbiere/kissat) | +15% de tempo |
+| Vivificação das cláusulas aprendidas | Encurtar uma cláusula supondo falsos os seus literais um a um (próxima seção) | Piette, Hamadi e Saïs, [*Vivifying Propositional Clausal Formulae*](https://hal.archives-ouvertes.fr/hal-00865274) (2008); Luo et al., [*An Effective Learnt Clause Minimization Approach for CDCL SAT Solvers*](https://doi.org/10.24963/ijcai.2017/98) (2017) | Grades de 108 × 108: 64,5 s de portfólio simulado contra 49,5 s |
 
 ### Simplificar na raiz
 
@@ -170,6 +171,124 @@ Uma atribuição do nível 0 nunca é desfeita: uma cláusula que contém um lit
 | `(b ∨ d)` | Nem `b` nem `d` foi fixado ainda | Mantida |
 
 Medido junto com outros dois ajustes do mesmo tipo: alguns por cento de tempo ganhos, com [contadores de trabalho](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser#comparar-em-contadores-de-trabalho-nao-so-no-tempo) idênticos.
+
+### A vivificação: encurtar uma cláusula aprendida
+
+Uma cláusula aprendida costuma ser mais longa do que o necessário. A **vivificação** ([Piette, Hamadi e Saïs, 2008](https://hal.archives-ouvertes.fr/hal-00865274), aplicada às cláusulas aprendidas por [Luo et al., 2017](https://doi.org/10.24963/ijcai.2017/98)) a encurta testando os seus próprios literais: supõem-se **falsos** os seus literais **um a um**, com uma [propagação unitária](#a-propagacao-unitaria-os-niveis-e-o-rastro) após cada um, deixando a própria cláusula de lado durante o teste.
+
+| O que acontece após supor falso um literal | Consequência |
+|---|---|
+| A propagação produz um **conflito** | Os literais supostos até ali bastam: a cláusula é encurtada a eles |
+| Um literal seguinte passa a **verdadeiro** por propagação | Os literais supostos, mais este, bastam |
+| Um literal seguinte passa a **falso** por propagação | Ele é inútil: é retirado |
+| Nada disso | A cláusula fica como está |
+
+```python
+import itertools
+import random
+
+
+def valor(literal, atribuicao):
+    """Verdadeiro, falso ou None (ainda sem atribuição) para um literal: +v é v, -v é não v."""
+    if abs(literal) not in atribuicao:
+        return None
+    return atribuicao[abs(literal)] == (literal > 0)
+
+
+def propagar(formula, atribuicao):
+    """Propagação unitária: amplia a atribuição; devolve False se há conflito."""
+    mudou = True
+    while mudou:
+        mudou = False
+        for clause in formula:
+            if any(valor(l, atribuicao) is True for l in clause):
+                continue                                    # cláusula já satisfeita
+            livres = [l for l in clause if valor(l, atribuicao) is None]
+            if not livres:
+                return False                                # todos falsos: conflito
+            if len(livres) == 1:                            # só resta um: ele é forçado
+                atribuicao[abs(livres[0])] = livres[0] > 0
+                mudou = True
+    return True
+
+
+def vivificar(clause, formula):
+    """Encurta uma cláusula supondo falsos os seus literais, um a um, com propagação."""
+    atribuicao, mantidos = {}, []
+    for l in clause:
+        v = valor(l, atribuicao)
+        if v is True:                                       # já verdadeiro pelos anteriores
+            return mantidos + [l]                           # esses literais bastam
+        if v is False:                                      # já implicado falso: inútil
+            continue
+        mantidos.append(l)
+        atribuicao[abs(l)] = l < 0                          # supõe-se l falso
+        if not propagar(formula, atribuicao):               # conflito: os mantidos bastam
+            return mantidos
+    return mantidos
+
+
+def modelos(formula, num_vars):
+    """Todos os modelos da fórmula, por enumeração (apenas fórmulas pequenas)."""
+    for bits in itertools.product([False, True], repeat=num_vars):
+        a = {v + 1: bits[v] for v in range(num_vars)}
+        if all(any(valor(l, a) for l in c) for c in formula):
+            yield bits
+
+
+def implicada(clause, todos):
+    """Verdadeiro se cada modelo da fórmula torna a cláusula verdadeira."""
+    return all(any(valor(l, {v + 1: b[v] for v in range(10)}) for l in clause) for b in todos)
+
+
+def sortear_clausula(tamanho):
+    """Uma cláusula aleatória: variáveis distintas de 1 a 10, de sinais aleatórios."""
+    return tuple(random.choice([-1, 1]) * v for v in random.sample(range(1, 11), tamanho))
+
+
+# Exemplo à mão: a -> b -> c -> d (variáveis 1 a 4), cláusula aprendida (não a ou d ou e ou f)
+cadeia = [(-1, 2), (-2, 3), (-3, 4)]
+aprendida = (-1, 4, 5, 6)
+print("cláusula aprendida:", aprendida, "-> vivificada:", tuple(vivificar(aprendida, cadeia)))
+
+# Verificação com fórmulas aleatórias: a cláusula encurtada continua implicada
+random.seed(1)
+total, removidos, erros = 0, 0, 0
+for _ in range(300):
+    formula = [sortear_clausula(3) for _ in range(30)]
+    todos = list(modelos(formula, 10))
+    if not todos:
+        continue                                            # fórmula contraditória: pula-se
+    for _ in range(20):
+        clause = sortear_clausula(6)
+        if not implicada(clause, todos):
+            continue                                        # cláusula não implicada
+        curta = vivificar(clause, formula)
+        total += 1
+        removidos += len(clause) - len(curta)
+        if not implicada(curta, todos):
+            erros += 1                                      # não deve acontecer nunca
+print(total, "cláusulas implicadas de 6 literais,", removidos, "literais removidos,",
+      erros, "erros")
+```
+
+```
+cláusula aprendida: (-1, 4, 5, 6) -> vivificada: (-1, 4)
+5075 cláusulas implicadas de 6 literais, 11649 literais removidos, 0 erros
+```
+
+A cláusula aprendida `(¬a ∨ d ∨ e ∨ f)` passa a `(¬a ∨ d)`: supondo `a` verdadeiro, a cadeia `a → b → c → d` força `d` a verdadeiro, então `e` e `f` não servem para nada. Com 5.075 cláusulas de 6 literais implicadas por uma fórmula aleatória, a vivificação retira 2,3 literais em média, e a cláusula encurtada continua implicada em todos os casos (0 erros na enumeração de todos os modelos).
+
+É um tratamento que custa tempo (propagações adicionais, feitas nos reinícios) em troca de cláusulas mais curtas e, portanto, mais úteis. No solucionador de Skyscraper, o resultado depende do tamanho da grade:
+
+| Medição | Resultado |
+|---|---|
+| 64 × 64, 40 grades, orçamento de 10 % do tempo | Nenhum efeito |
+| 64 × 64, orçamento de 30 % | 17 grades resolvidas só com a vivificação contra 8 só sem ela, somando as duas sementes de 40 grades (probabilidade de uma diferença tão nítida por acaso: cerca de 5 %, antes de levar em conta as 4 comparações feitas), mas 8 a 22 % de propagações a mais (mediana) quando as duas versões resolvem |
+| 108 × 108, 29 grades, com a [filtragem de Régin](/?c=fondamentaux&s=algorithmes&p=couplages-et-filtrage-de-regin) | 73 cópias resolvidas contra 91 sem vivificação (16 vitórias contra 34 comparando cópia a cópia), 22 a 35 % de propagações a mais; cada propagação custa cerca de 18 % menos, o que não compensa |
+| Portfólio simulado com 108 × 108 | 64,5 s com vivificação, 49,5 s sem ela |
+
+> **Lição:** um sinal favorável em tamanho pequeno (17 contra 8) não se transferiu para o tamanho desejado. Medir no tamanho que importa e endurecer o limiar de confiança quando vários ajustes são comparados.
 
 ## As caudas pesadas: algumas instâncias catastróficas
 

@@ -158,6 +158,7 @@ VMTF es el modo «enfocado» de los solucionadores [kissat](https://github.com/a
 | Reutilización de la traza | Al reiniciar, conservar las decisiones que el solucionador volvería a tomar de todos modos | van der Tak, Ramos y Heule, [*Reusing the Assignment Trail in CDCL Solvers*](https://doi.org/10.3233/sat190082) (2011) | Nula con VMTF (nada reutilizable), neutra o peor con VSIDS |
 | Fases objetivo y *rephasing* | Recordar la mejor asignación parcial encontrada y volver a ella con regularidad | [kissat](https://github.com/arminbiere/kissat) (Biere, 2020) | Cuadrículas de 56 × 56: de 6,8 s a 25 s de media, una cuadrícula por encima de 90 s |
 | *Shrinking* | Acortar aún más las cláusulas aprendidas, tras la minimización | [kissat](https://github.com/arminbiere/kissat) | +15 % de tiempo |
+| Vivificación de las cláusulas aprendidas | Acortar una cláusula suponiendo falsos sus literales uno a uno (sección siguiente) | Piette, Hamadi y Saïs, [*Vivifying Propositional Clausal Formulae*](https://hal.archives-ouvertes.fr/hal-00865274) (2008); Luo et al., [*An Effective Learnt Clause Minimization Approach for CDCL SAT Solvers*](https://doi.org/10.24963/ijcai.2017/98) (2017) | Cuadrículas de 108 × 108: 64,5 s de portafolio simulado frente a 49,5 s |
 
 ### Simplificar en la raíz
 
@@ -170,6 +171,124 @@ Una asignación del nivel 0 nunca se deshace: una cláusula que contiene un lite
 | `(b ∨ d)` | Ni `b` ni `d` están fijados todavía | Conservada |
 
 Medido junto con otros dos retoques del mismo tipo: un pequeño porcentaje de tiempo ganado, con [contadores de trabajo](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser#comparar-con-contadores-de-trabajo-no-solo-con-el-tiempo) idénticos.
+
+### La vivificación: acortar una cláusula aprendida
+
+Una cláusula aprendida suele ser más larga de lo necesario. La **vivificación** ([Piette, Hamadi y Saïs, 2008](https://hal.archives-ouvertes.fr/hal-00865274), aplicada a las cláusulas aprendidas por [Luo et al., 2017](https://doi.org/10.24963/ijcai.2017/98)) la acorta probando sus propios literales: se suponen **falsos** sus literales **uno a uno**, con una [propagación unitaria](#la-propagacion-unitaria-los-niveles-y-la-traza) tras cada uno, apartando la propia cláusula durante la prueba.
+
+| Qué ocurre tras suponer falso un literal | Consecuencia |
+|---|---|
+| La propagación produce un **conflicto** | Los literales supuestos hasta ahí bastan: la cláusula se acorta a ellos |
+| Un literal posterior pasa a **verdadero** por propagación | Los literales supuestos, más este, bastan |
+| Un literal posterior pasa a **falso** por propagación | Es inútil: se quita |
+| Nada de lo anterior | La cláusula queda como está |
+
+```python
+import itertools
+import random
+
+
+def valor(literal, asignacion):
+    """Verdadero, falso o None (aún sin asignar) para un literal: +v es v, -v es no v."""
+    if abs(literal) not in asignacion:
+        return None
+    return asignacion[abs(literal)] == (literal > 0)
+
+
+def propagar(formula, asignacion):
+    """Propagación unitaria: amplía la asignación; devuelve False si hay conflicto."""
+    cambio = True
+    while cambio:
+        cambio = False
+        for clause in formula:
+            if any(valor(l, asignacion) is True for l in clause):
+                continue                                    # cláusula ya satisfecha
+            libres = [l for l in clause if valor(l, asignacion) is None]
+            if not libres:
+                return False                                # todos falsos: conflicto
+            if len(libres) == 1:                            # solo queda uno: queda forzado
+                asignacion[abs(libres[0])] = libres[0] > 0
+                cambio = True
+    return True
+
+
+def vivificar(clause, formula):
+    """Acorta una cláusula suponiendo falsos sus literales, uno a uno, con propagación."""
+    asignacion, conservados = {}, []
+    for l in clause:
+        v = valor(l, asignacion)
+        if v is True:                                       # ya verdadero por los anteriores
+            return conservados + [l]                        # esos literales bastan
+        if v is False:                                      # ya implicado falso: inútil
+            continue
+        conservados.append(l)
+        asignacion[abs(l)] = l < 0                          # se supone l falso
+        if not propagar(formula, asignacion):               # conflicto: los conservados bastan
+            return conservados
+    return conservados
+
+
+def modelos(formula, num_vars):
+    """Todos los modelos de la fórmula, por enumeración (solo fórmulas pequeñas)."""
+    for bits in itertools.product([False, True], repeat=num_vars):
+        a = {v + 1: bits[v] for v in range(num_vars)}
+        if all(any(valor(l, a) for l in c) for c in formula):
+            yield bits
+
+
+def implicada(clause, todos):
+    """Verdadero si cada modelo de la fórmula hace verdadera la cláusula."""
+    return all(any(valor(l, {v + 1: b[v] for v in range(10)}) for l in clause) for b in todos)
+
+
+def sacar_clausula(tamano):
+    """Una cláusula al azar: variables distintas del 1 al 10, de signos aleatorios."""
+    return tuple(random.choice([-1, 1]) * v for v in random.sample(range(1, 11), tamano))
+
+
+# Ejemplo a mano: a -> b -> c -> d (variables 1 a 4), cláusula aprendida (no a o d o e o f)
+cadena = [(-1, 2), (-2, 3), (-3, 4)]
+aprendida = (-1, 4, 5, 6)
+print("cláusula aprendida:", aprendida, "-> vivificada:", tuple(vivificar(aprendida, cadena)))
+
+# Verificación con fórmulas aleatorias: la cláusula acortada sigue implicada
+random.seed(1)
+total, quitados, errores = 0, 0, 0
+for _ in range(300):
+    formula = [sacar_clausula(3) for _ in range(30)]
+    todos = list(modelos(formula, 10))
+    if not todos:
+        continue                                            # fórmula contradictoria: se omite
+    for _ in range(20):
+        clause = sacar_clausula(6)
+        if not implicada(clause, todos):
+            continue                                        # cláusula no implicada
+        corta = vivificar(clause, formula)
+        total += 1
+        quitados += len(clause) - len(corta)
+        if not implicada(corta, todos):
+            errores += 1                                    # no debe ocurrir nunca
+print(total, "cláusulas implicadas de 6 literales,", quitados, "literales quitados,",
+      errores, "errores")
+```
+
+```
+cláusula aprendida: (-1, 4, 5, 6) -> vivificada: (-1, 4)
+5075 cláusulas implicadas de 6 literales, 11649 literales quitados, 0 errores
+```
+
+La cláusula aprendida `(¬a ∨ d ∨ e ∨ f)` pasa a `(¬a ∨ d)`: suponiendo `a` verdadero, la cadena `a → b → c → d` fuerza `d` a verdadero, así que `e` y `f` no sirven de nada. Con 5.075 cláusulas de 6 literales implicadas por una fórmula aleatoria, la vivificación quita 2,3 literales de media, y la cláusula acortada sigue implicada en todos los casos (0 errores en la enumeración de todos los modelos).
+
+Es un tratamiento que cuesta tiempo (propagaciones adicionales, hechas en los reinicios) a cambio de cláusulas más cortas y, por tanto, más útiles. En el solucionador de Skyscraper, el resultado depende del tamaño de la cuadrícula:
+
+| Medición | Resultado |
+|---|---|
+| 64 × 64, 40 cuadrículas, presupuesto del 10 % del tiempo | Ningún efecto |
+| 64 × 64, presupuesto del 30 % | 17 cuadrículas resueltas solo con la vivificación frente a 8 solo sin ella, sumando las dos semillas de 40 cuadrículas (probabilidad de una diferencia tan clara por azar: alrededor del 5 %, antes de tener en cuenta las 4 comparaciones hechas), pero un 8 a 22 % más de propagaciones (mediana) cuando ambas versiones resuelven |
+| 108 × 108, 29 cuadrículas, con el [filtrado de Régin](/?c=fondamentaux&s=algorithmes&p=couplages-et-filtrage-de-regin) | 73 copias resueltas frente a 91 sin vivificación (16 victorias contra 34 comparando copia a copia), un 22 a 35 % más de propagaciones; cada propagación cuesta un 18 % menos, lo que no compensa |
+| Portafolio simulado con 108 × 108 | 64,5 s con vivificación, 49,5 s sin ella |
+
+> **Lección:** una señal favorable a tamaño pequeño (17 frente a 8) no se trasladó al tamaño buscado. Medir en el tamaño que importa y endurecer el umbral de confianza cuando se comparan varios ajustes.
 
 ## Las colas pesadas: unas pocas instancias catastróficas
 

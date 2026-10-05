@@ -158,6 +158,7 @@ VMTF is the "focused" mode of the [kissat](https://github.com/arminbiere/kissat)
 | Trail reuse | On a restart, keep the decisions the solver would make again anyway | van der Tak, Ramos and Heule, [*Reusing the Assignment Trail in CDCL Solvers*](https://doi.org/10.3233/sat190082) (2011) | None with VMTF (nothing reusable), neutral to worse with VSIDS |
 | Target phases and *rephasing* | Remember the best partial assignment met so far and return to it regularly | [kissat](https://github.com/arminbiere/kissat) (Biere, 2020) | 56 × 56 grids: from 6.8 s to 25 s on average, one grid beyond 90 s |
 | *Shrinking* | Shorten learned clauses further, after minimization | [kissat](https://github.com/arminbiere/kissat) | +15% of time |
+| Vivification of learned clauses | Shorten a clause by assuming its literals false one by one (next section) | Piette, Hamadi and Saïs, [*Vivifying Propositional Clausal Formulae*](https://hal.archives-ouvertes.fr/hal-00865274) (2008); Luo et al., [*An Effective Learnt Clause Minimization Approach for CDCL SAT Solvers*](https://doi.org/10.24963/ijcai.2017/98) (2017) | 108 × 108 grids: 64.5 s simulated portfolio against 49.5 s |
 
 ### Simplifying at the Root
 
@@ -170,6 +171,124 @@ An assignment at level 0 is never undone: a clause containing a literal that is 
 | `(b ∨ d)` | Neither `b` nor `d` is set yet | Kept |
 
 Measured together with two other tweaks of the same kind: a few percent of time saved, with identical [work counters](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser#comparing-on-work-counters-not-only-on-time).
+
+### Vivification: shortening a learned clause
+
+A learned clause is often longer than necessary. **Vivification** ([Piette, Hamadi and Saïs, 2008](https://hal.archives-ouvertes.fr/hal-00865274), applied to learned clauses by [Luo et al., 2017](https://doi.org/10.24963/ijcai.2017/98)) shortens it by testing its own literals: its literals are assumed **false one by one**, with a [unit propagation](#unit-propagation-levels-and-the-trail) after each, the clause itself being set aside during the test.
+
+| What happens after assuming a literal false | Consequence |
+|---|---|
+| The propagation produces a **conflict** | The literals assumed so far are enough: the clause is shortened to those |
+| A later literal becomes **true** by propagation | The literals assumed, plus this one, are enough |
+| A later literal becomes **false** by propagation | It is useless: it is removed |
+| None of the above | The clause stays as it is |
+
+```python
+import itertools
+import random
+
+
+def value(literal, assignment):
+    """True, False or None (not assigned yet) for a literal: +v is v, -v is not v."""
+    if abs(literal) not in assignment:
+        return None
+    return assignment[abs(literal)] == (literal > 0)
+
+
+def propagate(formula, assignment):
+    """Unit propagation: extends the assignment; returns False on a conflict."""
+    changed = True
+    while changed:
+        changed = False
+        for clause in formula:
+            if any(value(l, assignment) is True for l in clause):
+                continue                                    # clause already satisfied
+            free = [l for l in clause if value(l, assignment) is None]
+            if not free:
+                return False                                # all false: conflict
+            if len(free) == 1:                              # only one is left: it is forced
+                assignment[abs(free[0])] = free[0] > 0
+                changed = True
+    return True
+
+
+def vivify(clause, formula):
+    """Shortens a clause by assuming its literals false, one by one, with propagation."""
+    assignment, kept = {}, []
+    for l in clause:
+        v = value(l, assignment)
+        if v is True:                                       # already true (previous ones)
+            return kept + [l]                               # these literals are enough
+        if v is False:                                      # already implied false: useless
+            continue
+        kept.append(l)
+        assignment[abs(l)] = l < 0                          # assume l false
+        if not propagate(formula, assignment):              # conflict: the kept ones suffice
+            return kept
+    return kept
+
+
+def models(formula, num_vars):
+    """All the models of the formula, by enumeration (small formulas only)."""
+    for bits in itertools.product([False, True], repeat=num_vars):
+        a = {v + 1: bits[v] for v in range(num_vars)}
+        if all(any(value(l, a) for l in c) for c in formula):
+            yield bits
+
+
+def implied(clause, every):
+    """True if every model of the formula makes the clause true."""
+    return all(any(value(l, {v + 1: b[v] for v in range(10)}) for l in clause) for b in every)
+
+
+def draw_clause(size):
+    """A random clause: distinct variables from 1 to 10, with random signs."""
+    return tuple(random.choice([-1, 1]) * v for v in random.sample(range(1, 11), size))
+
+
+# Hand-made example: a -> b -> c -> d (variables 1 to 4), learned clause (not a or d or e or f)
+chain = [(-1, 2), (-2, 3), (-3, 4)]
+learned = (-1, 4, 5, 6)
+print("learned clause:", learned, "-> vivified:", tuple(vivify(learned, chain)))
+
+# Check on random formulas: the shortened clause is still implied
+random.seed(1)
+total, removed, errors = 0, 0, 0
+for _ in range(300):
+    formula = [draw_clause(3) for _ in range(30)]
+    every = list(models(formula, 10))
+    if not every:
+        continue                                            # contradictory formula: skip it
+    for _ in range(20):
+        clause = draw_clause(6)
+        if not implied(clause, every):
+            continue                                        # clause not implied
+        short = vivify(clause, formula)
+        total += 1
+        removed += len(clause) - len(short)
+        if not implied(short, every):
+            errors += 1                                     # must never happen
+print(total, "implied clauses of 6 literals,", removed, "literals removed,",
+      errors, "errors")
+```
+
+```
+learned clause: (-1, 4, 5, 6) -> vivified: (-1, 4)
+5075 implied clauses of 6 literals, 11649 literals removed, 0 errors
+```
+
+The learned clause `(¬a ∨ d ∨ e ∨ f)` becomes `(¬a ∨ d)`: assuming `a` true, the chain `a → b → c → d` forces `d` to true, so `e` and `f` are useless. Out of 5,075 clauses of 6 literals implied by a random formula, vivification removes 2.3 literals on average, and the shortened clause stays implied in every case (0 errors over the enumeration of all models).
+
+It is a treatment that costs time (extra propagations, done at restarts) for shorter, hence more useful, clauses. On the Skyscraper solver, the result depends on the grid size:
+
+| Measurement | Result |
+|---|---|
+| 64 × 64, 40 grids, 10% time budget | No effect |
+| 64 × 64, 30% budget | 17 grids solved only with vivification against 8 only without, pooling the two seeds of 40 grids (probability of a gap this clear by chance: about 5%, before accounting for the 4 comparisons made), but 8 to 22% more propagations (median) when both versions solve |
+| 108 × 108, 29 grids, with [Régin filtering](/?c=fondamentaux&s=algorithmes&p=couplages-et-filtrage-de-regin) | 73 copies solved against 91 without vivification (16 wins against 34 comparing copy to copy), 22 to 35% more propagations; each propagation costs about 18% less, which does not compensate |
+| Simulated portfolio at 108 × 108 | 64.5 s with vivification, 49.5 s without |
+
+> **Lesson:** a favorable signal at small size (17 against 8) did not carry over to the target size. Measure at the size that matters, and tighten the confidence threshold when several settings are compared.
 
 ## Heavy Tails: a Few Catastrophic Instances
 
