@@ -283,6 +283,63 @@ _Static_assert(NEAR_PLANE > 0.0f && NEAR_PLANE < FAR_PLANE, "planos near/far inc
 
 > **Trampa:** `_Static_assert` no puede probar un valor leído en la ejecución (argumento de función, variable, entrada del usuario): para esos, sigue haciendo falta un `if` con un mensaje de error.
 
+## Cuando un `snprintf` puede truncar: `-Wformat-truncation`
+
+`snprintf(búfer, tamaño, formato, ...)` nunca escribe más de `tamaño` bytes: no desborda, pero **trunca en silencio** si el resultado es más largo. El compilador suele poder predecirlo: la advertencia `-Wformat-truncation` (nivel 1, incluida en `-Wall`) se activa cuando demuestra que el resultado **puede** superar el búfer. Conoce la longitud máxima de un `%s` cuando una **precisión** la acota: `%.200s` escribe como máximo 200 caracteres.
+
+```c
+#include <stdio.h>
+
+int main(int argc, char **argv)
+{
+	char path[64];                                  /* 64 bytes, '\0' incluido */
+
+	if (argc < 3)
+		return 1;
+	snprintf(path, sizeof path, "%.200s/shaders/%.200s", argv[1], argv[2]);
+	puts(path);
+	return 0;
+}
+```
+
+```text
+$ gcc -Wall -c main.c
+main.c:9:38: warning: '%.200s' directive output may be truncated writing up to 200 bytes into a region of size 64 [-Wformat-truncation=]
+note: '__builtin___snprintf_chk' output between 10 and 410 bytes into a destination of size 64
+```
+
+Con dos argumentos de 100 caracteres, el programa solo conserva 63 caracteres de la ruta (el byte 64 es el `\0` final): sin la advertencia nada lo señala, y el programa abre luego un archivo que no es el pedido. La advertencia cifra el peor caso: `200 + 9 + 200` caracteres más el `\0`, es decir 410 bytes para un búfer de 64.
+
+**Dimensionar el búfer para el peor caso, no para el caso habitual.** El tamaño se calcula sumando los máximos de cada campo (cada uno acotado por su precisión), el texto fijo y 1 para el `\0`:
+
+| Parte del formato | Bytes como máximo |
+|---|---|
+| `%.200s` (directorio) | 200 |
+| `/shaders/` (texto fijo) | 9 |
+| `%.200s` (nombre) | 200 |
+| `\0` final | 1 |
+| **Total** | **410** |
+
+```c
+#define DIR_MAX 200
+#define NAME_MAX_LEN 200
+
+/* tamaño del peor caso: 200 + 9 + 200 + '\0' */
+char path[DIR_MAX + sizeof "/shaders/" + NAME_MAX_LEN];
+
+snprintf(path, sizeof path, "%.*s/shaders/%.*s", DIR_MAX, argv[1], NAME_MAX_LEN, argv[2]);
+```
+
+`sizeof "/shaders/"` vale 10: ya cuenta el `\0`. Las constantes con nombre sirven a la vez para el búfer y para las precisiones (`%.*s` recibe la precisión como argumento), así que ya no pueden desincronizarse. El mismo programa deja entonces de producir advertencias.
+
+| Qué no hacer | Por qué |
+|---|---|
+| Añadir `-Wno-format-truncation` para callar la advertencia | El truncamiento sigue: solo desaparece la señal |
+| Agrandar el búfer «al azar» (`char path[256]`) | Nada prueba que 256 baste: rehacer la suma de los máximos |
+| Ignorar el valor devuelto por `snprintf` | Da la longitud que se habría escrito: `n >= sizeof path` significa truncado |
+
+Cuando las longitudes no están acotadas en compilación (una ruta leída del exterior), la advertencia no puede demostrar nada: comprobar el retorno (`n < 0 || (size_t)n >= sizeof path`) y rechazar con un mensaje que nombre el valor demasiado largo. El nivel 2 (`-Wformat-truncation=2`, véase la [documentación de GCC](https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html)) extiende el análisis a los casos de longitud desconocida; es más ruidoso. Para `snprintf` en sí, véase [La gestión de la memoria](/?c=langages-de-programmation&s=c&p=memoire).
+
 ## Errores de compilación frente a errores de enlazado
 
 Saber en qué etapa se produce un error ayuda a diagnosticarlo:
