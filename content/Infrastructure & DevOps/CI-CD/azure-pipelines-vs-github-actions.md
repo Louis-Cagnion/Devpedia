@@ -43,6 +43,8 @@ jobs:
 >
 > **Bonne pratique :** choisir selon où le code est déjà hébergé et ce que l'organisation utilise déjà : GitHub Actions s'intègre naturellement à un dépôt déjà sur GitHub sans plateforme supplémentaire ; Azure Pipelines s'intègre nativement au reste d'Azure DevOps (Boards, Repos, Artifacts) si l'organisation y est déjà installée. Les deux couvrent les mêmes besoins essentiels ; le critère de choix est l'écosystème existant, pas une différence de fonctionnalités.
 
+> **Pour aller plus loin :** installer et faire tourner sa propre machine d'exécution (agent auto-hébergé) : voir [Les agents Azure Pipelines auto-hébergés](/?c=infrastructure-devops&s=ci-cd&p=agents-azure-pipelines-auto-heberges).
+
 ---
 
 ## 📋 Récapitulatif

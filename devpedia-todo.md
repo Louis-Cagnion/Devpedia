@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : rédiger les points 5 et 6, puis le point 8, un chapitre à la fois, sans attendre de validation (récapitulatif relu après coup par Louis) ; pour chacun, audio des 4 langues généré une fois la traduction faite, avant le chapitre suivant. Après : audio du point 3 (4 langues). En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : rédiger le point 6, puis le point 8, un chapitre à la fois, sans attendre de validation (récapitulatif relu après coup par Louis) ; pour chacun, audio des 4 langues généré une fois la traduction faite, avant le chapitre suivant. Après : audio du point 3 (4 langues). En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -53,12 +53,9 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Langages/C/makefiles` (sections règles génériques, options sans recompilation et dossier d'objets par jeu d'options, chaîne PGO, `make -q` ; exemple `-I` corrigé).
 - `Langages/C/operateurs-binaires` (renvoi vers `division-par-multiplication`).
 - `Fondamentaux/Algorithmes/tri-par-comparaison` (renvoi vers `stabilite-du-tri-et-bruit-reproductible`).
+- `Infrastructure & DevOps/CI-CD/azure-pipelines-vs-github-actions` (renvoi vers `agents-azure-pipelines-auto-heberges`).
 - `Fondamentaux/Algorithmes/problemes-np-complets` et `encodages-sat` (renvoi vers `couplages-et-filtrage-de-regin`).
 - `Langages/Bash/gestion-des-processus` (renvoi vers `fichiers-temporaires-trap-et-timeout`).
-
-## 5. Azure DevOps : agents auto-hébergés (projet scraping_infomediaires)
-À compléter dans Infrastructure & DevOps > CI-CD (nouveau chapitre).
-- **Agent auto-hébergé : mode service vs mode interactif** (`config.cmd --unattended --runAsAutoLogon --windowsLogonAccount … --windowsLogonPassword …`, `--overwriteAutoLogon`), plusieurs agents sur une même machine dans des dossiers séparés, rôle du PAT (déjà défini côté GitHub) uniquement à l'enregistrement.
 
 ## 6. Navigateur automatisé : headless, captcha, profil persistant, débogage à distance (projet scraping_infomediaires)
 À ajouter dans Sécurité > Sécurité offensive (`attaques-navigateur-automatise.md` couvre déjà Playwright, `navigator.webdriver` et le fingerprinting, mais ni « headless », ni « captcha », ni le profil persistant : 0 résultat).
