@@ -35,7 +35,7 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Langages/C/compilation` (section `-march=native` et `-pthread`).
 - `Langages/C/memoire` (sections arène et `memcpy`/`memset`, et en anglais le tableau des quatre bugs mémoire).
 - `Fondamentaux/Algorithmes/file-de-priorite-et-tas-binaire` (nouveau).
-- `Qualité, performance et outils/Performance/mesurer-avant-d-optimiser` (profileurs natifs, piège de gprof sur les fonctions intégrées ou copiées, compteurs déterministes, programmes limités par la mémoire, portfolio et biais du jeu de test ; sections `cachegrind`, compteur de cycles, même travail avant chronométrage, tours alternés).
+- `Qualité, performance et outils/Performance/mesurer-avant-d-optimiser` (profileurs natifs, piège de gprof sur les fonctions intégrées ou copiées, compteurs déterministes, programmes limités par la mémoire, portfolio et biais du jeu de test ; sections `cachegrind`, compteur de cycles, même travail avant chronométrage, tours alternés, division par un inverse précalculé).
 - `Langages/Python/sous-processus-et-flux-standard` (section `timeout` et `ThreadPoolExecutor`, renvoi vers les processus orphelins).
 - `Fondamentaux/Algorithmes/backtracking-et-satisfaction-de-contraintes` (section sur quoi brancher).
 - `Langages/PHP/routage` (notes `parse_url()` qui renvoie `null` et point final CWE-42).
@@ -58,7 +58,6 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 
 ## 4. Notions de la recherche rush01 du 27/09 à rédiger (un chapitre à la fois)
 Source : `rushs/rush01/RECAP-27-09.md` et `rushs/rush01/research/` du dépôt 42Piscine_100_percent (mesures, code et pièges vérifiés). Chaque ajout : français, puis en/es/br (fins de ligne d'origine de chaque fichier à préserver : certains sont en CRLF, y compris en français), exemples exécutés, liens validés par `validateInternalLinks`, ligne d'audio au point 3.
-- `Qualité, performance et outils/Performance` (chapitre à choisir) : division par multiplication par un inverse précalculé (exacte pour un diviseur jusqu'à 128 et un dividende sous 2^25, preuve courte) ; gain mesuré faible (−0,5 %) car le processeur masque la latence : mesurer avant de conclure.
 - `Qualité, performance et outils/Performance/eviter-le-recalcul-redondant` : calcul incrémental qui garde exactement le même résultat (reprendre le couplage du test précédent, repli sur le calcul complet pour produire le résultat canonique, −6,2 % mesuré) ; ne parcourir que les éléments marqués dans une bitmap (−2 %).
 - `Langages/Bash` (et Zsh) : fichier temporaire `mktemp` supprimé par `trap` sur `EXIT`, `INT` et `TERM` ; `timeout --foreground` (sans lui, Ctrl-C n'atteint pas la commande, isolée dans son propre groupe de processus) ; tampon de sortie de 4 Ko vers un tube et mélange stdout/stderr par `2>&1` qui coupe une ligne en deux ; `read -k` de zsh et touches fléchées (Échap suivi d'autres octets) ; bloc de commentaire `: <<'COMMENT'`.
 

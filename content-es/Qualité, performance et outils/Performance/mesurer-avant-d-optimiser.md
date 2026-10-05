@@ -326,6 +326,50 @@ Ejemplo real en el solucionador SAT: 3 cuadrículas, tiempo medio por cuadrícul
 | a y b2 ganan en las dos rondas | Ganancias conservadas |
 | b1 cambia de signo de una ronda a otra | Nada concluyente: la diferencia está dentro del ruido |
 
+## Una ganancia de micro-benchmark no es una ganancia del programa: el ejemplo de la división
+
+Una división entera es una de las instrucciones más lentas de un procesador: su **latencia** (el tiempo antes de que el resultado esté disponible) se cuenta en decenas de ciclos, frente a unos pocos ciclos de una multiplicación. Cuando el divisor cambia de una vez a otra pero solo toma pocos valores, se puede sustituir la división por una multiplicación por un **inverso precalculado** (ver [Evitar el recálculo redundante](/?c=qualite-performance-et-outils&s=performance&p=eviter-le-recalcul-redondant)).
+
+```c
+#include <stdint.h>
+
+#define DMAX 128                // mayor divisor usado
+#define XBITS 25                // los dividendos se mantienen por debajo de 2^XBITS
+static uint64_t inv[DMAX + 1];  // inv[d] = techo de 2^32 / d
+
+void init_inverses(void)
+{
+    for (uint64_t d = 1; d <= DMAX; d++)
+        inv[d] = ((1ULL << 32) + d - 1) / d;
+}
+
+// Cociente entero de x entre d, para 1 <= d <= DMAX y x < 2^XBITS
+static inline uint32_t dividir(uint32_t x, uint32_t d)
+{
+    return (uint32_t)(((uint64_t)x * inv[d]) >> 32);
+}
+```
+
+**Por qué el resultado es exacto.** Sea `e = inv[d] × d − 2³²`: como `inv[d]` se redondea hacia arriba, `0 ≤ e < d`. Entonces `x × inv[d] / 2³² = x/d + x × e / (d × 2³²)`. Mientras `x × e < 2³²` (aquí `x < 2²⁵` y `e < d ≤ 128 = 2⁷`), el término añadido es menor que `1/d`. Ahora bien, la parte fraccionaria de `x/d` vale como máximo `(d − 1)/d`: la suma se queda por debajo del entero siguiente y el truncamiento da exactamente el cociente. Comprobado aquí por enumeración completa: 128 divisores × 2²⁵ dividendos, es decir 2³² casos, 0 errores.
+
+**Cuánto gana, según dónde se mida.** Misma suma calculada con la división (A) y con el inverso (B), en un Intel Core Ultra 5 228V (bajo WSL, Ubuntu 24.04), gcc 13.3 en `-O2`, mediana de 7 rondas alternas, mismas sumas comprobadas:
+
+| Situación medida | A: división | B: inverso | Ganancia de B |
+|---|---|---|---|
+| 4 M divisiones independientes | 8,6 ms | 2,3 ms | −73 % |
+| Cadena en la que cada división espera a la anterior | 22,4 ms | 8,9 ms | −61 % |
+| 32 M accesos aleatorios en un array de 128 MB, una división por acceso | 506 ms | 381 ms | −25 % |
+
+La ganancia se diluye a medida que la división pesa menos en el tiempo total: el procesador ejecuta fuera de orden y **oculta** la latencia de la división tras otras instrucciones o la espera de la memoria. En un programa real (el solucionador de puzles de la investigación rush01, donde la división es solo una operación entre muchas), la misma sustitución solo ganó un 0,5 % del tiempo total.
+
+> **Trampa:** concluir a partir de un micro-benchmark (−73 %) que un programa entero irá más rápido. Solo la medición del **programa real** dice lo que vale la optimización, con las [rondas alternas](#medir-en-rondas-alternas) anteriores.
+>
+> **Buena práctica:** antes de sustituir una división, medir la parte que ocupa en el perfil del programa; si es pequeña, dejar el código simple.
+
+> **Trampa:** el inverso en coma flotante (`1.0 / d`) no sirve: `49 × (1.0 / 49)` vale `0,9999999999999999` y el truncamiento da 0 en lugar de 1. Un valor fuera del dominio anunciado (`x ≥ 2²⁵`, `d > 128`, `d = 0`) da además un resultado erróneo **sin ningún error**.
+>
+> **Buena práctica:** mantenerse en enteros con un inverso redondeado hacia arriba, comprobar la exactitud por enumeración sobre todo el dominio y proteger la entrada con una aserción. Para un divisor **constante** en tiempo de compilación, es inútil: el compilador ya hace esta sustitución (gcc produce un `imul` para `x / 7` y un `div` para `x / d`).
+
 ## Más hilos, más lento: los programas limitados por la memoria
 
 Un programa puede estar limitado por el **cálculo** (*CPU-bound*) o por los **accesos a memoria** (*memory-bound*, ver [La caché de la CPU](/?c=qualite-performance-et-outils&s=performance&p=cache-cpu-et-simd)). En el segundo caso, los hilos se disputan el mismo ancho de banda de memoria: añadir más puede **ralentizar** el conjunto. Medido en un solucionador de puzles: 577 ms con un hilo, 893 ms con 8 hilos (ver también [El paralelismo](/?c=qualite-performance-et-outils&s=performance&p=parallelisme)).
@@ -343,7 +387,7 @@ Otras dos lecciones del mismo proyecto:
 
 | | |
 |---|---|
-| **Para recordar** | Nunca optimizar sin haber medido: la intuición sobre "qué es lento" suele apuntar al código que parece complicado, no al que realmente cuesta caro. Dos versiones se comparan primero por sus resultados y contadores, y solo después por el tiempo, en rondas alternas. |
+| **Para recordar** | Nunca optimizar sin haber medido: la intuición sobre "qué es lento" suele apuntar al código que parece complicado, no al que realmente cuesta caro. Dos versiones se comparan primero por sus resultados y contadores, y solo después por el tiempo, en rondas alternas. Una ganancia medida en un micro-benchmark no vale para el programa entero: el procesador oculta la latencia de una instrucción lenta (división) tras el resto del trabajo. |
 | **Herramientas utilizables** | Un profiler clásico (por función: `gprof`, `perf`, `valgrind --tool=callgrind`), una instrumentación manual por fase cuando el programa pasa su tiempo esperando; contadores de trabajo deterministas para comparar dos versiones; `cachegrind` (`--cache-sim=yes`) para los fallos de caché; `__rdtsc()` precedido de `_mm_lfence()` para la parte de un fragmento de bucle; `cmp -s` para comparar dos salidas. |
-| **Trampas a evitar** | Fiarse de una medición única: el ruido (red, caché, carga de la máquina) puede superar el efecto real de una optimización; fiarse de un nombre de función inesperado en un perfil de `gprof` de un programa optimizado (comprobar con `nm -n` o callgrind); `cachegrind` sin `--cache-sim=yes`, o sobre fuentes modificadas desde el perfil; leer el contador de ciclos sin barrera; medir A y luego B en bloque en una máquina que deriva. |
-| **Buenas prácticas** | Siempre volver a medir tras una optimización (tiempo Y exactitud del resultado); tomar varias mediciones para distinguir una ganancia real del ruido; comprobar que dos versiones hacen el mismo trabajo antes de cronometrarlas; medir en rondas alternas, con la máquina en reposo. |
+| **Trampas a evitar** | Fiarse de una medición única: el ruido (red, caché, carga de la máquina) puede superar el efecto real de una optimización; fiarse de un nombre de función inesperado en un perfil de `gprof` de un programa optimizado (comprobar con `nm -n` o callgrind); `cachegrind` sin `--cache-sim=yes`, o sobre fuentes modificadas desde el perfil; leer el contador de ciclos sin barrera; medir A y luego B en bloque en una máquina que deriva. Concluir a partir de un micro-benchmark (−73 %) que un programa entero ganará otro tanto (0,5 % medido); un inverso en coma flotante, o una entrada fuera del dominio verificado. |
+| **Buenas prácticas** | Siempre volver a medir tras una optimización (tiempo Y exactitud del resultado); tomar varias mediciones para distinguir una ganancia real del ruido; comprobar que dos versiones hacen el mismo trabajo antes de cronometrarlas; medir en rondas alternas, con la máquina en reposo. Cuantificar la parte de una instrucción en el perfil antes de sustituirla, y comprobar una sustitución exacta por enumeración sobre todo su dominio. |
