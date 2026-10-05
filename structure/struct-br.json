@@ -959,6 +959,10 @@
             {
               "id": "sanitizers-et-tests-d-allocation",
               "label": "Sanitizers e testes de alocação"
+            },
+            {
+              "id": "contexte-de-travail-pour-decouper-une-fonction",
+              "label": "Um contexto de trabalho para dividir uma função grande"
             }
           ]
         },

@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : rédiger les items restants du point 4 en commençant par `Qualité et architecture du code` (contexte de travail pour découper une grosse fonction), puis les autres items dans l'ordre, un item à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). Point 5 (vérifications GLSL et OpenGL non exécutées) : Louis a précisé qu'il n'a pas de rendu graphique sur cette machine, ne pas lui redemander tant qu'il n'a pas changé de machine. En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2), arbitrage des doublons (point 7).
+> Prochaine tâche : rédiger les items restants du point 4 en commençant par `Langages > C` (tableau de chaînes non terminé), puis les autres items dans l'ordre, un item à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). Point 5 (vérifications GLSL et OpenGL non exécutées) : Louis a précisé qu'il n'a pas de rendu graphique sur cette machine, ne pas lui redemander tant qu'il n'a pas changé de machine. En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2), arbitrage des doublons (point 7).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -92,7 +92,6 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 Source : toute la session (projet scop en C/OpenGL, revue crash-test, corrections vérifiées par exécution). Recherche faite dans `content/` : ce qui existe déjà est indiqué, le reste a 0 résultat. Ajouts à faire au fil des items de correction (les notions des items 11 à 20 s'ajouteront ici).
 
 **Langages > C**
-- `Qualité, performance et outils/Qualité et architecture du code` : **un contexte de travail (struct) pour découper une grosse fonction** : regrouper l'objet, le chemin du fichier, la liste en cours et la normale dans une structure (`Face_job`) passée par pointeur évite les listes de six paramètres et les variables globales, et permet à un seul `fail_face` de tout libérer ; plafonner la longueur d'une fonction et la découper en sous-fonctions au-delà de 100 lignes.
 - Un tableau de chaînes alloué par `malloc` sans le terminer : `free_array` qui parcourt jusqu'au `NULL` lit de la mémoire non initialisée si l'échec survient avant la terminaison (bug trouvé et corrigé dans `ft_split`).
 
 **Données > Représentation des données**
