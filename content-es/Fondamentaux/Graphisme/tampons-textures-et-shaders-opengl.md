@@ -188,6 +188,59 @@ void main()
 
 > **Trampa:** un triángulo degenerado (tres vértices alineados) tiene un producto vectorial nulo, y `normalize` de un vector nulo da un resultado indefinido (posiblemente `NaN`): un triángulo negro o píxeles corruptos. Además, el **sentido** de la normal depende del orden de los vértices (antihorario = cara frontal): una malla del revés tiene todas sus normales invertidas.
 
+### Iluminación de doble cara: `gl_FrontFacing`
+
+Un triángulo tiene dos lados. El lado **frontal** es aquel desde el que se ven sus vértices en sentido **antihorario** en la pantalla (*CCW*, *counter-clockwise*): lo decide el **orden de enrollado** (*winding order*) de los vértices, no la geometría. Por defecto, OpenGL considera el sentido antihorario como el frente (ajuste `glFrontFace(GL_CCW)`); para la eliminación de caras, que se apoya en la misma noción, véase [dibujar un objeto transparente](/?c=fondamentaux&s=graphisme&p=effets-de-rendu-et-interaction-3d#dibujar-un-objeto-transparente).
+
+La normal calculada con `cross` (el producto vectorial, véase [Vectores y producto escalar](/?c=fondamentaux&s=mathematiques&p=vecteurs-et-produit-scalaire)) apunta hacia el exterior del lado frontal. Visto por detrás, un triángulo tiene por tanto una normal que se aleja del observador y de la luz: el `dot` (producto escalar) del fragment shader anterior se vuelve negativo, `max(..., 0.0)` lo lleva a 0 y el píxel queda negro.
+
+| Situación | Lado visto | Normal | Resultado con la iluminación anterior |
+|---|---|---|---|
+| Malla cerrada, vértices en sentido antihorario | frontal | hacia el exterior | iluminado |
+| Malla cerrada, vértices en sentido inverso | «trasero» (aunque sea el exterior) | hacia el interior | **negro** |
+| Superficie abierta (hoja, bandera) vista por sus dos lados | frontal y luego trasero | de un solo lado | iluminada de un lado, **negra** del otro |
+
+Para ello, el fragment shader recibe la variable predefinida **`gl_FrontFacing`** (booleano): verdadera si el triángulo se ve por su lado frontal. Basta con invertir la normal cuando es falsa:
+
+```glsl
+#version 330 core
+in vec3 flat_normal;                            // normal del triángulo, orientada hacia el lado frontal
+uniform vec3 light_dir;                         // dirección de la luz
+out vec4 color;                                 // color final del píxel
+
+void main()
+{
+	vec3 n = normalize(flat_normal);            // vector de longitud 1
+	if (!gl_FrontFacing)                        // triángulo visto por detrás
+		n = -n;                                 // normal invertida: mira al observador
+	float light = max(dot(n, -light_dir), 0.0);
+	color = vec4(vec3(0.8) * light, 1.0);
+}
+```
+
+Esto supone que la eliminación de caras traseras (`GL_CULL_FACE`) está **desactivada**: una cara eliminada nunca llega al fragment shader.
+
+> **Trampa:** la iluminación de doble cara oculta una malla del revés en lugar de repararla: sus normales siguen siendo erróneas para cualquier otro uso (reflejos, sombras, eliminación de caras). Corregir el dato invirtiendo el orden de dos vértices de cada triángulo. Un **espejo** (escala negativa en un solo eje) también invierte el enrollado: un objeto volteado por una escala `-1` se vuelve negro sin que el archivo haya cambiado.
+
+**Medir el resultado.** Una malla «negra» se comprueba en una captura de pantalla mediante la **proporción de píxeles negros**. Una comparación píxel a píxel con una imagen de referencia falla: el brillo pulsa con el tiempo, y dos capturas del mismo renderizado difieren. Elegir un fondo que no sea negro (si no, el fondo cuenta como negro) y contar:
+
+```c
+/* Proporción (0 a 1) de píxeles casi negros en una imagen RGB de n píxeles; -1 si n vale 0. */
+static double dark_ratio(const unsigned char *rgb, size_t n)
+{
+	size_t dark = 0;
+
+	if (n == 0)                                 /* imagen vacía: no hay proporción que calcular */
+		return -1;
+	for (size_t i = 0; i < n; i++)
+		if (rgb[3 * i] < 16 && rgb[3 * i + 1] < 16 && rgb[3 * i + 2] < 16)   /* R, G y B por debajo de 16 sobre 255 */
+			dark++;
+	return (double)dark / (double)n;
+}
+```
+
+Una malla del revés da una proporción cercana a la de toda la silueta; la misma malla corregida (o iluminada por las dos caras) la hace caer.
+
 ### Compilar, enlazar y usar un programa
 
 El código GLSL es **texto**, compilado en tiempo de ejecución por el **controlador** de la tarjeta (véase [GLFW y GLAD](/?c=fondamentaux&s=graphisme&p=glfw-glad-et-boucle-de-rendu)). Una errata solo se detecta al iniciar el programa: hay que leer el registro del compilador.
@@ -234,7 +287,7 @@ else
 
 | | |
 |---|---|
-| **A recordar** | Un VBO guarda los vértices, un EBO los índices de los triángulos, un VAO memoriza la configuración de lectura: se enlaza y luego se dibuja. Una textura es una imagen en la tarjeta gráfica, leída mediante las coordenadas `(u, v)`; se supone que sus filas están alineadas a 4 bytes, y los mipmaps evitan el parpadeo a distancia. Un programa GLSL encadena un vertex shader (por vértice), un geometry shader opcional (por triángulo) y un fragment shader (por píxel); un `uniform` es idéntico para todo un dibujo. |
+| **A recordar** | Un VBO guarda los vértices, un EBO los índices de los triángulos, un VAO memoriza la configuración de lectura: se enlaza y luego se dibuja. Una textura es una imagen en la tarjeta gráfica, leída mediante las coordenadas `(u, v)`; se supone que sus filas están alineadas a 4 bytes, y los mipmaps evitan el parpadeo a distancia. Un programa GLSL encadena un vertex shader (por vértice), un geometry shader opcional (por triángulo) y un fragment shader (por píxel); un `uniform` es idéntico para todo un dibujo. El lado frontal de un triángulo es aquel en que sus vértices aparecen en sentido antihorario; `gl_FrontFacing` permite al fragment shader invertir la normal de una cara vista por detrás. |
 | **Herramientas utilizables** | `glGenBuffers`/`glBufferData`/`glVertexAttribPointer`/`glDrawElements`, `glPixelStorei`, `glGenerateMipmap`, `glTexParameteri`, `glCompileShader` y sus registros, `glGetUniformLocation`. Documentación: [Vertex Specification](https://www.khronos.org/opengl/wiki/Vertex_Specification), [Texture](https://www.khronos.org/opengl/wiki/Texture), [Geometry Shader](https://www.khronos.org/opengl/wiki/Geometry_Shader). |
-| **Trampas a evitar** | `sizeof` de un puntero, paso y desplazamiento en número de `float` en lugar de bytes, EBO desenlazado antes que el VAO, dibujo sin VAO. Ancho de textura no múltiplo de 4 sin `GL_UNPACK_ALIGNMENT` a 1 (imagen inclinada, lectura fuera de límites). Textura sin mipmaps con el filtro por defecto (negra, sin error). Triángulo degenerado en una normal calculada en el shader. Uniform ausente (-1) ignorado en silencio. |
-| **Buenas prácticas** | Leer el registro del compilador y del enlazado, y mostrarlo con la causa real. Señalar un error de `uniform` una sola vez. Fijar `GL_UNPACK_ALIGNMENT` antes de enviar una imagen con filas compactas. Generar los mipmaps o ajustar el filtro `MIN`. Eliminar los objetos al cerrar. |
+| **Trampas a evitar** | `sizeof` de un puntero, paso y desplazamiento en número de `float` en lugar de bytes, EBO desenlazado antes que el VAO, dibujo sin VAO. Ancho de textura no múltiplo de 4 sin `GL_UNPACK_ALIGNMENT` a 1 (imagen inclinada, lectura fuera de límites). Textura sin mipmaps con el filtro por defecto (negra, sin error). Triángulo degenerado en una normal calculada en el shader. Malla del revés (negra con iluminación de una sola cara), escala negativa que invierte el enrollado. Uniform ausente (-1) ignorado en silencio. |
+| **Buenas prácticas** | Leer el registro del compilador y del enlazado, y mostrarlo con la causa real. Señalar un error de `uniform` una sola vez. Fijar `GL_UNPACK_ALIGNMENT` antes de enviar una imagen con filas compactas. Generar los mipmaps o ajustar el filtro `MIN`. Eliminar los objetos al cerrar. Reparar una malla del revés invirtiendo dos vértices por triángulo en lugar de ocultar el defecto con doble cara; comprobar un renderizado por la proporción de píxeles negros de una captura. |
