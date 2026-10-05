@@ -1440,6 +1440,10 @@
             {
               "id": "protocoles-pair-a-pair",
               "label": "Les protocoles pair-à-pair (P2P)"
+            },
+            {
+              "id": "tunnel-ssh-et-redirection-de-port",
+              "label": "Tunnel SSH et redirection de port"
             }
           ]
         },
