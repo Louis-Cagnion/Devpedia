@@ -935,6 +935,10 @@
             {
               "id": "robustesse-traitement-par-lots",
               "label": "Robustesse d'un traitement par lots"
+            },
+            {
+              "id": "inondation-de-logs",
+              "label": "L'inondation de logs : signaler chaque cause une seule fois"
             }
           ]
         },
