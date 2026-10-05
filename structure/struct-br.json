@@ -102,6 +102,10 @@
             {
               "id": "problemes-np-complets",
               "label": "Os problemas NP-completos: por que um problema \"exponencial\" é resolvido mesmo assim"
+            },
+            {
+              "id": "couplage-biparti-et-theoreme-de-hall",
+              "label": "Emparelhamento bipartido, teorema de Hall e algoritmo de Kuhn"
             }
           ]
         },
