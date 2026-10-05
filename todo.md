@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : rédiger les items restants du point 4 en commençant par `Qualité et architecture du code` (un message d'erreur propre à chaque cause), puis les autres items dans l'ordre, un item à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). Point 5 (vérifications GLSL et OpenGL non exécutées) : Louis a précisé qu'il n'a pas de rendu graphique sur cette machine, ne pas lui redemander tant qu'il n'a pas changé de machine. En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2), arbitrage des doublons (point 7).
+> Prochaine tâche : audio du point 3 (4 langues), un chapitre à la fois. Point 5 (vérifications GLSL et OpenGL non exécutées) : Louis a précisé qu'il n'a pas de rendu graphique sur cette machine, ne pas lui redemander tant qu'il n'a pas changé de machine. En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2), arbitrage des doublons (point 7).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -89,12 +89,6 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - Renvois vers `sanitizers-et-tests-d-allocation` ajoutés à `Langages/C/memoire` (note Valgrind), `Sécurité/Sécurité offensive/outils-de-fuzzing` (section sanitizers) et `Infrastructure & DevOps/Administration système/garde-fous-de-ressources` (ligne `ulimit -v` et ASan).
 - `Langages/C/memoire` (section tableau de chaînes : le terminer avant de le remplir).
 - `Données/Représentation des données/encodage-des-textes` (section BOM dans un fichier lu par un programme : UTF-8 collé à la première directive, UTF-16 et octets NUL).
-
-## 4. Notions du projet scop et de sa revue crash-test (01/10/2026, à rédiger, un chapitre à la fois)
-Source : toute la session (projet scop en C/OpenGL, revue crash-test, corrections vérifiées par exécution). Recherche faite dans `content/` : ce qui existe déjà est indiqué, le reste a 0 résultat. Ajouts à faire au fil des items de correction (les notions des items 11 à 20 s'ajouteront ici).
-
-**Qualité, performance et outils**
-- `Qualité et architecture du code` : un **message d'erreur propre à chaque cause** (jamais `error("")` vide ni `exit(1)` nu, jamais un message partagé entre causes) ; échouer sans fuite sur chaque chemin ; ne jamais annoncer « corrigé » sans test réel.
 
 ## 5. Vérifications à faire quand le projet scop sera disponible sur la machine
 À notifier à Louis à la prochaine session sur Devpedia, pour qu'il décide de me mettre ou non dessus (ne pas lancer seul).
