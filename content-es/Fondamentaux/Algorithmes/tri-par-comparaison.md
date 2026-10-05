@@ -91,7 +91,7 @@ La **ordenación por fusión e inserción** (*Ford-Johnson merge-insertion sort*
 | Ordenación por fusión | O(n log n) | O(n log n) | O(n) | Sí |
 | Ordenación rápida (*quicksort*) | O(n²) | O(n log n) | O(log n) | No |
 
-Una ordenación es **estable** cuando dos elementos considerados iguales por la comparación conservan su orden relativo original tras la ordenación (importante si, por ejemplo, se ordena una lista ya ordenada por nombre, esta vez por edad: dos personas de la misma edad deben mantenerse en su orden alfabético).
+Una ordenación es **estable** cuando dos elementos considerados iguales por la comparación conservan su orden relativo original tras la ordenación (importante si, por ejemplo, se ordena una lista ya ordenada por nombre, esta vez por edad: dos personas de la misma edad deben mantenerse en su orden alfabético). La función `qsort` de C no lo garantiza: véase [la estabilidad de una ordenación y el desempate](/?c=fondamentaux&s=algorithmes&p=stabilite-du-tri-et-bruit-reproductible).
 
 > **Trampa:** creer que una ordenación por comparación puede bajar de **O(n log n)** en el caso general: es un límite teórico demostrado (imposible hacerlo mejor comparando solo pares de elementos), no una simple cuestión de optimización de la implementación.
 >

@@ -68,6 +68,10 @@
               "label": "La ordenación por comparación"
             },
             {
+              "id": "stabilite-du-tri-et-bruit-reproductible",
+              "label": "La estabilidad de una ordenación, los empates y el ruido reproducible (xorshift)"
+            },
+            {
               "id": "pile-et-file",
               "label": "Pila y cola: LIFO y FIFO"
             },

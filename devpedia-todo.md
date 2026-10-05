@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : rédiger les notions du point 7 (recherche rush01, dont les ajouts du 04/10), un chapitre à la fois, sans attendre de validation (récapitulatif relu après coup par Louis) ; pour chacun, audio des 4 langues généré une fois la traduction faite, avant le chapitre suivant. Ensuite les points 5 et 6. Après : audio du point 3 (4 langues). En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : rédiger les points 5 et 6, puis le point 8, un chapitre à la fois, sans attendre de validation (récapitulatif relu après coup par Louis) ; pour chacun, audio des 4 langues généré une fois la traduction faite, avant le chapitre suivant. Après : audio du point 3 (4 langues). En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -52,6 +52,7 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Infrastructure & DevOps/Administration système/acces-a-distance-windows` (nouveau) et `windows-services-sessions-et-droits` (renvoi vers ce chapitre).
 - `Langages/C/makefiles` (sections règles génériques, options sans recompilation et dossier d'objets par jeu d'options, chaîne PGO, `make -q` ; exemple `-I` corrigé).
 - `Langages/C/operateurs-binaires` (renvoi vers `division-par-multiplication`).
+- `Fondamentaux/Algorithmes/tri-par-comparaison` (renvoi vers `stabilite-du-tri-et-bruit-reproductible`).
 - `Fondamentaux/Algorithmes/problemes-np-complets` et `encodages-sat` (renvoi vers `couplages-et-filtrage-de-regin`).
 - `Langages/Bash/gestion-des-processus` (renvoi vers `fichiers-temporaires-trap-et-timeout`).
 
@@ -66,10 +67,6 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - **Profil de navigateur persistant** (`launch_persistent_context(user_data_dir=…)`) : cookies de vérification réutilisés d'un lancement à l'autre ; un déblocage obtenu avec une fenêtre peut ne plus valoir si le navigateur repasse en headless (empreinte différente) ; le chemin du profil dépend du compte qui exécute.
 - **Débogage à distance de Chrome** (`--remote-debugging-port`, `chrome://inspect`, *Chrome DevTools Protocol*) : voir et piloter une page d'un Chrome sans bureau ; risque (contrôle total du navigateur, à n'exposer que sur `localhost`).
 - **Tunnel SSH / redirection de port** (`ssh -L`) : atteindre un port distant limité à `localhost` sans l'ouvrir au réseau (rubrique Réseaux ; 0 résultat pour « tunnel SSH » / « redirection de port »).
-
-## 7. Notions de la recherche rush01 du 27/09 à rédiger (un chapitre à la fois)
-Source : `rushs/rush01/BILAN-RECHERCHE.md`, `RECAP-04-10.md` (qui a remplacé `RECAP-27-09.md`) et `research/` du dépôt 42Piscine_100_percent (mesures, code et pièges vérifiés). Chaque ajout : français, puis en/es/br (fins de ligne d'origine de chaque fichier à préserver : certains sont en CRLF, y compris en français), exemples exécutés, liens validés par `validateInternalLinks`, puis audio des 4 langues généré avant de passer au chapitre suivant (consigne du 04/10 : pas de ligne d'audio au point 3 pour ces chapitres).
-- `Fondamentaux/Algorithmes/tri-par-comparaison` (ou `Langages/C`) : **stabilité d'un tri** et départage des égalités : `qsort` ne garantit pas l'ordre des éléments égaux (la glibc 2.39 le garde, la norme C non) ; départager par l'indice d'origine pour un résultat reproductible (file VMTF initiale : 1,2 M variables pour environ 1 000 valeurs de bruit différentes) ; **générateur pseudo-aléatoire xorshift** comme source de bruit reproductible par graine.
 
 ## 8. Notions du projet scop et de sa revue crash-test (01/10/2026, à rédiger, un chapitre à la fois)
 Source : toute la session (projet scop en C/OpenGL, revue crash-test, corrections vérifiées par exécution). Recherche faite dans `content/` : ce qui existe déjà est indiqué, le reste a 0 résultat. Ajouts à faire au fil des items de correction (les notions des items 11 à 20 s'ajouteront ici).

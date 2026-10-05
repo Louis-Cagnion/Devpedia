@@ -91,7 +91,7 @@ Merging two already-sorted lists is **O(n)**: it's enough to compare the two lis
 | Merge sort | O(n log n) | O(n log n) | O(n) | Yes |
 | Quicksort | O(n²) | O(n log n) | O(log n) | No |
 
-A sort is called **stable** when two elements considered equal by the comparison keep their original relative order after sorting (important if, for instance, you sort a list already sorted by name, this time by age: two people of the same age must stay in their alphabetical order).
+A sort is called **stable** when two elements considered equal by the comparison keep their original relative order after sorting (important if, for instance, you sort a list already sorted by name, this time by age: two people of the same age must stay in their alphabetical order). The C `qsort` function does not guarantee it: see [sort stability and breaking ties](/?c=fondamentaux&s=algorithmes&p=stabilite-du-tri-et-bruit-reproductible).
 
 > **Pitfall:** believing a comparison sort can go below **O(n log n)** in the general case: this is a proven theoretical limit (it's impossible to do better while only comparing pairs of elements), not a matter of implementation optimization.
 >
