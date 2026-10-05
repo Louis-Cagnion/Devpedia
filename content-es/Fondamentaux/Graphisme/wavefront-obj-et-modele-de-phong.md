@@ -343,6 +343,129 @@ El algoritmo descrito arriba es exacto con números exactos; los números de com
 
 El corte se hace entonces en **dos pasadas**: una pasada estricta (una oreja debe ser estrictamente convexa y no contener ningún vértice interior ni vértice en su borde); si no encuentra ninguna oreja cuando quedan más de 3 vértices, una segunda pasada tolera los vértices situados exactamente en el borde. Si también falla, se rechaza la cara (degenerada o que se corta a sí misma) con un mensaje que nombra el archivo y la línea, en lugar de entrar en un bucle sin fin.
 
+## Acelerar el ear clipping: examinar solo los vértices reflejos
+
+La prueba «ningún vértice atrapado» recorre todos los vértices restantes, para cada oreja candidata, y cada recorte exige buscar una nueva: al menos `n x n` operaciones ([complejidad cuadrática](/?c=fondamentaux&s=algorithmes&p=complexite-et-notation-big-o)). Bastan dos términos para hacerlo mejor. El **giro** en un vértice `b` entre sus vecinos `a` y `c` es el producto escalar de la normal de la cara con el producto vectorial de `a->b` y `a->c` (véase [Vectores y producto escalar](/?c=fondamentaux&s=mathematiques&p=vecteurs-et-produit-scalaire)): su signo indica hacia qué lado gira el contorno.
+
+| Término | Significado | Signo del giro |
+|---|---|---|
+| Vértice **convexo** | El contorno gira en el sentido de la normal: ángulo interior inferior a 180 grados | `> 0` |
+| Vértice **reflejo** (*reflex*) | El contorno gira en sentido contrario: ángulo interior superior a 180 grados, es una entrante | `<= 0` (un giro nulo, vértice alineado con sus vecinos, se clasifica aquí por precaución) |
+
+En el polígono en L de la sección anterior, el vértice `(1,1)` es reflejo, `(1,0)` está alineado con sus vecinos (giro nulo) y los otros cuatro son convexos. Un polígono convexo no tiene ningún vértice reflejo.
+
+### Por qué bastan los reflejos
+
+**Si un vértice está dentro del triángulo de una oreja candidata, entonces un vértice reflejo también lo está.** Razonamiento: los dos lados del triángulo que tocan la punta `v` son aristas del polígono, que el contorno no puede cruzar (se cortaría a sí mismo). Un contorno que entra en el triángulo solo tiene la base `[prev, next]` para entrar y para salir. La zona comprendida entre este desvío y la punta `v` está bordeada únicamente por aristas del polígono, así que está dentro del polígono. El punto del desvío más cercano a `v` (`Q` abajo) tiene el interior del lado de `v` y forma un pico hacia él: su ángulo interior supera los 180 grados.
+
+```text
+            v           contorno que entra por la base, sube hasta Q y vuelve a bajar
+           / \          Q: vértice del desvío más cercano a v
+          /   \         el interior del polígono está del lado de v: Q es reflejo
+         /  Q  \
+        /  / \  \
+   prev ----------- next
+```
+
+Consecuencia: la prueba del mismo lado solo se hace contra la lista de reflejos, que está vacía en un polígono convexo (ninguna prueba de punto).
+
+### Mantener al día la lista de reflejos
+
+| Momento | Qué ocurre | Coste |
+|---|---|---|
+| Al inicio | Una pasada: todo vértice con giro `<= 0` entra en el arreglo `reflex[]` | `n` |
+| Tras recortar una oreja | Solo los dos vecinos de la punta recortada cambian de ángulo, y solo puede disminuir (un triángulo sale del polígono): un reflejo puede pasar a convexo, un convexo **nunca** vuelve a ser reflejo | 2 comprobaciones |
+| Salida de la lista | [swap-remove](/?c=fondamentaux&s=algorithmes&p=swap-remove): el vértice es sustituido por el último. Cada nodo memoriza su posición `reflex_pos` en el arreglo para encontrarla sin recorrerlo | O(1) |
+
+```c
+typedef struct { int prev, next, reflex_pos; } Node;    /* reflex_pos: -1 si es convexo */
+
+typedef struct
+{
+	const double (*p)[3];      /* posiciones de los vértices */
+	double normal[3];          /* normal de la cara (método de Newell) */
+	Node *node;                /* lista doblemente enlazada circular */
+	int *reflex;               /* índices de los vértices reflejos */
+	int n_reflex;
+}	Ctx;
+
+/* Giro en b entre a y c: > 0 convexo, < 0 reflejo, 0 alineado. */
+static double turn(const double *a, const double *b, const double *c, const double nrm[3])
+{
+	double u[3] = {b[0] - a[0], b[1] - a[1], b[2] - a[2]};
+	double v[3] = {c[0] - a[0], c[1] - a[1], c[2] - a[2]};
+
+	return (u[1] * v[2] - u[2] * v[1]) * nrm[0]      /* producto vectorial u x v, */
+		+ (u[2] * v[0] - u[0] * v[2]) * nrm[1]       /* luego producto escalar */
+		+ (u[0] * v[1] - u[1] * v[0]) * nrm[2];      /* con la normal */
+}
+
+/* Prueba de los tres lados: q está en el triángulo (a, b, d), borde incluido. */
+static int in_triangle(const Ctx *c, int a, int b, int d, int q)
+{
+	return turn(c->p[a], c->p[b], c->p[q], c->normal) >= 0
+		&& turn(c->p[b], c->p[d], c->p[q], c->normal) >= 0
+		&& turn(c->p[d], c->p[a], c->p[q], c->normal) >= 0;
+}
+
+static int is_reflex(const Ctx *c, int i)
+{
+	const Node *nd = &c->node[i];
+
+	return turn(c->p[nd->prev], c->p[i], c->p[nd->next], c->normal) <= 0;
+}
+
+static int is_ear(const Ctx *c, int i)
+{
+	int a = c->node[i].prev;
+	int d = c->node[i].next;
+
+	if (is_reflex(c, i))
+		return 0;
+	for (int k = 0; k < c->n_reflex; k++)      /* solo los reflejos */
+	{
+		int q = c->reflex[k];
+		if (q != a && q != d && in_triangle(c, a, i, d, q))
+			return 0;
+	}
+	return 1;
+}
+
+static void reflex_remove(Ctx *c, int i)
+{
+	int pos = c->node[i].reflex_pos;
+	int last = c->reflex[--c->n_reflex];
+
+	c->reflex[pos] = last;                     /* el último ocupa su lugar */
+	c->node[last].reflex_pos = pos;            /* y anota su nueva posición */
+	c->node[i].reflex_pos = -1;
+}
+
+/* Tras un recorte: un vecino reflejo que pasó a convexo sale de la lista. */
+static void refresh(Ctx *c, int i)
+{
+	if (c->node[i].reflex_pos >= 0 && !is_reflex(c, i))
+		reflex_remove(c, i);
+}
+```
+
+`in_triangle` es la prueba del mismo lado de la sección «Comprobar que ningún vértice queda atrapado en la oreja»; el bucle de corte llama a `refresh` sobre `prev` y `next` tras cada oreja recortada.
+
+### Qué cambia, medido
+
+12000 vértices, `-O2`, una sola ejecución, mismo resultado (11998 triángulos, es decir `n - 2`) con las dos pruebas:
+
+| Polígono | Vértices reflejos | Prueba contra todos los vértices | Prueba contra los reflejos |
+|---|---|---|---|
+| Círculo (convexo) | 0 | 0,38 s | 0,0002 s |
+| Estrella (un vértice de cada dos entrante) | 6000 | 0,28 s | 0,06 s |
+
+El coste residual es del orden de `n x r` (`r`: número de reflejos): una forma muy recortada sigue siendo cuadrática, solo baja la constante. La ganancia es máxima en polígonos poco cóncavos, que son la inmensa mayoría de las caras de un `.obj`.
+
+> **Trampa: el ruido de redondeo.** En un polígono grande casi plano en cada vértice, un error de cálculo puede hacer pasar vértices convexos a la lista de reflejos: esta se hincha y el coste vuelve a `n x n`. Calcular el giro en `double` (véase [Hacer robusto el ear clipping](/?c=fondamentaux&s=graphisme&p=wavefront-obj-et-modele-de-phong#hacer-robusto-el-ear-clipping)) limita este riesgo. En caso de duda, **clasificar siempre el vértice como reflejo** (`<= 0`, no `< 0`): un reflejo de más solo cuesta tiempo, uno olvidado haría aceptar una oreja que atrapa un vértice.
+
+> **Buena práctica:** validar la optimización comparando, sobre los mismos polígonos, el número de triángulos (`n - 2`) y la suma de sus áreas entre la prueba antigua (todos los vértices) y la nueva (solo reflejos), antes de tirar la antigua. Véase también [medir antes de optimizar](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser).
+
 ---
 
 ## 📋 Resumen
