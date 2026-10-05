@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : rédiger le point 4 en commençant par l'item `Langages/C/appels-systeme-et-descripteurs` (retrouver l'emplacement de son propre exécutable, `readlink("/proc/self/exe")`), puis les autres items dans l'ordre, un item à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : rédiger le point 4 en commençant par l'item `Qualité et architecture du code` (inondation de logs), puis les autres items dans l'ordre, un item à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -69,14 +69,13 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Fondamentaux/Graphisme/glfw-glad-et-boucle-de-rendu` (sections delta time et vsync).
 - `Fondamentaux/Graphisme/effets-de-rendu-et-interaction-3d` (sections reflet de Fresnel, ray-marching, objet transparent, ressort amorti, `tanh`, placage triplanaire).
 - `Infrastructure & DevOps/Administration système/garde-fous-de-ressources` (nouveau) et `administration-systeme` (présentation du sujet modifiée).
-- `Langages/C/appels-systeme-et-descripteurs` (section fichiers spéciaux : FIFO, `/dev/zero`, `O_NONBLOCK` + `fstat` + `fdopen`).
+- `Langages/C/appels-systeme-et-descripteurs` (sections fichiers spéciaux : FIFO, `/dev/zero`, `O_NONBLOCK` + `fstat` + `fdopen`, et emplacement de son propre exécutable : `/proc/self/exe`).
 - `Langages/C/memoire` (section tampon à doublement : `realloc` sans mise à zéro, `strlen` en condition de boucle, `strnlen`).
 
 ## 4. Notions du projet scop et de sa revue crash-test (01/10/2026, à rédiger, un chapitre à la fois)
 Source : toute la session (projet scop en C/OpenGL, revue crash-test, corrections vérifiées par exécution). Recherche faite dans `content/` : ce qui existe déjà est indiqué, le reste a 0 résultat. Ajouts à faire au fil des items de correction (les notions des items 11 à 20 s'ajouteront ici).
 
 **Langages > C**
-- `Langages/C/appels-systeme-et-descripteurs` : **retrouver l'emplacement de son propre exécutable** (`readlink("/proc/self/exe")`, ce qu'est `/proc`, lien symbolique résolu, repli quand `/proc` est absent) pour ouvrir des fichiers livrés avec le programme (shaders) sans dépendre du dossier courant ; `argv[0]` n'est pas fiable (PATH, lien).
 - `Qualité et architecture du code` (ou Performance) : **inondation de logs** : un message d'erreur répété à chaque image d'une boucle de rendu (150 lignes/s sans limite) ; le signaler une seule fois par cause (liste bornée), ne jamais écrire sans limite sur `stderr` dans une boucle ; erreur d'une variable `uniform` absente (faute de frappe, ou supprimée par le compilateur car inutilisée).
 - `Fondamentaux/Graphisme` ou `Algorithmes` : **compacter un maillage** (retirer les sommets qu'aucune face n'utilise : table de renumérotation `remap`, déplacement en place car un sommet ne monte jamais, indices de faces et UV à renuméroter ensemble) ; pourquoi : un sommet isolé fausse la boîte englobante, donc le pivot et le cadrage de la caméra. Piège de test : un vérificateur qui lit les triangles par numéro de sommet casse quand on renumérote, comparer par coordonnées (et attention : deux coordonnées arrondies au même `float` rendent l'indice ambigu).
 - `Qualité, performance et outils` : les sanitizers faussent les mesures de performance (sous ASan, `realloc` recopie tout le tableau à chaque appel : 0,6 s en build normal contre plus de 100 s pour le même fichier) ; mesurer la complexité sur le build normal `-O2`, jamais sur un build instrumenté.
