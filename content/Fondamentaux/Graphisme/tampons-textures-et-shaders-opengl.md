@@ -188,6 +188,59 @@ void main()
 
 > **Piège :** un triangle dégénéré (trois sommets alignés) a un produit vectoriel nul, et `normalize` d'un vecteur nul donne un résultat indéfini (possiblement `NaN`) : un triangle noir ou des pixels corrompus. Ensuite, le **sens** de la normale dépend de l'ordre des sommets (antihoraire = face avant) : un maillage à l'envers a toutes ses normales retournées.
 
+### Éclairage double face : `gl_FrontFacing`
+
+Un triangle a deux côtés. Le côté **avant** est celui d'où l'on voit ses sommets dans le sens **antihoraire** à l'écran (*CCW*, *counter-clockwise*) : c'est l'**ordre d'enroulement** (*winding order*) des sommets qui le décide, pas la géométrie. Par défaut, OpenGL considère l'antihoraire comme l'avant (réglage `glFrontFace(GL_CCW)`) ; pour l'élimination des faces qui s'appuie sur la même notion, voir [dessiner un objet transparent](/?c=fondamentaux&s=graphisme&p=effets-de-rendu-et-interaction-3d#dessiner-un-objet-transparent).
+
+La normale calculée par `cross` (le produit vectoriel, voir [Vecteurs et produit scalaire](/?c=fondamentaux&s=mathematiques&p=vecteurs-et-produit-scalaire)) pointe vers l'extérieur du côté avant. Vu par son dos, un triangle a donc une normale qui s'éloigne de l'observateur et de la lumière : le `dot` (produit scalaire) du fragment shader ci-dessus devient négatif, `max(..., 0.0)` le ramène à 0 et le pixel est noir.
+
+| Situation | Côté vu | Normale | Rendu avec l'éclairage ci-dessus |
+|---|---|---|---|
+| Maillage fermé, sommets en antihoraire | avant | vers l'extérieur | éclairé |
+| Maillage fermé, sommets en sens inverse | « dos » (alors que c'est l'extérieur) | vers l'intérieur | **noir** |
+| Surface ouverte (feuille, drapeau) vue par ses deux côtés | avant puis dos | d'un seul côté | éclairée d'un côté, **noire** de l'autre |
+
+Le fragment shader reçoit pour cela la variable prédéfinie **`gl_FrontFacing`** (booléen) : vrai si le triangle est vu par son côté avant. Il suffit de retourner la normale quand elle est fausse :
+
+```glsl
+#version 330 core
+in vec3 flat_normal;                            // normale du triangle, orientée côté avant
+uniform vec3 light_dir;                         // direction de la lumière
+out vec4 color;                                 // couleur finale du pixel
+
+void main()
+{
+	vec3 n = normalize(flat_normal);            // vecteur de longueur 1
+	if (!gl_FrontFacing)                        // triangle vu par son dos
+		n = -n;                                 // normale retournée : elle regarde l'observateur
+	float light = max(dot(n, -light_dir), 0.0);
+	color = vec4(vec3(0.8) * light, 1.0);
+}
+```
+
+Cela suppose que l'élimination des faces arrière (`GL_CULL_FACE`) soit **désactivée** : une face éliminée n'atteint jamais le fragment shader.
+
+> **Piège :** l'éclairage double face masque un maillage à l'envers au lieu de le réparer : ses normales restent fausses pour tout autre usage (reflets, ombres, élimination des faces). Corriger la donnée en inversant l'ordre de deux sommets de chaque triangle. Un **miroir** (échelle négative sur un seul axe) inverse aussi l'enroulement : un objet retourné par une échelle `-1` devient noir sans que le fichier ait changé.
+
+**Mesurer le résultat.** Un maillage « noir » se vérifie sur une capture d'écran par la **proportion de pixels noirs**. Une comparaison pixel à pixel avec une image de référence échoue : la luminosité pulse au fil du temps, deux captures du même rendu diffèrent. Choisir un fond qui n'est pas noir (sinon le fond compte comme du noir), puis compter :
+
+```c
+/* Proportion (0 à 1) de pixels presque noirs dans une image RGB de n pixels ; -1 si n vaut 0. */
+static double dark_ratio(const unsigned char *rgb, size_t n)
+{
+	size_t dark = 0;
+
+	if (n == 0)                                 /* image vide : aucune proportion à calculer */
+		return -1;
+	for (size_t i = 0; i < n; i++)
+		if (rgb[3 * i] < 16 && rgb[3 * i + 1] < 16 && rgb[3 * i + 2] < 16)   /* R, V et B sous 16 sur 255 */
+			dark++;
+	return (double)dark / (double)n;
+}
+```
+
+Un maillage à l'envers donne une proportion proche de celle de la silhouette entière ; le même maillage corrigé (ou éclairé en double face) la fait chuter.
+
 ### Compiler, lier et utiliser un programme
 
 Le code GLSL est du **texte**, compilé à l'exécution par le **pilote** de la carte (voir [GLFW et GLAD](/?c=fondamentaux&s=graphisme&p=glfw-glad-et-boucle-de-rendu)). Une faute de frappe n'est donc détectée qu'au lancement du programme : il faut lire le journal du compilateur.
@@ -234,7 +287,7 @@ else
 
 | | |
 |---|---|
-| **À retenir** | Un VBO stocke les sommets, un EBO les indices des triangles, un VAO mémorise la configuration de lecture : on le lie, puis on dessine. Une texture est une image côté carte graphique, lue grâce aux coordonnées `(u, v)` ; ses lignes sont supposées alignées sur 4 octets, et des mipmaps évitent le scintillement à distance. Un programme GLSL enchaîne vertex shader (par sommet), geometry shader optionnel (par triangle) et fragment shader (par pixel) ; un `uniform` est identique pour tout un dessin. |
+| **À retenir** | Un VBO stocke les sommets, un EBO les indices des triangles, un VAO mémorise la configuration de lecture : on le lie, puis on dessine. Une texture est une image côté carte graphique, lue grâce aux coordonnées `(u, v)` ; ses lignes sont supposées alignées sur 4 octets, et des mipmaps évitent le scintillement à distance. Un programme GLSL enchaîne vertex shader (par sommet), geometry shader optionnel (par triangle) et fragment shader (par pixel) ; un `uniform` est identique pour tout un dessin. Le côté avant d'un triangle est celui où ses sommets apparaissent dans le sens antihoraire ; `gl_FrontFacing` permet au fragment shader de retourner la normale d'une face vue par son dos. |
 | **Outils utilisables** | `glGenBuffers`/`glBufferData`/`glVertexAttribPointer`/`glDrawElements`, `glPixelStorei`, `glGenerateMipmap`, `glTexParameteri`, `glCompileShader` et ses journaux, `glGetUniformLocation`. Documentation : [Vertex Specification](https://www.khronos.org/opengl/wiki/Vertex_Specification), [Texture](https://www.khronos.org/opengl/wiki/Texture), [Geometry Shader](https://www.khronos.org/opengl/wiki/Geometry_Shader). |
-| **Pièges à éviter** | `sizeof` d'un pointeur, pas et décalage en nombre de `float` au lieu d'octets, EBO délié avant le VAO, dessin sans VAO. Largeur de texture non multiple de 4 sans `GL_UNPACK_ALIGNMENT` à 1 (image cisaillée, lecture hors limites). Texture sans mipmaps avec le filtre par défaut (noire, sans erreur). Triangle dégénéré dans une normale calculée au shader. Uniform absent (-1) ignoré en silence. |
-| **Bonnes pratiques** | Lire le journal du compilateur et de l'édition de liens, et l'afficher avec la cause réelle. Signaler une erreur de `uniform` une seule fois. Fixer `GL_UNPACK_ALIGNMENT` avant d'envoyer une image dont les lignes sont compactes. Générer les mipmaps ou régler le filtre `MIN`. Supprimer les objets à la fermeture. |
+| **Pièges à éviter** | `sizeof` d'un pointeur, pas et décalage en nombre de `float` au lieu d'octets, EBO délié avant le VAO, dessin sans VAO. Largeur de texture non multiple de 4 sans `GL_UNPACK_ALIGNMENT` à 1 (image cisaillée, lecture hors limites). Texture sans mipmaps avec le filtre par défaut (noire, sans erreur). Triangle dégénéré dans une normale calculée au shader. Maillage à l'envers (noir avec un éclairage à une seule face), échelle négative qui inverse l'enroulement. Uniform absent (-1) ignoré en silence. |
+| **Bonnes pratiques** | Lire le journal du compilateur et de l'édition de liens, et l'afficher avec la cause réelle. Signaler une erreur de `uniform` une seule fois. Fixer `GL_UNPACK_ALIGNMENT` avant d'envoyer une image dont les lignes sont compactes. Générer les mipmaps ou régler le filtre `MIN`. Supprimer les objets à la fermeture. Réparer un maillage à l'envers en inversant deux sommets par triangle plutôt que de masquer le défaut en double face ; contrôler un rendu par la proportion de pixels noirs d'une capture. |

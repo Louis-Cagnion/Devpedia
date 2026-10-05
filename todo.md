@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : rédiger le point 4 en commençant par l'item `Fondamentaux/Graphisme` « éclairage double face » (`gl_FrontFacing`), puis les autres items dans l'ordre, un item à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : rédiger le point 4 en commençant par l'item `Données/Représentation des données` « absorption en virgule flottante », puis les autres items dans l'ordre, un item à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -73,13 +73,13 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Langages/C/memoire` (section tampon à doublement : `realloc` sans mise à zéro, `strlen` en condition de boucle, `strnlen`).
 - `Qualité, performance et outils/Qualité et architecture du code/inondation-de-logs` (nouveau).
 - `Fondamentaux/Graphisme/edition-de-maillage-et-selection-proportionnelle` (section compacter un maillage).
+- `Fondamentaux/Graphisme/tampons-textures-et-shaders-opengl` (section éclairage double face : `gl_FrontFacing`).
 
 ## 4. Notions du projet scop et de sa revue crash-test (01/10/2026, à rédiger, un chapitre à la fois)
 Source : toute la session (projet scop en C/OpenGL, revue crash-test, corrections vérifiées par exécution). Recherche faite dans `content/` : ce qui existe déjà est indiqué, le reste a 0 résultat. Ajouts à faire au fil des items de correction (les notions des items 11 à 20 s'ajouteront ici).
 
 **Langages > C**
 - `Qualité, performance et outils` : les sanitizers faussent les mesures de performance (sous ASan, `realloc` recopie tout le tableau à chaque appel : 0,6 s en build normal contre plus de 100 s pour le même fichier) ; mesurer la complexité sur le build normal `-O2`, jamais sur un build instrumenté.
-- `Fondamentaux/Graphisme` (chapitre à choisir) : **éclairage double face** : `gl_FrontFacing` (vrai si le triangle apparaît dans le sens antihoraire à l'écran), normale retournée pour une face vue par son dos, ordre d'enroulement des sommets (CCW) qui définit le côté « avant » ; un maillage dont les normales pointent vers l'intérieur apparaît noir avec un éclairage à une face. Mesurer par la proportion de pixels noirs d'une capture (la pulsation de luminosité empêche une comparaison pixel à pixel).
 - `Données/Représentation des données` (ou `Fondamentaux/Mathématiques`) : **absorption en virgule flottante** : en `float`, `x + 1 == x` dès 2^24 (16 777 216) ; une soustraction de grands nombres proches donne 0 (`near = distance - radius` valait 0) ; comparer avec une marge relative, jamais avec une constante absolue ; `NaN` et `inf` passent toutes les comparaisons sans erreur.
 - `Fondamentaux/Graphisme` : **matrice de projection** : domaine de validité de `near`, `far`, `fov`, `aspect` (0 < near < far, 0 < fov < π, aspect > 0) et ce que donne chaque violation (profondeur inversée, matrice infinie) ; **limites de la carte graphique** (`GL_MAX_TEXTURE_SIZE`, `GL_MAX_VIEWPORT_DIMS`) et `glGetError` (OpenGL ne signale un refus que par un drapeau d'erreur à lire).
 - `Fondamentaux/Graphisme` (suite) : **interroger le pilote graphique** : `glGetString(GL_RENDERER/GL_VERSION/GL_VENDOR)`, `glGetIntegerv(GL_MAX_*)` (taille de texture, viewport, attributs de sommet, sorties du geometry shader), `GL_MAX_ELEMENTS_INDICES` qui n'est qu'un conseil ; la mémoire de la carte n'a pas de requête standard (extensions `GL_NVX_gpu_memory_info`, `GL_ATI_meminfo`), d'où `glGetError` ; `glfwGetVideoMode`/`glfwGetPrimaryMonitor` pour la résolution de l'écran (une fenêtre plus grande que l'écran).

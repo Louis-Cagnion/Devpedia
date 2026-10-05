@@ -188,6 +188,59 @@ void main()
 
 > **Pitfall:** a degenerate triangle (three aligned vertices) has a zero cross product, and `normalize` of a zero vector gives an undefined result (possibly `NaN`): a black triangle or corrupted pixels. Also, the **direction** of the normal depends on the vertex order (counter-clockwise = front face): a mesh turned inside out has all its normals reversed.
 
+### Two-sided lighting: `gl_FrontFacing`
+
+A triangle has two sides. The **front** side is the one from which its vertices appear in **counter-clockwise** order on screen (*CCW*): it is the **winding order** of the vertices that decides it, not the geometry. By default, OpenGL treats counter-clockwise as the front (setting `glFrontFace(GL_CCW)`); for face culling, which relies on the same notion, see [drawing a transparent object](/?c=fondamentaux&s=graphisme&p=effets-de-rendu-et-interaction-3d#drawing-a-transparent-object).
+
+The normal computed by `cross` (the cross product, see [Vectors and the dot product](/?c=fondamentaux&s=mathematiques&p=vecteurs-et-produit-scalaire)) points out of the front side. Seen from behind, a triangle therefore has a normal pointing away from the viewer and from the light: the `dot` (dot product) in the fragment shader above becomes negative, `max(..., 0.0)` brings it back to 0 and the pixel is black.
+
+| Situation | Side seen | Normal | Result with the lighting above |
+|---|---|---|---|
+| Closed mesh, vertices counter-clockwise | front | outwards | lit |
+| Closed mesh, vertices in the opposite order | "back" (although it is the outside) | inwards | **black** |
+| Open surface (leaf, flag) seen from both sides | front then back | on one side only | lit on one side, **black** on the other |
+
+For this, the fragment shader receives the built-in variable **`gl_FrontFacing`** (boolean): true if the triangle is seen from its front side. It is enough to flip the normal when it is false:
+
+```glsl
+#version 330 core
+in vec3 flat_normal;                            // triangle normal, oriented towards the front side
+uniform vec3 light_dir;                         // light direction
+out vec4 color;                                 // final pixel color
+
+void main()
+{
+	vec3 n = normalize(flat_normal);            // vector of length 1
+	if (!gl_FrontFacing)                        // triangle seen from behind
+		n = -n;                                 // flipped normal: it faces the viewer
+	float light = max(dot(n, -light_dir), 0.0);
+	color = vec4(vec3(0.8) * light, 1.0);
+}
+```
+
+This assumes that back-face culling (`GL_CULL_FACE`) is **disabled**: a culled face never reaches the fragment shader.
+
+> **Pitfall:** two-sided lighting hides an inside-out mesh instead of repairing it: its normals stay wrong for every other use (reflections, shadows, face culling). Fix the data by swapping two vertices of each triangle. A **mirror** (negative scale on a single axis) also reverses the winding: an object flipped by a `-1` scale turns black without the file having changed.
+
+**Measuring the result.** A "black" mesh is checked on a screenshot through the **proportion of black pixels**. A pixel-by-pixel comparison with a reference image fails: the brightness pulses over time, so two screenshots of the same rendering differ. Pick a background that is not black (otherwise the background counts as black), then count:
+
+```c
+/* Proportion (0 to 1) of nearly black pixels in an RGB image of n pixels; -1 if n is 0. */
+static double dark_ratio(const unsigned char *rgb, size_t n)
+{
+	size_t dark = 0;
+
+	if (n == 0)                                 /* empty image: no proportion to compute */
+		return -1;
+	for (size_t i = 0; i < n; i++)
+		if (rgb[3 * i] < 16 && rgb[3 * i + 1] < 16 && rgb[3 * i + 2] < 16)   /* R, G and B under 16 out of 255 */
+			dark++;
+	return (double)dark / (double)n;
+}
+```
+
+An inside-out mesh gives a proportion close to that of the whole silhouette; the same mesh repaired (or lit on both sides) makes it drop.
+
 ### Compiling, linking and using a program
 
 GLSL code is **text**, compiled at run time by the card's **driver** (see [GLFW and GLAD](/?c=fondamentaux&s=graphisme&p=glfw-glad-et-boucle-de-rendu)). A typo is therefore only detected when the program starts: the compiler log has to be read.
@@ -234,7 +287,7 @@ else
 
 | | |
 |---|---|
-| **Key takeaway** | A VBO stores the vertices, an EBO the triangle indices, a VAO remembers the reading configuration: you bind it, then draw. A texture is an image on the graphics card side, read through `(u, v)` coordinates; its rows are assumed to be aligned on 4 bytes, and mipmaps avoid flickering at a distance. A GLSL program chains a vertex shader (per vertex), an optional geometry shader (per triangle) and a fragment shader (per pixel); a `uniform` is identical for a whole draw. |
+| **Key takeaway** | A VBO stores the vertices, an EBO the triangle indices, a VAO remembers the reading configuration: you bind it, then draw. A texture is an image on the graphics card side, read through `(u, v)` coordinates; its rows are assumed to be aligned on 4 bytes, and mipmaps avoid flickering at a distance. A GLSL program chains a vertex shader (per vertex), an optional geometry shader (per triangle) and a fragment shader (per pixel); a `uniform` is identical for a whole draw. The front side of a triangle is the one where its vertices appear counter-clockwise; `gl_FrontFacing` lets the fragment shader flip the normal of a face seen from behind. |
 | **Usable tools** | `glGenBuffers`/`glBufferData`/`glVertexAttribPointer`/`glDrawElements`, `glPixelStorei`, `glGenerateMipmap`, `glTexParameteri`, `glCompileShader` and its logs, `glGetUniformLocation`. Documentation: [Vertex Specification](https://www.khronos.org/opengl/wiki/Vertex_Specification), [Texture](https://www.khronos.org/opengl/wiki/Texture), [Geometry Shader](https://www.khronos.org/opengl/wiki/Geometry_Shader). |
-| **Pitfalls to avoid** | `sizeof` of a pointer, stride and offset in number of `float` instead of bytes, EBO unbound before the VAO, drawing with no VAO. A texture width that is not a multiple of 4 without `GL_UNPACK_ALIGNMENT` set to 1 (sheared image, out-of-bounds read). A texture without mipmaps with the default filter (black, no error). A degenerate triangle in a normal computed in the shader. A missing uniform (-1) silently ignored. |
-| **Good practices** | Read the compiler and link log, and print it with the real cause. Report a `uniform` error only once. Set `GL_UNPACK_ALIGNMENT` before sending an image whose rows are tightly packed. Generate the mipmaps or set the `MIN` filter. Delete the objects at shutdown. |
+| **Pitfalls to avoid** | `sizeof` of a pointer, stride and offset in number of `float` instead of bytes, EBO unbound before the VAO, drawing with no VAO. A texture width that is not a multiple of 4 without `GL_UNPACK_ALIGNMENT` set to 1 (sheared image, out-of-bounds read). A texture without mipmaps with the default filter (black, no error). A degenerate triangle in a normal computed in the shader. Inside-out mesh (black with one-sided lighting), negative scale that reverses the winding. A missing uniform (-1) silently ignored. |
+| **Good practices** | Read the compiler and link log, and print it with the real cause. Report a `uniform` error only once. Set `GL_UNPACK_ALIGNMENT` before sending an image whose rows are tightly packed. Generate the mipmaps or set the `MIN` filter. Delete the objects at shutdown. Repair an inside-out mesh by swapping two vertices per triangle rather than hiding the defect with two-sided lighting; check a rendering through the proportion of black pixels in a screenshot. |
