@@ -158,6 +158,7 @@ VMTF est le mode « focalisé » des solveurs [kissat](https://github.com/arminb
 | Réutilisation de la trace | Au redémarrage, garder les décisions que le solveur reprendrait de toute façon | van der Tak, Ramos et Heule, [*Reusing the Assignment Trail in CDCL Solvers*](https://doi.org/10.3233/sat190082) (2011) | Nulle avec VMTF (rien de réutilisable), neutre à pire avec VSIDS |
 | Phases cibles et *rephasing* | Retenir la meilleure affectation partielle rencontrée et y revenir régulièrement | [kissat](https://github.com/arminbiere/kissat) (Biere, 2020) | Grilles 56 × 56 : de 6,8 s à 25 s de moyenne, une grille au-delà de 90 s |
 | *Shrinking* | Raccourcir encore les clauses apprises, après la minimisation | [kissat](https://github.com/arminbiere/kissat) | +15 % de temps |
+| Vivification des clauses apprises | Raccourcir une clause en supposant ses littéraux faux un par un (section suivante) | Piette, Hamadi et Saïs, [*Vivifying Propositional Clausal Formulae*](https://hal.archives-ouvertes.fr/hal-00865274) (2008) ; Luo et al., [*An Effective Learnt Clause Minimization Approach for CDCL SAT Solvers*](https://doi.org/10.24963/ijcai.2017/98) (2017) | Grilles 108 × 108 : 64,5 s de portfolio simulé contre 49,5 s |
 
 ### Simplifier à la racine
 
@@ -170,6 +171,124 @@ Une affectation du niveau 0 n'est jamais annulée : une clause qui contient un l
 | `(b ∨ d)` | Ni `b` ni `d` n'est encore fixé | Gardée |
 
 Mesuré avec deux autres retouches du même type : quelques pour cent de temps gagnés, à [compteurs de travail](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser#comparer-sur-des-compteurs-de-travail-pas-seulement-sur-le-temps) identiques.
+
+### La vivification : raccourcir une clause apprise
+
+Une clause apprise est souvent plus longue que nécessaire. La **vivification** ([Piette, Hamadi et Saïs, 2008](https://hal.archives-ouvertes.fr/hal-00865274), appliquée aux clauses apprises par [Luo et al., 2017](https://doi.org/10.24963/ijcai.2017/98)) la raccourcit en testant ses propres littéraux : on suppose **faux** ses littéraux **un par un**, avec une [propagation unitaire](#la-propagation-unitaire-les-niveaux-et-la-trace) après chacun, la clause elle-même étant mise de côté pendant le test.
+
+| Ce qui se passe après avoir supposé faux un littéral | Conséquence |
+|---|---|
+| La propagation produit un **conflit** | Les littéraux supposés jusque-là suffisent : la clause est raccourcie à ceux-là |
+| Un littéral suivant devient **vrai** par propagation | Les littéraux supposés, plus celui-ci, suffisent |
+| Un littéral suivant devient **faux** par propagation | Il est inutile : on le retire |
+| Rien de tout cela | La clause reste telle quelle |
+
+```python
+import itertools
+import random
+
+
+def valeur(litteral, affectation):
+    """Vrai, faux ou None (pas encore affecté) pour un littéral : +v est v, -v est non v."""
+    if abs(litteral) not in affectation:
+        return None
+    return affectation[abs(litteral)] == (litteral > 0)
+
+
+def propager(formule, affectation):
+    """Propagation unitaire : étend l'affectation ; renvoie False s'il y a conflit."""
+    change = True
+    while change:
+        change = False
+        for clause in formule:
+            if any(valeur(l, affectation) is True for l in clause):
+                continue                                    # clause déjà satisfaite
+            libres = [l for l in clause if valeur(l, affectation) is None]
+            if not libres:
+                return False                                # tous les littéraux faux : conflit
+            if len(libres) == 1:                            # un seul reste : il est forcé
+                affectation[abs(libres[0])] = libres[0] > 0
+                change = True
+    return True
+
+
+def vivifier(clause, formule):
+    """Raccourcit une clause en supposant ses littéraux faux, un par un, avec propagation."""
+    affectation, gardes = {}, []
+    for l in clause:
+        v = valeur(l, affectation)
+        if v is True:                                       # déjà vrai par les précédents
+            return gardes + [l]                             # ces littéraux-là suffisent
+        if v is False:                                      # déjà impliqué faux : inutile
+            continue
+        gardes.append(l)
+        affectation[abs(l)] = l < 0                         # on suppose l faux
+        if not propager(formule, affectation):              # conflit : les gardés suffisent
+            return gardes
+    return gardes
+
+
+def modeles(formule, nb_vars):
+    """Tous les modèles de la formule, par énumération (petites formules seulement)."""
+    for bits in itertools.product([False, True], repeat=nb_vars):
+        a = {v + 1: bits[v] for v in range(nb_vars)}
+        if all(any(valeur(l, a) for l in c) for c in formule):
+            yield bits
+
+
+def impliquee(clause, tous):
+    """Vrai si chaque modèle de la formule rend la clause vraie."""
+    return all(any(valeur(l, {v + 1: b[v] for v in range(10)}) for l in clause) for b in tous)
+
+
+def tirer_clause(taille):
+    """Une clause au hasard : des variables distinctes de 1 à 10, de signes aléatoires."""
+    return tuple(random.choice([-1, 1]) * v for v in random.sample(range(1, 11), taille))
+
+
+# Exemple à la main : a -> b -> c -> d (variables 1 à 4), clause apprise (non a ou d ou e ou f)
+chaine = [(-1, 2), (-2, 3), (-3, 4)]
+apprise = (-1, 4, 5, 6)
+print("clause apprise :", apprise, "-> vivifiée :", tuple(vivifier(apprise, chaine)))
+
+# Vérification sur des formules aléatoires : la clause raccourcie reste impliquée
+random.seed(1)
+total, retires, erreurs = 0, 0, 0
+for _ in range(300):
+    formule = [tirer_clause(3) for _ in range(30)]
+    tous = list(modeles(formule, 10))
+    if not tous:
+        continue                                            # formule contradictoire : on passe
+    for _ in range(20):
+        clause = tirer_clause(6)
+        if not impliquee(clause, tous):
+            continue                                        # clause non impliquée
+        courte = vivifier(clause, formule)
+        total += 1
+        retires += len(clause) - len(courte)
+        if not impliquee(courte, tous):
+            erreurs += 1                                    # ne doit jamais arriver
+print(total, "clauses impliquées de 6 littéraux,", retires, "littéraux retirés,",
+      erreurs, "erreurs")
+```
+
+```
+clause apprise : (-1, 4, 5, 6) -> vivifiée : (-1, 4)
+5075 clauses impliquées de 6 littéraux, 11649 littéraux retirés, 0 erreurs
+```
+
+La clause apprise `(¬a ∨ d ∨ e ∨ f)` devient `(¬a ∨ d)` : en supposant `a` vrai, la chaîne `a → b → c → d` force `d` à vrai, donc `e` et `f` ne servent à rien. Sur 5 075 clauses de 6 littéraux impliquées par une formule aléatoire, la vivification retire en moyenne 2,3 littéraux, et la clause raccourcie reste impliquée dans tous les cas (0 erreur sur l'énumération de tous les modèles).
+
+C'est un traitement qui coûte du temps (des propagations supplémentaires, faites aux redémarrages) pour des clauses plus courtes, donc plus utiles. Sur le solveur Skyscraper, le résultat dépend de la taille de la grille :
+
+| Mesure | Résultat |
+|---|---|
+| 64 × 64, 40 grilles, budget de 10 % du temps | Aucun effet |
+| 64 × 64, budget de 30 % | 17 grilles résolues seulement avec la vivification contre 8 seulement sans, en cumulant les deux graines de 40 grilles (probabilité d'un écart aussi net par hasard : environ 5 %, avant de tenir compte des 4 comparaisons faites), mais 8 à 22 % de propagations en plus (médiane) quand les deux versions résolvent |
+| 108 × 108, 29 grilles, avec le [filtrage de Régin](/?c=fondamentaux&s=algorithmes&p=couplages-et-filtrage-de-regin) | 73 copies résolues contre 91 sans vivification (16 victoires contre 34 en comparant copie à copie), 22 à 35 % de propagations en plus ; chaque propagation coûte environ 18 % de moins, ce qui ne compense pas |
+| Portfolio simulé à 108 × 108 | 64,5 s avec la vivification, 49,5 s sans |
+
+> **Leçon :** un signal favorable à petite taille (17 contre 8) ne s'est pas transposé à la taille visée. Mesurer sur la taille qui compte, et corriger le seuil de confiance quand plusieurs réglages sont comparés.
 
 ## Les queues lourdes : quelques instances catastrophiques
 
