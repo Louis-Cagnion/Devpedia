@@ -1,6 +1,5 @@
 import { appState } from "./state.js";
 import { getStoredLanguage } from "./lang.js";
-import { findCategory, findSubject } from "./utils.js";
 import {
     speakableCode,
     speakableText,
@@ -14,14 +13,19 @@ import { collectTableSegments } from "./reader-table.js";
 import {
     setHighlightedEntry,
     clearHighlight,
-    setActiveWord,
-    wordIndexAtChar,
     wrapSegmentWords,
-    calibrateRate,
     scheduleEstimatedWords,
     codeSpanIn,
 } from "./reader-highlight.js";
 import { logEvent, initReaderDebugOverlay, initReaderDebugToggle } from "./reader-debug.js";
+import { fetchPregenAudio } from "./reader-pregen-audio.js";
+import { speakViaSynthesis } from "./reader-synthesis.js";
+import { playSilenceClip } from "./reader-auto-advance-silence.js";
+import {
+    isElementFullyVisible,
+    findVisibleEntryIndex,
+    adjacentParagraphIndex,
+} from "./reader-navigation.js";
 
 /* Web Speech API only (no cloud TTS, no auto-hosted engine): the site is 100% static
    (GitHub Pages), so this is the only option with zero cost and zero infrastructure.
@@ -79,58 +83,22 @@ let isPausedAtCode = false;
 const audioEl = new Audio();
 let hasPregenAudio = false;
 
-/* A silent clip (generated once with `ffmpeg -f lavfi -i anullsrc=r=22050:cl=mono -t 5 -codec:a
-   libmp3lame -b:a 32k -ac 1 -ar 22050`, matching scripts/generate-audio.mjs's own encoding)
-   played through audioEl to bridge router.js's auto-advance countdown before a chapter change:
-   same reasoning as currentEntryEndSeconds above -- a JS setTimeout doesn't fire reliably once
-   iOS suspends timers on a locked screen, but this element's own "ended" event still does
-   (Louis, 23/08/2026: wanted auto-advance to survive a locked phone too). Fetched once, lazily,
-   the first time it's actually needed rather than at module load (most sessions never reach a
-   chapter's end, cf. Performance's own no-recompute-what-isn't-needed principle). */
-const AUTO_ADVANCE_SILENCE_PATH = "./audio/silence-5s.mp3";
-export const AUTO_ADVANCE_SILENCE_SECONDS = 5;
-let silenceObjectUrlPromise = null;
-let silenceAbortController = null;
+let detachSilenceClip = null;
 
 /**
- * @brief Plays AUTO_ADVANCE_SILENCE_PATH once through the shared audioEl and calls `onEnded` when
- * it finishes -- router.js's lock-survivable stand-in for a setTimeout-based auto-advance delay.
- * A fetch failure degrades to calling `onEnded` immediately rather than never auto-advancing.
+ * @brief Plays the auto-advance silent clip through the shared audioEl (cf.
+ * reader-auto-advance-silence.js) and calls `onEnded` when it finishes.
  *
  * @param {() => void} onEnded
- * @param {(secondsRemaining: number) => void} [onTick] called once up front with
- *   AUTO_ADVANCE_SILENCE_SECONDS, then again on every audioEl "timeupdate" -- driven off the
- *   audio's own clock like currentEntryEndSeconds elsewhere, so it keeps ticking under the same
- *   iOS-lock conditions `onEnded` itself already survives, unlike a plain setInterval.
+ * @param {(secondsRemaining: number) => void} [onTick]
  */
 export async function playAutoAdvanceSilence(onEnded, onTick) {
-    if (!silenceObjectUrlPromise) {
-        silenceObjectUrlPromise = fetch(AUTO_ADVANCE_SILENCE_PATH)
-            .then(response => response.blob())
-            .then(blob => URL.createObjectURL(blob))
-            .catch(() => null);
-    }
-    const objectUrl = await silenceObjectUrlPromise;
-    if (!objectUrl) {
-        onEnded();
-        return;
-    }
-    silenceAbortController = new AbortController();
-    audioEl.src = objectUrl;
-    audioEl.currentTime = 0;
-    audioEl.addEventListener("ended", onEnded, { once: true, signal: silenceAbortController.signal });
-    if (onTick) {
-        onTick(AUTO_ADVANCE_SILENCE_SECONDS);
-        audioEl.addEventListener("timeupdate", () => {
-            onTick(Math.max(1, AUTO_ADVANCE_SILENCE_SECONDS - Math.floor(audioEl.currentTime)));
-        }, { signal: silenceAbortController.signal });
-    }
-    audioEl.play().catch(err => logEvent("audioEl:play-rejected", err.message));
+    detachSilenceClip = await playSilenceClip(audioEl, onEnded, onTick);
 }
 
 /** @brief Stops a playAutoAdvanceSilence() in progress, if any, without calling its `onEnded`. */
 export function stopAutoAdvanceSilence() {
-    silenceAbortController?.abort();
+    detachSilenceClip?.();
     pauseAudioEl();
 }
 
@@ -466,61 +434,15 @@ export function collapseConsecutivePauses(entries) {
 let audioObjectUrl = null;
 
 /**
- * @brief Returns the chapter's path under audio/<lang>/, mirroring content/<category
- * folder>/<subject folder>/<chapterId> -- a chapter id alone isn't unique site-wide (e.g.
- * "variables" exists under both `c` and `php`), so the audio tree needs the same category/subject
- * namespacing as content/ itself to avoid two different chapters silently sharing one file
- * (Louis, 23/08/2026).
- *
- * @returns {string}
- */
-function chapterAudioPath() {
-    const category = findCategory({ id: appState.curCategory });
-    const subject = appState.curSubject ? findSubject(category, appState.curSubject) : null;
-    const folderParts = [category?.folder, subject?.folder].filter(Boolean);
-    return [...folderParts, appState.curPageId].join("/");
-}
-
-/**
- * @brief Fetches audio/<lang>/<chapterAudioPath()>.json and .mp3 together and, only if the JSON's
- * entries match `plan`'s own "speak"/"pause" sequence 1:1 (same count, same kind in the same order
- * -- the one sane proxy for "still the same content" without hashing the source), merges each
- * entry's startMs/durationMs (or a pause's afterMs) onto the matching `plan` entry and points
- * `audioEl` at the mp3, loaded whole into a blob: URL rather than left to stream from the network --
- * iOS throttles background network access hard enough that a streaming src can stall and re-buffer
- * mid-word once the phone locks (confirmed on a real iPhone, 22/08/2026); a blob: URL needs no
- * network at all once loaded, so nothing the OS does to the connection can interrupt it. Runs after
- * buildReadingPlan() has already made `plan` usable for speechSynthesis, so a slow or failed fetch
- * degrades to today's behavior rather than blocking the page.
+ * @brief Loads the chapter's pre-generated audio (cf. fetchPregenAudio()) into `audioEl` and
+ * switches playback over to it. Runs after buildReadingPlan() has already made `plan` usable for
+ * speechSynthesis, so a slow or failed fetch degrades to today's behavior rather than blocking the page.
  *
  * @param {Array} builtPlan the exact `plan` this call was kicked off for, to detect a page change
- *   racing ahead of these fetches (`plan` may already point somewhere else by the time they resolve)
  */
 async function loadPregenAudio(builtPlan) {
-    const langCode = getStoredLanguage() || "fr";
-    const chapterPath = chapterAudioPath();
-    let timing, blob;
-    try {
-        const [timingResponse, audioResponse] = await Promise.all([
-            fetch(`./audio/${langCode}/${chapterPath}.json`),
-            fetch(`./audio/${langCode}/${chapterPath}.mp3`),
-        ]);
-        if (!timingResponse.ok || !audioResponse.ok) return;
-        [timing, blob] = await Promise.all([timingResponse.json(), audioResponse.blob()]);
-    } catch {
-        return;
-    }
-    if (plan !== builtPlan) return; // the page moved on while these fetches were in flight
-    if (timing.length !== builtPlan.length) {
-        logEvent("pregen:mismatch", `length timing=${timing.length} plan=${builtPlan.length}`);
-        return;
-    }
-    const mismatchIndex = timing.findIndex((t, i) => t.kind !== builtPlan[i].kind);
-    if (mismatchIndex !== -1) {
-        logEvent("pregen:mismatch", `kind at index=${mismatchIndex} timing=${timing[mismatchIndex].kind} plan=${builtPlan[mismatchIndex].kind}`);
-        return;
-    }
-    timing.forEach((t, i) => Object.assign(builtPlan[i], t));
+    const blob = await fetchPregenAudio(builtPlan, () => plan !== builtPlan);
+    if (!blob) return;
     if (audioObjectUrl) URL.revokeObjectURL(audioObjectUrl);
     audioObjectUrl = URL.createObjectURL(blob);
     audioEl.src = audioObjectUrl;
@@ -642,12 +564,18 @@ function speakNext() {
         entry.highlightTarget.scrollIntoView({ behavior: "smooth", block: "start" });
     if (hasPregenAudio) speakNextViaAudio(entry);
     // canPlay() already keeps a French page with no pregen audio from reaching here at all.
-    else if (!isFrenchPage()) speakNextViaSynthesis(entry);
+    else if (!isFrenchPage()) {
+        const myGeneration = generation;
+        speakViaSynthesis(entry, readerRate, () => generation !== myGeneration, () => {
+            planIndex++;
+            setTimeout(speakNext, 0); // deferred: some engines fire onend synchronously
+        });
+    }
 }
 
 /**
  * @brief Plays `entry`'s slice of the shared pre-generated audio file (seek to its startMs, play
- * for its exact durationMs), the audio-backed counterpart to speakNextViaSynthesis() below. Word
+ * for its exact durationMs), the audio-backed counterpart to reader-synthesis.js's speakViaSynthesis(). Word
  * timing reuses scheduleEstimatedWords() with the entry's real durationMs instead of an estimated
  * rate -- exact rather than guessed, since the clip's real length is already known.
  *
@@ -723,69 +651,6 @@ function speakNextViaAudio(entry) {
     }
 }
 
-/* Chrome silently drops a speak() call made in quick succession after the previous utterance's
-   onend (e.g. a table row's several short entries chained back to back): neither onstart nor
-   onend ever fires, freezing playback with nothing queued and no error (Louis, 29/08/2026, "Par
-   où commencer ?" table). speakNextViaSynthesis()'s watchdog below detects this (no onstart within
-   this delay) and recovers by retrying once, then skipping the entry rather than hanging forever. */
-const SYNTHESIS_WATCHDOG_MS = 3000;
-
-/* cancel() doesn't unstick the engine if the very next speak() follows immediately -- confirmed
-   empirically (Louis, 29/08/2026): only a real gap after cancel() lets a fresh speak() take. */
-const SYNTHESIS_RECOVERY_DELAY_MS = 300;
-
-/**
- * @brief Speaks `entry` through the Web Speech API, the live-synthesis counterpart to
- * speakNextViaAudio() above -- today's only path for a chapter with no matching pre-generated
- * audio (cf. loadPregenAudio()).
- *
- * @param {Object} entry the current plan[planIndex], already known to be a "speak" entry
- * @param {boolean} isRetry whether this is already the one watchdog-triggered retry
- */
-function speakNextViaSynthesis(entry, isRetry = false) {
-    const utterance = new SpeechSynthesisUtterance(entry.text);
-    utterance.lang = entry.lang;
-    utterance.rate = readerRate;
-    const myGeneration = generation;
-    let started = false;
-    const watchdog = setTimeout(() => {
-        if (generation !== myGeneration || started) return;
-        logEvent("synthesis:silent-drop", isRetry ? "giving up, skipping entry" : "retrying once");
-        synth.cancel();
-        setTimeout(() => {
-            if (generation !== myGeneration) return;
-            if (isRetry) {
-                planIndex++;
-                speakNext();
-            } else {
-                speakNextViaSynthesis(entry, true);
-            }
-        }, SYNTHESIS_RECOVERY_DELAY_MS);
-    }, SYNTHESIS_WATCHDOG_MS);
-    utterance.onboundary = event => {
-        if (generation !== myGeneration) return;
-        setActiveWord(wordIndexAtChar(entry.text, event.charIndex));
-    };
-    let startedAt = null;
-    // Anchored on onstart, not on speak(): the queueing gap would otherwise inflate short entries.
-    utterance.onstart = () => {
-        if (generation !== myGeneration) return;
-        started = true;
-        clearTimeout(watchdog);
-        startedAt = Date.now();
-    };
-    scheduleEstimatedWords(entry, () => generation === myGeneration);
-    utterance.onend = utterance.onerror = () => {
-        if (generation !== myGeneration) return;
-        clearTimeout(watchdog);
-        const elapsedSeconds = startedAt === null ? 0 : (Date.now() - startedAt) / 1000;
-        if (entry.words.length && elapsedSeconds > 0.1) calibrateRate(entry.text.length / elapsedSeconds);
-        planIndex++;
-        setTimeout(speakNext, 0); // deferred: some engines fire onend synchronously
-    };
-    synth.speak(utterance);
-}
-
 /** @brief Restarts reading from the beginning of the plan. Called by the "Lire depuis le début" button. */
 export async function startReading() {
     if (!canPlay()) return;
@@ -797,49 +662,11 @@ export async function startReading() {
     speakNext();
 }
 
-/** @brief Returns the sticky navbar's own height in pixels. */
-function getNavbarHeight() {
-    return parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--navbar-height")) || 0;
-}
-
-/** @brief Returns the mobile floating reader bar's height in pixels, 0 if not currently a fixed overlay. */
-function getFloatingBarHeight() {
-    const bar = document.querySelector(".readerFloatingBar");
-    if (!bar || getComputedStyle(bar).position !== "fixed") return 0;
-    return bar.getBoundingClientRect().height;
-}
-
-/**
- * @brief Reports whether `element` is entirely on screen: both its top and bottom edge, below
- * the sticky navbar and above the floating reader bar.
- *
- * @param {HTMLElement} element
- *
- * @returns {boolean}
- */
-function isElementFullyVisible(element) {
-    const { top, bottom } = element.getBoundingClientRect();
-    return top >= getNavbarHeight() && bottom <= window.innerHeight - getFloatingBarHeight();
-}
-
-/**
- * @brief Returns the index of the first "speak" entry whose paragraph hasn't fully scrolled past
- * the top of the viewport yet, or 0 if nothing qualifies.
- */
-function findVisibleEntryIndex() {
-    const navbarHeight = getNavbarHeight();
-    for (let i = 0; i < plan.length; i++) {
-        const entry = plan[i];
-        if (entry.kind === "speak" && entry.group.getBoundingClientRect().bottom > navbarHeight) return i;
-    }
-    return 0;
-}
-
 /** @brief Starts reading from whichever paragraph is currently at the top of the screen. */
 export async function startFromVisible() {
     if (!canPlay()) return;
     resetPlayback();
-    const index = findVisibleEntryIndex();
+    const index = findVisibleEntryIndex(plan);
     plan[index]?.group?.scrollIntoView({ behavior: "smooth", block: "start" });
     planIndex = index;
     const myGeneration = generation;
@@ -872,33 +699,6 @@ export function replayParagraph() {
 }
 
 /**
- * @brief Returns the plan index of the adjacent paragraph's first "speak" entry.
- *
- * @param {number} fromIndex a plan index to search from, typically `planIndex`
- * @param {1|-1} direction 1 for the next paragraph, -1 for the previous one
- *
- * @returns {number|null} null if there isn't one in that direction
- */
-function adjacentParagraphIndex(fromIndex, direction) {
-    const currentEntry = plan[fromIndex];
-    if (!currentEntry) return null;
-    const currentGroup = currentEntry.kind === "speak" ? currentEntry.group : currentEntry.element;
-    let i = fromIndex;
-    /* Steps past whatever's left of the current paragraph, or (if paused at a code block) that
-       block itself. */
-    while (plan[i] && (plan[i].kind === "speak" ? plan[i].group : plan[i].element) === currentGroup) i += direction;
-    // A "pause" entry (a code block) in between isn't a paragraph to land on -- skip it too.
-    while (plan[i] && plan[i].kind !== "speak") i += direction;
-    if (!plan[i]) return null;
-    if (direction > 0) return i;
-    /* Walking backward, `i` is the *last* entry of the previous paragraph -- keep going back to
-       find where that paragraph actually starts. */
-    const targetGroup = plan[i].group;
-    while (plan[i - 1] && plan[i - 1].kind === "speak" && plan[i - 1].group === targetGroup) i--;
-    return i;
-}
-
-/**
  * @brief Cancels whatever's playing and jumps straight to `index`, speaking from there.
  *
  * @param {number} index
@@ -912,13 +712,13 @@ function jumpToParagraph(index) {
 
 /** @brief Jumps to the next paragraph. Called by the "paragraphe suivant" button. */
 export function nextParagraph() {
-    const target = adjacentParagraphIndex(planIndex, 1);
+    const target = adjacentParagraphIndex(plan, planIndex, 1);
     if (target !== null) jumpToParagraph(target);
 }
 
 /** @brief Jumps to the previous paragraph. Called by the "paragraphe précédent" button. */
 export function previousParagraph() {
-    const target = adjacentParagraphIndex(planIndex, -1);
+    const target = adjacentParagraphIndex(plan, planIndex, -1);
     if (target !== null) jumpToParagraph(target);
 }
 
