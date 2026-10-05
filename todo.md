@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : rédiger le point 4 en commençant par l'item `Langages/C` « Qualité, performance et outils » (sanitizers faussent les mesures), puis les autres items dans l'ordre, un item à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). Point 5 (vérifications GLSL et OpenGL non exécutées) : Louis a précisé qu'il n'a pas de rendu graphique sur cette machine, ne pas lui redemander tant qu'il n'a pas changé de machine. En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : rédiger le point 4 en commençant par l'item `Fondamentaux/Algorithmes` (ear clipping : sommets réflexes), puis les autres items dans l'ordre, un item à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). Point 5 (vérifications GLSL et OpenGL non exécutées) : Louis a précisé qu'il n'a pas de rendu graphique sur cette machine, ne pas lui redemander tant qu'il n'a pas changé de machine. En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -84,12 +84,12 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Infrastructure & DevOps/Administration système/touche-coincee-clavier-virtuel-xtest` (nouveau), et `administration-systeme` (présentation du sujet modifiée).
 - `Infrastructure & DevOps/Administration système/touche-coincee-clavier-virtuel-xtest` (section envoyer une touche à la bonne fenêtre : protocole sûr).
 - `Infrastructure & DevOps/Administration système/touche-coincee-clavier-virtuel-xtest` (section mesurer ce que l'application affiche : capture `ffmpeg` et pixels).
+- `Qualité, performance et outils/Performance/mesurer-avant-d-optimiser` (section mesurer la complexité : doubler la taille, sur le build normal ; sanitizers et `realloc`).
 
 ## 4. Notions du projet scop et de sa revue crash-test (01/10/2026, à rédiger, un chapitre à la fois)
 Source : toute la session (projet scop en C/OpenGL, revue crash-test, corrections vérifiées par exécution). Recherche faite dans `content/` : ce qui existe déjà est indiqué, le reste a 0 résultat. Ajouts à faire au fil des items de correction (les notions des items 11 à 20 s'ajouteront ici).
 
 **Langages > C**
-- `Qualité, performance et outils` : les sanitizers faussent les mesures de performance (sous ASan, `realloc` recopie tout le tableau à chaque appel : 0,6 s en build normal contre plus de 100 s pour le même fichier) ; mesurer la complexité sur le build normal `-O2`, jamais sur un build instrumenté.
 - `Fondamentaux/Algorithmes` (ou Graphisme, ear clipping) : **n'examiner que les sommets réflexes** : si un sommet est dans le triangle d'une oreille, alors un sommet réflexe l'est aussi, donc un polygone convexe ne coûte rien (12000 côtés : 2,4 s -> 0,03 s) ; liste des réflexes avec suppression en temps constant (échange avec le dernier et mise à jour de la position stockée dans le nœud) ; un sommet ne peut que passer de réflexe à convexe quand on coupe une oreille ; coût résiduel `n x r` ; bruit d'arrondi `float` qui rend « non convexes » des sommets d'un grand polygone convexe.
 - `Langages/C/compilation` : l'avertissement `-Wformat-truncation` (actif avec `-O2`, via `_FORTIFY_SOURCE`) quand un `snprintf` peut dépasser son tampon : dimensionner le tampon pour le pire cas (somme des champs bornés par `%.200s`), pas pour le cas courant.
 - `Langages/Bash` (et Zsh) : **zsh ne découpe pas une variable non guillemetée en mots** (`for sz in "1920 1080"; set -- $sz` donne un seul mot), contrairement à bash ; utiliser `${=var}` ; décimale à virgule des locales françaises dans `awk`/`printf` (`LC_ALL=C`) qui rend un fichier numérique invalide.
@@ -103,7 +103,6 @@ Source : toute la session (projet scop en C/OpenGL, revue crash-test, correction
 **Qualité, performance et outils**
 - Nouveau chapitre « Sanitizers et tests d'allocation » : `-fsanitize=address,undefined`, LeakSanitizer, UBSan, `ASAN_OPTIONS=hard_rss_limit_mb`, comparaison avec valgrind ; **injection d'échecs d'allocation** (faire échouer la k-ième `malloc` avec `-Wl,--wrap=malloc`, piège de `LD_PRELOAD` qui touche aussi valgrind et le shell) ; valider l'outil de test sur l'ancien code défectueux ; balayage exhaustif de cas valides (formes × sens × départs × plans × échelles) et fuzz, régression conservée à partir d'un échec de fuzz ; comparer ancien et nouveau code sur les mêmes entrées.
 - `Qualité et architecture du code` : un **message d'erreur propre à chaque cause** (jamais `error("")` vide ni `exit(1)` nu, jamais un message partagé entre causes) ; échouer sans fuite sur chaque chemin ; ne jamais annoncer « corrigé » sans test réel.
-- `Qualité, performance et outils/Performance` : mesurer la complexité par doublement de la taille (×2 de données = ×4 de temps → quadratique) avant de chercher la cause.
 
 ## 5. Vérifications à faire quand le projet scop sera disponible sur la machine
 À notifier à Louis à la prochaine session sur Devpedia, pour qu'il décide de me mettre ou non dessus (ne pas lancer seul).
