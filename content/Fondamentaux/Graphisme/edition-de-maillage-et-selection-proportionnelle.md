@@ -1,5 +1,5 @@
 ---
-order: 5
+order: 6
 ---
 
 # Édition de maillage et sélection proportionnelle
