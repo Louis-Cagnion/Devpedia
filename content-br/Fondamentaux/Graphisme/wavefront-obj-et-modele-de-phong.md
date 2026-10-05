@@ -150,13 +150,206 @@ As 4 faces acima compartilham todas o vértice `5` e o mesmo grupo de suavizaç�
 > ```
 > Reiniciar um contador de vértices a cada `o` quebra silenciosamente a indexação de todas as faces assim que um arquivo contém mais de um objeto.
 
+## Ler um `.obj` com tolerância
+
+Os arquivos `.obj` vêm de programas diferentes, que nem todos seguem a mesma variante do formato. Um analisador (*parser*) robusto **aceita com amplitude** (toda variante que faça sentido) e **recusa com uma mensagem precisa** (arquivo, linha, valor errado) todo o resto, em vez de travar ou de seguir em silêncio com dados falsos.
+
+| Variante encontrada | O que fazer |
+|---|---|
+| `v x y z w` (4 valores, `w` é um peso, 1.0 se ausente) | Ler `w` e depois ignorá-lo |
+| `v x y z r g b` (6 valores, cor por vértice, extensão de alguns exportadores) | Guardar os 3 primeiros, ignorar ou armazenar a cor |
+| `vt u`, `vt u v`, `vt u v w` (1 a 3 valores) | `v` vale 0 se faltar, `w` não serve para uma imagem 2D |
+| Diretiva desconhecida (`l`, `p`, `cstype`...), linha vazia, comentário `#` | Ignorar a linha, sem erro |
+| Menos valores que o previsto, texto no lugar de um número, `1e999` | Recusar, nomeando o arquivo, a linha e o valor recebido |
+
+```c
+/* Lê 3, 4 ou 6 números de uma linha "v"; devolve quantos leu, -1 se inválida. */
+static int parse_vertex(const char *s, double out[6])
+{
+	int n = 0;
+	char *end;
+
+	while (n < 6)
+	{
+		errno = 0;
+		out[n] = strtod(s, &end);        /* lê um número e avança até o fim dele */
+		if (end == s)                    /* nada legível: fim dos números */
+			break;
+		if (errno || !isfinite(out[n]))  /* 1e999, inf ou nan: recusado */
+			return -1;
+		s = end;
+		n++;
+	}
+	while (*s == ' ' || *s == '\t' || *s == '\r')  /* brancos do fim da linha */
+		s++;
+	return (*s == '\0' && (n == 3 || n == 4 || n == 6)) ? n : -1;
+}
+```
+
+Testada com `"1 2 3"` (3), `"1 2 3 1.0"` (4) e `"1 2 3 0.5 0.5 0.5"` (6): válidas. `"1 2"`, `"1 2 x"`, `"1e999 0 0"` e `"1 2 3 4 5"` devolvem -1. Prefere-se `strtod` a `atof`, que devolve 0 para qualquer texto sem avisar de nada (veja [converter um texto em número](/?c=langages-de-programmation&s=c&p=convertir-un-texte-en-nombre)).
+
+### Fins de linha e BOM
+
+| Caso | O que contém | Consequência se não for tratado |
+|---|---|---|
+| LF (`\n`) | Fim de linha Unix | Nenhuma |
+| CRLF (`\r\n`) | Fim de linha Windows | Um `\r` fica colado no fim da linha, ou seja, dentro do último valor lido |
+| CR (`\r`) sozinho | Fim de linha dos Macs muito antigos | `fgets` só corta em `\n`: o arquivo inteiro vira uma única linha |
+| BOM UTF-8 (bytes `EF BB BF` no início do arquivo) | Marca de codificação, veja [codificação de textos](/?c=donnees&s=representation-des-donnees&p=encodage-des-textes) | Cola-se na primeira diretiva: `\xEF\xBB\xBFv` não é `v`, a linha é tomada por uma diretiva desconhecida, **o primeiro vértice desaparece sem erro** e todos os índices das faces se deslocam uma unidade |
+
+> **Boa prática:** ler o arquivo inteiro na memória, pular um eventual BOM e cortar nos três fins de linha (`\r\n`, `\r` e `\n`) em vez de chamar `fgets`: o mesmo código trata então arquivos de qualquer sistema.
+
+## O formato PPM P6: uma textura sem biblioteca
+
+O [`map_Kd` do `.mtl`](#o-arquivo-de-imagem-referenciado-pelo-mtl) designa uma imagem. O **PPM** (*Portable PixMap*, [especificação](https://netpbm.sourceforge.net/doc/ppm.html)) é o formato de imagem mais simples de ler à mão: um pequeno cabeçalho de texto, seguido dos pixels em **binário** (bytes brutos, que um editor de texto não exibe de forma legível). Sua variante **P6** guarda três canais (vermelho, verde, azul) por pixel.
+
+```text
+P6                  <- número mágico: identifica o formato
+# um comentário     <- opcional: # até o fim da linha, a ser ignorado
+640 480             <- largura e altura, em pixels
+255                 <- maxval: valor máximo de um canal
+<bytes binários>    <- largura x altura x 3 canais, linha a linha, de cima para baixo
+```
+
+| `maxval` | Bytes por canal | Para voltar a 0 a 255 |
+|---|---|---|
+| 1 a 255 | 1 | `valor x 255 / maxval` |
+| 256 a 65535 | 2, byte mais significativo primeiro | `valor x 255 / maxval` (mesma fórmula, valor de 16 bits) |
+
+```c
+/* Lê um inteiro do cabeçalho PPM pulando brancos e comentários; -1 se ausente. */
+static long read_header_int(FILE *f)
+{
+	int c;
+
+	while ((c = fgetc(f)) != EOF)
+	{
+		if (c == '#')                    /* comentário: ignorado até o fim da linha */
+			while ((c = fgetc(f)) != EOF && c != '\n' && c != '\r')
+				;
+		else if (!isspace(c))
+			break;
+	}
+	if (!isdigit(c))
+		return -1;
+	long n = 0;
+	for (; isdigit(c); c = fgetc(f))     /* o branco que termina o número é consumido */
+	{
+		n = n * 10 + (c - '0');
+		if (n > 1000000)                 /* dimensão absurda: recusada */
+			return -1;
+	}
+	return n;
+}
+```
+
+A função principal chama `read_header_int` três vezes (largura, altura, `maxval`):
+
+```c
+/* Devolve largura x altura x 3 bytes (0 a 255), ou NULL com uma mensagem em stderr. */
+unsigned char *read_ppm(const char *path, int *w, int *h)
+{
+	FILE *f = fopen(path, "rb");                 /* "b": modo binário, indispensável no Windows */
+	if (!f)
+		return fprintf(stderr, "%s: %s\n", path, strerror(errno)), NULL;
+	if (fgetc(f) != 'P' || fgetc(f) != '6')
+		return fprintf(stderr, "%s: não é um PPM P6\n", path), fclose(f), NULL;
+	long width = read_header_int(f);             /* pula brancos e comentários, -1 se ausente */
+	long height = read_header_int(f);
+	long maxval = read_header_int(f);            /* consome o único branco que segue */
+	if (width < 1 || height < 1 || maxval < 1 || maxval > 65535)
+		return fprintf(stderr, "%s: cabeçalho inválido\n", path), fclose(f), NULL;
+	size_t bytes = maxval < 256 ? 1 : 2;
+	size_t count = (size_t)width * (size_t)height * 3;
+	unsigned char *raw = malloc(count * bytes);
+	unsigned char *out = malloc(count);
+	if (!raw || !out || fread(raw, bytes, count, f) != count)
+	{                                            /* truncado, ou memória insuficiente */
+		fprintf(stderr, "%s: dados truncados ou memória insuficiente\n", path);
+		return free(raw), free(out), fclose(f), NULL;
+	}
+	for (size_t i = 0; i < count; i++)
+	{
+		long v = bytes == 1 ? raw[i] : (raw[2 * i] << 8) | raw[2 * i + 1];
+		out[i] = (unsigned char)((v * 255 + maxval / 2) / maxval);  /* arredondado ao mais próximo */
+	}
+	free(raw);
+	fclose(f);
+	*w = (int)width;
+	*h = (int)height;
+	return out;
+}
+```
+
+Compilada com `-Wall -Wextra -pedantic` sem nenhum aviso e testada com quatro arquivos: um PPM de 8 bits com comentário e um PPM de 16 bits dão ambos o pixel vermelho `255 0 0`; um arquivo cujos dados acabam cedo demais, um arquivo `P5` (tons de cinza) e um arquivo ausente são recusados, cada um com a própria mensagem.
+
+| Cilada | Por quê | Remédio |
+|---|---|---|
+| Pular todos os brancos depois de `maxval` | Um byte de pixel pode valer `0x20` ou `0x0A` (um branco): seria tomado por espaço | Consumir **um único** branco e ler os dados como estão |
+| Arquivo convertido para CRLF | Cada `\n` binário vira `\r\n`: os dados crescem e se deslocam | Detectar o tamanho incoerente e recusar |
+| Arquivo truncado | `fread` devolve menos que o previsto | Comparar a contagem lida com a esperada |
+| `largura x altura x 3` enorme | O produto estoura ou pede gigabytes | Limitar cada dimensão, calcular em `size_t` |
+| Linha de baixo primeiro | O PPM guarda a primeira linha **em cima**, o OpenGL espera a primeira linha **embaixo** | Inverter a imagem verticalmente ou inverter `v` |
+
+## A normal de um polígono: o método de Newell
+
+O teste de orientação do ear clipping precisa da normal da face. O cálculo ingênuo (produto vetorial das duas primeiras arestas) falha de duas maneiras: se os três primeiros vértices estão alinhados, o produto é o vetor nulo; se o primeiro canto é reentrante (ângulo interno acima de 180 graus), a normal obtida está invertida, e todo o resto do teste fica errado.
+
+O **método de Newell** soma uma contribuição por aresta, sobre **todo** o contorno, de modo que nenhum vértice é privilegiado:
+
+```text
+para cada aresta (a -> b) do polígono:
+    nx += (a.y - b.y) * (a.z + b.z)
+    ny += (a.z - b.z) * (a.x + b.x)
+    nz += (a.x - b.x) * (a.y + b.y)
+normal = (nx, ny, nz) / comprimento      <- seu comprimento vale 2 vezes a área do polígono
+```
+
+```c
+/* Normal unitária de um polígono (método de Newell); -1 se a superfície é nula. */
+static int newell_normal(const double (*p)[3], int n, double out[3])
+{
+	double nx = 0, ny = 0, nz = 0;
+
+	for (int i = 0; i < n; i++)
+	{
+		const double *a = p[i];
+		const double *b = p[(i + 1) % n];      /* o último vértice liga-se ao primeiro */
+		nx += (a[1] - b[1]) * (a[2] + b[2]);
+		ny += (a[2] - b[2]) * (a[0] + b[0]);
+		nz += (a[0] - b[0]) * (a[1] + b[1]);
+	}
+	double len = sqrt(nx * nx + ny * ny + nz * nz);
+	if (len == 0)                              /* vértices alinhados ou coincidentes */
+		return -1;
+	out[0] = nx / len;
+	out[1] = ny / len;
+	out[2] = nz / len;
+	return 0;
+}
+```
+
+Testado com um polígono em L côncavo cujos três primeiros vértices estão alinhados (`(0,0) (1,0) (2,0) (2,1) (1,1) (1,2)`, no plano z = 0): o cálculo ingênuo dá o vetor nulo, Newell dá `0 0 1`. Com apenas três vértices alinhados, devolve -1: uma face de superfície nula é recusada com a própria mensagem, ela não tem normal. Para o produto vetorial, veja [Vetores e produto escalar](/?c=fondamentaux&s=mathematiques&p=vecteurs-et-produit-scalaire).
+
+## Tornar o ear clipping robusto
+
+O algoritmo descrito acima é exato com números exatos; os números de ponto flutuante (veja [representação dos flutuantes](/?c=donnees&s=representation-des-donnees&p=nombres-flottants)) obrigam a três precauções:
+
+| Precaução | Por quê |
+|---|---|
+| Fazer os predicados (orientação, mesmo lado) em `double`, mesmo que os vértices sejam guardados em `float` | Perto de zero, um `float` inverte o sinal do produto vetorial: uma orelha válida é recusada, uma inválida é aceita |
+| Comparar com uma tolerância **relativa** (`abs(produto) <= epsilon x comprimento1 x comprimento2`), nunca com uma constante absoluta | Uma constante absoluta depende da unidade do modelo (um objeto de 0,001 ou de 1000 unidades) |
+| Tratar à parte o vértice **alinhado** com seus vizinhos ou situado **sobre uma aresta** do triângulo candidato | Nem dentro nem fora: o teste estrito o aceita ou recusa ao sabor do arredondamento |
+
+O corte é feito então em **duas passagens**: uma passagem estrita (uma orelha deve ser estritamente convexa e não conter nenhum vértice interior nem vértice na sua borda); se não encontrar nenhuma orelha quando restam mais de 3 vértices, uma segunda passagem tolera os vértices situados exatamente na borda. Se ela também falhar, a face é recusada (degenerada ou que se cruza) com uma mensagem que nomeia o arquivo e a linha, em vez de entrar num laço sem fim.
+
 ---
 
 ## 📋 Recapitulação
 
 | | |
 |---|---|
-| **A lembrar** | Um `.obj` lista instruções linha por linha (`v`, `vt`, `vn`, `f`, `s`...), com índices de vértices que começam em 1. As faces podem ter mais de 3 vértices e precisam ser trianguladas para serem desenhadas pela placa de vídeo; o ear clipping também trata faces côncavas graças a um teste de orientação E a um teste "mesmo lado" por vértice restante. Uma face geralmente combina um índice por lista e por canto (`v/vt/vn`), pois `v` e `vt` são duas listas independentes não alinhadas -- necessário para representar uma costura UV. O `.mtl` associado descreve a aparência por meio dos 4 parâmetros do modelo de Phong (ambiente, difuso, especular, brilho) e pode referenciar um arquivo de imagem (`map_Kd`) como textura. `s` controla a suavização das normais, independentemente da geometria. |
-| **Ferramentas utilizáveis** | O modelo de Phong (`Ka`/`Kd`/`Ks`/`Ns`) para interpretar um `.mtl`. `map_Kd` para ligar um `.mtl` a um arquivo de imagem de textura. Os grupos de suavização (`s`) para escolher entre renderização plana e suavizada. A fórmula `n - 2` para verificar o número de triângulos produzido por qualquer triangulação. |
-| **Ciladas a evitar** | Índices de vértices 1-based em vez de 0-based. Faces com número variável de vértices não trianguladas. A triangulação em leque produz um resultado errado em uma face côncava, e um teste de orientação sozinho (sem o teste "mesmo lado") pode validar erroneamente uma orelha que prende outro vértice. Indexar uma coordenada de textura apenas por vértice (em vez de por par vértice/textura) quebra silenciosamente em uma costura UV. Um `.mtl` com material único não fornece uma cor por subparte. `s`/`usemtl` são diretivas de estado a acompanhar durante todo o parsing, não atributos presentes em cada linha `f`. `o` nunca afeta a numeração dos vértices, que permanece global ao arquivo mesmo com vários objetos. |
-| **Boas práticas** | Separar a leitura bruta do arquivo e a triangulação em duas funções distintas, cada uma com responsabilidade única. Reutilizar a mesma primitiva geométrica (produto vetorial + produto escalar com a normal) para o teste de orientação e o teste "mesmo lado", em vez de duplicá-la. Verificar uma triangulação com a fórmula `n - 2` antes de considerar a divisão correta. Duplicar um vértice por par único `(v, vt[, vn])` em vez de apenas por posição, para lidar com costuras UV. Manter o estado atual (material, grupo de suavização) em variáveis atualizadas ao longo do parsing, e associá-lo a cada face lida. |
+| **A lembrar** | Um `.obj` lista instruções linha por linha (`v`, `vt`, `vn`, `f`, `s`...), com índices de vértices que começam em 1. As faces podem ter mais de 3 vértices e precisam ser trianguladas para serem desenhadas pela placa de vídeo; o ear clipping também trata faces côncavas graças a um teste de orientação E a um teste "mesmo lado" por vértice restante. Uma face geralmente combina um índice por lista e por canto (`v/vt/vn`), pois `v` e `vt` são duas listas independentes não alinhadas -- necessário para representar uma costura UV. O `.mtl` associado descreve a aparência por meio dos 4 parâmetros do modelo de Phong (ambiente, difuso, especular, brilho) e pode referenciar um arquivo de imagem (`map_Kd`) como textura. `s` controla a suavização das normais, independentemente da geometria. Um analisador aceita com amplitude (`v` com 3, 4 ou 6 valores, diretivas desconhecidas ignoradas, LF, CRLF ou CR, BOM) e recusa o resto com uma mensagem precisa. O PPM P6 é um cabeçalho de texto seguido de pixels binários (`maxval` em 1 ou 2 bytes). A normal de um polígono se calcula com o método de Newell, sobre todo o contorno. |
+| **Ferramentas utilizáveis** | O modelo de Phong (`Ka`/`Kd`/`Ks`/`Ns`) para interpretar um `.mtl`. `map_Kd` para ligar um `.mtl` a um arquivo de imagem de textura. Os grupos de suavização (`s`) para escolher entre renderização plana e suavizada. A fórmula `n - 2` para verificar o número de triângulos produzido por qualquer triangulação. `strtod` para ler os números, o método de Newell para a normal, predicados em `double` para o ear clipping. |
+| **Ciladas a evitar** | Índices de vértices 1-based em vez de 0-based. Faces com número variável de vértices não trianguladas. A triangulação em leque produz um resultado errado em uma face côncava, e um teste de orientação sozinho (sem o teste "mesmo lado") pode validar erroneamente uma orelha que prende outro vértice. Indexar uma coordenada de textura apenas por vértice (em vez de por par vértice/textura) quebra silenciosamente em uma costura UV. Um `.mtl` com material único não fornece uma cor por subparte. `s`/`usemtl` são diretivas de estado a acompanhar durante todo o parsing, não atributos presentes em cada linha `f`. `o` nunca afeta a numeração dos vértices, que permanece global ao arquivo mesmo com vários objetos. Um BOM colado na primeira diretiva (primeiro vértice perdido em silêncio), um `\r` residual de um arquivo CRLF, `fgets` diante de um CR sozinho. Pular todos os brancos depois do `maxval` de um PPM, não conferir o tamanho dos dados, esquecer que sua primeira linha está em cima enquanto o OpenGL espera a de baixo. Calcular a normal só com as duas primeiras arestas. Usar uma tolerância absoluta num teste geométrico. |
+| **Boas práticas** | Separar a leitura bruta do arquivo e a triangulação em duas funções distintas, cada uma com responsabilidade única. Reutilizar a mesma primitiva geométrica (produto vetorial + produto escalar com a normal) para o teste de orientação e o teste "mesmo lado", em vez de duplicá-la. Verificar uma triangulação com a fórmula `n - 2` antes de considerar a divisão correta. Duplicar um vértice por par único `(v, vt[, vn])` em vez de apenas por posição, para lidar com costuras UV. Manter o estado atual (material, grupo de suavização) em variáveis atualizadas ao longo do parsing, e associá-lo a cada face lida. Ler o arquivo inteiro e cortá-lo nos três fins de linha depois de pular o BOM. Recusar uma entrada inválida nomeando o arquivo, a linha e o valor. Calcular os predicados geométricos em `double` com uma tolerância relativa, em duas passagens, e recusar a face se não existir nenhuma orelha. |
