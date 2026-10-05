@@ -343,6 +343,129 @@ The algorithm described above is exact with exact numbers; floating-point number
 
 The cutting then runs in **two passes**: a strict pass (an ear must be strictly convex and contain no interior vertex nor vertex on its boundary); if it finds no ear while more than 3 vertices remain, a second pass tolerates vertices lying exactly on the boundary. If that fails too, the face is refused (degenerate or self-intersecting) with a message naming the file and the line, instead of looping forever.
 
+## Speeding up ear clipping: examine only reflex vertices
+
+The "no vertex trapped" test walks through all the remaining vertices, for every candidate ear, and every clip requires a new search: at least `n x n` operations ([quadratic complexity](/?c=fondamentaux&s=algorithmes&p=complexite-et-notation-big-o)). Two words are enough to do better. The **turn** at a vertex `b` between its neighbours `a` and `c` is the dot product of the face normal with the cross product of `a->b` and `a->c` (see [Vectors and dot product](/?c=fondamentaux&s=mathematiques&p=vecteurs-et-produit-scalaire)): its sign says which way the outline turns.
+
+| Term | Meaning | Sign of the turn |
+|---|---|---|
+| **Convex** vertex | The outline turns in the direction of the normal: interior angle below 180 degrees | `> 0` |
+| **Reflex** vertex | The outline turns the other way: interior angle above 180 degrees, a notch | `<= 0` (a zero turn, a vertex aligned with its neighbours, is classed here as a precaution) |
+
+In the L-shaped polygon of the previous section, vertex `(1,1)` is reflex, `(1,0)` is aligned with its neighbours (zero turn) and the other four are convex. A convex polygon has no reflex vertex.
+
+### Why reflex vertices are enough
+
+**If a vertex lies inside the triangle of a candidate ear, then a reflex vertex lies inside it too.** Reasoning: the two sides of the triangle that touch the tip `v` are edges of the polygon, which the outline cannot cross (it would intersect itself). An outline that enters the triangle therefore has only the base `[prev, next]` to enter and to leave by. The area between this detour and the tip `v` is bordered only by polygon edges, so it is inside the polygon. The point of the detour closest to `v` (`Q` below) has the interior on `v`'s side and makes a peak towards it: its interior angle exceeds 180 degrees.
+
+```text
+            v           boundary entering by the base, rising to Q, coming back down
+           / \          Q: vertex of the detour closest to v
+          /   \         the polygon interior is on v's side: Q is reflex
+         /  Q  \
+        /  / \  \
+   prev ----------- next
+```
+
+Consequence: the same-side test is only run against the list of reflex vertices, which is empty for a convex polygon (no point test at all).
+
+### Keeping the reflex list up to date
+
+| Moment | What happens | Cost |
+|---|---|---|
+| At the start | One pass: every vertex with a turn `<= 0` goes into the `reflex[]` array | `n` |
+| After clipping an ear | Only the two neighbours of the clipped tip change angle, and it can only decrease (a triangle leaves the polygon): a reflex vertex may become convex, a convex one **never** becomes reflex again | 2 checks |
+| Leaving the list | [swap-remove](/?c=fondamentaux&s=algorithmes&p=swap-remove): the vertex is replaced by the last one. Each node remembers its position `reflex_pos` in the array to find it without scanning | O(1) |
+
+```c
+typedef struct { int prev, next, reflex_pos; } Node;    /* reflex_pos: -1 if convex */
+
+typedef struct
+{
+	const double (*p)[3];      /* vertex positions */
+	double normal[3];          /* face normal (Newell's method) */
+	Node *node;                /* circular doubly linked list */
+	int *reflex;               /* indices of the reflex vertices */
+	int n_reflex;
+}	Ctx;
+
+/* Turn at b between a and c: > 0 convex, < 0 reflex, 0 aligned. */
+static double turn(const double *a, const double *b, const double *c, const double nrm[3])
+{
+	double u[3] = {b[0] - a[0], b[1] - a[1], b[2] - a[2]};
+	double v[3] = {c[0] - a[0], c[1] - a[1], c[2] - a[2]};
+
+	return (u[1] * v[2] - u[2] * v[1]) * nrm[0]      /* cross product u x v, */
+		+ (u[2] * v[0] - u[0] * v[2]) * nrm[1]       /* then dot product */
+		+ (u[0] * v[1] - u[1] * v[0]) * nrm[2];      /* with the normal */
+}
+
+/* Three-sides test: q is inside triangle (a, b, d), boundary included. */
+static int in_triangle(const Ctx *c, int a, int b, int d, int q)
+{
+	return turn(c->p[a], c->p[b], c->p[q], c->normal) >= 0
+		&& turn(c->p[b], c->p[d], c->p[q], c->normal) >= 0
+		&& turn(c->p[d], c->p[a], c->p[q], c->normal) >= 0;
+}
+
+static int is_reflex(const Ctx *c, int i)
+{
+	const Node *nd = &c->node[i];
+
+	return turn(c->p[nd->prev], c->p[i], c->p[nd->next], c->normal) <= 0;
+}
+
+static int is_ear(const Ctx *c, int i)
+{
+	int a = c->node[i].prev;
+	int d = c->node[i].next;
+
+	if (is_reflex(c, i))
+		return 0;
+	for (int k = 0; k < c->n_reflex; k++)      /* reflex vertices only */
+	{
+		int q = c->reflex[k];
+		if (q != a && q != d && in_triangle(c, a, i, d, q))
+			return 0;
+	}
+	return 1;
+}
+
+static void reflex_remove(Ctx *c, int i)
+{
+	int pos = c->node[i].reflex_pos;
+	int last = c->reflex[--c->n_reflex];
+
+	c->reflex[pos] = last;                     /* the last one takes the place */
+	c->node[last].reflex_pos = pos;            /* and records its new position */
+	c->node[i].reflex_pos = -1;
+}
+
+/* After a clip: a reflex neighbour that became convex leaves the list. */
+static void refresh(Ctx *c, int i)
+{
+	if (c->node[i].reflex_pos >= 0 && !is_reflex(c, i))
+		reflex_remove(c, i);
+}
+```
+
+`in_triangle` is the same-side test of the section "Checking that no vertex is trapped inside the ear"; the clipping loop calls `refresh` on `prev` and `next` after each ear clipped.
+
+### What it changes, measured
+
+12000 vertices, `-O2`, a single run, same result (11998 triangles, that is `n - 2`) with both tests:
+
+| Polygon | Reflex vertices | Test against all vertices | Test against reflex vertices |
+|---|---|---|---|
+| Circle (convex) | 0 | 0.38 s | 0.0002 s |
+| Star (every other vertex pointing inward) | 6000 | 0.28 s | 0.06 s |
+
+The remaining cost is of the order of `n x r` (`r`: number of reflex vertices): a very jagged shape stays quadratic, only the constant drops. The gain is largest on slightly concave polygons, which are the vast majority of the faces of an `.obj`.
+
+> **Pitfall: rounding noise.** On a large polygon that is almost flat at every vertex, a computation error can tip convex vertices into the reflex list: it swells and the cost goes back to `n x n`. Computing the turn in `double` (see [Making ear clipping robust](/?c=fondamentaux&s=graphisme&p=wavefront-obj-et-modele-de-phong#making-ear-clipping-robust)) limits this risk. When in doubt, **always class the vertex as reflex** (`<= 0`, not `< 0`): an extra reflex vertex only costs time, a forgotten one would make the algorithm accept an ear that traps a vertex.
+
+> **Good practice:** validate the optimisation by comparing, on the same polygons, the number of triangles (`n - 2`) and the sum of their areas between the old test (all vertices) and the new one (reflex vertices only), before throwing the old one away. See also [measure before optimising](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser).
+
 ---
 
 ## 📋 Summary

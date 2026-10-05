@@ -343,6 +343,129 @@ L'algorithme décrit plus haut est exact avec des nombres exacts ; les nombres �
 
 Le découpage se fait alors en **deux passes** : une passe stricte (une oreille doit être strictement convexe et ne contenir ni sommet intérieur ni sommet sur son bord) ; si elle ne trouve aucune oreille alors qu'il reste plus de 3 sommets, une seconde passe tolère les sommets posés exactement sur le bord. Si elle échoue aussi, la face est refusée (dégénérée ou qui se recoupe elle-même) avec un message qui nomme le fichier et la ligne, au lieu de boucler sans fin.
 
+## Accélérer l'ear clipping : n'examiner que les sommets réflexes
+
+Le test « aucun sommet piégé » parcourt tous les sommets restants, pour chaque oreille candidate, et chaque retrait en réclame une nouvelle : au moins `n x n` opérations ([complexité quadratique](/?c=fondamentaux&s=algorithmes&p=complexite-et-notation-big-o)). Deux mots suffisent pour faire mieux. Le **virage** en un sommet `b` entre ses voisins `a` et `c` est le produit scalaire de la normale de la face avec le produit vectoriel de `a->b` et `a->c` (voir [Vecteurs et produit scalaire](/?c=fondamentaux&s=mathematiques&p=vecteurs-et-produit-scalaire)) : son signe dit de quel côté le contour tourne.
+
+| Terme | Sens | Signe du virage |
+|---|---|---|
+| Sommet **convexe** | Le contour y tourne dans le sens de la normale : angle intérieur inférieur à 180 degrés | `> 0` |
+| Sommet **réflexe** (*reflex*) | Le contour y tourne en sens inverse : angle intérieur supérieur à 180 degrés, c'est une encoche | `<= 0` (un virage nul, sommet aligné avec ses voisins, est classé ici par prudence) |
+
+Dans le polygone en L de la section précédente, le sommet `(1,1)` est réflexe, `(1,0)` est aligné avec ses voisins (virage nul) et les quatre autres sont convexes. Un polygone convexe n'a aucun sommet réflexe.
+
+### Pourquoi les réflexes suffisent
+
+**Si un sommet se trouve dans le triangle d'une oreille candidate, alors un sommet réflexe s'y trouve aussi.** Raisonnement : les deux côtés du triangle qui touchent la pointe `v` sont des arêtes du polygone, que le contour ne peut pas traverser (il se recouperait lui-même). Un contour qui entre dans le triangle n'a donc que la base `[prev, next]` pour entrer et pour ressortir. La zone comprise entre ce détour et la pointe `v` n'est bordée que par des arêtes du polygone, donc elle est à l'intérieur du polygone. Le point du détour le plus proche de `v` (`Q` ci-dessous) a l'intérieur du côté de `v` et fait un pic vers lui : son angle intérieur dépasse 180 degrés.
+
+```text
+            v           contour qui entre par la base, monte jusqu'à Q, redescend
+           / \          Q : sommet du détour le plus proche de v
+          /   \         l'intérieur du polygone est du côté de v : Q est réflexe
+         /  Q  \
+        /  / \  \
+   prev ----------- next
+```
+
+Conséquence : le test du même côté ne se fait plus que contre la liste des réflexes, qui est vide pour un polygone convexe (aucun test de point du tout).
+
+### Tenir la liste des réflexes à jour
+
+| Moment | Ce qui se passe | Coût |
+|---|---|---|
+| Au départ | Une passe : tout sommet de virage `<= 0` entre dans le tableau `reflex[]` | `n` |
+| Après un retrait d'oreille | Seuls les deux voisins de la pointe coupée changent d'angle, et il ne peut que diminuer (un triangle quitte le polygone) : un réflexe peut devenir convexe, un convexe ne redevient **jamais** réflexe | 2 vérifications |
+| Sortie de la liste | [swap-remove](/?c=fondamentaux&s=algorithmes&p=swap-remove) : le sommet prend la place du dernier. Chaque nœud mémorise sa position `reflex_pos` dans le tableau pour la trouver sans le parcourir | O(1) |
+
+```c
+typedef struct { int prev, next, reflex_pos; } Node;    /* reflex_pos : -1 si convexe */
+
+typedef struct
+{
+	const double (*p)[3];      /* positions des sommets */
+	double normal[3];          /* normale de la face (méthode de Newell) */
+	Node *node;                /* liste doublement chaînée circulaire */
+	int *reflex;               /* indices des sommets réflexes */
+	int n_reflex;
+}	Ctx;
+
+/* Virage en b entre a et c : > 0 convexe, < 0 réflexe, 0 aligné. */
+static double turn(const double *a, const double *b, const double *c, const double nrm[3])
+{
+	double u[3] = {b[0] - a[0], b[1] - a[1], b[2] - a[2]};
+	double v[3] = {c[0] - a[0], c[1] - a[1], c[2] - a[2]};
+
+	return (u[1] * v[2] - u[2] * v[1]) * nrm[0]      /* produit vectoriel u x v, */
+		+ (u[2] * v[0] - u[0] * v[2]) * nrm[1]       /* puis produit scalaire */
+		+ (u[0] * v[1] - u[1] * v[0]) * nrm[2];      /* avec la normale */
+}
+
+/* Test des trois côtés : q est dans le triangle (a, b, d), bord compris. */
+static int in_triangle(const Ctx *c, int a, int b, int d, int q)
+{
+	return turn(c->p[a], c->p[b], c->p[q], c->normal) >= 0
+		&& turn(c->p[b], c->p[d], c->p[q], c->normal) >= 0
+		&& turn(c->p[d], c->p[a], c->p[q], c->normal) >= 0;
+}
+
+static int is_reflex(const Ctx *c, int i)
+{
+	const Node *nd = &c->node[i];
+
+	return turn(c->p[nd->prev], c->p[i], c->p[nd->next], c->normal) <= 0;
+}
+
+static int is_ear(const Ctx *c, int i)
+{
+	int a = c->node[i].prev;
+	int d = c->node[i].next;
+
+	if (is_reflex(c, i))
+		return 0;
+	for (int k = 0; k < c->n_reflex; k++)      /* seulement les réflexes */
+	{
+		int q = c->reflex[k];
+		if (q != a && q != d && in_triangle(c, a, i, d, q))
+			return 0;
+	}
+	return 1;
+}
+
+static void reflex_remove(Ctx *c, int i)
+{
+	int pos = c->node[i].reflex_pos;
+	int last = c->reflex[--c->n_reflex];
+
+	c->reflex[pos] = last;                     /* le dernier prend la place */
+	c->node[last].reflex_pos = pos;            /* et note sa nouvelle position */
+	c->node[i].reflex_pos = -1;
+}
+
+/* Après un retrait : un voisin réflexe devenu convexe quitte la liste. */
+static void refresh(Ctx *c, int i)
+{
+	if (c->node[i].reflex_pos >= 0 && !is_reflex(c, i))
+		reflex_remove(c, i);
+}
+```
+
+`in_triangle` est le test du même côté de la section « Vérifier qu'aucun sommet n'est piégé dans l'oreille » ; la boucle de découpe appelle `refresh` sur `prev` et `next` après chaque oreille coupée.
+
+### Ce que ça change, mesuré
+
+12000 sommets, `-O2`, une exécution, même résultat (11998 triangles, soit `n - 2`) avec les deux tests :
+
+| Polygone | Sommets réflexes | Test contre tous les sommets | Test contre les réflexes |
+|---|---|---|---|
+| Cercle (convexe) | 0 | 0,38 s | 0,0002 s |
+| Étoile (un sommet sur deux rentrant) | 6000 | 0,28 s | 0,06 s |
+
+Le coût résiduel est de l'ordre de `n x r` (`r` : nombre de réflexes) : une forme très découpée reste quadratique, seule la constante baisse. Le gain est maximal sur les polygones peu concaves, qui sont l'immense majorité des faces d'un `.obj`.
+
+> **Piège : le bruit d'arrondi.** Sur un grand polygone presque plat à chaque sommet, une erreur de calcul peut faire basculer des sommets convexes dans la liste des réflexes : elle gonfle et le coût redevient `n x n`. Calculer le virage en `double` (voir [Rendre l'ear clipping robuste](/?c=fondamentaux&s=graphisme&p=wavefront-obj-et-modele-de-phong#rendre-l-ear-clipping-robuste)) limite ce risque. En cas de doute, **toujours classer le sommet réflexe** (`<= 0`, pas `< 0`) : un réflexe en trop ne coûte que du temps, un réflexe oublié ferait accepter une oreille qui piège un sommet.
+
+> **Bonne pratique :** valider l'optimisation en comparant, sur les mêmes polygones, le nombre de triangles (`n - 2`) et la somme de leurs aires entre l'ancien test (tous les sommets) et le nouveau (réflexes seulement), avant de jeter l'ancien. Voir aussi [mesurer avant d'optimiser](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser).
+
 ---
 
 ## 📋 Récapitulatif

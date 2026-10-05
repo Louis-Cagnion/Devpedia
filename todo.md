@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : rédiger le point 4 en commençant par l'item `Fondamentaux/Algorithmes` (ear clipping : sommets réflexes), puis les autres items dans l'ordre, un item à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). Point 5 (vérifications GLSL et OpenGL non exécutées) : Louis a précisé qu'il n'a pas de rendu graphique sur cette machine, ne pas lui redemander tant qu'il n'a pas changé de machine. En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : rédiger le point 4 en commençant par l'item `Langages/C/compilation` (`-Wformat-truncation`), puis les autres items dans l'ordre, un item à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). Point 5 (vérifications GLSL et OpenGL non exécutées) : Louis a précisé qu'il n'a pas de rendu graphique sur cette machine, ne pas lui redemander tant qu'il n'a pas changé de machine. En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -63,7 +63,7 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Langages/C/exit-et-codes-de-retour` (section `atexit()`).
 - `Langages/C/convertir-un-texte-en-nombre` (nouveau).
 - `Langages/C/operateur-virgule` (section ordre d'évaluation des arguments non spécifié, points de séquence).
-- `Fondamentaux/Graphisme/wavefront-obj-et-modele-de-phong` (sections lire un `.obj` avec tolérance, fins de ligne et BOM, PPM P6, méthode de Newell, ear clipping robuste).
+- `Fondamentaux/Graphisme/wavefront-obj-et-modele-de-phong` (sections lire un `.obj` avec tolérance, fins de ligne et BOM, PPM P6, méthode de Newell, ear clipping robuste, ear clipping par sommets réflexes).
 - `Fondamentaux/Graphisme/tampons-textures-et-shaders-opengl` (nouveau).
 - `Fondamentaux/Graphisme/matrices-et-camera` (nouveau).
 - `Fondamentaux/Graphisme/glfw-glad-et-boucle-de-rendu` (sections delta time et vsync).
@@ -90,7 +90,6 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 Source : toute la session (projet scop en C/OpenGL, revue crash-test, corrections vérifiées par exécution). Recherche faite dans `content/` : ce qui existe déjà est indiqué, le reste a 0 résultat. Ajouts à faire au fil des items de correction (les notions des items 11 à 20 s'ajouteront ici).
 
 **Langages > C**
-- `Fondamentaux/Algorithmes` (ou Graphisme, ear clipping) : **n'examiner que les sommets réflexes** : si un sommet est dans le triangle d'une oreille, alors un sommet réflexe l'est aussi, donc un polygone convexe ne coûte rien (12000 côtés : 2,4 s -> 0,03 s) ; liste des réflexes avec suppression en temps constant (échange avec le dernier et mise à jour de la position stockée dans le nœud) ; un sommet ne peut que passer de réflexe à convexe quand on coupe une oreille ; coût résiduel `n x r` ; bruit d'arrondi `float` qui rend « non convexes » des sommets d'un grand polygone convexe.
 - `Langages/C/compilation` : l'avertissement `-Wformat-truncation` (actif avec `-O2`, via `_FORTIFY_SOURCE`) quand un `snprintf` peut dépasser son tampon : dimensionner le tampon pour le pire cas (somme des champs bornés par `%.200s`), pas pour le cas courant.
 - `Langages/Bash` (et Zsh) : **zsh ne découpe pas une variable non guillemetée en mots** (`for sz in "1920 1080"; set -- $sz` donne un seul mot), contrairement à bash ; utiliser `${=var}` ; décimale à virgule des locales françaises dans `awk`/`printf` (`LC_ALL=C`) qui rend un fichier numérique invalide.
 - `Qualité, performance et outils` (chapitre « sanitizers et tests » ou nouveau) : **les faux positifs de l'outil de test** : un vérificateur qui lit les triangles par numéro de sommet casse quand on renumérote ; un curseur de souris dans une capture fausse la boîte englobante (`ffmpeg -draw_mouse 0`) ; recompiler l'outil pendant qu'une série tourne ; un test qui lit une valeur avant l'appel qui la modifie ; toujours confirmer une alerte inattendue sur l'ancien code avant d'accuser le nouveau (ici 7 alertes, toutes dues à l'outil) ; comparer deux rendus après **normalisation de la luminosité** quand le shader pulse.
