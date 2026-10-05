@@ -326,6 +326,8 @@ Ejemplo real en el solucionador SAT: 3 cuadrículas, tiempo medio por cuadrícul
 | a y b2 ganan en las dos rondas | Ganancias conservadas |
 | b1 cambia de signo de una ronda a otra | Nada concluyente: la diferencia está dentro del ruido |
 
+Para concluir a partir de varias cuadrículas y no de una sola (emparejamiento, prueba del signo, comparaciones múltiples), véase [Comparar dos ajustes](/?c=qualite-performance-et-outils&s=performance&p=comparer-deux-reglages).
+
 ## Más hilos, más lento: los programas limitados por la memoria
 
 Un programa puede estar limitado por el **cálculo** (*CPU-bound*) o por los **accesos a memoria** (*memory-bound*, ver [La caché de la CPU](/?c=qualite-performance-et-outils&s=performance&p=cache-cpu-et-simd)). En el segundo caso, los hilos se disputan el mismo ancho de banda de memoria: añadir más puede **ralentizar** el conjunto. Medido en un solucionador de puzles: 577 ms con un hilo, 893 ms con 8 hilos (ver también [El paralelismo](/?c=qualite-performance-et-outils&s=performance&p=parallelisme)).

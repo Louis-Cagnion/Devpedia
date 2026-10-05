@@ -978,6 +978,10 @@
             {
               "id": "division-par-multiplication",
               "label": "Replacing a Division with a Multiplication"
+            },
+            {
+              "id": "comparer-deux-reglages",
+              "label": "Comparing Two Settings: Pairing, the Sign Test and Multiple Comparisons"
             }
           ]
         },

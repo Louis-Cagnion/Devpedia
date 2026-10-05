@@ -978,6 +978,10 @@
             {
               "id": "division-par-multiplication",
               "label": "Remplacer une division par une multiplication"
+            },
+            {
+              "id": "comparer-deux-reglages",
+              "label": "Comparer deux réglages : appariement, test du signe et comparaisons multiples"
             }
           ]
         },

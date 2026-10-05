@@ -419,7 +419,7 @@ Filtering applies only to rows and columns with at most 16 free cells (the Hall 
 | Average propagations | 187 million | 97 million |
 | Cost of a propagation | 107 ns | 91 ns |
 
-(The averages count a failure as the whole budget.) 11 grids are solved only with filtering, a single one only without it: a gap this clear has about 3 chances in 1,000 of happening by luck. With a threshold of 24 free cells, 17 grids out of 20 are solved (against 20 out of 20 at 16): filtering more rows costs more than it brings.
+(The averages count a failure as the whole budget.) 12 grids are solved only with filtering, a single one only without it: a gap this clear has about 3 chances in 1,000 of happening by luck (two-sided sign test). These 40 grids include the 20 that were used to choose this threshold; on the other 20 alone, the result is 8 against 1 (see [comparing two settings](/?c=qualite-performance-et-outils&s=performance&p=comparer-deux-reglages)). With a threshold of 24 free cells, 17 grids out of 20 are solved (against 20 out of 20 at 16): filtering more rows costs more than it brings.
 
 At 108 × 108, on the 100 grids (4 copies in parallel):
 

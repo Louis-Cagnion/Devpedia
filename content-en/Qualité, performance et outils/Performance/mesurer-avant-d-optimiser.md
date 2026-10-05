@@ -326,6 +326,8 @@ Real example on the SAT solver: 3 grids, mean time per grid, a reference version
 | a and b2 gain in both rounds | Gains kept |
 | b1 changes sign from one round to the next | Nothing conclusive: the gap is within the noise |
 
+To conclude from several grids rather than a single one (pairing, the sign test, multiple comparisons), see [Comparing Two Settings](/?c=qualite-performance-et-outils&s=performance&p=comparer-deux-reglages).
+
 ## More Threads, Slower: Memory-Bound Programs
 
 A program can be limited by **computation** (*CPU-bound*) or by **memory accesses** (*memory-bound*, see [The CPU cache](/?c=qualite-performance-et-outils&s=performance&p=cache-cpu-et-simd)). In the second case, threads compete for the same memory bandwidth: adding more can **slow down** the whole. Measured on a puzzle solver: 577 ms with one thread, 893 ms with 8 threads (see also [Parallelism](/?c=qualite-performance-et-outils&s=performance&p=parallelisme)).

@@ -419,7 +419,7 @@ El filtrado solo se aplica a las filas y columnas de como máximo 16 casillas li
 | Propagaciones medias | 187 millones | 97 millones |
 | Coste de una propagación | 107 ns | 91 ns |
 
-(Las medias cuentan un fallo como el presupuesto entero.) 11 cuadrículas solo se resuelven con el filtrado, una sola únicamente sin él: una diferencia tan clara tiene unas 3 probabilidades entre 1.000 de producirse por azar. Con un umbral de 24 casillas libres se resuelven 17 cuadrículas de 20 (frente a 20 de 20 con 16): filtrar más filas cuesta más de lo que aporta.
+(Las medias cuentan un fallo como el presupuesto entero.) 12 cuadrículas solo se resuelven con el filtrado, una sola únicamente sin él: una diferencia tan clara tiene unas 3 probabilidades entre 1.000 de producirse por azar (prueba del signo bilateral). Estas 40 cuadrículas incluyen las 20 que sirvieron para elegir este umbral; solo con las otras 20, el resultado es de 8 contra 1 (véase [comparar dos ajustes](/?c=qualite-performance-et-outils&s=performance&p=comparer-deux-reglages)). Con un umbral de 24 casillas libres se resuelven 17 cuadrículas de 20 (frente a 20 de 20 con 16): filtrar más filas cuesta más de lo que aporta.
 
 Con 108 × 108, en las 100 cuadrículas (4 copias en paralelo):
 
