@@ -203,13 +203,72 @@ Uso: `check_gl_errors("glTexImage2D");` logo depois da chamada suspeita, para no
 
 > **Armadilha:** num laço de renderização, um mesmo problema se repetiria a **cada imagem** (60 mensagens por segundo que afogam todo o resto). Sinalizar cada causa **uma única vez** (lista limitada dos códigos já mostrados), ou controlar só na inicialização e em modo de depuração.
 
+### Consultar o driver gráfico e a tela
+
+O **driver** (o software do fabricante que faz o OpenGL conversar com a placa) sabe dizer quem é e o que aceita. `glGetString` devolve um texto, `glGetIntegerv` um inteiro:
+
+| Consulta | O que fornece |
+|---|---|
+| `glGetString(GL_VENDOR)` | o fabricante do driver |
+| `glGetString(GL_RENDERER)` | o nome da placa (e muitas vezes do driver) |
+| `glGetString(GL_VERSION)` | a versão do OpenGL fornecida, seguida do driver |
+| `glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, ...)` | o número máximo de atributos por vértice (posição, normal...) |
+| `glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES, ...)` | o máximo do `max_vertices` de um [geometry shader](/?c=fondamentaux&s=graphisme&p=tampons-textures-et-shaders-opengl#os-shaders-os-programas-da-placa-de-video) |
+| `glGetIntegerv(GL_MAX_ELEMENTS_INDICES, ...)` | uma **sugestão** (número de índices recomendado por chamada de desenho), nunca um limite: ultrapassá-la não produz erro algum, apenas um desenho possivelmente mais lento |
+
+```c
+/* Mostra fabricante, placa e versão do OpenGL; devolve 0, ou -1 se o driver não responde. */
+static int print_gl_info(void)
+{
+	const char *vendor = (const char *)glGetString(GL_VENDOR);      /* GLubyte * convertido em texto */
+	const char *renderer = (const char *)glGetString(GL_RENDERER);
+	const char *version = (const char *)glGetString(GL_VERSION);
+
+	if (!vendor || !renderer || !version)          /* NULL: sem contexto ativo, ou constante recusada */
+	{
+		fprintf(stderr, "glGetString devolveu NULL: sem contexto ativo, ou constante recusada\n");
+		return -1;
+	}
+	printf("Fabricante: %s\nPlaca: %s\nOpenGL: %s\n", vendor, renderer, version);
+	return 0;
+}
+```
+
+**A memória da placa não tem consulta padrão.** Só as **extensões** (funções opcionais, próprias de um fabricante, que o driver pode ou não fornecer) a informam: `GL_NVX_gpu_memory_info` na NVIDIA, `GL_ATI_meminfo` na AMD. `glfwExtensionSupported("GL_NVX_gpu_memory_info")` diz se o driver a possui. Sem ela, o único sinal de falta de memória é `GL_OUT_OF_MEMORY`, a ser lido com `glGetError()` (veja acima).
+
+**A tela se pergunta ao GLFW**, não ao OpenGL: uma janela maior que a tela fica em parte fora da vista do usuário.
+
+```c
+/* Verdadeiro (1) se uma janela width x height cabe na tela principal, 0 se não, -1 se a tela é desconhecida. */
+static int window_fits_screen(int width, int height)
+{
+	GLFWmonitor *monitor = glfwGetPrimaryMonitor();   /* NULL: nenhuma tela detectada */
+	const GLFWvidmode *mode = monitor ? glfwGetVideoMode(monitor) : NULL;   /* NULL em caso de falha */
+
+	if (!mode)
+	{
+		fprintf(stderr, "tela principal nao encontrada: tamanho da janela nao verificado\n");
+		return -1;
+	}
+	if (width > mode->width || height > mode->height)   /* mode->width e ->height: tamanho da tela */
+	{
+		fprintf(stderr, "janela %d x %d maior que a tela (%d x %d)\n",
+			width, height, mode->width, mode->height);
+		return 0;
+	}
+	return 1;
+}
+```
+
+> **Armadilha:** `glfwGetVideoMode` dá o tamanho em **coordenadas de tela**, que diferem dos pixels numa tela de alta densidade (HiDPI, por exemplo uma tela que mostra 2 pixels por unidade); `glfwGetFramebufferSize` dá o tamanho da janela em pixels. Com várias telas, `glfwGetPrimaryMonitor` designa apenas a tela principal: a janela pode abrir em outra.
+
 ---
 
 ## 📋 Recapitulando
 
 | | |
 |---|---|
-| **Para lembrar** | O GLFW cria a janela e seu contexto OpenGL; o GLAD então carrega as funções OpenGL modernas via `glfwGetProcAddress()`. O double buffering (`glfwSwapBuffers()`) evita que uma imagem desenhada pela metade seja exibida. Um loop de renderização repete: eventos, limpeza, desenho, troca de buffers. O delta time (duração da imagem anterior, via `glfwGetTime()`) torna as velocidades independentes dos FPS; o vsync (`glfwSwapInterval(1)`) ajusta a exibição à tela. Os limites da placa (tamanho de textura, de área de desenho) mudam de uma máquina para outra: eles são lidos; o OpenGL só sinaliza um erro por um indicador lido com `glGetError()`. |
-| **Ferramentas utilizáveis** | `glfwCreateWindow`/`glfwMakeContextCurrent`, `gladLoadGLLoader`, `glfwSwapBuffers`/`glfwPollEvents`/`glfwWindowShouldClose`, `glClear`, `glfwGetTime`, `glfwSwapInterval`, `glGetIntegerv` (`GL_MAX_TEXTURE_SIZE`, `GL_MAX_VIEWPORT_DIMS`), `glGetError`. |
-| **Armadilhas a evitar** | Chamar o GLAD antes de `glfwMakeContextCurrent()`. Apontar `-I` para o nível de pasta errado para os headers gerados pelo GLAD. Esquecer `glClear()` antes de redesenhar. Mover um objeto uma distância fixa por imagem. Atualizar o delta time apenas em intervalos regulares. Deixar um delta gigante depois de uma pausa. Supor um limite da placa em vez de lê-lo, chamar `glGetIntegerv` sem contexto ativo, ler um único erro em vez de esvaziar a pilha, repetir a mesma mensagem a cada imagem. |
-| **Boas práticas** | Vendorar um arquivo gerado de uma vez por todas (como o do GLAD) em vez de depender dele a cada build; reservar essa prática a arquivos que não mudam com regularidade. Expressar as velocidades em unidades por segundo, recalcular o delta time a cada imagem e limitá-lo; nunca se apoiar no vsync para regular a velocidade. Comparar uma imagem com o limite da placa antes de enviá-la, com uma mensagem que nomeie a imagem, suas dimensões e o limite. Repetir `glGetError()` até `GL_NO_ERROR` e nomear a etapa controlada. |
+| **Para lembrar** | O GLFW cria a janela e seu contexto OpenGL; o GLAD então carrega as funções OpenGL modernas via `glfwGetProcAddress()`. O double buffering (`glfwSwapBuffers()`) evita que uma imagem desenhada pela metade seja exibida. Um loop de renderização repete: eventos, limpeza, desenho, troca de buffers. O delta time (duração da imagem anterior, via `glfwGetTime()`) torna as velocidades independentes dos FPS; o vsync (`glfwSwapInterval(1)`) ajusta a exibição à tela. Os limites da placa (tamanho de textura, de área de desenho) mudam de uma máquina para outra: eles são lidos; o OpenGL só sinaliza um erro por um indicador lido com `glGetError()`. `glGetString` identifica o driver; a memória da placa não tem consulta padrão (extensões); o tamanho da tela se pergunta ao GLFW. |
+| **Ferramentas utilizáveis** | `glfwCreateWindow`/`glfwMakeContextCurrent`, `gladLoadGLLoader`, `glfwSwapBuffers`/`glfwPollEvents`/`glfwWindowShouldClose`, `glClear`, `glfwGetTime`, `glfwSwapInterval`, `glGetIntegerv` (`GL_MAX_TEXTURE_SIZE`, `GL_MAX_VIEWPORT_DIMS`), `glGetError`, `glGetString`, `glfwGetPrimaryMonitor`/`glfwGetVideoMode`, `glfwExtensionSupported`. |
+| **Armadilhas a evitar** | Chamar o GLAD antes de `glfwMakeContextCurrent()`. Apontar `-I` para o nível de pasta errado para os headers gerados pelo GLAD. Esquecer `glClear()` antes de redesenhar. Mover um objeto uma distância fixa por imagem. Atualizar o delta time apenas em intervalos regulares. Deixar um delta gigante depois de uma pausa. Supor um limite da placa em vez de lê-lo, chamar `glGetIntegerv` sem contexto ativo, ler um único erro em vez de esvaziar a pilha, repetir a mesma mensagem a cada imagem. Mostrar o resultado de `glGetString` sem testar `NULL`, tomar `GL_MAX_ELEMENTS_INDICES` por um limite, abrir uma janela maior que a tela, confundir coordenadas de tela e pixels numa tela HiDPI. |
+| **Boas práticas** | Vendorar um arquivo gerado de uma vez por todas (como o do GLAD) em vez de depender dele a cada build; reservar essa prática a arquivos que não mudam com regularidade. Expressar as velocidades em unidades por segundo, recalcular o delta time a cada imagem e limitá-lo; nunca se apoiar no vsync para regular a velocidade. Comparar uma imagem com o limite da placa antes de enviá-la, com uma mensagem que nomeie a imagem, suas dimensões e o limite. Repetir `glGetError()` até `GL_NO_ERROR` e nomear a etapa controlada. Registrar fabricante, placa e versão na inicialização para reconhecer a máquina de um relatório de bug; verificar o tamanho de janela pedido contra o da tela. |

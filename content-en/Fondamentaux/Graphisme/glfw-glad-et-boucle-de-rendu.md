@@ -201,13 +201,72 @@ Usage: `check_gl_errors("glTexImage2D");` right after the suspect call, to name 
 
 > **Pitfall:** in a render loop, the same problem would repeat on **every frame** (60 messages per second drowning everything else). Report each cause **only once** (a bounded list of codes already shown), or check only at startup and in debug mode.
 
+### Querying the graphics driver and the screen
+
+The **driver** (the manufacturer's software that makes OpenGL talk to the card) can tell who it is and what it accepts. `glGetString` returns a text, `glGetIntegerv` an integer:
+
+| Query | What it gives |
+|---|---|
+| `glGetString(GL_VENDOR)` | the driver's manufacturer |
+| `glGetString(GL_RENDERER)` | the card's name (and often the driver's) |
+| `glGetString(GL_VERSION)` | the OpenGL version provided, followed by the driver |
+| `glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, ...)` | the maximum number of attributes per vertex (position, normal...) |
+| `glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES, ...)` | the maximum of a [geometry shader](/?c=fondamentaux&s=graphisme&p=tampons-textures-et-shaders-opengl#shaders-the-graphics-card-s-programs)'s `max_vertices` |
+| `glGetIntegerv(GL_MAX_ELEMENTS_INDICES, ...)` | a **hint** (number of indices recommended per draw call), never a limit: exceeding it produces no error, only a possibly slower draw |
+
+```c
+/* Prints OpenGL vendor, card and version; returns 0, or -1 if the driver does not answer. */
+static int print_gl_info(void)
+{
+	const char *vendor = (const char *)glGetString(GL_VENDOR);      /* GLubyte * converted to text */
+	const char *renderer = (const char *)glGetString(GL_RENDERER);
+	const char *version = (const char *)glGetString(GL_VERSION);
+
+	if (!vendor || !renderer || !version)          /* NULL: no active context, or constant refused */
+	{
+		fprintf(stderr, "glGetString returned NULL: no active context, or constant refused\n");
+		return -1;
+	}
+	printf("Vendor: %s\nCard: %s\nOpenGL: %s\n", vendor, renderer, version);
+	return 0;
+}
+```
+
+**The card's memory has no standard query.** Only **extensions** (optional functions, specific to a manufacturer, which the driver may or may not provide) give it: `GL_NVX_gpu_memory_info` on NVIDIA, `GL_ATI_meminfo` on AMD. `glfwExtensionSupported("GL_NVX_gpu_memory_info")` tells whether the driver has it. Without it, the only sign of a memory shortage is `GL_OUT_OF_MEMORY`, to be read with `glGetError()` (see above).
+
+**The screen is asked to GLFW**, not to OpenGL: a window larger than the screen is partly out of the user's view.
+
+```c
+/* True (1) if a width x height window fits on the primary screen, 0 if not, -1 if the screen is unknown. */
+static int window_fits_screen(int width, int height)
+{
+	GLFWmonitor *monitor = glfwGetPrimaryMonitor();   /* NULL: no screen detected */
+	const GLFWvidmode *mode = monitor ? glfwGetVideoMode(monitor) : NULL;   /* NULL on failure */
+
+	if (!mode)
+	{
+		fprintf(stderr, "primary screen not found: window size not checked\n");
+		return -1;
+	}
+	if (width > mode->width || height > mode->height)   /* mode->width and ->height: screen size */
+	{
+		fprintf(stderr, "window %d x %d larger than the screen (%d x %d)\n",
+			width, height, mode->width, mode->height);
+		return 0;
+	}
+	return 1;
+}
+```
+
+> **Pitfall:** `glfwGetVideoMode` gives the size in **screen coordinates**, which differ from pixels on a high-density screen (HiDPI, for example a screen that shows 2 pixels per unit); `glfwGetFramebufferSize` gives the window's size in pixels. With several screens, `glfwGetPrimaryMonitor` only designates the primary screen: the window may open on another one.
+
 ---
 
 ## 📋 Summary
 
 | | |
 |---|---|
-| **Key takeaways** | GLFW creates the window and its OpenGL context; GLAD then loads the modern OpenGL functions via `glfwGetProcAddress()`. Double buffering (`glfwSwapBuffers()`) avoids a half-drawn image being shown. A render loop repeats: events, clear, draw, buffer swap. The delta time (duration of the previous image, via `glfwGetTime()`) makes speeds independent of the FPS; vsync (`glfwSwapInterval(1)`) locks the display to the screen. The card's limits (texture size, drawing area size) change from one machine to another: we read them; OpenGL reports an error only through a flag read with `glGetError()`. |
-| **Tools you can use** | `glfwCreateWindow`/`glfwMakeContextCurrent`, `gladLoadGLLoader`, `glfwSwapBuffers`/`glfwPollEvents`/`glfwWindowShouldClose`, `glClear`, `glfwGetTime`, `glfwSwapInterval`, `glGetIntegerv` (`GL_MAX_TEXTURE_SIZE`, `GL_MAX_VIEWPORT_DIMS`), `glGetError`. |
-| **Pitfalls to avoid** | Calling GLAD before `glfwMakeContextCurrent()`. Pointing `-I` at the wrong folder level for GLAD's generated headers. Forgetting `glClear()` before redrawing. Moving an object by a fixed distance per image. Refreshing the delta time only at regular intervals. Leaving a huge delta after a pause. Assuming a card limit instead of reading it, calling `glGetIntegerv` without an active context, reading a single error instead of emptying the pile, repeating the same message on every frame. |
-| **Best practices** | Vendor a file generated once and for all (like GLAD's) rather than depending on it at every build; reserve this practice for files that don't change regularly. Express speeds in units per second, recompute the delta time at every image and cap it; never rely on vsync to regulate speed. Compare an image with the card's limit before sending it, with a message that names the image, its dimensions and the limit. Loop on `glGetError()` until `GL_NO_ERROR` and name the step being checked. |
+| **Key takeaways** | GLFW creates the window and its OpenGL context; GLAD then loads the modern OpenGL functions via `glfwGetProcAddress()`. Double buffering (`glfwSwapBuffers()`) avoids a half-drawn image being shown. A render loop repeats: events, clear, draw, buffer swap. The delta time (duration of the previous image, via `glfwGetTime()`) makes speeds independent of the FPS; vsync (`glfwSwapInterval(1)`) locks the display to the screen. The card's limits (texture size, drawing area size) change from one machine to another: we read them; OpenGL reports an error only through a flag read with `glGetError()`. `glGetString` identifies the driver; the card's memory has no standard query (extensions); the screen size is asked to GLFW. |
+| **Tools you can use** | `glfwCreateWindow`/`glfwMakeContextCurrent`, `gladLoadGLLoader`, `glfwSwapBuffers`/`glfwPollEvents`/`glfwWindowShouldClose`, `glClear`, `glfwGetTime`, `glfwSwapInterval`, `glGetIntegerv` (`GL_MAX_TEXTURE_SIZE`, `GL_MAX_VIEWPORT_DIMS`), `glGetError`, `glGetString`, `glfwGetPrimaryMonitor`/`glfwGetVideoMode`, `glfwExtensionSupported`. |
+| **Pitfalls to avoid** | Calling GLAD before `glfwMakeContextCurrent()`. Pointing `-I` at the wrong folder level for GLAD's generated headers. Forgetting `glClear()` before redrawing. Moving an object by a fixed distance per image. Refreshing the delta time only at regular intervals. Leaving a huge delta after a pause. Assuming a card limit instead of reading it, calling `glGetIntegerv` without an active context, reading a single error instead of emptying the pile, repeating the same message on every frame. Printing the result of `glGetString` without testing for `NULL`, taking `GL_MAX_ELEMENTS_INDICES` for a limit, opening a window larger than the screen, mixing up screen coordinates and pixels on a HiDPI screen. |
+| **Best practices** | Vendor a file generated once and for all (like GLAD's) rather than depending on it at every build; reserve this practice for files that don't change regularly. Express speeds in units per second, recompute the delta time at every image and cap it; never rely on vsync to regulate speed. Compare an image with the card's limit before sending it, with a message that names the image, its dimensions and the limit. Loop on `glGetError()` until `GL_NO_ERROR` and name the step being checked. Log vendor, card and version at startup to recognize the machine behind a bug report; check the requested window size against the screen's. |
