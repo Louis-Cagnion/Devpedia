@@ -69,13 +69,63 @@ while (!glfwWindowShouldClose(window)) {
 
 > **Pitfall:** forgetting `glClear()` before redrawing. Without clearing, every new image piles on top of the previous ones instead of replacing them, leaving a visual trail.
 
+## Delta time: a speed that does not depend on the machine
+
+One turn of the render loop produces one image (a *frame*). The number of images per second, the **FPS** (*frames per second*), depends on the machine: 30 on a modest computer, 144 on a fast screen. If an object moves by a fixed distance at every turn of the loop, its real speed therefore follows the FPS:
+
+```c
+position += 0.1;   // 0.1 unit (the length measure of the scene) per image: the speed depends on the number of images
+```
+
+| Machine FPS | Images in 1 second | Distance covered in 1 second |
+|---|---|---|
+| 30 | 30 | 30 × 0.1 = 3 units |
+| 60 | 60 | 60 × 0.1 = 6 units |
+| 144 | 144 | 144 × 0.1 = 14.4 units |
+
+The **delta time** is the time elapsed between the previous image and the current one, in seconds (for example 0.0069 s at 144 FPS). Multiplying every movement by this duration makes the speed independent of the FPS: speed is expressed in units **per second**, and each image only advances by the fraction of a second it lasted.
+
+```c
+double last_instant = glfwGetTime();   // double = decimal number; here, seconds elapsed since GLFW was initialized
+double speed = 5.0;                    // 5 units per second, whatever the machine
+
+while (!glfwWindowShouldClose(window)) {
+    double now = glfwGetTime();            // instant of this image
+    double delta = now - last_instant;    // duration of the previous image, in seconds
+    last_instant = now;                    // remember it for the next turn
+
+    position += speed * delta;             // 144 FPS: 5 × 0.0069; 30 FPS: 5 × 0.033
+    // ... events, clear, draw, glfwSwapBuffers() as above
+}
+```
+
+> **Pitfall:** refreshing the delta time only at regular intervals (for example "only if 0.01 s have elapsed"). Between two refreshes, the stale value is applied at every image: at 144 FPS (an image lasts 0.0069 s, less than that threshold), the movement is added more often than time passes and everything goes too fast (about 1.5 times in one case encountered). The delta time is recomputed at **every** image.
+>
+> **Pitfall:** after a pause (window dragged, program suspended), the first delta can be several seconds and throw the object very far at once. The value is then capped, for example `if (delta > 0.1) delta = 0.1;`.
+
+## Vertical synchronization (vsync)
+
+The screen refreshes at a fixed frequency, expressed in hertz (Hz, refreshes per second): 60 Hz, 144 Hz... With no rule, the render loop runs as fast as possible, far beyond what the screen can show: images are wasted, the graphics card heats up, and the buffer swap can land in the middle of a refresh (*tearing*, seen above). **Vertical synchronization** (*vsync*) makes `glfwSwapBuffers()` wait until the screen's next refresh:
+
+```c
+glfwMakeContextCurrent(window);   // the context must already be active
+glfwSwapInterval(1);              // 1 = wait for 1 refresh per swap (vsync); 0 = do not wait
+```
+
+| Setting | FPS obtained | Effect |
+|---|---|---|
+| `glfwSwapInterval(1)` | equal to the screen frequency (60 on a 60 Hz screen) | no tearing, graphics card spared |
+| `glfwSwapInterval(0)` | as high as the machine allows | tearing possible, useful to measure performance |
+
+> **Best practice:** never rely on vsync to regulate speed. The graphics driver (the software that lets the system talk to the graphics card) or the user can force it off, and the FPS change from one screen to another: only the delta time guarantees the same speed everywhere. Vsync regulates the display, the delta time regulates the movement.
+
 ---
 
 ## 📋 Summary
 
 | | |
 |---|---|
-| **Key takeaways** | GLFW creates the window and its OpenGL context; GLAD then loads the modern OpenGL functions via `glfwGetProcAddress()`. Double buffering (`glfwSwapBuffers()`) avoids a half-drawn image being shown. A render loop repeats: events, clear, draw, buffer swap. |
-| **Tools you can use** | `glfwCreateWindow`/`glfwMakeContextCurrent`, `gladLoadGLLoader`, `glfwSwapBuffers`/`glfwPollEvents`/`glfwWindowShouldClose`, `glClear`. |
-| **Pitfalls to avoid** | Calling GLAD before `glfwMakeContextCurrent()`. Pointing `-I` at the wrong folder level for GLAD's generated headers. Forgetting `glClear()` before redrawing. |
-| **Best practices** | Vendor a file generated once and for all (like GLAD's) rather than depending on it at every build; reserve this practice for files that don't change regularly. |
+| **Key takeaways** | GLFW creates the window and its OpenGL context; GLAD then loads the modern OpenGL functions via `glfwGetProcAddress()`. Double buffering (`glfwSwapBuffers()`) avoids a half-drawn image being shown. A render loop repeats: events, clear, draw, buffer swap. The delta time (duration of the previous image, via `glfwGetTime()`) makes speeds independent of the FPS; vsync (`glfwSwapInterval(1)`) locks the display to the screen. |
+| **Tools you can use** | `glfwCreateWindow`/`glfwMakeContextCurrent`, `gladLoadGLLoader`, `glfwSwapBuffers`/`glfwPollEvents`/`glfwWindowShouldClose`, `glClear`, `glfwGetTime`, `glfwSwapInterval`. |
+| **Pitfalls to avoid** | Calling GLAD before `glfwMakeContextCurrent()`. Pointing `-I` at the wrong folder level for GLAD's generated headers. Forgetting `glClear()` before redrawing. Moving an object by a fixed distance per image. Refreshing the delta time only at regular intervals. Leaving a huge delta after a pause. |
+| **Best practices** | Vendor a file generated once and for all (like GLAD's) rather than depending on it at every build; reserve this practice for files that don't change regularly. Express speeds in units per second, recompute the delta time at every image and cap it; never rely on vsync to regulate speed. |

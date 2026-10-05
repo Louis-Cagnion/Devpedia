@@ -71,13 +71,63 @@ while (!glfwWindowShouldClose(fenetre)) {
 
 > **Piège :** oublier `glClear()` avant de redessiner. Sans effacement, chaque nouvelle image se superpose aux précédentes plutôt que de les remplacer, laissant une traînée visuelle.
 
+## Le delta time : une vitesse indépendante de la machine
+
+Un tour de la boucle de rendu produit une image (une *frame*). Le nombre d'images par seconde, les **FPS** (*frames per second*), dépend de la machine : 30 sur un ordinateur modeste, 144 sur un écran rapide. Si l'objet avance d'une distance fixe à chaque tour de boucle, sa vitesse réelle suit donc les FPS :
+
+```c
+position += 0.1;   // 0,1 unité (la mesure de longueur de la scène) par image : la vitesse dépend du nombre d'images
+```
+
+| FPS de la machine | Images en 1 seconde | Distance parcourue en 1 seconde |
+|---|---|---|
+| 30 | 30 | 30 × 0,1 = 3 unités |
+| 60 | 60 | 60 × 0,1 = 6 unités |
+| 144 | 144 | 144 × 0,1 = 14,4 unités |
+
+Le **delta time** est la durée écoulée entre l'image précédente et l'image courante, en secondes (par exemple 0,0069 s à 144 FPS). Multiplier chaque déplacement par cette durée rend la vitesse indépendante des FPS : on exprime la vitesse en unités **par seconde**, et chaque image n'avance que de la part de seconde qu'elle a duré.
+
+```c
+double dernier_instant = glfwGetTime();   // double = nombre à virgule ; ici, secondes écoulées depuis l'initialisation de GLFW
+double vitesse = 5.0;                     // 5 unités par seconde, quelle que soit la machine
+
+while (!glfwWindowShouldClose(fenetre)) {
+    double maintenant = glfwGetTime();           // instant de cette image
+    double delta = maintenant - dernier_instant; // durée de l'image précédente, en secondes
+    dernier_instant = maintenant;                // mémorise pour le prochain tour
+
+    position += vitesse * delta;                 // 144 FPS : 5 × 0,0069 ; 30 FPS : 5 × 0,033
+    // ... événements, effacement, dessin, glfwSwapBuffers() comme ci-dessus
+}
+```
+
+> **Piège :** ne rafraîchir le delta time qu'à intervalle régulier (par exemple « seulement si 0,01 s se sont écoulées »). Entre deux rafraîchissements, la valeur périmée s'applique à chaque image : à 144 FPS (une image dure 0,0069 s, soit moins que ce seuil), le déplacement est ajouté plus souvent que le temps ne passe et tout va trop vite (environ 1,5 fois dans un cas rencontré). Le delta time se recalcule à **chaque** image.
+>
+> **Piège :** après une pause (fenêtre déplacée, programme suspendu), le premier delta peut valoir plusieurs secondes et propulser l'objet très loin d'un coup. On plafonne alors la valeur, par exemple `if (delta > 0.1) delta = 0.1;`.
+
+## La synchronisation verticale (vsync)
+
+L'écran se rafraîchit à fréquence fixe, exprimée en hertz (Hz, rafraîchissements par seconde) : 60 Hz, 144 Hz... Sans règle, la boucle de rendu tourne aussi vite que possible, bien au-delà de ce que l'écran peut montrer : des images sont gaspillées, la carte graphique chauffe, et l'échange des tampons peut tomber au milieu d'un rafraîchissement (*tearing*, vu plus haut). La **synchronisation verticale** (*vsync*) fait attendre `glfwSwapBuffers()` jusqu'au prochain rafraîchissement de l'écran :
+
+```c
+glfwMakeContextCurrent(fenetre);   // le contexte doit déjà être actif
+glfwSwapInterval(1);               // 1 = attendre 1 rafraîchissement par échange (vsync) ; 0 = ne pas attendre
+```
+
+| Réglage | FPS obtenus | Effet |
+|---|---|---|
+| `glfwSwapInterval(1)` | égaux à la fréquence de l'écran (60 sur un écran 60 Hz) | pas de tearing, carte graphique ménagée |
+| `glfwSwapInterval(0)` | aussi hauts que la machine le permet | tearing possible, utile pour mesurer les performances |
+
+> **Bonne pratique :** ne jamais compter sur le vsync pour régler la vitesse. Le pilote graphique (le logiciel qui fait dialoguer le système avec la carte graphique) ou l'utilisateur peuvent le forcer à l'arrêt, et les FPS changent d'un écran à l'autre : seul le delta time garantit la même vitesse partout. Le vsync règle l'affichage, le delta time règle le mouvement.
+
 ---
 
 ## 📋 Récapitulatif
 
 | | |
 |---|---|
-| **À retenir** | GLFW crée la fenêtre et son contexte OpenGL ; GLAD charge ensuite les fonctions OpenGL modernes via `glfwGetProcAddress()`. Le double buffering (`glfwSwapBuffers()`) évite une image affichée à moitié dessinée. Une boucle de rendu répète : événements, effacement, dessin, échange des tampons. |
-| **Outils utilisables** | `glfwCreateWindow`/`glfwMakeContextCurrent`, `gladLoadGLLoader`, `glfwSwapBuffers`/`glfwPollEvents`/`glfwWindowShouldClose`, `glClear`. |
-| **Pièges à éviter** | Appeler GLAD avant `glfwMakeContextCurrent()`. Pointer `-I` sur le mauvais niveau de dossier pour les headers générés par GLAD. Oublier `glClear()` avant de redessiner. |
-| **Bonnes pratiques** | Vendorer un fichier généré une fois pour toutes (comme celui de GLAD) plutôt que d'en dépendre à chaque build ; réserver cette pratique aux fichiers qui n'évoluent pas régulièrement. |
+| **À retenir** | GLFW crée la fenêtre et son contexte OpenGL ; GLAD charge ensuite les fonctions OpenGL modernes via `glfwGetProcAddress()`. Le double buffering (`glfwSwapBuffers()`) évite une image affichée à moitié dessinée. Une boucle de rendu répète : événements, effacement, dessin, échange des tampons. Le delta time (durée de l'image précédente, via `glfwGetTime()`) rend les vitesses indépendantes des FPS ; le vsync (`glfwSwapInterval(1)`) cale l'affichage sur l'écran. |
+| **Outils utilisables** | `glfwCreateWindow`/`glfwMakeContextCurrent`, `gladLoadGLLoader`, `glfwSwapBuffers`/`glfwPollEvents`/`glfwWindowShouldClose`, `glClear`, `glfwGetTime`, `glfwSwapInterval`. |
+| **Pièges à éviter** | Appeler GLAD avant `glfwMakeContextCurrent()`. Pointer `-I` sur le mauvais niveau de dossier pour les headers générés par GLAD. Oublier `glClear()` avant de redessiner. Déplacer un objet d'une distance fixe par image. Ne rafraîchir le delta time qu'à intervalle régulier. Laisser un delta géant après une pause. |
+| **Bonnes pratiques** | Vendorer un fichier généré une fois pour toutes (comme celui de GLAD) plutôt que d'en dépendre à chaque build ; réserver cette pratique aux fichiers qui n'évoluent pas régulièrement. Exprimer les vitesses en unités par seconde, recalculer le delta time à chaque image et le plafonner ; ne jamais s'appuyer sur le vsync pour régler la vitesse. |
