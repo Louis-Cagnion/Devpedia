@@ -262,11 +262,104 @@ static int window_fits_screen(int width, int height)
 
 ---
 
+## How OpenGL knows the machine: from the program to the hardware
+
+OpenGL is not a program: it is a **specification**, a document (maintained by the [Khronos](https://www.khronos.org/opengl/) consortium) that describes each function, its parameters and its behavior. No code ships with that document: each manufacturer writes its own inside its **driver** (the software that translates OpenGL calls into orders its card understands). Hence `glGetString(GL_VENDOR)` (see above), and the same program behaving differently from one machine to another.
+
+On Linux, a call such as `glClear` goes through these layers:
+
+```
+Your program                 calls glClear, glDrawArrays...
+      │  GLAD and glfwGetProcAddress find the address of each function
+      ▼
+Access library               libGL.so.1 (GLVND): chooses which driver to use
+      ▼
+OpenGL driver                Mesa (AMD, Intel) or NVIDIA's proprietary driver
+      ▼
+Linux kernel                 kernel driver (amdgpu, i915, nvidia...) through the DRM
+      ▼
+Hardware                     the card, plugged into the PCI bus
+```
+
+| Layer | Role |
+|---|---|
+| **Access library** (`libGL`) | Single entry point. **[GLVND](https://github.com/NVIDIA/libglvnd)** (*GL Vendor-Neutral Dispatch*) lets several drivers coexist and picks the one that matches the card in use. |
+| **OpenGL driver** | Actually runs the functions. **[Mesa](https://www.mesa3d.org/)** is the open-source driver (`radeonsi` for AMD, `iris` for Intel, `llvmpipe` to draw with the processor when there is no card); NVIDIA ships its own proprietary driver. |
+| **Kernel driver** | The [kernel](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs#user-space-vs-kernel-space) (the core of the system, the only part allowed to talk to the hardware) has one driver per family of cards. The **[DRM](https://docs.kernel.org/gpu/drm-uapi.html)** (*Direct Rendering Manager*) is the subsystem that lets several programs share the card; it is exposed through files in `/dev/dri`. |
+| **Hardware** | The graphics card, plugged into the **PCI** bus (the circuit that connects the motherboard to its expansion cards). |
+
+Each layer can be observed from a [terminal](/?c=fondamentaux&s=bases-de-l-informatique&p=le-terminal) (`grep` keeps only the lines that contain a pattern; the `|` sends the output of the command on the left to the one on the right: see [redirections and pipes](/?c=shells&s=bash&p=redirections-et-pipes)):
+
+```bash
+lspci | grep -iE "vga|3d"              # lspci lists the PCI devices: the graphics card(s)
+ls /dev/dri                            # DRM files: card0 (the card), renderD128 (computing without a screen)
+lsmod | grep -E "amdgpu|i915|nouveau|nvidia"   # lsmod lists the drivers loaded in the kernel
+glxinfo -B | grep -i renderer          # glxinfo (mesa-utils package): the OpenGL driver actually in use
+```
+
+`GL_RENDERER` stacks several of these layers in a single text. Typical form under Mesa, which relies on [LLVM](https://llvm.org/) (example values):
+
+```
+AMD Radeon RX 6600 (radeonsi, navi23, LLVM 15.0.6, DRM 3.54, 6.1.0-18-amd64)
+ │                  │        │       │               │        └ kernel version
+ │                  │        │       │               └ DRM version
+ │                  │        │       └ LLVM: library that compiles the shaders for the card
+ │                  │        └ the card's chip
+ │                  └ Mesa driver
+ └ name of the card
+```
+
+### When there is no card: `llvmpipe`
+
+In a [virtual machine](/?c=infrastructure-devops&s=administration-systeme&p=virtualisation-et-choix-dos), a [container](/?c=infrastructure-devops&s=docker&p=concepts-de-base), [WSL](https://learn.microsoft.com/en-us/windows/wsl/) without a graphics driver or a remote session, Mesa falls back to `llvmpipe`: the processor draws in place of the card. The program works, but slowly, and `GL_RENDERER` starts with `llvmpipe`. You can force it to simulate a machine without a card, using an **environment variable** (a named setting that the shell passes to the programs it launches, see [environment variables](/?c=shells&s=bash&p=variables-denvironnement)):
+
+```bash
+LIBGL_ALWAYS_SOFTWARE=1 ./program      # the variable only applies to this launch
+```
+
+### Several graphics cards
+
+A laptop often has an **integrated** card (inside the processor, power-efficient) and a **dedicated** card (powerful). By default the system picks the first; you designate the other with an environment variable, for the duration of one launch:
+
+| Driver | Launch on the dedicated card |
+|---|---|
+| Mesa (AMD, Intel) | `DRI_PRIME=1 ./program` |
+| NVIDIA proprietary | `__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia ./program` |
+
+The two cards have neither the same limits (`GL_MAX_TEXTURE_SIZE`...) nor the same OpenGL version: what the program reads at startup depends on the card that created the context.
+
+### And on Windows and macOS?
+
+| System | Who provides OpenGL |
+|---|---|
+| **Linux** | The layers above (GLVND, Mesa or NVIDIA driver, kernel). |
+| **Windows** | `opengl32.dll` redirects to the manufacturer's driver, installed with the card's drivers. Without it, Windows falls back to a software version limited to OpenGL 1.1. |
+| **macOS** | The system itself provides OpenGL, frozen at version 4.1 and abandoned by Apple. |
+
+> **Pitfall:** a missing or too old driver does not always crash: `glfwCreateWindow` returns `NULL`, or `gladLoadGLLoader` fails, or the version read is lower than expected. Print GLFW's real cause rather than a generic message:
+
+```c
+GLFWwindow *window = glfwCreateWindow(800, 600, "scop", NULL, NULL);
+
+if (!window)                                /* driver missing, too old, or requested version not provided */
+{
+	const char *description = NULL;         /* GLFW text explaining the failure */
+
+	glfwGetError(&description);             /* reads GLFW's last error (description may stay NULL) */
+	fprintf(stderr, "cannot create window: %s\n", description ? description : "unknown cause");
+	return -1;
+}
+```
+
+Best practice: test on both cards of a laptop, and with `LIBGL_ALWAYS_SOFTWARE=1`, before saying the program "works everywhere".
+
+---
+
 ## 📋 Summary
 
 | | |
 |---|---|
-| **Key takeaways** | GLFW creates the window and its OpenGL context; GLAD then loads the modern OpenGL functions via `glfwGetProcAddress()`. Double buffering (`glfwSwapBuffers()`) avoids a half-drawn image being shown. A render loop repeats: events, clear, draw, buffer swap. The delta time (duration of the previous image, via `glfwGetTime()`) makes speeds independent of the FPS; vsync (`glfwSwapInterval(1)`) locks the display to the screen. The card's limits (texture size, drawing area size) change from one machine to another: we read them; OpenGL reports an error only through a flag read with `glGetError()`. `glGetString` identifies the driver; the card's memory has no standard query (extensions); the screen size is asked to GLFW. |
-| **Tools you can use** | `glfwCreateWindow`/`glfwMakeContextCurrent`, `gladLoadGLLoader`, `glfwSwapBuffers`/`glfwPollEvents`/`glfwWindowShouldClose`, `glClear`, `glfwGetTime`, `glfwSwapInterval`, `glGetIntegerv` (`GL_MAX_TEXTURE_SIZE`, `GL_MAX_VIEWPORT_DIMS`), `glGetError`, `glGetString`, `glfwGetPrimaryMonitor`/`glfwGetVideoMode`, `glfwExtensionSupported`. |
-| **Pitfalls to avoid** | Calling GLAD before `glfwMakeContextCurrent()`. Pointing `-I` at the wrong folder level for GLAD's generated headers. Forgetting `glClear()` before redrawing. Moving an object by a fixed distance per image. Refreshing the delta time only at regular intervals. Leaving a huge delta after a pause. Assuming a card limit instead of reading it, calling `glGetIntegerv` without an active context, reading a single error instead of emptying the pile, repeating the same message on every frame. Printing the result of `glGetString` without testing for `NULL`, taking `GL_MAX_ELEMENTS_INDICES` for a limit, opening a window larger than the screen, mixing up screen coordinates and pixels on a HiDPI screen. |
-| **Best practices** | Vendor a file generated once and for all (like GLAD's) rather than depending on it at every build; reserve this practice for files that don't change regularly. Express speeds in units per second, recompute the delta time at every image and cap it; never rely on vsync to regulate speed. Compare an image with the card's limit before sending it, with a message that names the image, its dimensions and the limit. Loop on `glGetError()` until `GL_NO_ERROR` and name the step being checked. Log vendor, card and version at startup to recognize the machine behind a bug report; check the requested window size against the screen's. |
+| **Key takeaways** | GLFW creates the window and its OpenGL context; GLAD then loads the modern OpenGL functions via `glfwGetProcAddress()`. Double buffering (`glfwSwapBuffers()`) avoids a half-drawn image being shown. A render loop repeats: events, clear, draw, buffer swap. The delta time (duration of the previous image, via `glfwGetTime()`) makes speeds independent of the FPS; vsync (`glfwSwapInterval(1)`) locks the display to the screen. The card's limits (texture size, drawing area size) change from one machine to another: we read them; OpenGL reports an error only through a flag read with `glGetError()`. `glGetString` identifies the driver; the card's memory has no standard query (extensions); the screen size is asked to GLFW. OpenGL is only a specification: the code comes from the manufacturer's driver (Mesa or NVIDIA on Linux), which talks to the kernel (DRM) and then to the card; with no card, `llvmpipe` draws with the processor; with several cards, an environment variable picks the card. |
+| **Tools you can use** | `glfwCreateWindow`/`glfwMakeContextCurrent`, `gladLoadGLLoader`, `glfwSwapBuffers`/`glfwPollEvents`/`glfwWindowShouldClose`, `glClear`, `glfwGetTime`, `glfwSwapInterval`, `glGetIntegerv` (`GL_MAX_TEXTURE_SIZE`, `GL_MAX_VIEWPORT_DIMS`), `glGetError`, `glGetString`, `glfwGetPrimaryMonitor`/`glfwGetVideoMode`, `glfwExtensionSupported`, `glfwGetError`, `lspci`, `lsmod`, `glxinfo -B`, `LIBGL_ALWAYS_SOFTWARE`, `DRI_PRIME`. |
+| **Pitfalls to avoid** | Calling GLAD before `glfwMakeContextCurrent()`. Pointing `-I` at the wrong folder level for GLAD's generated headers. Forgetting `glClear()` before redrawing. Moving an object by a fixed distance per image. Refreshing the delta time only at regular intervals. Leaving a huge delta after a pause. Assuming a card limit instead of reading it, calling `glGetIntegerv` without an active context, reading a single error instead of emptying the pile, repeating the same message on every frame. Printing the result of `glGetString` without testing for `NULL`, taking `GL_MAX_ELEMENTS_INDICES` for a limit, opening a window larger than the screen, mixing up screen coordinates and pixels on a HiDPI screen. Concluding that the program works everywhere after testing a single card, or not printing the cause of a `glfwCreateWindow` failure. |
+| **Best practices** | Vendor a file generated once and for all (like GLAD's) rather than depending on it at every build; reserve this practice for files that don't change regularly. Express speeds in units per second, recompute the delta time at every image and cap it; never rely on vsync to regulate speed. Compare an image with the card's limit before sending it, with a message that names the image, its dimensions and the limit. Loop on `glGetError()` until `GL_NO_ERROR` and name the step being checked. Log vendor, card and version at startup to recognize the machine behind a bug report; check the requested window size against the screen's. Test on each card of a laptop and with `LIBGL_ALWAYS_SOFTWARE=1`. |
