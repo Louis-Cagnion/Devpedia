@@ -127,6 +127,50 @@ Testé avec un relâchement remplacé par une ligne écrite dans un fichier (`xd
 
 > **Piège (`SIGKILL`) :** aucun `trap` ne rattrape `kill -9` ni l'arrêt forcé par un manque de mémoire. Ne jamais tuer un test de cette façon tant qu'une touche est enfoncée ; et **au démarrage** du test suivant, appeler `release_if_stuck` (ci-dessus) ou `xdotool keyup` sur chaque touche utilisée, pour réparer un arrêt brutal précédent.
 
+## Envoyer une touche à la bonne fenêtre : un protocole sûr
+
+Avec la version de `xdotool` testée, une frappe visant une fenêtre qui a **déjà le focus** n'est pas livrée à cette fenêtre en particulier : elle part par le clavier virtuel XTEST, donc vers **n'importe quelle fenêtre qui a le focus à cet instant**. Si l'utilisateur a changé de fenêtre entre-temps, la frappe (par exemple Échap) arrive dans l'éditeur ou le terminal.
+
+Trois commandes de `xdotool` permettent de vérifier la cible avant d'agir. Une fenêtre y est désignée par son **identifiant** (un nombre que le serveur X attribue à chaque fenêtre) ; le **PID** est le numéro du processus qui possède la fenêtre.
+
+| Commande | Question posée |
+|---|---|
+| `xdotool getwindowname ID` | la fenêtre existe-t-elle encore ? (échoue sinon) |
+| `xdotool getwindowfocus` | quelle fenêtre a le focus ? (doit être `ID`) |
+| `xdotool getwindowpid ID` | à quel processus appartient-elle ? (doit être le PID de l'application testée) |
+
+```bash
+# Envoie Échap à la fenêtre $1 de l'application de PID $2, une seule fois, après trois vérifications.
+send_escape_once() {
+	local win=$1 pid=$2 focus owner
+
+	xdotool getwindowname "$win" > /dev/null 2>&1 \
+		|| { echo "fenêtre $win introuvable" >&2; return 1; }
+	focus=$(xdotool getwindowfocus)
+	[ "$focus" = "$win" ] \
+		|| { echo "fenêtre $win sans le focus (focus : $focus)" >&2; return 1; }
+	owner=$(xdotool getwindowpid "$win")
+	[ "$owner" = "$pid" ] \
+		|| { echo "fenêtre $win au PID $owner, attendu $pid" >&2; return 1; }
+	xdotool key --window "$win" Escape
+}
+```
+
+Règles du protocole :
+
+- **Une seule frappe**, jamais de deuxième essai si une vérification échoue ou si l'application ne réagit pas : une frappe répétée au hasard est le même danger que la touche coincée. En cas d'échec, on **arrête l'application par un signal** (`kill PID`) plutôt que de réessayer.
+- Chaque vérification a **son propre message**, qui nomme la fenêtre, la valeur trouvée et la valeur attendue.
+
+**Prouver ce que le clavier virtuel a vraiment envoyé.** `xinput test-xi2 --root` affiche en direct chaque événement du clavier, toutes fenêtres confondues. On le lance en arrière-plan dans un fichier pendant le test, puis on compte :
+
+| À compter dans le fichier | Résultat attendu pour une frappe correcte |
+|---|---|
+| appuis (`RawKeyPress`) | 1 |
+| relâchements (`RawKeyRelease`) | 1 |
+| appuis de plus (auto-répétition) | 0 |
+
+Un appui sans relâchement, ou plusieurs appuis de suite, signale une touche coincée ou répétée.
+
 ## Sur d'autres machines
 
 | Situation | Comportement |

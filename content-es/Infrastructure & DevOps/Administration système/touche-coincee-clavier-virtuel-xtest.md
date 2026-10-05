@@ -127,6 +127,50 @@ Probado con la liberación sustituida por una línea escrita en un archivo (`xdo
 
 > **Trampa (`SIGKILL`):** ningún `trap` atrapa `kill -9` ni una parada forzada por falta de memoria. Nunca matar una prueba así mientras haya una tecla pulsada; y **al arrancar** la prueba siguiente, llamar a `release_if_stuck` (arriba) o a `xdotool keyup` sobre cada tecla usada, para reparar una parada brusca anterior.
 
+## Enviar una tecla a la ventana correcta: un protocolo seguro
+
+Con la versión de `xdotool` probada, una pulsación dirigida a una ventana que **ya tiene el foco** no se entrega a esa ventana en particular: sale por el teclado virtual XTEST, es decir, hacia **cualquier ventana que tenga el foco en ese instante**. Si el usuario cambió de ventana entretanto, la pulsación (Escape, por ejemplo) llega al editor o a la terminal.
+
+Tres comandos de `xdotool` permiten comprobar el destino antes de actuar. Una ventana se designa por su **identificador** (un número que el servidor X asigna a cada ventana); el **PID** es el número del proceso propietario de la ventana.
+
+| Comando | Pregunta planteada |
+|---|---|
+| `xdotool getwindowname ID` | ¿existe todavía la ventana? (falla si no) |
+| `xdotool getwindowfocus` | ¿qué ventana tiene el foco? (debe ser `ID`) |
+| `xdotool getwindowpid ID` | ¿a qué proceso pertenece? (debe ser el PID de la aplicación probada) |
+
+```bash
+# Envía Escape a la ventana $1 de la aplicación de PID $2, una sola vez, tras tres comprobaciones.
+send_escape_once() {
+	local win=$1 pid=$2 focus owner
+
+	xdotool getwindowname "$win" > /dev/null 2>&1 \
+		|| { echo "ventana $win no encontrada" >&2; return 1; }
+	focus=$(xdotool getwindowfocus)
+	[ "$focus" = "$win" ] \
+		|| { echo "la ventana $win no tiene el foco (foco: $focus)" >&2; return 1; }
+	owner=$(xdotool getwindowpid "$win")
+	[ "$owner" = "$pid" ] \
+		|| { echo "ventana $win con PID $owner, se esperaba $pid" >&2; return 1; }
+	xdotool key --window "$win" Escape
+}
+```
+
+Reglas del protocolo:
+
+- **Una sola pulsación**, nunca un segundo intento si una comprobación falla o si la aplicación no reacciona: una pulsación repetida al azar es el mismo peligro que la tecla atascada. En caso de fallo, se **detiene la aplicación con una señal** (`kill PID`) en lugar de reintentar.
+- Cada comprobación tiene **su propio mensaje**, que nombra la ventana, el valor encontrado y el valor esperado.
+
+**Demostrar lo que el teclado virtual envió realmente.** `xinput test-xi2 --root` muestra en directo cada evento del teclado, todas las ventanas juntas. Se lanza en segundo plano hacia un archivo durante la prueba y después se cuenta:
+
+| Qué contar en el archivo | Resultado esperado para una pulsación correcta |
+|---|---|
+| pulsaciones (`RawKeyPress`) | 1 |
+| liberaciones (`RawKeyRelease`) | 1 |
+| pulsaciones de más (autorrepetición) | 0 |
+
+Una pulsación sin liberación, o varias pulsaciones seguidas, indica una tecla atascada o repetida.
+
 ## En otras máquinas
 
 | Situación | Comportamiento |

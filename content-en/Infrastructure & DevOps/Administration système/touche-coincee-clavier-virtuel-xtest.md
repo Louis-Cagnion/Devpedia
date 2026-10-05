@@ -127,6 +127,50 @@ Tested with the release replaced by a line written to a file (`xdotool` is not i
 
 > **Pitfall (`SIGKILL`):** no `trap` catches `kill -9` or a forced stop due to lack of memory. Never kill a test this way while a key is down; and **at the start** of the next test, call `release_if_stuck` (above) or `xdotool keyup` on every key used, to repair a previous brutal stop.
 
+## Sending a key to the right window: a safe protocol
+
+With the tested version of `xdotool`, a keystroke aimed at a window that **already has the focus** is not delivered to that particular window: it goes through the XTEST virtual keyboard, so to **whichever window has the focus at that instant**. If the user switched windows in the meantime, the keystroke (Escape, for example) lands in the editor or the terminal.
+
+Three `xdotool` commands let you check the target before acting. A window is designated by its **identifier** (a number the X server assigns to each window); the **PID** is the number of the process that owns the window.
+
+| Command | Question asked |
+|---|---|
+| `xdotool getwindowname ID` | does the window still exist? (fails otherwise) |
+| `xdotool getwindowfocus` | which window has the focus? (must be `ID`) |
+| `xdotool getwindowpid ID` | which process does it belong to? (must be the PID of the application under test) |
+
+```bash
+# Sends Escape to window $1 of the application with PID $2, once, after three checks.
+send_escape_once() {
+	local win=$1 pid=$2 focus owner
+
+	xdotool getwindowname "$win" > /dev/null 2>&1 \
+		|| { echo "window $win not found" >&2; return 1; }
+	focus=$(xdotool getwindowfocus)
+	[ "$focus" = "$win" ] \
+		|| { echo "window $win does not have the focus (focus: $focus)" >&2; return 1; }
+	owner=$(xdotool getwindowpid "$win")
+	[ "$owner" = "$pid" ] \
+		|| { echo "window $win has PID $owner, expected $pid" >&2; return 1; }
+	xdotool key --window "$win" Escape
+}
+```
+
+Rules of the protocol:
+
+- **One single keystroke**, never a second attempt if a check fails or if the application does not react: a keystroke repeated at random is the same danger as the stuck key. On failure, **stop the application with a signal** (`kill PID`) rather than retrying.
+- Each check has **its own message**, naming the window, the value found and the value expected.
+
+**Proving what the virtual keyboard really sent.** `xinput test-xi2 --root` displays live every keyboard event, all windows combined. Start it in the background into a file during the test, then count:
+
+| What to count in the file | Expected result for a correct keystroke |
+|---|---|
+| presses (`RawKeyPress`) | 1 |
+| releases (`RawKeyRelease`) | 1 |
+| extra presses (auto-repeat) | 0 |
+
+A press without a release, or several presses in a row, signals a stuck or repeated key.
+
 ## On other machines
 
 | Situation | Behavior |
