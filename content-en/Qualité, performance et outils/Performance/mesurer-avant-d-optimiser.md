@@ -370,6 +370,46 @@ The gain melts away as the division weighs less in the total time: the processor
 >
 > **Best practice:** stay in integers with an inverse rounded up, check exactness by enumeration over the whole domain, and guard the input with an assertion. For a divisor that is **constant** at compile time, it is pointless: the compiler already makes this replacement (gcc produces an `imul` for `x / 7` and a `div` for `x / d`).
 
+## Measuring Complexity: Doubling the Size, on the Normal Build
+
+To know how the time grows with the amount of data (the **complexity**), **double the size** of the input and compare the times:
+
+| Time after doubling | Growth | Name |
+|---|---|---|
+| × 2 | proportional to the size | linear |
+| × 4 | proportional to the **square** of the size | quadratic |
+
+A quadratic program is often invisible on small data and collapses on large data. Example: adding `n` integers one by one while growing the array by **one slot** each time with [`realloc`](/?c=langages&s=c&p=memoire#resizing-a-block-realloc) (which may copy the whole array to a new location):
+
+```c
+for (long i = 0; i < n; i++)
+{
+	int *bigger = realloc(tab, (size_t)(i + 1) * sizeof *tab);   /* just one more integer */
+
+	if (!bigger)
+	{
+		free(tab);
+		fprintf(stderr, "realloc failed at i = %ld\n", i);
+		return 1;
+	}
+	tab = bigger;
+	tab[i] = (int)i;
+}
+```
+
+Measured (`gcc -O2`, duration of the loop alone):
+
+| Build | n | Duration |
+|---|---|---|
+| normal (`-O2`) | 400,000 / 800,000 / 1,600,000 | 0.002 s / 0.004 s / 0.006 s (≈ × 2 per doubling) |
+| `-fsanitize=address` (ASan) | 6,250 / 12,500 / 25,000 | 0.094 s / 0.335 s / 1.166 s (≈ × 3.6 per doubling) |
+
+**ASan** (*AddressSanitizer*) is a compile option that watches every memory access to detect overflows and uses after free. To do so, its `realloc` **always allocates a new block and copies everything**, whereas glibc's usually grows in place: the same program is **linear** in a normal build and **quadratic** under ASan. At `n = 50,000`, the ASan build even exceeded 2 GiB of memory (old blocks are held for a while before being reused) and was stopped by `ASAN_OPTIONS=hard_rss_limit_mb=2000`.
+
+> **Pitfall (a measurement made under an instrumentation tool):** the times of a sanitizer build, of `valgrind` or of a profiler say nothing about real speed, nor about its complexity: the tool itself changes the algorithm (here, from linear to quadratic). Measure the complexity **on the normal build** (`-O2`, no instrumentation); keep the sanitizers for **correctness** (see [Valgrind](/?c=langages&s=c&p=memoire)). A time that becomes huge only under a tool is a fact about the tool before it is a bug in the program.
+
+The remedy for an array grown by one slot is **capacity doubling**: multiply the capacity by a constant factor (for example 2) only when the array is full; copies become rare and appending stays linear under every build.
+
 ## More Threads, Slower: Memory-Bound Programs
 
 A program can be limited by **computation** (*CPU-bound*) or by **memory accesses** (*memory-bound*, see [The CPU cache](/?c=qualite-performance-et-outils&s=performance&p=cache-cpu-et-simd)). In the second case, threads compete for the same memory bandwidth: adding more can **slow down** the whole. Measured on a puzzle solver: 577 ms with one thread, 893 ms with 8 threads (see also [Parallelism](/?c=qualite-performance-et-outils&s=performance&p=parallelisme)).
@@ -389,5 +429,5 @@ Two other lessons from the same project:
 |---|---|
 | **Key takeaways** | Never optimize without measuring first: intuition about "what's slow" generally targets code that looks complicated, not code that actually costs the most. Two versions are compared first on their results and counters, then only on time, in alternating rounds. A gain measured on a micro-benchmark does not hold for the whole program: the processor hides the latency of a slow instruction (division) behind the rest of the work. |
 | **Tools you can use** | A classic profiler (per function: `gprof`, `perf`, `valgrind --tool=callgrind`), manual per-phase instrumentation when the program spends its time waiting; deterministic work counters to compare two versions; `cachegrind` (`--cache-sim=yes`) for cache misses; `__rdtsc()` preceded by `_mm_lfence()` for the share of a part of a loop; `cmp -s` to compare two outputs. |
-| **Pitfalls to avoid** | Trusting a single measurement: noise (network, cache, machine load) can exceed the actual effect of an optimization; trusting an unexpected function name in a `gprof` profile of an optimized program (check with `nm -n` or callgrind); `cachegrind` without `--cache-sim=yes`, or on sources modified since the profile; reading the cycle counter without a fence; measuring A then B in a block on a drifting machine. Concluding from a micro-benchmark (−73 %) that a whole program will gain as much (0.5 % measured); a floating-point inverse, or an input outside the verified domain. |
-| **Best practices** | Always remeasure after an optimization (both time AND result accuracy); take several measurements to tell a real gain from noise; check that two versions do the same work before timing them; measure in alternating rounds, with the machine at rest. Quantify an instruction's share in the profile before replacing it, and check an exact replacement by enumeration over its whole domain. |
+| **Pitfalls to avoid** | Trusting a single measurement: noise (network, cache, machine load) can exceed the actual effect of an optimization; trusting an unexpected function name in a `gprof` profile of an optimized program (check with `nm -n` or callgrind); `cachegrind` without `--cache-sim=yes`, or on sources modified since the profile; reading the cycle counter without a fence; measuring A then B in a block on a drifting machine. Concluding from a micro-benchmark (−73 %) that a whole program will gain as much (0.5 % measured); a floating-point inverse, or an input outside the verified domain. judging a complexity on a sanitizer or valgrind build. |
+| **Best practices** | Always remeasure after an optimization (both time AND result accuracy); take several measurements to tell a real gain from noise; check that two versions do the same work before timing them; measure in alternating rounds, with the machine at rest. Quantify an instruction's share in the profile before replacing it, and check an exact replacement by enumeration over its whole domain. measure complexity by doubling the size (× 4 in time = quadratic) on the normal build. |

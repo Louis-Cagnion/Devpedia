@@ -370,6 +370,46 @@ Le gain fond à mesure que la division pèse moins dans le temps total : le proc
 >
 > **Bonne pratique :** rester en entiers avec un inverse arrondi vers le haut, vérifier l'exactitude par énumération sur tout le domaine, et protéger l'entrée par une assertion. Pour un diviseur **constant** à la compilation, inutile : le compilateur fait déjà ce remplacement (gcc produit un `imul` pour `x / 7` et un `div` pour `x / d`).
 
+## Mesurer la complexité : doubler la taille, sur le build normal
+
+Pour savoir comment le temps croît avec la quantité de données (la **complexité**), on **double la taille** de l'entrée et on compare les temps :
+
+| Temps après doublement | Croissance | Nom |
+|---|---|---|
+| × 2 | proportionnelle à la taille | linéaire |
+| × 4 | proportionnelle au **carré** de la taille | quadratique |
+
+Un programme quadratique est souvent invisible sur de petites données et s'effondre sur de grandes. Exemple : ajouter `n` entiers un par un en agrandissant le tableau d'**une case** à chaque fois avec [`realloc`](/?c=langages&s=c&p=memoire#redimensionner-un-bloc-realloc) (qui peut recopier tout le tableau vers un nouvel emplacement) :
+
+```c
+for (long i = 0; i < n; i++)
+{
+	int *bigger = realloc(tab, (size_t)(i + 1) * sizeof *tab);   /* un seul entier de plus */
+
+	if (!bigger)
+	{
+		free(tab);
+		fprintf(stderr, "realloc a échoué à i = %ld\n", i);
+		return 1;
+	}
+	tab = bigger;
+	tab[i] = (int)i;
+}
+```
+
+Mesuré (`gcc -O2`, durée de la seule boucle) :
+
+| Build | n | Durée |
+|---|---|---|
+| normal (`-O2`) | 400 000 / 800 000 / 1 600 000 | 0,002 s / 0,004 s / 0,006 s (≈ × 2 par doublement) |
+| `-fsanitize=address` (ASan) | 6 250 / 12 500 / 25 000 | 0,094 s / 0,335 s / 1,166 s (≈ × 3,6 par doublement) |
+
+**ASan** (*AddressSanitizer*) est une option de compilation qui surveille chaque accès à la mémoire pour détecter les débordements et les usages après libération. Pour cela, son `realloc` **alloue toujours un nouveau bloc et recopie tout**, alors que celui de la glibc agrandit en général sur place : le même programme est **linéaire** en build normal et **quadratique** sous ASan. À `n = 50 000`, le build ASan a même dépassé 2 Gio de mémoire (les anciens blocs restent retenus un temps avant d'être réutilisés) et a été arrêté par `ASAN_OPTIONS=hard_rss_limit_mb=2000`.
+
+> **Piège (une mesure faite sous un outil d'instrumentation) :** les temps d'un build sanitizer, d'un `valgrind` ou d'un profileur ne disent rien de la vitesse réelle, ni de sa complexité : l'outil change lui-même l'algorithme (ici, de linéaire à quadratique). Mesurer la complexité **sur le build normal** (`-O2`, sans instrumentation) ; garder les sanitizers pour la **correction** (voir [Valgrind](/?c=langages&s=c&p=memoire)). Un temps qui devient énorme uniquement sous un outil est un fait de l'outil avant d'être un bug du programme.
+
+La parade au tableau agrandi d'une case est le **doublement de capacité** : on multiplie la capacité par un facteur constant (par exemple 2) seulement quand le tableau est plein ; les recopies deviennent rares et l'ajout reste linéaire sous tous les builds.
+
 ## Plus de threads, plus lent : les programmes limités par la mémoire
 
 Un programme peut être limité par le **calcul** (*CPU-bound*) ou par les **accès à la mémoire** (*memory-bound*, voir [Le cache CPU](/?c=qualite-performance-et-outils&s=performance&p=cache-cpu-et-simd)). Dans le second cas, les threads se disputent la même bande passante mémoire : en ajouter peut **ralentir** l'ensemble. Mesuré sur un solveur de puzzle : 577 ms avec un thread, 893 ms avec 8 threads (voir aussi [Le parallélisme](/?c=qualite-performance-et-outils&s=performance&p=parallelisme)).
@@ -389,5 +429,5 @@ Deux autres leçons du même projet :
 |---|---|
 | **À retenir** | Ne jamais optimiser sans avoir mesuré : l'intuition sur "ce qui est lent" cible en général le code qui semble compliqué, pas celui qui coûte réellement cher. Deux versions se comparent d'abord sur leurs résultats et leurs compteurs, puis seulement sur le temps, en tours alternés. Un gain mesuré sur un micro-banc ne vaut pas pour le programme entier : le processeur masque la latence d'une instruction lente (division) derrière le reste du travail. |
 | **Outils utilisables** | Un profileur classique (par fonction : `gprof`, `perf`, `valgrind --tool=callgrind`), une instrumentation manuelle par phase quand le programme passe son temps à attendre ; des compteurs de travail déterministes pour comparer deux versions ; `cachegrind` (`--cache-sim=yes`) pour les défauts de cache ; `__rdtsc()` précédé de `_mm_lfence()` pour la part d'une portion de boucle ; `cmp -s` pour comparer deux sorties. |
-| **Pièges à éviter** | Se fier à une mesure unique : le bruit (réseau, cache, charge machine) peut dépasser l'effet réel d'une optimisation ; croire un nom de fonction inattendu dans un profil `gprof` d'un programme optimisé (vérifier avec `nm -n` ou callgrind) ; `cachegrind` sans `--cache-sim=yes`, ou sur des sources modifiées depuis le profil ; lire le compteur de cycles sans barrière ; mesurer A puis B en bloc sur une machine qui dérive ; conclure d'un micro-banc (−73 %) qu'un programme entier gagnera autant (0,5 % mesuré) ; un inverse en virgule flottante, ou une entrée hors du domaine vérifié. |
-| **Bonnes pratiques** | Toujours re-mesurer après une optimisation (temps ET exactitude du résultat) ; prendre plusieurs mesures pour distinguer un vrai gain du bruit ; vérifier que deux versions font le même travail avant de les chronométrer ; mesurer en tours alternés, machine au repos ; chiffrer la part d'une instruction dans le profil avant de la remplacer, et vérifier un remplacement exact par énumération sur tout son domaine. |
+| **Pièges à éviter** | Se fier à une mesure unique : le bruit (réseau, cache, charge machine) peut dépasser l'effet réel d'une optimisation ; croire un nom de fonction inattendu dans un profil `gprof` d'un programme optimisé (vérifier avec `nm -n` ou callgrind) ; `cachegrind` sans `--cache-sim=yes`, ou sur des sources modifiées depuis le profil ; lire le compteur de cycles sans barrière ; mesurer A puis B en bloc sur une machine qui dérive ; conclure d'un micro-banc (−73 %) qu'un programme entier gagnera autant (0,5 % mesuré) ; juger une complexité sur un build sanitizer ou valgrind ; un inverse en virgule flottante, ou une entrée hors du domaine vérifié. |
+| **Bonnes pratiques** | Toujours re-mesurer après une optimisation (temps ET exactitude du résultat) ; prendre plusieurs mesures pour distinguer un vrai gain du bruit ; vérifier que deux versions font le même travail avant de les chronométrer ; mesurer en tours alternés, machine au repos ; mesurer la complexité en doublant la taille (× 4 de temps = quadratique) sur le build normal ; chiffrer la part d'une instruction dans le profil avant de la remplacer, et vérifier un remplacement exact par énumération sur tout son domaine. |

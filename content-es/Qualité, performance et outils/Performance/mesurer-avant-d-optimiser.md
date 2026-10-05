@@ -370,6 +370,46 @@ La ganancia se diluye a medida que la división pesa menos en el tiempo total: e
 >
 > **Buena práctica:** mantenerse en enteros con un inverso redondeado hacia arriba, comprobar la exactitud por enumeración sobre todo el dominio y proteger la entrada con una aserción. Para un divisor **constante** en tiempo de compilación, es inútil: el compilador ya hace esta sustitución (gcc produce un `imul` para `x / 7` y un `div` para `x / d`).
 
+## Medir la complejidad: duplicar el tamaño, en la compilación normal
+
+Para saber cómo crece el tiempo con la cantidad de datos (la **complejidad**), se **duplica el tamaño** de la entrada y se comparan los tiempos:
+
+| Tiempo tras duplicar | Crecimiento | Nombre |
+|---|---|---|
+| × 2 | proporcional al tamaño | lineal |
+| × 4 | proporcional al **cuadrado** del tamaño | cuadrática |
+
+Un programa cuadrático suele ser invisible con pocos datos y se hunde con muchos. Ejemplo: añadir `n` enteros uno a uno agrandando el array en **una casilla** cada vez con [`realloc`](/?c=langages&s=c&p=memoire#cambiar-el-tamano-de-un-bloque-realloc) (que puede copiar todo el array a otro lugar):
+
+```c
+for (long i = 0; i < n; i++)
+{
+	int *bigger = realloc(tab, (size_t)(i + 1) * sizeof *tab);   /* un solo entero más */
+
+	if (!bigger)
+	{
+		free(tab);
+		fprintf(stderr, "realloc falló en i = %ld\n", i);
+		return 1;
+	}
+	tab = bigger;
+	tab[i] = (int)i;
+}
+```
+
+Medido (`gcc -O2`, duración del solo bucle):
+
+| Compilación | n | Duración |
+|---|---|---|
+| normal (`-O2`) | 400 000 / 800 000 / 1 600 000 | 0,002 s / 0,004 s / 0,006 s (≈ × 2 por duplicación) |
+| `-fsanitize=address` (ASan) | 6 250 / 12 500 / 25 000 | 0,094 s / 0,335 s / 1,166 s (≈ × 3,6 por duplicación) |
+
+**ASan** (*AddressSanitizer*) es una opción de compilación que vigila cada acceso a la memoria para detectar desbordamientos y usos tras liberar. Para ello, su `realloc` **siempre reserva un bloque nuevo y copia todo**, mientras que el de glibc suele agrandar en el sitio: el mismo programa es **lineal** en la compilación normal y **cuadrático** bajo ASan. Con `n = 50 000`, la compilación ASan llegó incluso a superar 2 GiB de memoria (los bloques antiguos se retienen un tiempo antes de reutilizarse) y fue detenida por `ASAN_OPTIONS=hard_rss_limit_mb=2000`.
+
+> **Trampa (una medida hecha bajo una herramienta de instrumentación):** los tiempos de una compilación con sanitizer, de `valgrind` o de un perfilador no dicen nada de la velocidad real ni de su complejidad: la propia herramienta cambia el algoritmo (aquí, de lineal a cuadrático). Se mide la complejidad **en la compilación normal** (`-O2`, sin instrumentación); los sanitizers se reservan para la **corrección** (véase [Valgrind](/?c=langages&s=c&p=memoire)). Un tiempo que se vuelve enorme solo bajo una herramienta es un hecho de la herramienta antes que un error del programa.
+
+El remedio al array agrandado de una casilla es la **duplicación de capacidad**: se multiplica la capacidad por un factor constante (por ejemplo 2) solo cuando el array está lleno; las copias se vuelven raras y la adición sigue siendo lineal en cualquier compilación.
+
 ## Más hilos, más lento: los programas limitados por la memoria
 
 Un programa puede estar limitado por el **cálculo** (*CPU-bound*) o por los **accesos a memoria** (*memory-bound*, ver [La caché de la CPU](/?c=qualite-performance-et-outils&s=performance&p=cache-cpu-et-simd)). En el segundo caso, los hilos se disputan el mismo ancho de banda de memoria: añadir más puede **ralentizar** el conjunto. Medido en un solucionador de puzles: 577 ms con un hilo, 893 ms con 8 hilos (ver también [El paralelismo](/?c=qualite-performance-et-outils&s=performance&p=parallelisme)).
@@ -389,5 +429,5 @@ Otras dos lecciones del mismo proyecto:
 |---|---|
 | **Para recordar** | Nunca optimizar sin haber medido: la intuición sobre "qué es lento" suele apuntar al código que parece complicado, no al que realmente cuesta caro. Dos versiones se comparan primero por sus resultados y contadores, y solo después por el tiempo, en rondas alternas. Una ganancia medida en un micro-benchmark no vale para el programa entero: el procesador oculta la latencia de una instrucción lenta (división) tras el resto del trabajo. |
 | **Herramientas utilizables** | Un profiler clásico (por función: `gprof`, `perf`, `valgrind --tool=callgrind`), una instrumentación manual por fase cuando el programa pasa su tiempo esperando; contadores de trabajo deterministas para comparar dos versiones; `cachegrind` (`--cache-sim=yes`) para los fallos de caché; `__rdtsc()` precedido de `_mm_lfence()` para la parte de un fragmento de bucle; `cmp -s` para comparar dos salidas. |
-| **Trampas a evitar** | Fiarse de una medición única: el ruido (red, caché, carga de la máquina) puede superar el efecto real de una optimización; fiarse de un nombre de función inesperado en un perfil de `gprof` de un programa optimizado (comprobar con `nm -n` o callgrind); `cachegrind` sin `--cache-sim=yes`, o sobre fuentes modificadas desde el perfil; leer el contador de ciclos sin barrera; medir A y luego B en bloque en una máquina que deriva. Concluir a partir de un micro-benchmark (−73 %) que un programa entero ganará otro tanto (0,5 % medido); un inverso en coma flotante, o una entrada fuera del dominio verificado. |
-| **Buenas prácticas** | Siempre volver a medir tras una optimización (tiempo Y exactitud del resultado); tomar varias mediciones para distinguir una ganancia real del ruido; comprobar que dos versiones hacen el mismo trabajo antes de cronometrarlas; medir en rondas alternas, con la máquina en reposo. Cuantificar la parte de una instrucción en el perfil antes de sustituirla, y comprobar una sustitución exacta por enumeración sobre todo su dominio. |
+| **Trampas a evitar** | Fiarse de una medición única: el ruido (red, caché, carga de la máquina) puede superar el efecto real de una optimización; fiarse de un nombre de función inesperado en un perfil de `gprof` de un programa optimizado (comprobar con `nm -n` o callgrind); `cachegrind` sin `--cache-sim=yes`, o sobre fuentes modificadas desde el perfil; leer el contador de ciclos sin barrera; medir A y luego B en bloque en una máquina que deriva. Concluir a partir de un micro-benchmark (−73 %) que un programa entero ganará otro tanto (0,5 % medido); un inverso en coma flotante, o una entrada fuera del dominio verificado. juzgar una complejidad en una compilación con sanitizer o valgrind. |
+| **Buenas prácticas** | Siempre volver a medir tras una optimización (tiempo Y exactitud del resultado); tomar varias mediciones para distinguir una ganancia real del ruido; comprobar que dos versiones hacen el mismo trabajo antes de cronometrarlas; medir en rondas alternas, con la máquina en reposo. Cuantificar la parte de una instrucción en el perfil antes de sustituirla, y comprobar una sustitución exacta por enumeración sobre todo su dominio. medir la complejidad duplicando el tamaño (× 4 de tiempo = cuadrática) en la compilación normal. |
