@@ -52,4 +52,47 @@ echo $((0.53 / 1))    # error in Bash -- 0.53 in zsh
 
 > **Pitfall:** a script written and tested in zsh can therefore silently produce a different numeric result (or an error) once run with `bash script.sh` or through an explicit `#!/bin/bash`. For a portable decimal calculation, use [`bc`](https://www.gnu.org/software/bc) or `awk` instead of `$(( ))`, regardless of the target shell.
 
+## Reading a Key: `read -k` (zsh) and `read -n` (Bash)
+
+`read` normally waits for a whole line confirmed with Enter. To react to **a single key** (a menu, "press any key"), each shell has its own option:
+
+| | Zsh | Bash |
+|---|---|---|
+| Read one character, without displaying it | `read -s -k 1 key` | `read -rsn1 key` |
+| Limit the wait | `-t 0.05` (seconds) | `-t 0.05` (seconds) |
+
+A zsh script that uses `-k` fails in Bash: `read: -k: invalid option` (exit code 2).
+
+**Arrow keys send several bytes.** The up arrow transmits three bytes at once: Escape (code 27, written `033` in octal), `[` then `A`. A one-character read therefore sees three successive "keys". Measured in zsh, up arrow typed then `x`:
+
+```text
+read 1 :  033
+read 2 :  [
+read 3 :  A
+```
+
+The fix: after an Escape, read the following bytes with a **very short timeout**. If they arrive, it is a sequence; otherwise, it is the Escape key alone.
+
+```zsh
+lire_touche() {
+  local k suite
+  read -s -k 1 k
+  if [[ $k == $'\e' ]]; then    # Escape: start of a sequence, or the Escape key alone
+    read -s -k 2 -t 0.05 suite  # the next two bytes, if they arrive within 50 ms
+    k+=$suite
+  fi
+  REPLY=$k
+}
+```
+
+Measured: the up arrow returns `033 [ A` in a single call, the Escape key alone returns `033`, and an ordinary key (`x`) is still read alone. The same function is written in Bash with `read -rsn1` and `read -rsn2 -t 0.05` (identical result).
+
+> **Pitfall:** a timeout that is too short. On a slow connection (SSH), the three bytes may arrive separately: the arrow is then read as Escape followed by stray characters.
+>
+> **Pitfall:** other keys (Home, End, F1…) send longer sequences, which a `-k 2` does not read in full.
+>
+> **Best practice:** test the function with an arrow **and** with Escape alone, in a real terminal; for a complex menu, use a dedicated tool rather than decoding sequences by hand.
+
+Another silent difference between the two shells (the `trap … EXIT` that does not run on a signal in zsh) is described in [Process Management](/?c=shells&s=bash&p=gestion-des-processus).
+
 You'll find the different chapters below:

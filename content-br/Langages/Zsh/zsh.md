@@ -52,4 +52,47 @@ echo $((0.53 / 1))    # erro no Bash -- 0.53 no zsh
 
 > **Armadilha:** um script escrito e testado no zsh pode, portanto, produzir silenciosamente um resultado numérico diferente (ou um erro) ao ser executado com `bash script.sh` ou via um `#!/bin/bash` explícito. Para um cálculo decimal portável, usar [`bc`](https://www.gnu.org/software/bc) ou `awk` em vez de `$(( ))`, seja qual for o shell de destino.
 
+## Ler uma tecla: `read -k` (zsh) e `read -n` (Bash)
+
+O `read` normalmente espera uma linha inteira confirmada com Enter. Para reagir a **uma única tecla** (um menu, "pressione uma tecla"), cada shell tem sua opção:
+
+| | Zsh | Bash |
+|---|---|---|
+| Ler um caractere, sem mostrá-lo | `read -s -k 1 tecla` | `read -rsn1 tecla` |
+| Limitar a espera | `-t 0.05` (segundos) | `-t 0.05` (segundos) |
+
+Um script de zsh que usa `-k` falha no Bash: `read: -k: invalid option` (código de saída 2).
+
+**As teclas de seta enviam vários bytes.** A seta para cima transmite de uma vez três bytes: Esc (código 27, escrito `033` em octal), `[` e depois `A`. Uma leitura de um único caractere vê, portanto, três "teclas" sucessivas. Medido no zsh, seta para cima digitada e depois `x`:
+
+```text
+leitura 1 :  033
+leitura 2 :  [
+leitura 3 :  A
+```
+
+A solução: depois de um Esc, ler os bytes seguintes com um **prazo muito curto**. Se chegarem, é uma sequência; se não, é a tecla Esc sozinha.
+
+```zsh
+lire_touche() {
+  local k suite
+  read -s -k 1 k
+  if [[ $k == $'\e' ]]; then    # Esc: início de uma sequência, ou tecla Esc sozinha
+    read -s -k 2 -t 0.05 suite  # os dois bytes seguintes, se chegarem em 50 ms
+    k+=$suite
+  fi
+  REPLY=$k
+}
+```
+
+Medido: a seta para cima devolve `033 [ A` em uma única chamada, a tecla Esc sozinha devolve `033`, e uma tecla comum (`x`) continua sendo lida sozinha. A mesma função se escreve no Bash com `read -rsn1` e `read -rsn2 -t 0.05` (resultado idêntico).
+
+> **Armadilha:** um prazo curto demais. Em uma conexão lenta (SSH), os três bytes podem chegar separados: a seta é então lida como Esc seguido de caracteres parasitas.
+>
+> **Armadilha:** outras teclas (Home, End, F1…) enviam sequências mais longas, que um `-k 2` não lê por inteiro.
+>
+> **Boa prática:** testar a função com uma seta **e** com Esc sozinho, em um terminal real; para um menu complexo, usar uma ferramenta dedicada em vez de decodificar as sequências à mão.
+
+Outra diferença silenciosa entre os dois shells (o `trap … EXIT` que não executa diante de um sinal no zsh) está descrita em [O gerenciamento de processos](/?c=shells&s=bash&p=gestion-des-processus).
+
 Você vai encontrar os diferentes capítulos abaixo:
