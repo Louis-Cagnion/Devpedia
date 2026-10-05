@@ -137,6 +137,28 @@ wc -w arquivo.txt  # número de palavras
 wc -c arquivo.txt  # número de bytes
 ```
 
+## Números decimais e locale: a armadilha da vírgula
+
+O **locale** (configuração regional) é o ajuste de idioma e região da sessão: a variável `LC_ALL` o define para tudo, `LC_NUMERIC` só para os números (`LC_ALL`, se definida, prevalece sobre `LC_NUMERIC`). Com um locale francês (`fr_FR.UTF-8`), o separador decimal é a **vírgula**. As ferramentas que respeitam o locale passam então a escrever `3,14` e não aceitam mais `3.14`; o mesmo script dá um resultado diferente conforme a máquina.
+
+| Comando | `LC_ALL=C` | `LC_ALL=fr_FR.UTF-8` |
+|---|---|---|
+| `printf '%.2f\n' 3.14159` (`printf` do Bash) | `3.14` | erro `invalid number`, depois mostra `3,00` |
+| `printf '%.2f\n' 3,14159` | erro `invalid number`, depois `3.00` | `3,14` |
+| `awk --use-lc-numeric 'BEGIN{printf "%.2f\n", 3.14159}'` (`gawk`) | `3.14` | `3,14` |
+| `awk --use-lc-numeric '{print $2 + 1}' <<< 'a 3.5'` | `4.5` | `4` (lê `3`, ignora `.5`, sem erro) |
+
+Medido com Bash 5 e `gawk` 5.4. O `gawk` ignora o locale por padrão (escreve `3.14` mesmo em `fr_FR`): a opção `--use-lc-numeric` o faz respeitá-lo. Outras versões do `awk` o respeitam sem opção: confira na sua.
+
+Consequência: um valor escrito com vírgula em um arquivo (`0,500`) é recusado ou truncado por qualquer leitor que espere um ponto (JSON, CSV anglo-saxão, `strtod` no locale `C`), e um cálculo sobre um número com ponto pode parar no ponto sem nenhuma mensagem.
+
+```bash
+# fixa o locale só para este comando: números escritos e lidos com ponto
+LC_ALL=C awk '{ s += $2 } END { printf "%.2f\n", s }' medicoes.txt
+```
+
+> **Armadilha:** exportar `LC_NUMERIC=C` não adianta se `LC_ALL` estiver definida acima (medido: `LC_NUMERIC=C LC_ALL=fr_FR.UTF-8 printf '%.2f\n' 3.14159` continua falhando). **Boa prática:** em todo script que produza ou leia números para outro programa, colocar `LC_ALL=C` na frente do comando em causa em vez de depender do locale da máquina.
+
 ## Combinar essas ferramentas
 
 ```bash

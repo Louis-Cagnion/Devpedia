@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : rédiger le point 4 en commençant par l'item `Langages/Bash` (zsh ne découpe pas une variable non guillemetée, décimale à virgule dans `awk`/`printf`), puis les autres items dans l'ordre, un item à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). Point 5 (vérifications GLSL et OpenGL non exécutées) : Louis a précisé qu'il n'a pas de rendu graphique sur cette machine, ne pas lui redemander tant qu'il n'a pas changé de machine. En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : rédiger le point 4 en commençant par l'item `Qualité, performance et outils` (faux positifs de l'outil de test), puis les autres items dans l'ordre, un item à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). Point 5 (vérifications GLSL et OpenGL non exécutées) : Louis a précisé qu'il n'a pas de rendu graphique sur cette machine, ne pas lui redemander tant qu'il n'a pas changé de machine. En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -59,6 +59,7 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Langages/Bash/gestion-des-processus` (sections `mktemp` et `trap`, `timeout` et Ctrl-C).
 - `Langages/Bash/redirections-et-pipes` (section tampon de 4 Ko d'un tube).
 - `Langages/Bash/scripts-et-shebang` (section commentaire de bloc `: <<'COMMENT'`).
+- `Langages/Bash/variables` (section variable non guillemetée dans zsh) et `Langages/Bash/traitement-de-texte` (section nombres décimaux et locale).
 - `Langages/Zsh/zsh` (section lire une touche : `read -k` et touches fléchées).
 - `Langages/C/exit-et-codes-de-retour` (section `atexit()`).
 - `Langages/C/convertir-un-texte-en-nombre` (nouveau).
@@ -90,7 +91,6 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 Source : toute la session (projet scop en C/OpenGL, revue crash-test, corrections vérifiées par exécution). Recherche faite dans `content/` : ce qui existe déjà est indiqué, le reste a 0 résultat. Ajouts à faire au fil des items de correction (les notions des items 11 à 20 s'ajouteront ici).
 
 **Langages > C**
-- `Langages/Bash` (et Zsh) : **zsh ne découpe pas une variable non guillemetée en mots** (`for sz in "1920 1080"; set -- $sz` donne un seul mot), contrairement à bash ; utiliser `${=var}` ; décimale à virgule des locales françaises dans `awk`/`printf` (`LC_ALL=C`) qui rend un fichier numérique invalide.
 - `Qualité, performance et outils` (chapitre « sanitizers et tests » ou nouveau) : **les faux positifs de l'outil de test** : un vérificateur qui lit les triangles par numéro de sommet casse quand on renumérote ; un curseur de souris dans une capture fausse la boîte englobante (`ffmpeg -draw_mouse 0`) ; recompiler l'outil pendant qu'une série tourne ; un test qui lit une valeur avant l'appel qui la modifie ; toujours confirmer une alerte inattendue sur l'ancien code avant d'accuser le nouveau (ici 7 alertes, toutes dues à l'outil) ; comparer deux rendus après **normalisation de la luminosité** quand le shader pulse.
 - `Qualité, performance et outils/Qualité et architecture du code` : **un contexte de travail (struct) pour découper une grosse fonction** : regrouper l'objet, le chemin du fichier, la liste en cours et la normale dans une structure (`Face_job`) passée par pointeur évite les listes de six paramètres et les variables globales, et permet à un seul `fail_face` de tout libérer ; plafonner la longueur d'une fonction et la découper en sous-fonctions au-delà de 100 lignes.
 - Un tableau de chaînes alloué par `malloc` sans le terminer : `free_array` qui parcourt jusqu'au `NULL` lit de la mémoire non initialisée si l'échec survient avant la terminaison (bug trouvé et corrigé dans `ft_split`).
