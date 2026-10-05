@@ -115,6 +115,95 @@ array = nuevoArray; // el bloque pudo haberse trasladado a otro lugar de la memo
 
 `realloc()` conserva el contenido existente (truncado si el nuevo tamaño es menor), pero puede desplazar el bloque en memoria si es necesario: por eso nunca se reasigna `array` directamente antes de haber comprobado que `realloc()` no ha devuelto `NULL`.
 
+## Leer una cantidad de datos desconocida: el búfer con duplicación
+
+Un **búfer** (*buffer*) es una zona de memoria que recibe datos mientras se procesan. Para leer un archivo cuyo tamaño se ignora, hay que agrandarlo a medida que avanza la lectura. Dos estrategias se enfrentan, y la diferencia de tiempo es enorme (véase el capítulo sobre [la complejidad y la notación Big-O](/?c=fondamentaux&s=algorithmes&p=complexite-et-notation-big-o) para la notación `O(n)`, `O(n²)` usada a continuación):
+
+| | Agrandar en cada línea leída | Duplicar cuando el búfer está lleno |
+|---|---|---|
+| Principio | `realloc()` de una línea más en cada vuelta | `realloc()` del **doble** de la capacidad, solo cuando se alcanza |
+| Bytes copiados en total (n = tamaño del archivo) | 1 + 2 + 3 + … + n, es decir, unos n²/2: **cuadrático**, `O(n²)` | 1 + 2 + 4 + … + n, es decir, menos de 2n: **lineal**, `O(n)` |
+| Medido en un archivo de 2,8 MB | 51 s | 0,06 s |
+
+Se dice que la duplicación es **O(n) amortizado**: un agrandamiento aislado es caro, pero es poco frecuente, y su coste repartido entre todos los bytes leídos se mantiene constante por byte.
+
+```c
+#include <stdint.h>                          // SIZE_MAX: el mayor valor de un size_t
+#include <stdio.h>
+#include <stdlib.h>
+
+// Lee todo el flujo f; devuelve un texto terminado en '\0' (a liberar con free), NULL si falla
+char *leer_todo(FILE *f)
+{
+    size_t capacidad = 4096;                 // bytes reservados
+    size_t tamano = 0;                       // bytes ya leídos
+    char *bufer = malloc(capacidad);
+    if (!bufer)
+        return NULL;
+    for (;;) {
+        if (tamano + 1 == capacidad) {       // lleno (1 byte reservado para el '\0'): duplicar
+            if (capacidad > SIZE_MAX / 2) {  // capacidad * 2 desbordaría un size_t
+                free(bufer);
+                return NULL;
+            }
+            char *nuevo = realloc(bufer, capacidad * 2);
+            if (!nuevo) {                    // fallo: el bloque antiguo sigue siendo válido, se libera
+                free(bufer);
+                return NULL;
+            }
+            bufer = nuevo;
+            capacidad *= 2;
+        }
+        // fread lee hasta N bytes del flujo y devuelve cuántos ha leído realmente
+        size_t leidos = fread(bufer + tamano, 1, capacidad - tamano - 1, f);
+        if (leidos == 0)
+            break;                           // fin del archivo o error de lectura
+        tamano += leidos;
+    }
+    if (ferror(f)) {                         // ferror: verdadero si la lectura ha fallado
+        free(bufer);
+        return NULL;
+    }
+    bufer[tamano] = '\0';
+    return bufer;
+}
+```
+
+Para leer línea a línea en lugar de por bloques, véase la [lectura de archivos](/?c=langages-de-programmation&s=c&p=lecture-de-fichiers).
+
+### Tres trampas de rendimiento y de lectura de memoria
+
+| Trampa | Por qué | Corrección |
+|---|---|---|
+| `realloc()` no pone a cero la zona nueva | Los bytes añadidos contienen restos del uso anterior de esa memoria, no ceros (como `malloc()`) | `memset(nuevo + tamano_antiguo, 0, añadido)` justo después de un `realloc()` correcto, o no leer nunca esos bytes antes de haberlos escrito |
+| `strlen()` en la condición de un bucle | `strlen()` cuenta los caracteres recorriendo el texto hasta el `'\0'`: llamada en cada vuelta, hace n vueltas de n comparaciones, un `O(n²)` oculto | Calcular la longitud **una sola vez** antes del bucle |
+| Copiar «como máximo n caracteres» recorriendo todo el texto | Un `strndup` que empieza por `strlen(s)` lee 2 MB para copiar solo 10; repetido en cada línea, vuelve a ser cuadrático | `strnlen(s, n)` (POSIX, la norma de los sistemas tipo Unix) se detiene tras `n` bytes |
+
+```c
+// Trampa: strlen() relee todo el texto en cada vuelta
+for (size_t i = 0; i < strlen(s); i++)
+    procesar(s[i]);
+
+// Correcto: longitud calculada una sola vez
+size_t longitud = strlen(s);
+for (size_t i = 0; i < longitud; i++)
+    procesar(s[i]);
+
+// Copia de como máximo n caracteres, sin leer el resto del texto
+char *dup_acotada(const char *s, size_t n)
+{
+    size_t len = strnlen(s, n);              // se detiene tras n bytes, incluso sin '\0'
+    char *copia = malloc(len + 1);
+    if (!copia)
+        return NULL;
+    memcpy(copia, s, len);
+    copia[len] = '\0';
+    return copia;
+}
+```
+
+> **Medir en lugar de adivinar:** para saber si un código es cuadrático, duplique el tamaño de la entrada. Si el tiempo se multiplica por 2, es lineal; si se multiplica por 4, es cuadrático. Haga esta medición con la versión compilada normalmente con las optimizaciones del compilador (la opción `-O2`), nunca con un ejecutable instrumentado por una herramienta de detección de errores de memoria, que modifica los tiempos.
+
 ## Liberar memoria: `free()`
 
 Cada `malloc()`/`calloc()`/`realloc()` que se ejecute correctamente debe corresponder exactamente a un `free()`, cuando el bloque ya no sea útil:
@@ -291,5 +380,5 @@ El último uso, leer los bits de un `float` como un entero (*type punning*), tie
 |---|---|
 | **Para recordar** | C deja en manos del desarrollador toda la responsabilidad de la memoria dinámica (montón): `malloc`/`calloc`/`realloc` para asignar, `free` para liberar; la pila (variables locales, VLA incluidos) se gestiona automáticamente. |
 | **Herramientas utilizables** | `malloc`/`calloc`/`realloc`/`free`, `sizeof`, VLA (`int tab[n]`) para un array de tamaño dinámico sin `free()`, Valgrind para detectar fugas y accesos no válidos; `memcpy`/`memset` para copiar o rellenar bytes; una arena para muchísimos objetos pequeños. |
-| **Trampas a evitar** | Fuga de memoria (nunca se llama a `free`), use-after-free, double free, desbordamiento de búfer, desbordamiento de pila por un VLA demasiado grande (sin detección posible, a diferencia de `malloc`), confundir `T (*)[n]` (VLA como parámetro) con `T **`. |
+| **Trampas a evitar** | Fuga de memoria (nunca se llama a `free`), use-after-free, double free, desbordamiento de búfer, desbordamiento de pila por un VLA demasiado grande (sin detección posible, a diferencia de `malloc`), confundir `T (*)[n]` (VLA como parámetro) con `T **`, agrandar un búfer de un elemento en un elemento (cuadrático), `strlen()` en la condición de un bucle, leer bytes de `realloc()` nunca escritos. |
 | **Buenas prácticas** | Comprobar siempre que un `malloc`/`realloc` no ha devuelto `NULL`; poner un puntero a `NULL` justo después de su `free()`; preferir `fgets`/`strncpy`/`snprintf` a las funciones no acotadas (`gets`/`strcpy`/`sprintf`); `strlcpy`/`strlcat` para detectar un truncamiento mediante su valor de retorno. |
