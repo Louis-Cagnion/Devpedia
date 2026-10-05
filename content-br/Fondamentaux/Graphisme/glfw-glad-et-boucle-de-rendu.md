@@ -105,6 +105,53 @@ while (!glfwWindowShouldClose(janela)) {
 >
 > **Armadilha:** depois de uma pausa (janela arrastada, programa suspenso), o primeiro delta pode valer vários segundos e lançar o objeto muito longe de uma só vez. Limita-se então o valor, por exemplo `if (delta > 0.1) delta = 0.1;`.
 
+### Um único cronômetro por uso
+
+Um **cronômetro** designa aqui uma variável que memoriza um instante (como `ultimo_instante` acima). Quando um mesmo cronômetro serve a **dois usos** (medir a duração de uma imagem **e** espaçar as etapas de um fade, isto é, uma transição gradual de opacidade), um dos dois está errado. O caso típico:
+
+```c
+double now = glfwGetTime();
+
+if (now - prev_time >= FADE_STEP)   /* limitador do fade: uma etapa a cada FADE_STEP */
+{
+	frame_time = now - prev_time;   /* desde a ultima ETAPA, nao a ultima imagem */
+	prev_time = now;
+	alpha += 0.05;                  /* alpha: opacidade de 0 (transparente) a 1 (opaco) */
+}
+position += speed * frame_time;     /* usado a CADA imagem, atualizado a cada ETAPA */
+```
+
+Aqui `FADE_STEP` vale 0,016 s. `frame_time` só é atualizado a cada etapa do fade, mas é usado a cada imagem: quanto mais imagens a máquina produz entre duas etapas, mais o movimento é multiplicado. Medido numa simulação de um segundo, velocidade de 5 unidades por segundo (a distância correta é, portanto, 5):
+
+| FPS | Distância com um cronômetro compartilhado | Com um cronômetro por uso |
+|---|---|---|
+| 30 ou 60 | 5,0 | 5,0 |
+| 144 | 14,8 (3 vezes demais) | 5,0 |
+| 1.000 | 79,0 (16 vezes demais) | 5,0 |
+| 2.500 | 199,7 (**40 vezes** demais) | 5,0 |
+
+Numa tela de 60 Hz com vsync, o defeito não aparece (uma imagem dura mais que o passo do fade): ele surge numa tela rápida ou sem vsync. A correção se resume em três regras:
+
+| Regra | O que muda |
+|---|---|
+| **Um cronômetro por uso** | A duração da imagem é recalculada a cada imagem; nada mais mexe nela |
+| **Limitar** essa duração (`MAX_FRAME_TIME`, p. ex. 0,1 s) | Uma pausa não arremessa mais o objeto longe (veja a armadilha anterior) |
+| **Expressar um fade pela sua duração**, não por um número de etapas | `alpha = decorrido / FADE_DURATION` (0,5 s aqui), ou seja, o mesmo tempo em qualquer máquina; o limitador deixa de ser necessário |
+
+```c
+double now = glfwGetTime();
+double frame_time = now - last_frame;     /* duracao da imagem, recalculada a cada volta */
+
+last_frame = now;
+if (frame_time > MAX_FRAME_TIME)          /* depois de uma pausa */
+	frame_time = MAX_FRAME_TIME;
+position += speed * frame_time;
+fade_elapsed += frame_time;               /* o fade acumula tempo real */
+alpha = fminf(fade_elapsed / FADE_DURATION, 1.0f);   /* fminf: limita a 1 */
+```
+
+> **Armadilha (medir numa única cadência):** um movimento mantido (tecla pressionada, rotação contínua) que parece certo a 60 FPS pode estar errado em outra cadência. Medi-lo em **várias cadências**: com vsync e depois sem. Sem vsync, o Mesa é ajustado pela [variável de ambiente](/?c=shells&s=bash&p=variables-denvironnement) `vblank_mode=0` e o driver da NVIDIA por `__GL_SYNC_TO_VBLANK=0` (`vblank_mode=0 ./programa`). O ângulo ou a distância percorridos após um segundo devem ser os mesmos em todos os casos.
+
 ## A sincronização vertical (vsync)
 
 A tela se atualiza a uma frequência fixa, expressa em hertz (Hz, atualizações por segundo): 60 Hz, 144 Hz... Sem nenhuma regra, o loop de renderização roda o mais rápido possível, muito além do que a tela consegue mostrar: imagens são desperdiçadas, a placa de vídeo esquenta, e a troca de buffers pode cair no meio de uma atualização (*tearing*, visto acima). A **sincronização vertical** (*vsync*) faz `glfwSwapBuffers()` esperar até a próxima atualização da tela:
@@ -361,7 +408,7 @@ Boa prática: testar nas duas placas de um notebook, e com `LIBGL_ALWAYS_SOFTWAR
 
 | | |
 |---|---|
-| **Para lembrar** | O GLFW cria a janela e seu contexto OpenGL; o GLAD então carrega as funções OpenGL modernas via `glfwGetProcAddress()`. O double buffering (`glfwSwapBuffers()`) evita que uma imagem desenhada pela metade seja exibida. Um loop de renderização repete: eventos, limpeza, desenho, troca de buffers. O delta time (duração da imagem anterior, via `glfwGetTime()`) torna as velocidades independentes dos FPS; o vsync (`glfwSwapInterval(1)`) ajusta a exibição à tela. Os limites da placa (tamanho de textura, de área de desenho) mudam de uma máquina para outra: eles são lidos; o OpenGL só sinaliza um erro por um indicador lido com `glGetError()`. `glGetString` identifica o driver; a memória da placa não tem consulta padrão (extensões); o tamanho da tela se pergunta ao GLFW. O OpenGL é apenas uma especificação: o código vem do driver do fabricante (Mesa ou NVIDIA no Linux), que fala com o kernel (DRM) e depois com a placa; sem placa, o `llvmpipe` desenha com o processador; com várias placas, uma variável de ambiente escolhe a placa. |
+| **Para lembrar** | O GLFW cria a janela e seu contexto OpenGL; o GLAD então carrega as funções OpenGL modernas via `glfwGetProcAddress()`. O double buffering (`glfwSwapBuffers()`) evita que uma imagem desenhada pela metade seja exibida. Um loop de renderização repete: eventos, limpeza, desenho, troca de buffers. O delta time (duração da imagem anterior, via `glfwGetTime()`) torna as velocidades independentes dos FPS; o vsync (`glfwSwapInterval(1)`) ajusta a exibição à tela. Os limites da placa (tamanho de textura, de área de desenho) mudam de uma máquina para outra: eles são lidos; o OpenGL só sinaliza um erro por um indicador lido com `glGetError()`. `glGetString` identifica o driver; a memória da placa não tem consulta padrão (extensões); o tamanho da tela se pergunta ao GLFW. O OpenGL é apenas uma especificação: o código vem do driver do fabricante (Mesa ou NVIDIA no Linux), que fala com o kernel (DRM) e depois com a placa; sem placa, o `llvmpipe` desenha com o processador; com várias placas, uma variável de ambiente escolhe a placa. Um cronômetro por uso: a duração de uma imagem é recalculada a cada imagem, um fade se expressa pela sua duração. |
 | **Ferramentas utilizáveis** | `glfwCreateWindow`/`glfwMakeContextCurrent`, `gladLoadGLLoader`, `glfwSwapBuffers`/`glfwPollEvents`/`glfwWindowShouldClose`, `glClear`, `glfwGetTime`, `glfwSwapInterval`, `glGetIntegerv` (`GL_MAX_TEXTURE_SIZE`, `GL_MAX_VIEWPORT_DIMS`), `glGetError`, `glGetString`, `glfwGetPrimaryMonitor`/`glfwGetVideoMode`, `glfwExtensionSupported`, `glfwGetError`, `lspci`, `lsmod`, `glxinfo -B`, `LIBGL_ALWAYS_SOFTWARE`, `DRI_PRIME`. |
-| **Armadilhas a evitar** | Chamar o GLAD antes de `glfwMakeContextCurrent()`. Apontar `-I` para o nível de pasta errado para os headers gerados pelo GLAD. Esquecer `glClear()` antes de redesenhar. Mover um objeto uma distância fixa por imagem. Atualizar o delta time apenas em intervalos regulares. Deixar um delta gigante depois de uma pausa. Supor um limite da placa em vez de lê-lo, chamar `glGetIntegerv` sem contexto ativo, ler um único erro em vez de esvaziar a pilha, repetir a mesma mensagem a cada imagem. Mostrar o resultado de `glGetString` sem testar `NULL`, tomar `GL_MAX_ELEMENTS_INDICES` por um limite, abrir uma janela maior que a tela, confundir coordenadas de tela e pixels numa tela HiDPI. Concluir que o programa funciona em qualquer lugar após testar uma única placa, ou não mostrar a causa de uma falha de `glfwCreateWindow`. |
-| **Boas práticas** | Vendorar um arquivo gerado de uma vez por todas (como o do GLAD) em vez de depender dele a cada build; reservar essa prática a arquivos que não mudam com regularidade. Expressar as velocidades em unidades por segundo, recalcular o delta time a cada imagem e limitá-lo; nunca se apoiar no vsync para regular a velocidade. Comparar uma imagem com o limite da placa antes de enviá-la, com uma mensagem que nomeie a imagem, suas dimensões e o limite. Repetir `glGetError()` até `GL_NO_ERROR` e nomear a etapa controlada. Registrar fabricante, placa e versão na inicialização para reconhecer a máquina de um relatório de bug; verificar o tamanho de janela pedido contra o da tela. Testar em cada placa de um notebook e com `LIBGL_ALWAYS_SOFTWARE=1`. |
+| **Armadilhas a evitar** | Chamar o GLAD antes de `glfwMakeContextCurrent()`. Apontar `-I` para o nível de pasta errado para os headers gerados pelo GLAD. Esquecer `glClear()` antes de redesenhar. Mover um objeto uma distância fixa por imagem. Atualizar o delta time apenas em intervalos regulares. Deixar um delta gigante depois de uma pausa. Supor um limite da placa em vez de lê-lo, chamar `glGetIntegerv` sem contexto ativo, ler um único erro em vez de esvaziar a pilha, repetir a mesma mensagem a cada imagem. Mostrar o resultado de `glGetString` sem testar `NULL`, tomar `GL_MAX_ELEMENTS_INDICES` por um limite, abrir uma janela maior que a tela, confundir coordenadas de tela e pixels numa tela HiDPI. Concluir que o programa funciona em qualquer lugar após testar uma única placa, ou não mostrar a causa de uma falha de `glfwCreateWindow`. Um mesmo cronômetro para a duração da imagem e o limitador de um fade (movimento até 40 vezes mais rápido sem vsync), um fade expresso em número de etapas. |
+| **Boas práticas** | Vendorar um arquivo gerado de uma vez por todas (como o do GLAD) em vez de depender dele a cada build; reservar essa prática a arquivos que não mudam com regularidade. Expressar as velocidades em unidades por segundo, recalcular o delta time a cada imagem e limitá-lo; nunca se apoiar no vsync para regular a velocidade. Comparar uma imagem com o limite da placa antes de enviá-la, com uma mensagem que nomeie a imagem, suas dimensões e o limite. Repetir `glGetError()` até `GL_NO_ERROR` e nomear a etapa controlada. Registrar fabricante, placa e versão na inicialização para reconhecer a máquina de um relatório de bug; verificar o tamanho de janela pedido contra o da tela. Testar em cada placa de um notebook e com `LIBGL_ALWAYS_SOFTWARE=1`. Medir um movimento mantido em várias cadências, com e sem vsync. |
