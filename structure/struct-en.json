@@ -302,6 +302,10 @@
             {
               "id": "mesure-du-temps",
               "label": "Measuring Time and Waiting Precisely"
+            },
+            {
+              "id": "convertir-un-texte-en-nombre",
+              "label": "Converting Text to a Number Without the `atoi` Trap"
             }
           ]
         },
