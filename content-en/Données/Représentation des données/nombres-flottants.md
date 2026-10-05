@@ -88,6 +88,74 @@ Math.abs(a - b) < 0.0001;
 
 **Which epsilon to choose?** It depends on the domain, not the language. For prices to the cent, `0.001` is enough. Don't systematically use the "machine epsilon" (the smallest representable gap around 1, `2.22e-16` in double precision): it's correct for values close to 1, but **too strict** for large values, where the natural gap between two floats already far exceeds it.
 
+## Absorption and cancellation: when a calculation loses its digits
+
+The gap between two consecutive floats grows with the value (see above). An exact result that falls between two floats is **rounded** to the nearest one: adding a small number to a large one can therefore change **nothing**, this is **absorption**.
+
+| Type | First integer that no longer exists | Adding 1 is always lost from |
+|---|---|---|
+| `float` | 2²⁴ + 1 = 16,777,217 | 2²⁵ = 33,554,432 |
+| `double` | 2⁵³ + 1 = 9,007,199,254,740,993 | 2⁵⁴ = 18,014,398,509,481,984 |
+
+Results measured in C (`float`, 32 bits):
+
+```c
+float big = 16777216.0f;      /* 2^24 */
+big + 1.0f == big;            /* true: 16,777,217 does not exist, rounded to 16,777,216 */
+big + 2.0f == big;            /* false: 16,777,218 exists */
+
+float sum = 16777216.0f;
+for (int i = 0; i < 1000; i++)
+	sum += 1.0f;              /* every +1 is lost: sum is still 16,777,216, not 16,778,216 */
+```
+
+The remedy is to **add the small values together first**: 1000 additions of `1.0f` give exactly 1000, then `16777216.0f + 1000.0f` is 16,778,216 (an even number, representable at this scale). Switching to `double` only pushes the threshold back.
+
+**Cancellation** is the opposite trap: subtracting two large, close numbers destroys the reliable digits. Here the error is already made at the conversion; the subtraction makes it visible:
+
+```c
+float distance = 100000000.0f;    /* 10^8 */
+float radius = 99999999.0f;       /* stored as 100,000,000: the gap between two floats is 8 at this size */
+float near = distance - radius;   /* 0.0 instead of 1.0 */
+```
+
+A `near` equal to 0 where the downstream calculation requires a strictly positive number (division, projection plane) produces an infinite or absurd result, with no error message. Check the result of a subtraction whose two terms are close, or compute in `double`.
+
+**Compare with a relative margin.** An absolute constant (`0.0001`) depends on the unit of the values: too large for objects of 0.001, too small for values around 10⁸ (where the natural gap is 8). So we compare against a fraction of the larger of the two values:
+
+```c
+/* True if a and b differ by at most the fraction rel of the larger of the two (absolute value). */
+static int close_enough(double a, double b, double rel)
+{
+	return fabs(a - b) <= rel * fmax(fabs(a), fabs(b));   /* fabs: absolute value; fmax: the larger of the two */
+}
+```
+
+To compare against exactly 0, this formula does not work (the margin becomes zero): add an absolute floor chosen according to the unit of the domain.
+
+**`NaN` and infinity go through comparisons without any error.** A comparison with `NaN` is always false (see [special values](#special-values)), and infinity is greater than everything:
+
+| Expression | `NaN` | `+inf` (positive infinity) |
+|---|---|---|
+| `x < 0` | false | false |
+| `x > 10` | false | true |
+| `x > 0` | false | true |
+| `x == x` | false | true |
+
+The usual "refuse if out of range" check therefore lets `NaN` through (both conditions are false). Write the check **in the accepting direction**: accept only what is finite and within range.
+
+```c
+/* True if x is a finite number in [min, max]; false for NaN, +inf and -inf. */
+static int in_range(double x, double min, double max)
+{
+	return isfinite(x) && x >= min && x <= max;   /* isfinite: false for NaN and for infinity */
+}
+```
+
+`inf - inf` gives `NaN`: a single infinite value then produces `NaN` throughout the rest of the calculation.
+
+> **Pitfall:** none of these cases produces an error or a crash: the calculation carries on with a wrong value. Check numeric inputs as soon as they arrive (`isfinite`, domain range) rather than assuming sane values.
+
 ## The case of money: don't use floats
 
 For monetary amounts, the right answer isn't to adjust epsilon but to **change representation**: count in cents, using integers.
@@ -152,7 +220,7 @@ Above all, remember that these differences change nothing about the fundamentals
 
 | | |
 |---|---|
-| **Key takeaways** | A float (IEEE 754 standard) stores an approximation, not an exact value: `0.1 + 0.2 != 0.3` in every language, with no exception. Precision is relative: the larger a number is, the bigger the gap between two consecutive floats. Integers stay exact up to 2⁵³ in double precision (52 mantissa bits); beyond that, neighboring integers become indistinguishable. |
+| **Key takeaways** | A float (IEEE 754 standard) stores an approximation, not an exact value: `0.1 + 0.2 != 0.3` in every language, with no exception. Precision is relative: the larger a number is, the bigger the gap between two consecutive floats. Integers stay exact up to 2⁵³ in double precision (52 mantissa bits); beyond that, neighboring integers become indistinguishable; in `float`, from 2²⁴. A small number added to a large one can be absorbed, and a subtraction of large, close numbers can give 0. |
 | **Tools you can use** | Epsilon-based comparison (`math.isclose`, `fabs(a-b) < epsilon`), `DECIMAL` types for exact amounts. Fixed-point for a bit-for-bit reproducible result with no FPU. |
-| **Pitfalls to avoid** | Comparing two floats with `==` (including `NaN`, which equals nothing, not even itself); storing a monetary amount as a float rather than as integers (cents) or `DECIMAL`. |
-| **Best practices** | Choose an epsilon suited to the order of magnitude being handled, never the default machine epsilon for large values. |
+| **Pitfalls to avoid** | Comparing two floats with `==` (including `NaN`, which equals nothing, not even itself); storing a monetary amount as a float rather than as integers (cents) or `DECIMAL`. Checking an input with "refuse if out of range": `NaN` gets through, and infinity passes an `x > 0` test. Adding small terms one by one to a large total. |
+| **Best practices** | Choose an epsilon suited to the order of magnitude being handled, never the default machine epsilon for large values. Compare with a relative margin rather than an absolute constant. Add small values together before adding them to the large total. Accept an input only if `isfinite(x)` and within the domain range. |

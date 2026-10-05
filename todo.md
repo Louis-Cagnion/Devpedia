@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : rédiger le point 4 en commençant par l'item `Données/Représentation des données` « absorption en virgule flottante », puis les autres items dans l'ordre, un item à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : rédiger le point 4 en commençant par l'item `Fondamentaux/Graphisme` « matrice de projection » (domaine de validité de `near`/`far`/`fov`/`aspect`, limites de la carte graphique, `glGetError`), puis les autres items dans l'ordre, un item à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). À notifier à Louis dès la reprise : point 5 (vérification GLSL non exécutée), lui demander s'il me met dessus. En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -74,13 +74,13 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Qualité, performance et outils/Qualité et architecture du code/inondation-de-logs` (nouveau).
 - `Fondamentaux/Graphisme/edition-de-maillage-et-selection-proportionnelle` (section compacter un maillage).
 - `Fondamentaux/Graphisme/tampons-textures-et-shaders-opengl` (section éclairage double face : `gl_FrontFacing`).
+- `Données/Représentation des données/nombres-flottants` (section absorption et annulation : `float` à 2²⁴, `NaN` et infini).
 
 ## 4. Notions du projet scop et de sa revue crash-test (01/10/2026, à rédiger, un chapitre à la fois)
 Source : toute la session (projet scop en C/OpenGL, revue crash-test, corrections vérifiées par exécution). Recherche faite dans `content/` : ce qui existe déjà est indiqué, le reste a 0 résultat. Ajouts à faire au fil des items de correction (les notions des items 11 à 20 s'ajouteront ici).
 
 **Langages > C**
 - `Qualité, performance et outils` : les sanitizers faussent les mesures de performance (sous ASan, `realloc` recopie tout le tableau à chaque appel : 0,6 s en build normal contre plus de 100 s pour le même fichier) ; mesurer la complexité sur le build normal `-O2`, jamais sur un build instrumenté.
-- `Données/Représentation des données` (ou `Fondamentaux/Mathématiques`) : **absorption en virgule flottante** : en `float`, `x + 1 == x` dès 2^24 (16 777 216) ; une soustraction de grands nombres proches donne 0 (`near = distance - radius` valait 0) ; comparer avec une marge relative, jamais avec une constante absolue ; `NaN` et `inf` passent toutes les comparaisons sans erreur.
 - `Fondamentaux/Graphisme` : **matrice de projection** : domaine de validité de `near`, `far`, `fov`, `aspect` (0 < near < far, 0 < fov < π, aspect > 0) et ce que donne chaque violation (profondeur inversée, matrice infinie) ; **limites de la carte graphique** (`GL_MAX_TEXTURE_SIZE`, `GL_MAX_VIEWPORT_DIMS`) et `glGetError` (OpenGL ne signale un refus que par un drapeau d'erreur à lire).
 - `Fondamentaux/Graphisme` (suite) : **interroger le pilote graphique** : `glGetString(GL_RENDERER/GL_VERSION/GL_VENDOR)`, `glGetIntegerv(GL_MAX_*)` (taille de texture, viewport, attributs de sommet, sorties du geometry shader), `GL_MAX_ELEMENTS_INDICES` qui n'est qu'un conseil ; la mémoire de la carte n'a pas de requête standard (extensions `GL_NVX_gpu_memory_info`, `GL_ATI_meminfo`), d'où `glGetError` ; `glfwGetVideoMode`/`glfwGetPrimaryMonitor` pour la résolution de l'écran (une fenêtre plus grande que l'écran).
 - `Langages/C/compilation` : `_Static_assert` pour vérifier à la compilation des constantes surchargeables par `-D` (une limite négative inverse un `clamp` sans erreur) ; `#pragma GCC diagnostic push/ignored "-Wpedantic"/pop` quand l'expression n'est pas une constante entière stricte (constantes flottantes).
@@ -105,3 +105,7 @@ Source : toute la session (projet scop en C/OpenGL, revue crash-test, correction
 - `Qualité et architecture du code` : un **message d'erreur propre à chaque cause** (jamais `error("")` vide ni `exit(1)` nu, jamais un message partagé entre causes) ; échouer sans fuite sur chaque chemin ; ne jamais annoncer « corrigé » sans test réel.
 - `Qualité, performance et outils/Performance` : mesurer la complexité par doublement de la taille (×2 de données = ×4 de temps → quadratique) avant de chercher la cause.
 - Piloter une application graphique en test : `xdotool` (fenêtre ciblée par PID), capture `ffmpeg -f x11grab`, mesure de pixels d'une capture ; piège d'un outil de test qui capture le curseur de la souris.
+
+## 5. Vérifications à faire quand le projet scop sera disponible sur la machine
+À notifier à Louis à la prochaine session sur Devpedia, pour qu'il décide de me mettre ou non dessus (ne pas lancer seul).
+- `Fondamentaux/Graphisme/tampons-textures-et-shaders-opengl` (section éclairage double face) : compiler et exécuter les deux fragment shaders avec un pilote graphique ; sur un maillage à l'envers, vérifier que `gl_FrontFacing` éclaire la face vue par son dos et que `dark_ratio` donne une proportion de pixels noirs élevée sans la correction, faible avec.
