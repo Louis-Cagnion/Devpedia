@@ -114,6 +114,95 @@ tab = nouveauTab; // le bloc a pu être déplacé ailleurs en mémoire
 
 `realloc()` preserves the existing content (truncated if the new size is smaller), but may move the block in memory if necessary: that's why we never reassign `tab` directly before verifying that `realloc()` did not return `NULL`.
 
+## Reading an Unknown Amount of Data: the Doubling Buffer
+
+A **buffer** is a memory area that receives data while it is being processed. To read a file whose size is unknown, the buffer has to grow as the reading goes on. Two strategies compete, and the time gap is huge (see the chapter on [complexity and Big-O notation](/?c=fondamentaux&s=algorithmes&p=complexite-et-notation-big-o) for the `O(n)`, `O(n²)` notation used below):
+
+| | Grow on every line read | Double when the buffer is full |
+|---|---|---|
+| Principle | `realloc()` of one more line on every turn | `realloc()` of **twice** the capacity, only when the capacity is reached |
+| Total bytes copied (n = file size) | 1 + 2 + 3 + … + n, about n²/2: **quadratic**, `O(n²)` | 1 + 2 + 4 + … + n, less than 2n: **linear**, `O(n)` |
+| Measured on a 2.8 MB file | 51 s | 0.06 s |
+
+Doubling is said to be **amortized O(n)**: a single growth is expensive, but it is rare, and its cost spread over all the bytes read stays constant per byte.
+
+```c
+#include <stdint.h>                          // SIZE_MAX: the largest value of a size_t
+#include <stdio.h>
+#include <stdlib.h>
+
+// Reads the whole stream f; returns a '\0'-terminated text (to release with free), NULL on failure
+char *read_all(FILE *f)
+{
+    size_t capacity = 4096;                  // bytes reserved
+    size_t size = 0;                         // bytes already read
+    char *buffer = malloc(capacity);
+    if (!buffer)
+        return NULL;
+    for (;;) {
+        if (size + 1 == capacity) {          // full (1 byte kept for the '\0'): double
+            if (capacity > SIZE_MAX / 2) {   // capacity * 2 would overflow a size_t
+                free(buffer);
+                return NULL;
+            }
+            char *bigger = realloc(buffer, capacity * 2);
+            if (!bigger) {                   // failure: the old block is still valid, free it
+                free(buffer);
+                return NULL;
+            }
+            buffer = bigger;
+            capacity *= 2;
+        }
+        // fread reads up to N bytes from the stream and returns how many it really read
+        size_t got = fread(buffer + size, 1, capacity - size - 1, f);
+        if (got == 0)
+            break;                           // end of file or read error
+        size += got;
+    }
+    if (ferror(f)) {                         // ferror: true if the read failed
+        free(buffer);
+        return NULL;
+    }
+    buffer[size] = '\0';
+    return buffer;
+}
+```
+
+To read line by line rather than by blocks, see [file reading](/?c=langages-de-programmation&s=c&p=lecture-de-fichiers).
+
+### Three performance and memory-reading pitfalls
+
+| Pitfall | Why | Fix |
+|---|---|---|
+| `realloc()` does not zero the new area | The added bytes hold leftovers from the previous use of that memory, not zeros (like `malloc()`) | `memset(bigger + old_size, 0, added)` right after a successful `realloc()`, or never read those bytes before writing them |
+| `strlen()` in a loop condition | `strlen()` counts the characters by walking the text up to the `'\0'`: called on every turn, it makes n turns of n comparisons, a hidden `O(n²)` | Compute the length **once** before the loop |
+| Copying "at most n characters" by walking the whole text | A `strndup` that starts with `strlen(s)` reads 2 MB to copy only 10; repeated on every line, it becomes quadratic again | `strnlen(s, n)` (POSIX, the standard of Unix-like systems) stops after `n` bytes |
+
+```c
+// Pitfall: strlen() rereads the whole text on every turn
+for (size_t i = 0; i < strlen(s); i++)
+    process(s[i]);
+
+// Correct: length computed only once
+size_t length = strlen(s);
+for (size_t i = 0; i < length; i++)
+    process(s[i]);
+
+// Copy of at most n characters, without reading the rest of the text
+char *dup_bounded(const char *s, size_t n)
+{
+    size_t len = strnlen(s, n);              // stops after n bytes, even without a '\0'
+    char *copy = malloc(len + 1);
+    if (!copy)
+        return NULL;
+    memcpy(copy, s, len);
+    copy[len] = '\0';
+    return copy;
+}
+```
+
+> **Measure rather than guess:** to know whether code is quadratic, double the input size. If the time is multiplied by 2, it is linear; if it is multiplied by 4, it is quadratic. Take this measurement on the normally compiled version with the compiler's optimizations (the `-O2` option), never on an executable instrumented by a memory-error detection tool, which changes the timings.
+
 ## Free Up Memory: `free()`
 
 Each successful `malloc()` / `calloc()` / `realloc()` must correspond to exactly one `free()`, when the block is no longer needed:
@@ -290,5 +379,5 @@ The last use, reading the bits of a `float` as an integer (*type punning*), has 
 |---|---|
 | **Key takeaways** | C leaves the developer with full responsibility for dynamic memory (the heap): `malloc`/`calloc`/`realloc` to allocate, `free` to release; the stack (local variables, VLAs included) is managed automatically. |
 | **Tools you can use** | `malloc`/`calloc`/`realloc`/`free`, `sizeof`, VLAs (`int tab[n]`) for a dynamically-sized array with no `free()`, Valgrind to detect leaks and invalid accesses; `memcpy`/`memset` to copy or fill bytes; an arena for very many small objects. |
-| **Pitfalls to avoid** | Memory leak (never calling `free`), use-after-free, double free, buffer overflow, stack overflow on an oversized VLA (no detection possible, unlike `malloc`), mixing up `T (*)[n]` (VLA parameter) with `T **`. |
+| **Pitfalls to avoid** | Memory leak (never calling `free`), use-after-free, double free, buffer overflow, stack overflow on an oversized VLA (no detection possible, unlike `malloc`), mixing up `T (*)[n]` (VLA parameter) with `T **`, growing a buffer one element at a time (quadratic), `strlen()` in a loop condition, reading `realloc()` bytes never written. |
 | **Best practices** | Always check that a `malloc`/`realloc` didn't return `NULL`; set a pointer to `NULL` right after its `free()`; prefer `fgets`/`strncpy`/`snprintf` over unbounded functions (`gets`/`strcpy`/`sprintf`); `strlcpy`/`strlcat` to detect truncation via their return value. |

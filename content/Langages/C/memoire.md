@@ -115,6 +115,95 @@ tab = nouveauTab; // le bloc a pu être déplacé ailleurs en mémoire
 
 `realloc()` conserve le contenu existant (tronqué si la nouvelle taille est plus petite), mais peut déplacer le bloc en mémoire si besoin : c'est pour ça qu'on ne réassigne jamais `tab` directement avant d'avoir vérifié que `realloc()` n'a pas renvoyé `NULL`.
 
+## Lire une quantité de données inconnue : le tampon à doublement
+
+Un **tampon** (*buffer*) est une zone mémoire qui reçoit des données le temps de les traiter. Pour lire un fichier dont on ignore la taille, il faut l'agrandir au fil de la lecture. Deux stratégies s'opposent, et l'écart de temps est énorme (voir le chapitre sur [la complexité et la notation Big-O](/?c=fondamentaux&s=algorithmes&p=complexite-et-notation-big-o) pour la notation `O(n)`, `O(n²)` utilisée ci-dessous) :
+
+| | Agrandir à chaque ligne lue | Doubler quand le tampon est plein |
+|---|---|---|
+| Principe | `realloc()` d'une ligne de plus à chaque tour | `realloc()` de **deux fois** la capacité, seulement quand elle est atteinte |
+| Octets recopiés au total (n = taille du fichier) | 1 + 2 + 3 + … + n, soit environ n²/2 : **quadratique**, `O(n²)` | 1 + 2 + 4 + … + n, soit moins de 2n : **linéaire**, `O(n)` |
+| Mesure sur un fichier de 2,8 Mo | 51 s | 0,06 s |
+
+On dit que le doublement est **O(n) amorti** : un agrandissement isolé coûte cher, mais il est rare, et son coût réparti sur tous les octets lus reste constant par octet.
+
+```c
+#include <stdint.h>                          // SIZE_MAX : la plus grande valeur d'un size_t
+#include <stdio.h>
+#include <stdlib.h>
+
+// Lit tout le flux f ; renvoie un texte terminé par '\0' (à libérer avec free), NULL si échec
+char *lire_tout(FILE *f)
+{
+    size_t capacite = 4096;                  // octets réservés
+    size_t taille = 0;                       // octets déjà lus
+    char *tampon = malloc(capacite);
+    if (!tampon)
+        return NULL;
+    for (;;) {
+        if (taille + 1 == capacite) {        // plein (1 octet gardé pour le '\0') : doubler
+            if (capacite > SIZE_MAX / 2) {   // capacite * 2 dépasserait un size_t
+                free(tampon);
+                return NULL;
+            }
+            char *nouveau = realloc(tampon, capacite * 2);
+            if (!nouveau) {                  // échec : l'ancien bloc reste valide, on le libère
+                free(tampon);
+                return NULL;
+            }
+            tampon = nouveau;
+            capacite *= 2;
+        }
+        // fread lit jusqu'à N octets du flux et renvoie combien elle en a réellement lus
+        size_t lus = fread(tampon + taille, 1, capacite - taille - 1, f);
+        if (lus == 0)
+            break;                           // fin du fichier ou erreur de lecture
+        taille += lus;
+    }
+    if (ferror(f)) {                         // ferror : vrai si la lecture a échoué
+        free(tampon);
+        return NULL;
+    }
+    tampon[taille] = '\0';
+    return tampon;
+}
+```
+
+Pour lire ligne par ligne plutôt que par blocs, voir [la lecture de fichiers](/?c=langages-de-programmation&s=c&p=lecture-de-fichiers).
+
+### Trois pièges de performance et de lecture de mémoire
+
+| Piège | Pourquoi | Correction |
+|---|---|---|
+| `realloc()` ne met pas la zone neuve à zéro | Les octets ajoutés contiennent des restes de l'ancien usage de la mémoire, pas des zéros (comme `malloc()`) | `memset(nouveau + ancienne_taille, 0, ajout)` juste après un `realloc()` réussi, ou ne jamais lire ces octets avant de les avoir écrits |
+| `strlen()` dans la condition d'une boucle | `strlen()` compte les caractères en parcourant le texte jusqu'au `'\0'` : appelée à chaque tour, elle fait n tours de n comparaisons, soit `O(n²)` caché | Calculer la longueur **une fois** avant la boucle |
+| Copier « au plus n caractères » en parcourant tout le texte | Une fonction `strndup` qui commence par `strlen(s)` lit 2 Mo pour n'en copier que 10 ; répétée sur chaque ligne, elle redevient quadratique | `strnlen(s, n)` (POSIX, norme des systèmes de type Unix) s'arrête au bout de `n` octets |
+
+```c
+// Piège : strlen() relit tout le texte à chaque tour
+for (size_t i = 0; i < strlen(s); i++)
+    traiter(s[i]);
+
+// Correct : longueur calculée une seule fois
+size_t longueur = strlen(s);
+for (size_t i = 0; i < longueur; i++)
+    traiter(s[i]);
+
+// Copie d'au plus n caractères, sans lire le reste du texte
+char *dup_borne(const char *s, size_t n)
+{
+    size_t len = strnlen(s, n);              // s'arrête après n octets, même sans '\0'
+    char *copie = malloc(len + 1);
+    if (!copie)
+        return NULL;
+    memcpy(copie, s, len);
+    copie[len] = '\0';
+    return copie;
+}
+```
+
+> **Mesurer plutôt que deviner :** pour savoir si un code est quadratique, doublez la taille de l'entrée. Si le temps est multiplié par 2, il est linéaire ; s'il est multiplié par 4, il est quadratique. Faites cette mesure sur la version compilée normalement avec les optimisations du compilateur (option `-O2`), jamais sur un exécutable instrumenté par un outil de détection d'erreurs mémoire, qui change les temps.
+
 ## Libérer la mémoire : `free()`
 
 Chaque `malloc()`/`calloc()`/`realloc()` réussi doit correspondre à exactement un `free()`, quand le bloc n'est plus utile :
@@ -291,5 +380,5 @@ Le dernier usage, lire les bits d'un `float` comme un entier (*type punning*), a
 |---|---|
 | **À retenir** | Le C laisse au développeur la responsabilité complète de la mémoire dynamique (heap) : `malloc`/`calloc`/`realloc` pour allouer, `free` pour libérer ; la stack (variables locales, VLA compris) est gérée automatiquement. |
 | **Outils utilisables** | `malloc`/`calloc`/`realloc`/`free`, `sizeof`, VLA (`int tab[n]`) pour un tableau de taille dynamique sans `free()`, Valgrind pour détecter fuites et accès invalides ; `memcpy`/`memset` pour copier ou remplir des octets ; une arène pour de très nombreux petits objets. |
-| **Pièges à éviter** | Fuite mémoire (jamais de `free`), use-after-free, double free, débordement de tampon, débordement de pile sur un VLA trop grand (aucune détection possible, contrairement à `malloc`), confusion entre `T (*)[n]` (VLA en paramètre) et `T **`. |
+| **Pièges à éviter** | Fuite mémoire (jamais de `free`), use-after-free, double free, débordement de tampon, débordement de pile sur un VLA trop grand (aucune détection possible, contrairement à `malloc`), confusion entre `T (*)[n]` (VLA en paramètre) et `T **`, agrandir un tampon d'un élément à la fois (quadratique), `strlen()` dans la condition d'une boucle, lecture d'octets de `realloc()` jamais écrits. |
 | **Bonnes pratiques** | Toujours vérifier qu'un `malloc`/`realloc` n'a pas renvoyé `NULL` ; mettre un pointeur à `NULL` juste après son `free()` ; préférer `fgets`/`strncpy`/`snprintf` aux fonctions non bornées (`gets`/`strcpy`/`sprintf`) ; `strlcpy`/`strlcat` pour détecter une troncature via leur valeur de retour. |
