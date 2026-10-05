@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : rédiger la suite du point 4, puis le point 5, un chapitre à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : rédiger le point 4, un chapitre à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -59,12 +59,9 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Langages/Bash/gestion-des-processus` (sections `mktemp` et `trap`, `timeout` et Ctrl-C).
 - `Langages/Bash/redirections-et-pipes` (section tampon de 4 Ko d'un tube).
 - `Langages/Bash/scripts-et-shebang` (section commentaire de bloc `: <<'COMMENT'`).
+- `Langages/Zsh/zsh` (section lire une touche : `read -k` et touches fléchées).
 
-## 4. Notions de la recherche rush01 du 27/09 à rédiger (un chapitre à la fois)
-Source : `rushs/rush01/RECAP-27-09.md` et `rushs/rush01/research/` du dépôt 42Piscine_100_percent (mesures, code et pièges vérifiés). Chaque ajout : français, puis en/es/br (fins de ligne d'origine de chaque fichier à préserver : certains sont en CRLF, y compris en français), exemples exécutés, liens validés par `validateInternalLinks`, ligne d'audio au point 3.
-- `Langages/Bash` (et Zsh) : `read -k` de zsh et touches fléchées (Échap suivi d'autres octets).
-
-## 5. Notions du projet scop et de sa revue crash-test (01/10/2026, à rédiger, un chapitre à la fois)
+## 4. Notions du projet scop et de sa revue crash-test (01/10/2026, à rédiger, un chapitre à la fois)
 Source : toute la session (projet scop en C/OpenGL, revue crash-test, corrections vérifiées par exécution). Recherche faite dans `content/` : ce qui existe déjà est indiqué, le reste a 0 résultat. Ajouts à faire au fil des items de correction (les notions des items 11 à 20 s'ajouteront ici).
 
 **Fondamentaux > Graphisme** (chapitres existants : `wavefront-obj-et-modele-de-phong`, `glfw-glad-et-boucle-de-rendu`, `effets-de-rendu-et-interaction-3d`, `edition-de-maillage-et-selection-proportionnelle`)
