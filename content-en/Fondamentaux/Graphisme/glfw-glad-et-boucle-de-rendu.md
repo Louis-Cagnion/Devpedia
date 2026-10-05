@@ -103,6 +103,53 @@ while (!glfwWindowShouldClose(window)) {
 >
 > **Pitfall:** after a pause (window dragged, program suspended), the first delta can be several seconds and throw the object very far at once. The value is then capped, for example `if (delta > 0.1) delta = 0.1;`.
 
+### One timer per purpose
+
+A **timer** here means a variable that remembers an instant (like `last_instant` above). When the same timer serves **two purposes** (measuring the duration of a frame **and** spacing the steps of a fade, that is, a gradual opacity transition), one of the two is wrong. The typical case:
+
+```c
+double now = glfwGetTime();
+
+if (now - prev_time >= FADE_STEP)   /* fade limiter: one step every FADE_STEP */
+{
+	frame_time = now - prev_time;   /* since the last STEP, not the last frame */
+	prev_time = now;
+	alpha += 0.05;                  /* alpha: opacity from 0 (transparent) to 1 (opaque) */
+}
+position += speed * frame_time;     /* used on EVERY frame, refreshed on every STEP */
+```
+
+Here `FADE_STEP` is 0.016 s. `frame_time` is only refreshed at each fade step, but it is used on every frame: the more frames the machine produces between two steps, the more the movement is multiplied. Measured on a one-second simulation, speed 5 units per second (so the right distance is 5):
+
+| FPS | Distance with a shared timer | With one timer per purpose |
+|---|---|---|
+| 30 or 60 | 5.0 | 5.0 |
+| 144 | 14.8 (3 times too much) | 5.0 |
+| 1,000 | 79.0 (16 times too much) | 5.0 |
+| 2,500 | 199.7 (**40 times** too much) | 5.0 |
+
+On a 60 Hz screen with vsync, the defect is invisible (a frame lasts longer than the fade step): it appears on a fast screen or without vsync. The fix comes down to three rules:
+
+| Rule | What it changes |
+|---|---|
+| **One timer per purpose** | The frame duration is recomputed on every frame; nothing else touches it |
+| **Cap** that duration (`MAX_FRAME_TIME`, e.g. 0.1 s) | A pause no longer hurls the object away (see the previous pitfall) |
+| **Express a fade by its duration**, not by a number of steps | `alpha = elapsed / FADE_DURATION` (0.5 s here), so the same time on every machine; the limiter becomes useless |
+
+```c
+double now = glfwGetTime();
+double frame_time = now - last_frame;     /* frame duration, recomputed every loop */
+
+last_frame = now;
+if (frame_time > MAX_FRAME_TIME)          /* after a pause */
+	frame_time = MAX_FRAME_TIME;
+position += speed * frame_time;
+fade_elapsed += frame_time;               /* the fade accumulates real time */
+alpha = fminf(fade_elapsed / FADE_DURATION, 1.0f);   /* fminf: caps at 1 */
+```
+
+> **Pitfall (measuring at a single rate):** a sustained movement (held key, continuous rotation) that looks right at 60 FPS can be wrong at another rate. Measure it at **several rates**: with vsync, then without. Without vsync, Mesa is set with the [environment variable](/?c=shells&s=bash&p=variables-denvironnement) `vblank_mode=0` and the NVIDIA driver with `__GL_SYNC_TO_VBLANK=0` (`vblank_mode=0 ./program`). The angle or distance covered after one second must be the same in every case.
+
 ## Vertical synchronization (vsync)
 
 The screen refreshes at a fixed frequency, expressed in hertz (Hz, refreshes per second): 60 Hz, 144 Hz... With no rule, the render loop runs as fast as possible, far beyond what the screen can show: images are wasted, the graphics card heats up, and the buffer swap can land in the middle of a refresh (*tearing*, seen above). **Vertical synchronization** (*vsync*) makes `glfwSwapBuffers()` wait until the screen's next refresh:
@@ -359,7 +406,7 @@ Best practice: test on both cards of a laptop, and with `LIBGL_ALWAYS_SOFTWARE=1
 
 | | |
 |---|---|
-| **Key takeaways** | GLFW creates the window and its OpenGL context; GLAD then loads the modern OpenGL functions via `glfwGetProcAddress()`. Double buffering (`glfwSwapBuffers()`) avoids a half-drawn image being shown. A render loop repeats: events, clear, draw, buffer swap. The delta time (duration of the previous image, via `glfwGetTime()`) makes speeds independent of the FPS; vsync (`glfwSwapInterval(1)`) locks the display to the screen. The card's limits (texture size, drawing area size) change from one machine to another: we read them; OpenGL reports an error only through a flag read with `glGetError()`. `glGetString` identifies the driver; the card's memory has no standard query (extensions); the screen size is asked to GLFW. OpenGL is only a specification: the code comes from the manufacturer's driver (Mesa or NVIDIA on Linux), which talks to the kernel (DRM) and then to the card; with no card, `llvmpipe` draws with the processor; with several cards, an environment variable picks the card. |
+| **Key takeaways** | GLFW creates the window and its OpenGL context; GLAD then loads the modern OpenGL functions via `glfwGetProcAddress()`. Double buffering (`glfwSwapBuffers()`) avoids a half-drawn image being shown. A render loop repeats: events, clear, draw, buffer swap. The delta time (duration of the previous image, via `glfwGetTime()`) makes speeds independent of the FPS; vsync (`glfwSwapInterval(1)`) locks the display to the screen. The card's limits (texture size, drawing area size) change from one machine to another: we read them; OpenGL reports an error only through a flag read with `glGetError()`. `glGetString` identifies the driver; the card's memory has no standard query (extensions); the screen size is asked to GLFW. OpenGL is only a specification: the code comes from the manufacturer's driver (Mesa or NVIDIA on Linux), which talks to the kernel (DRM) and then to the card; with no card, `llvmpipe` draws with the processor; with several cards, an environment variable picks the card. One timer per purpose: a frame's duration is recomputed on every frame, a fade is expressed by its duration. |
 | **Tools you can use** | `glfwCreateWindow`/`glfwMakeContextCurrent`, `gladLoadGLLoader`, `glfwSwapBuffers`/`glfwPollEvents`/`glfwWindowShouldClose`, `glClear`, `glfwGetTime`, `glfwSwapInterval`, `glGetIntegerv` (`GL_MAX_TEXTURE_SIZE`, `GL_MAX_VIEWPORT_DIMS`), `glGetError`, `glGetString`, `glfwGetPrimaryMonitor`/`glfwGetVideoMode`, `glfwExtensionSupported`, `glfwGetError`, `lspci`, `lsmod`, `glxinfo -B`, `LIBGL_ALWAYS_SOFTWARE`, `DRI_PRIME`. |
-| **Pitfalls to avoid** | Calling GLAD before `glfwMakeContextCurrent()`. Pointing `-I` at the wrong folder level for GLAD's generated headers. Forgetting `glClear()` before redrawing. Moving an object by a fixed distance per image. Refreshing the delta time only at regular intervals. Leaving a huge delta after a pause. Assuming a card limit instead of reading it, calling `glGetIntegerv` without an active context, reading a single error instead of emptying the pile, repeating the same message on every frame. Printing the result of `glGetString` without testing for `NULL`, taking `GL_MAX_ELEMENTS_INDICES` for a limit, opening a window larger than the screen, mixing up screen coordinates and pixels on a HiDPI screen. Concluding that the program works everywhere after testing a single card, or not printing the cause of a `glfwCreateWindow` failure. |
-| **Best practices** | Vendor a file generated once and for all (like GLAD's) rather than depending on it at every build; reserve this practice for files that don't change regularly. Express speeds in units per second, recompute the delta time at every image and cap it; never rely on vsync to regulate speed. Compare an image with the card's limit before sending it, with a message that names the image, its dimensions and the limit. Loop on `glGetError()` until `GL_NO_ERROR` and name the step being checked. Log vendor, card and version at startup to recognize the machine behind a bug report; check the requested window size against the screen's. Test on each card of a laptop and with `LIBGL_ALWAYS_SOFTWARE=1`. |
+| **Pitfalls to avoid** | Calling GLAD before `glfwMakeContextCurrent()`. Pointing `-I` at the wrong folder level for GLAD's generated headers. Forgetting `glClear()` before redrawing. Moving an object by a fixed distance per image. Refreshing the delta time only at regular intervals. Leaving a huge delta after a pause. Assuming a card limit instead of reading it, calling `glGetIntegerv` without an active context, reading a single error instead of emptying the pile, repeating the same message on every frame. Printing the result of `glGetString` without testing for `NULL`, taking `GL_MAX_ELEMENTS_INDICES` for a limit, opening a window larger than the screen, mixing up screen coordinates and pixels on a HiDPI screen. Concluding that the program works everywhere after testing a single card, or not printing the cause of a `glfwCreateWindow` failure. One timer for both the frame duration and a fade limiter (movement up to 40 times too fast without vsync), a fade expressed as a number of steps. |
+| **Best practices** | Vendor a file generated once and for all (like GLAD's) rather than depending on it at every build; reserve this practice for files that don't change regularly. Express speeds in units per second, recompute the delta time at every image and cap it; never rely on vsync to regulate speed. Compare an image with the card's limit before sending it, with a message that names the image, its dimensions and the limit. Loop on `glGetError()` until `GL_NO_ERROR` and name the step being checked. Log vendor, card and version at startup to recognize the machine behind a bug report; check the requested window size against the screen's. Test on each card of a laptop and with `LIBGL_ALWAYS_SOFTWARE=1`. Measure a sustained movement at several rates, with and without vsync. |
