@@ -41,7 +41,7 @@
 
 /* Replaces every button above (cf. createReaderControl() in reader-control.js) once
    hasUsableVoice() confirms the browser has the Web Speech API but no voice to actually use it
-   with -- e.g. Brave on Linux, cf. devpedia-todo.md. */
+   with -- e.g. Brave on Linux, cf. todo.md. */
 .readerUnavailableNotice {
     margin: 0;
     color: var(--text-muted);

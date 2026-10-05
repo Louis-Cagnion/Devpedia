@@ -55,13 +55,49 @@ Este código de retorno puede consultarse después desde la shell que lanzó el 
 
 > **Trampa:** olvidar devolver un código distinto de cero en caso de error (`return 0;`, o ningún `return` explícito, que cuenta como `0` por convención cuando `main` llega a su fin normal). Un script que encadena comandos con `&&` o comprueba `$?` creerá entonces que el programa tuvo éxito, aunque en realidad haya fallado.
 
+## `atexit()`: liberar todo en cada camino de salida
+
+Un programa que llama a `exit()` en lo más hondo de una cadena de funciones se salta el `free()` que `main` habría hecho al final: la memoria no se devuelve limpiamente y una herramienta de detección de fugas (ver [Memoria](/?c=langages-de-programmation&s=c&p=memoire)) lo señala. `atexit(función)` resuelve este problema: **registra** una función que el programa llamará por sí solo al terminar, sea cual sea el lugar desde el que parte la salida.
+
+```c
+#include <stdlib.h>
+
+static char *g_buffer;   // global: la función registrada no recibe ningún argumento
+
+static void cleanup(void)
+{
+    free(g_buffer);
+}
+
+int main(void)
+{
+    g_buffer = malloc(100);
+    atexit(cleanup);     // cleanup se llamará al final, por return o por exit()
+    // ...
+    return 0;
+}
+```
+
+Resultado medido con dos funciones registradas (`cleanup` primero, luego `log_end`), según la forma de terminar:
+
+| Forma de terminar | ¿Se llaman las funciones registradas? | Código de retorno |
+|---|---|---|
+| `return 0;` en `main` | Sí, en orden inverso: `log_end` y luego `cleanup` | `0` |
+| `exit(EXIT_FAILURE);` llamado en lo hondo de varias funciones | Sí, mismo orden inverso | `1` |
+| `_exit(EXIT_FAILURE);` (`<unistd.h>`) | **No**, no se llama nada | `1` |
+
+- **Orden inverso**: la última función registrada se ejecuta la primera, como una pila; un recurso registrado al final (que depende de los anteriores) se libera por tanto antes que ellos.
+- **Límite**: el estándar garantiza al menos 32 funciones registrables; `atexit()` devuelve un valor distinto de cero si el registro falla.
+
+> **Trampa:** `_exit()`, `abort()` y una señal mortal (ver [Señales Unix](/?c=langages-de-programmation&s=c&p=signaux-unix)) terminan el programa sin llamar a las funciones registradas. En un proceso creado por `fork()`, el hijo que debe detenerse tras un error usa `_exit()` para no repetir las limpiezas del padre (búferes de escritura vaciados dos veces, archivos temporales borrados demasiado pronto).
+
 ---
 
 ## 📋 Resumen
 
 | | |
 |---|---|
-| **Para recordar** | `return valor;` en `main` termina el programa y fija su código de retorno. `exit(code)` hace lo mismo desde cualquier función. Por convención, `0` señala éxito, cualquier otro valor un fallo. |
-| **Herramientas utilizables** | `exit(code)`, `EXIT_SUCCESS`/`EXIT_FAILURE` (`<stdlib.h>`). |
-| **Trampas a evitar** | Devolver `0` por defecto sin comprobar que nada falló: un script que revisa `$?` creerá entonces en un éxito que nunca ocurrió. |
-| **Buenas prácticas** | Usar `EXIT_SUCCESS`/`EXIT_FAILURE` en lugar de `0`/`1` directos para hacer explícita la intención; siempre devolver un código distinto de cero en cuanto un error impide que el programa haga lo que se esperaba de él. |
+| **Para recordar** | `return valor;` en `main` termina el programa y fija su código de retorno. `exit(code)` hace lo mismo desde cualquier función. Por convención, `0` señala éxito, cualquier otro valor un fallo. `atexit(función)` registra una limpieza llamada al salir, en el orden inverso del registro. |
+| **Herramientas utilizables** | `exit(code)`, `EXIT_SUCCESS`/`EXIT_FAILURE` (`<stdlib.h>`), `atexit()`. |
+| **Trampas a evitar** | Devolver `0` por defecto sin comprobar que nada falló: un script que revisa `$?` creerá entonces en un éxito que nunca ocurrió. Contar con `atexit()` tras `_exit()`, `abort()` o una señal mortal: no se llama nada. |
+| **Buenas prácticas** | Usar `EXIT_SUCCESS`/`EXIT_FAILURE` en lugar de `0`/`1` directos para hacer explícita la intención; siempre devolver un código distinto de cero en cuanto un error impide que el programa haga lo que se esperaba de él; registrar la limpieza con `atexit()` en lugar de repetir los `free()` antes de cada `exit()`. |

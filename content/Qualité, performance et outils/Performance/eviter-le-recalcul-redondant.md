@@ -85,6 +85,78 @@ def dessiner_frame(ecran, scene, zones_modifiees):
 
 C'est la logique du **dirty rectangle** (rectangle sale) : la scène signale elle-même quelles zones ont changé depuis le dernier rendu, et seules celles-là sont redessinées. Sur un décor à 90% statique, ça ramène le coût de chaque frame à une fraction de celui d'un rendu complet, pour un résultat visuellement identique.
 
+## Réparer le résultat précédent plutôt que tout recalculer
+
+Un solveur répète le même test des centaines de milliers de fois, sur des données qui changent à peine d'un test au suivant. Exemple : la contrainte « toutes différentes » se teste par un [couplage biparti](/?c=fondamentaux&s=algorithmes&p=couplage-biparti-et-theoreme-de-hall) après chaque retrait d'une valeur possible. Refaire le couplage depuis zéro recommence tout le travail alors qu'un seul trait a disparu.
+
+L'idée est de **garder le couplage précédent** et de ne réparer que ce que le changement a cassé :
+
+| Le trait retiré | Ce qu'on fait |
+|---|---|
+| N'était pas dans le couplage | Rien : le couplage reste valable |
+| Était dans le couplage | Une seule case perd sa valeur : une seule recherche de chemin pour la replacer |
+
+```c
+// Retire la valeur v de la case c, puis répare le couplage au lieu de le refaire
+int apres_retrait(int c, int v)
+{
+    dom[c][v] = 0;
+    if (case_de[v] == c) {       // l'arête retirée servait au couplage
+        case_de[v] = -1;
+        valeur_de[c] = -1;
+        memset(vue, 0, sizeof vue);
+        trouver(c);              // une seule case à replacer
+    }
+    for (int k = 0; k < N; k++)  // une case sans valeur : plus de couplage complet
+        if (valeur_de[k] < 0)
+            return 0;
+    return 1;
+}
+```
+
+`valeur_de[c]` mémorise la valeur de chaque case (`trouver()` du chapitre sur le couplage la met à jour en même temps que `case_de`). Quand la valeur retirée est remise, les cases restées sans valeur retentent leur chance : sans cela, le couplage conservé serait trop petit à jamais.
+
+Mesuré sur 200 000 retraits successifs, 40 cases, 40 valeurs, chaque case acceptant 12 % des valeurs :
+
+| | Tout recalculer | Réparer |
+|---|---|---|
+| Cases examinées par les recherches | 61 566 318 | 832 601 (74 fois moins) |
+| Temps | environ 1 s | quelques dizaines de ms |
+| Réponses « couplage complet ? » | 198 112 oui | 198 112 oui, **identiques test par test** (0 différence) |
+
+**Même réponse, pas forcément même couplage.** Plusieurs couplages complets existent : le couplage réparé diffère de celui d'un calcul complet dans 1 972 cas sur 1 973 comparés. La réponse oui/non est la même ; mais si la suite du programme dépend du couplage lui-même (une explication, un ordre, un résultat à reproduire à l'identique d'une exécution à l'autre), on **retombe sur le calcul complet** pour produire ce résultat canonique, et l'on garde la version réparée pour tous les tests qui n'ont besoin que de la réponse. Dans le solveur de la recherche rush01, cette combinaison a réduit le temps total de 6,2 %.
+
+> **Piège :** réparer un état qui n'est plus valide. L'invariant « le couplage courant est valable pour les données actuelles » doit être rétabli après **chaque** type de changement (retrait, remise, retour en arrière d'une recherche) : un cas oublié donne une réponse fausse, sans erreur.
+>
+> **Bonne pratique :** garder le calcul complet comme référence dans un test, et comparer les réponses test par test (ici 0 différence sur 200 000) avant de mesurer le temps.
+
+## Ne parcourir que les éléments marqués : le bitmap
+
+Quand seule une petite partie des éléments a changé et qu'on les a marqués (comme les « rectangles sales » ci-dessus), parcourir un tableau de drapeaux d'un octet par élément coûte une lecture par élément, marqué ou non. Un **bitmap** range un drapeau par bit : un mot de 64 bits en contient 64 (voir [le filtre par bitmap](/?c=qualite-performance-et-outils&s=performance&p=cache-cpu-et-simd)), et `__builtin_ctzll` donne directement la position du prochain bit à 1 ([fonctions intégrées](/?c=langages&s=c&p=operateurs-binaires)). Les mots vides coûtent une seule lecture.
+
+```c
+for (uint32_t w = 0; w < N / 64; w++)
+    for (uint64_t m = bitmap[w]; m; m &= m - 1)  // bits restants du mot
+        traiter(w * 64 + __builtin_ctzll(m));    // indice du bit à 1 le plus bas
+```
+
+`m &= m - 1` efface le bit à 1 le plus bas : la boucle s'arrête quand le mot est vide, et `__builtin_ctzll` n'est jamais appelé sur 0 (son résultat serait indéfini).
+
+Mesuré sur 1 M d'éléments, 200 parcours, médiane de 7 tours alternés, mêmes sommes vérifiées (Intel Core Ultra 5 228V sous WSL, gcc 13.3 en `-O2`) :
+
+| Proportion d'éléments marqués | Tableau d'octets | Bitmap | Écart |
+|---|---|---|---|
+| 0,1 % | 84 ms | 2,9 ms | −97 % |
+| 1 % | 63 ms | 16 ms | −74 % |
+| 10 % | 67 ms | 44 ms | −35 % |
+| 50 % | 68 ms | 130 ms | **+91 %** |
+
+Le gain dépend de la **densité** des marques : à moitié marqué, le bitmap est presque deux fois plus lent, car chaque marque coûte plus cher qu'un octet lu en séquence. Dans le solveur de la recherche rush01, ce parcours n'a gagné que 2 % du temps total : seul le programme réel dit ce que vaut l'optimisation (voir [Mesurer avant d'optimiser](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser)).
+
+> **Piège :** adopter le bitmap parce qu'il est plus compact ou plus rapide dans le cas clairsemé, sans mesurer la densité réelle des marques du programme.
+>
+> **Bonne pratique :** mesurer la proportion d'éléments marqués dans le programme réel avant de choisir ; le bitmap vaut pour des marques rares.
+
 ## Un exemple tiré d'un scraper : ne pas confirmer ce qui est déjà prouvé
 
 Un scraper de petites annonces comparait deux annonces pour savoir si elles décrivaient le même véhicule (doublon) ou deux véhicules différents. La vérification complète ouvrait la page détaillée de chaque annonce pour comparer une dizaine de caractéristiques (kilométrage, options, historique d'entretien) : un appel réseau et un temps de rendu non négligeables.

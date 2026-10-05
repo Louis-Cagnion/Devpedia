@@ -328,6 +328,90 @@ Real example on the SAT solver: 3 grids, mean time per grid, a reference version
 
 To conclude from several grids rather than a single one (pairing, the sign test, multiple comparisons), see [Comparing Two Settings](/?c=qualite-performance-et-outils&s=performance&p=comparer-deux-reglages).
 
+## A Micro-Benchmark Gain Is Not a Program Gain: the Division Example
+
+An integer division is one of the slowest instructions of a processor: its **latency** (the time before the result is available) is counted in tens of cycles, against a few cycles for a multiplication. When the divisor changes from one call to the next but only takes a few values, the division can be replaced by a multiplication by a **precomputed inverse** (see [Avoiding Redundant Recomputation](/?c=qualite-performance-et-outils&s=performance&p=eviter-le-recalcul-redondant)).
+
+```c
+#include <stdint.h>
+
+#define DMAX 128                // largest divisor used
+#define XBITS 25                // dividends stay below 2^XBITS
+static uint64_t inv[DMAX + 1];  // inv[d] = ceiling of 2^32 / d
+
+void init_inverses(void)
+{
+    for (uint64_t d = 1; d <= DMAX; d++)
+        inv[d] = ((1ULL << 32) + d - 1) / d;
+}
+
+// Integer quotient of x by d, for 1 <= d <= DMAX and x < 2^XBITS
+static inline uint32_t divide(uint32_t x, uint32_t d)
+{
+    return (uint32_t)(((uint64_t)x * inv[d]) >> 32);
+}
+```
+
+**Why the result is exact.** Let `e = inv[d] × d − 2³²`: since `inv[d]` is rounded up, `0 ≤ e < d`. Then `x × inv[d] / 2³² = x/d + x × e / (d × 2³²)`. As long as `x × e < 2³²` (here `x < 2²⁵` and `e < d ≤ 128 = 2⁷`), the added term is less than `1/d`. Now the fractional part of `x/d` is at most `(d − 1)/d`: the sum stays below the next integer, and truncation gives exactly the quotient. Checked here by exhaustive enumeration: 128 divisors × 2²⁵ dividends, i.e. 2³² cases, 0 errors.
+
+**How much it gains, depending on where you measure.** Same sum computed with the division (A) and with the inverse (B), on an Intel Core Ultra 5 228V (under WSL, Ubuntu 24.04), gcc 13.3 at `-O2`, median of 7 alternating rounds, same sums checked:
+
+| Situation measured | A: division | B: inverse | Gain of B |
+|---|---|---|---|
+| 4 M independent divisions | 8.6 ms | 2.3 ms | −73 % |
+| Chain where each division waits for the previous one | 22.4 ms | 8.9 ms | −61 % |
+| 32 M random accesses in a 128 MB array, one division per access | 506 ms | 381 ms | −25 % |
+
+The gain melts away as the division weighs less in the total time: the processor executes out of order and **hides** the division's latency behind other instructions or the wait for memory. In a real program (the puzzle solver of the rush01 research, where division is just one operation among many), the same replacement gained only 0.5 % of the total time.
+
+> **Pitfall:** concluding from a micro-benchmark (−73 %) that a whole program will go faster. Only measuring the **real program** tells what the optimization is worth, with the [alternating rounds](#measuring-in-alternating-rounds) above.
+>
+> **Best practice:** before replacing a division, measure the share it takes in the program's profile; if it is small, leave the code simple.
+
+> **Pitfall:** the floating-point inverse (`1.0 / d`) does not work: `49 × (1.0 / 49)` is `0.9999999999999999`, and truncation gives 0 instead of 1. A value outside the announced domain (`x ≥ 2²⁵`, `d > 128`, `d = 0`) also gives a wrong result **with no error at all**.
+>
+> **Best practice:** stay in integers with an inverse rounded up, check exactness by enumeration over the whole domain, and guard the input with an assertion. For a divisor that is **constant** at compile time, it is pointless: the compiler already makes this replacement (gcc produces an `imul` for `x / 7` and a `div` for `x / d`).
+
+## Measuring Complexity: Doubling the Size, on the Normal Build
+
+To know how the time grows with the amount of data (the **complexity**), **double the size** of the input and compare the times:
+
+| Time after doubling | Growth | Name |
+|---|---|---|
+| × 2 | proportional to the size | linear |
+| × 4 | proportional to the **square** of the size | quadratic |
+
+A quadratic program is often invisible on small data and collapses on large data. Example: adding `n` integers one by one while growing the array by **one slot** each time with [`realloc`](/?c=langages&s=c&p=memoire#resizing-a-block-realloc) (which may copy the whole array to a new location):
+
+```c
+for (long i = 0; i < n; i++)
+{
+	int *bigger = realloc(tab, (size_t)(i + 1) * sizeof *tab);   /* just one more integer */
+
+	if (!bigger)
+	{
+		free(tab);
+		fprintf(stderr, "realloc failed at i = %ld\n", i);
+		return 1;
+	}
+	tab = bigger;
+	tab[i] = (int)i;
+}
+```
+
+Measured (`gcc -O2`, duration of the loop alone):
+
+| Build | n | Duration |
+|---|---|---|
+| normal (`-O2`) | 400,000 / 800,000 / 1,600,000 | 0.002 s / 0.004 s / 0.006 s (≈ × 2 per doubling) |
+| `-fsanitize=address` (ASan) | 6,250 / 12,500 / 25,000 | 0.094 s / 0.335 s / 1.166 s (≈ × 3.6 per doubling) |
+
+**ASan** (*AddressSanitizer*) is a compile option that watches every memory access to detect overflows and uses after free. To do so, its `realloc` **always allocates a new block and copies everything**, whereas glibc's usually grows in place: the same program is **linear** in a normal build and **quadratic** under ASan. At `n = 50,000`, the ASan build even exceeded 2 GiB of memory (old blocks are held for a while before being reused) and was stopped by `ASAN_OPTIONS=hard_rss_limit_mb=2000`.
+
+> **Pitfall (a measurement made under an instrumentation tool):** the times of a sanitizer build, of `valgrind` or of a profiler say nothing about real speed, nor about its complexity: the tool itself changes the algorithm (here, from linear to quadratic). Measure the complexity **on the normal build** (`-O2`, no instrumentation); keep the sanitizers for **correctness** (see [Valgrind](/?c=langages&s=c&p=memoire)). A time that becomes huge only under a tool is a fact about the tool before it is a bug in the program.
+
+The remedy for an array grown by one slot is **capacity doubling**: multiply the capacity by a constant factor (for example 2) only when the array is full; copies become rare and appending stays linear under every build.
+
 ## More Threads, Slower: Memory-Bound Programs
 
 A program can be limited by **computation** (*CPU-bound*) or by **memory accesses** (*memory-bound*, see [The CPU cache](/?c=qualite-performance-et-outils&s=performance&p=cache-cpu-et-simd)). In the second case, threads compete for the same memory bandwidth: adding more can **slow down** the whole. Measured on a puzzle solver: 577 ms with one thread, 893 ms with 8 threads (see also [Parallelism](/?c=qualite-performance-et-outils&s=performance&p=parallelisme)).
@@ -345,7 +429,7 @@ Two other lessons from the same project:
 
 | | |
 |---|---|
-| **Key takeaways** | Never optimize without measuring first: intuition about "what's slow" generally targets code that looks complicated, not code that actually costs the most. Two versions are compared first on their results and counters, then only on time, in alternating rounds. |
+| **Key takeaways** | Never optimize without measuring first: intuition about "what's slow" generally targets code that looks complicated, not code that actually costs the most. Two versions are compared first on their results and counters, then only on time, in alternating rounds. A gain measured on a micro-benchmark does not hold for the whole program: the processor hides the latency of a slow instruction (division) behind the rest of the work. |
 | **Tools you can use** | A classic profiler (per function: `gprof`, `perf`, `valgrind --tool=callgrind`), manual per-phase instrumentation when the program spends its time waiting; deterministic work counters to compare two versions; `cachegrind` (`--cache-sim=yes`) for cache misses; `__rdtsc()` preceded by `_mm_lfence()` for the share of a part of a loop; `cmp -s` to compare two outputs. |
-| **Pitfalls to avoid** | Trusting a single measurement: noise (network, cache, machine load) can exceed the actual effect of an optimization; trusting an unexpected function name in a `gprof` profile of an optimized program (check with `nm -n` or callgrind); `cachegrind` without `--cache-sim=yes`, or on sources modified since the profile; reading the cycle counter without a fence; measuring A then B in a block on a drifting machine. |
-| **Best practices** | Always remeasure after an optimization (both time AND result accuracy); take several measurements to tell a real gain from noise; check that two versions do the same work before timing them; measure in alternating rounds, with the machine at rest. |
+| **Pitfalls to avoid** | Trusting a single measurement: noise (network, cache, machine load) can exceed the actual effect of an optimization; trusting an unexpected function name in a `gprof` profile of an optimized program (check with `nm -n` or callgrind); `cachegrind` without `--cache-sim=yes`, or on sources modified since the profile; reading the cycle counter without a fence; measuring A then B in a block on a drifting machine. Concluding from a micro-benchmark (−73 %) that a whole program will gain as much (0.5 % measured); a floating-point inverse, or an input outside the verified domain. judging a complexity on a sanitizer or valgrind build. |
+| **Best practices** | Always remeasure after an optimization (both time AND result accuracy); take several measurements to tell a real gain from noise; check that two versions do the same work before timing them; measure in alternating rounds, with the machine at rest. Quantify an instruction's share in the profile before replacing it, and check an exact replacement by enumeration over its whole domain. measure complexity by doubling the size (× 4 in time = quadratic) on the normal build. |

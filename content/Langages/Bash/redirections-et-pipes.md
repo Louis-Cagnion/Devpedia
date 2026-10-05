@@ -98,6 +98,63 @@ if commande; then echo "OK"; else echo "ECHEC"; fi
 
 Une commande placée à gauche d'un `&&` ou d'un `||` est considérée comme « testée » : son échec **n'interrompt pas** le script même sous `set -e`. C'est ce qui permet d'écrire `grep motif fichier || true` pour neutraliser volontairement un échec attendu, mais c'est aussi une source de surprise si on croyait que `set -e` protégeait toute la ligne.
 
+## Mélanger sortie et erreurs dans un tube : le tampon de 4 Ko
+
+`2>&1` envoie les erreurs (stderr) au même endroit que la sortie normale (stdout). Vers un terminal, l'ordre d'affichage est celui du programme. Vers un tube (`|`) ou un fichier, ce n'est plus vrai : un programme C met sa sortie normale en mémoire dans un **tampon** (une zone d'attente) de 4096 octets, qu'il n'écrit que lorsqu'elle est pleine, alors qu'il écrit ses erreurs tout de suite.
+
+```c
+#include <stdio.h>
+
+int main(void)
+{
+    for (int i = 1; i <= 300; i++) {
+        printf("ligne %03d : une ligne de texte assez longue pour remplir le tampon\n", i);
+        if (i == 150)
+            fprintf(stderr, "ERREUR : problème à la ligne 150\n");
+    }
+    return 0;
+}
+```
+
+```bash
+./programme 2>&1 | grep -B1 -A1 ERREUR             # sortie normale tamponnée par blocs
+stdbuf -oL ./programme 2>&1 | grep -B1 -A1 ERREUR  # tampon par ligne
+```
+
+Le programme écrit 300 lignes de 67 octets et une erreur après la ligne 150. Dans un tube, l'erreur arrive **en avance** (elle s'insère après les blocs de 4096 octets déjà écrits, avant les lignes encore dans le tampon) et **coupe une ligne en deux** :
+
+```text
+ligne 122 : une ligne de texte assez longue pour remplir le tampon
+ligne 123 : une liERREUR : problème à la ligne 150
+gne de texte assez longue pour remplir le tampon
+```
+
+Avec un tampon par ligne, l'ordre est celui du programme :
+
+```text
+ligne 150 : une ligne de texte assez longue pour remplir le tampon
+ERREUR : problème à la ligne 150
+ligne 151 : une ligne de texte assez longue pour remplir le tampon
+```
+
+| Sortie vers | Tampon de stdout | Erreur et sortie normale |
+|---|---|---|
+| Terminal | Par ligne | Dans l'ordre du programme |
+| Tube ou fichier | Par blocs de 4096 octets | Erreur en avance, ligne coupée en deux |
+
+| Remède | Effet |
+|---|---|
+| `stdbuf -oL commande` | Force le tampon par ligne, sans toucher au programme ; ne vaut que pour les programmes C liés dynamiquement à la bibliothèque standard ([manuel de `stdbuf`](https://www.gnu.org/software/coreutils/manual/html_node/stdbuf-invocation.html)) |
+| `setvbuf(stdout, NULL, _IOLBF, 0)` au début du programme | Tampon par ligne (testé : sortie dans l'ordre) |
+| `fflush(stdout)` avant d'écrire sur `stderr` | Vide le tampon d'abord |
+| `python3 -u` | Python sans tampon |
+
+> **Piège :** le défaut ne se voit pas à l'écran, seulement dans un fichier de journal, une sortie de pipeline ou un `| tee` : un diagnostic fait à la main dans un terminal ne le reproduit pas.
+>
+> **Piège :** un tampon non vidé est **perdu** si le programme plante. Testé : un programme qui écrit un message puis appelle `abort()` n'envoie **aucune ligne** dans un tube, alors que le même message s'affiche sur un terminal. Les derniers messages avant l'incident, les plus utiles, disparaissent.
+>
+> **Bonne pratique :** pour toute sortie lue en direct (journal, intégration continue), demander un tampon par ligne ; et vérifier l'ordre des erreurs dans un fichier, pas seulement sur l'écran.
+
 ## `tee` : rediriger tout en gardant un affichage
 
 `tee` écrit sa sortie à la fois dans un fichier **et** vers la sortie standard (utile pour voir un résultat tout en le sauvegardant) :
@@ -128,5 +185,5 @@ ls -l | tee resultats.txt   # affiche le résultat à l'écran ET l'enregistre d
 |---|---|
 | **À retenir** | `>`/`>>`/`<` redirigent les flux stdin/stdout/stderr vers ou depuis un fichier ; `\|` connecte la sortie d'une commande à l'entrée de la suivante. `&&`/`\|\|`/`;` enchaînent des commandes selon leur code de sortie. |
 | **Outils utilisables** | `2>&1` (fusionner stderr dans stdout), `/dev/null` (ignorer une sortie), `tee` (afficher et sauvegarder à la fois). |
-| **Pièges à éviter** | `>` qui écrase silencieusement un fichier existant ; l'ordre de `2>&1` par rapport à `>` (`2>&1 > fichier` ne fait pas ce qu'on attend). |
-| **Bonnes pratiques** | Écrire `> fichier 2>&1` (jamais l'inverse) ; préférer un `if` explicite à un `&& ... \|\| ...` dès que la logique conditionnelle est réellement importante. |
+| **Pièges à éviter** | `>` qui écrase silencieusement un fichier existant ; l'ordre de `2>&1` par rapport à `>` (`2>&1 > fichier` ne fait pas ce qu'on attend). Mélanger stdout et stderr par `2>&1` dans un tube ou un fichier sans penser au tampon : erreur en avance, ligne coupée, derniers messages perdus au plantage. |
+| **Bonnes pratiques** | Écrire `> fichier 2>&1` (jamais l'inverse) ; préférer un `if` explicite à un `&& ... \|\| ...` dès que la logique conditionnelle est réellement importante. Demander un tampon par ligne (`stdbuf -oL`, `setvbuf`) pour une sortie lue en direct. |

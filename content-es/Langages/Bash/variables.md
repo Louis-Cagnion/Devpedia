@@ -40,6 +40,31 @@ echo 'Hola $nombre'  # Hola $nombre -> las comillas simples desactivan cualquier
 >
 > **Buena práctica:** rodear siempre una variable de comillas dobles al usarla (`"$nombre"`), salvo necesidad precisa de lo contrario. Única excepción habitual: dentro de un contexto numérico explícito (`[ $i -lt 5 ]`, `$(( i + 1 ))`), Bash no hace ninguna división en palabras sobre el valor: las comillas son por tanto innecesarias ahí, lo que explica por qué los capítulos sobre condiciones y bucles no las usan en esos casos precisos.
 
+## Una variable sin comillas en zsh: `${=var}`
+
+La división en palabras de una variable sin comillas es una particularidad de Bash (y de `sh`). **zsh** (el shell por defecto de macOS) no divide: el valor sigue siendo una sola palabra. Un script escrito para uno se comporta por tanto de otro modo en el otro, sin ningún error.
+
+```bash
+sz="1920 1080"
+set -- $sz        # reemplaza los argumentos posicionales ($1, $2...) por el resultado
+echo "$#"         # $#: número de argumentos posicionales
+set -- ${=sz}     # zsh: el = pide explícitamente la división en palabras
+```
+
+| Comando | Bash | zsh |
+|---|---|---|
+| `set -- $sz` y luego `echo "$#"` | 2 (`1920` y `1080`) | **1** (`1920 1080`) |
+| `set -- "$sz"` y luego `echo "$#"` | 1 | 1 |
+| `set -- ${=sz}` y luego `echo "$#"` | (sintaxis propia de zsh) | 2 |
+| `f="a b.txt"; for x in $f; do echo "[$x]"; done` | `[a]` y luego `[b.txt]` | `[a b.txt]` |
+
+| Para obtener... | En zsh |
+|---|---|
+| La división de Bash, una vez | `${=var}` (o `$=var`) |
+| La división de Bash en toda la sesión | `setopt SH_WORD_SPLIT` (medido: `set -- $sz` da entonces 2) |
+
+> **Trampa:** un script copiado de Bash a zsh (o al revés) sin cambios puede ejecutarse sin error y equivocarse: un bucle `for x in $lista` trata un solo elemento en lugar de varios. **Buena práctica:** mantener `"$var"` con comillas, que se comporta igual en todas partes, y declarar el shell esperado con un [shebang](/?c=shells&s=bash&p=scripts-et-shebang) (`#!/bin/bash`). Detalles de zsh: [documentación oficial de las expansiones](https://zsh.sourceforge.io/Doc/Release/Expansion.html).
+
 ## Sustitución de comandos
 
 Ejecuta un comando y reemplaza la expresión por su salida:

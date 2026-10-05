@@ -1,0 +1,246 @@
+---
+order: 10
+---
+
+# Tecla travada: o teclado virtual XTEST e o `xdotool`
+
+Para testar uma aplicação gráfica (um jogo, um programa 3D como o do [capítulo sobre o loop de renderização](/?c=fondamentaux&s=graphisme&p=glfw-glad-et-boucle-de-rendu)), um script pode « pressionar » teclas no lugar de uma pessoa: manter uma seta por um segundo e medir até onde o objeto foi, por exemplo. No Linux, a ferramenta que faz isso se apoia em um **teclado virtual**. Este capítulo explica como ele funciona, a armadilha que deixa uma tecla **pressionada para a máquina inteira**, como reconhecê-la e como se proteger.
+
+## Um teclado invisível: XTEST e `xdotool`
+
+No Linux, o **servidor de exibição** é o programa que gerencia a tela, o teclado e o mouse, e que distribui teclado e mouse às janelas ([X11](https://www.x.org/wiki/) é o mais difundido). Ele prevê **extensões** (funções opcionais do protocolo que os programas usam para falar com ele). O **XTEST** ([especificação](https://www.x.org/releases/current/doc/xextproto/xtest.html)) é uma delas: permite a um programa **injetar eventos** como se viessem de um teclado real, por meio de um **teclado virtual**. O [`xdotool`](https://github.com/jordansissel/xdotool) é o comando que a utiliza.
+
+Uma digitação se compõe de **dois eventos**: a **pressão** (*keydown*) e depois a **liberação** (*keyup*). Enquanto a liberação não chegou, o servidor considera a tecla **mantida**.
+
+| Comando | Eventos enviados | Efeito |
+|---|---|---|
+| `xdotool key Escape` | pressão e depois liberação | uma digitação completa |
+| `xdotool keydown Left` | apenas pressão | a seta esquerda **continua pressionada** |
+| `xdotool keyup Left` | apenas liberação | a seta esquerda é liberada |
+
+Manter uma tecla por um tempo dado se escreve, portanto, em três passos:
+
+```bash
+xdotool keydown Left   # a tecla está pressionada
+sleep 1                # a aplicação a vê mantida por 1 segundo
+xdotool keyup Left     # liberação: sem esta linha, a tecla continua pressionada
+```
+
+## A armadilha: uma tecla pressionada para a máquina inteira
+
+Se o script parar **entre** `keydown` e `keyup`, a liberação nunca é enviada:
+
+```
+tempo  ──────────────────────────────────────────────────────►
+script   keydown ─── trabalho ─── ✕ interrompido    keyup (nunca executado)
+servidor tecla pressionada ──────────────────────────────────────► ainda pressionada
+```
+
+O servidor então repete a tecla **automaticamente** (a **autorrepetição**: uma tecla mantida produz digitações em série, como quando se deixa o dedo em cima) e a envia à janela que tem o **foco** (a que recebe o teclado naquele instante). Não é mais a aplicação testada: é o editor, o terminal, o que estiver em primeiro plano, mesmo depois de o teste terminar.
+
+| O que interrompe o script | Por que o `keyup` se perde |
+|---|---|
+| `Ctrl-C` | o script recebe o **sinal** `SIGINT` (uma mensagem que o sistema envia a um programa) e para |
+| `timeout` | envia o sinal `SIGTERM` ao fim do prazo |
+| `kill PID` | sinal `SIGTERM` |
+| `kill -9 PID`, memória esgotada (o sistema mata o programa) | sinal `SIGKILL`: o programa **não** tem nenhuma chance de reagir |
+| Falha do script ou erro de sintaxe entre as duas linhas | a linha `keyup` nunca é alcançada |
+
+## Reconhecer uma tecla travada
+
+Os sintomas: uma letra ou uma seta que se repete sem fim numa janela sem relação, caracteres que se escrevem sozinhos. Duas formas de verificar:
+
+| Método | O que mostra |
+|---|---|
+| `xinput query-state ID` | o **`xinput`** lista (`xinput list`) e consulta os dispositivos de entrada; no teclado virtual (chamado « Virtual core XTEST keyboard »), uma tecla travada aparece como `key[9]=down` |
+| `XQueryKeymap` | função da **Xlib** (a biblioteca C que fala com o servidor X): preenche um vetor de 32 bytes, ou seja **256 casas com 0 ou 1**, uma por **código de tecla** (o número que o servidor dá a cada tecla física; 9 para Esc num teclado padrão) |
+
+```c
+/* Devolve 1 se a tecla de codigo « keycode » esta pressionada segundo o servidor X, 0 se nao. */
+static int key_is_down(Display *display, unsigned int keycode)
+{
+	char keys[32];                      /* 32 bytes = 256 casas, uma por codigo de tecla */
+
+	XQueryKeymap(display, keys);        /* o servidor preenche o vetor */
+	return ((unsigned char)keys[keycode / 8] >> (keycode % 8)) & 1;   /* byte keycode/8, bit keycode%8 */
+}
+```
+
+O código de uma tecla depende do teclado e do seu layout: pergunta-se à Xlib (`XKeysymToKeycode`, que converte o **símbolo** de uma tecla, por exemplo o de Esc, em um código) em vez de escrevê-lo fixo.
+
+## Liberá-la
+
+O mais simples, à mão: `xdotool keyup Escape`. Em um programa C, envia-se o mesmo evento pelo XTEST:
+
+```c
+/* Libera a tecla se estiver travada. Devolve 1 se estava, 0 se nao, -1 em caso de erro. */
+int release_if_stuck(unsigned int keycode)
+{
+	Display *display = XOpenDisplay(NULL);   /* NULL: servidor designado pela variavel DISPLAY */
+	const char *shown = getenv("DISPLAY");   /* apenas para a mensagem de erro */
+	int stuck;
+
+	if (!display)
+	{
+		fprintf(stderr, "servidor X inacessivel (variavel DISPLAY: %s)\n", shown ? shown : "ausente");
+		return -1;
+	}
+	stuck = key_is_down(display, keycode);
+	if (stuck && !XTestFakeKeyEvent(display, keycode, 0, 0))   /* 0: liberacao (keyup) */
+	{
+		fprintf(stderr, "extensao XTEST indisponivel: tecla %u nao liberada\n", keycode);
+		XCloseDisplay(display);
+		return -1;
+	}
+	XFlush(display);                         /* envia a ordem sem esperar */
+	XCloseDisplay(display);
+	return stuck;
+}
+```
+
+Testada sob o **Xvfb** (um servidor X sem tela, que permite testar sem exibição real): antes da pressão, `key_is_down` devolve 0; depois de um `keydown` sozinho, 1; `release_if_stuck` devolve então 1 e, logo em seguida, a tecla volta a 0; uma segunda chamada devolve 0 (nada a fazer).
+
+## Garantir a liberação: `trap`
+
+O remédio é prever a liberação **antes** de pressionar. O comando `trap` ([veja o capítulo sobre processos](/?c=shells&s=bash&p=gestion-des-processus)) registra uma ação que o script executará ao sair, qualquer que seja o motivo:
+
+```bash
+release() { xdotool keyup Left; }   # inofensivo se a tecla ja estiver liberada
+trap release EXIT                   # EXIT: a cada saida do script, normal ou causada por um sinal
+
+xdotool keydown Left
+sleep 30 &                          # o comando longo (aqui sleep, na pratica a aplicacao testada)...
+wait $!                             # ...e aguardado pelo « wait » ($!: numero do ultimo processo lancado)
+```
+
+Testado com a liberação substituída por uma linha escrita em um arquivo (o `xdotool` não está instalado na máquina de teste):
+
+| Interrupção | Resultado com `trap release EXIT` |
+|---|---|
+| `kill` (sinal `SIGTERM`) | liberada **uma vez**, em 1 s |
+| `timeout 2 comando` | liberada **uma vez** |
+| `kill -9` (sinal `SIGKILL`) | **nunca** liberada |
+
+> **Armadilha (o `trap` é adiado):** o bash só executa o `trap` **depois que o comando em andamento termina**. Com um simples `sleep 30` no lugar de `sleep 30 & wait $!`, cada teste esperou os 30 segundos antes de liberar (a série completa durou mais de 4 minutos). O `wait`, ao contrário, é interrompido imediatamente por um sinal: lança-se então o comando longo em segundo plano e depois o aguarda com `wait`.
+
+> **Armadilha (executado duas vezes):** `trap release EXIT INT TERM` libera **duas vezes** num `SIGTERM` (uma pelo sinal, outra pela saída que se segue). Basta `trap release EXIT`, e o tratador deve ser **inofensivo se rodar duas vezes** (liberar uma tecla já liberada não faz nada).
+
+> **Armadilha (`SIGKILL`):** nenhum `trap` captura `kill -9` nem uma parada forçada por falta de memória. Nunca matar um teste assim enquanto uma tecla estiver pressionada; e **ao iniciar** o teste seguinte, chamar `release_if_stuck` (acima) ou `xdotool keyup` em cada tecla usada, para reparar uma parada brusca anterior.
+
+## Enviar uma tecla à janela certa: um protocolo seguro
+
+Com a versão do `xdotool` testada, um pressionamento dirigido a uma janela que **já tem o foco** não é entregue a essa janela em particular: ele sai pelo teclado virtual XTEST, ou seja, para **qualquer janela que tenha o foco naquele instante**. Se o usuário trocou de janela nesse meio-tempo, o pressionamento (Esc, por exemplo) cai no editor ou no terminal.
+
+Três comandos do `xdotool` permitem verificar o alvo antes de agir. Uma janela é designada pelo seu **identificador** (um número que o servidor X atribui a cada janela); o **PID** é o número do processo dono da janela.
+
+| Comando | Pergunta feita |
+|---|---|
+| `xdotool getwindowname ID` | a janela ainda existe? (falha caso contrário) |
+| `xdotool getwindowfocus` | qual janela tem o foco? (deve ser `ID`) |
+| `xdotool getwindowpid ID` | a qual processo ela pertence? (deve ser o PID da aplicação testada) |
+
+```bash
+# Envia Esc à janela $1 da aplicação de PID $2, uma única vez, após três verificações.
+send_escape_once() {
+	local win=$1 pid=$2 focus owner
+
+	xdotool getwindowname "$win" > /dev/null 2>&1 \
+		|| { echo "janela $win não encontrada" >&2; return 1; }
+	focus=$(xdotool getwindowfocus)
+	[ "$focus" = "$win" ] \
+		|| { echo "a janela $win não tem o foco (foco: $focus)" >&2; return 1; }
+	owner=$(xdotool getwindowpid "$win")
+	[ "$owner" = "$pid" ] \
+		|| { echo "janela $win com PID $owner, esperado $pid" >&2; return 1; }
+	xdotool key --window "$win" Escape
+}
+```
+
+Regras do protocolo:
+
+- **Um único pressionamento**, nunca uma segunda tentativa se uma verificação falhar ou se a aplicação não reagir: um pressionamento repetido ao acaso é o mesmo perigo que a tecla travada. Em caso de falha, **interrompa a aplicação por um sinal** (`kill PID`) em vez de tentar de novo.
+- Cada verificação tem **sua própria mensagem**, que nomeia a janela, o valor encontrado e o valor esperado.
+
+**Provar o que o teclado virtual realmente enviou.** `xinput test-xi2 --root` exibe ao vivo cada evento do teclado, todas as janelas somadas. Ele é lançado em segundo plano para um arquivo durante o teste, e depois se conta:
+
+| O que contar no arquivo | Resultado esperado para um pressionamento correto |
+|---|---|
+| pressionamentos (`RawKeyPress`) | 1 |
+| liberações (`RawKeyRelease`) | 1 |
+| pressionamentos a mais (autorrepetição) | 0 |
+
+Um pressionamento sem liberação, ou vários pressionamentos seguidos, indica uma tecla travada ou repetida.
+
+## Medir o que a aplicação exibe: captura e pixels
+
+Para saber se o objeto se moveu após o pressionamento, **captura-se a tela** e medem-se os pixels. O `ffmpeg` (a ferramenta de conversão de áudio e vídeo) sabe ler a tela de um servidor X com `-f x11grab`:
+
+```bash
+ffmpeg -f x11grab -draw_mouse 0 -video_size 800x600 -i :99 -frames:v 1 shot.ppm
+```
+
+| Opção | Função |
+|---|---|
+| `-f x11grab` | lê a tela do servidor X em vez de um arquivo |
+| `-draw_mouse 0` | **não desenha o cursor do mouse** na imagem |
+| `-video_size 800x600` | tamanho da área capturada, em pixels |
+| `-i :99` | servidor X a ser lido (valor de `DISPLAY`) |
+| `-frames:v 1` | uma única imagem, salva no formato **PPM** (imagem bruta: um pequeno cabeçalho e depois 3 bytes vermelho-verde-azul por pixel) |
+
+> **Armadilha (o cursor falseia a medida):** por padrão, o `x11grab` desenha o cursor na captura. Sua seta branca soma-se ao objeto medido e aumenta sua **caixa delimitadora** (o menor retângulo que contém todos os pixels do objeto), portanto uma medida de posição ou de tamanho. `-draw_mouse 0` a exclui.
+
+A medida é feita então lendo o PPM: sobre fundo preto, a caixa delimitadora é a dos pixels que não são pretos.
+
+```python
+import re
+import sys
+
+
+def read_ppm(path):
+    """Devolve (largura, altura, bytes RGB) de um PPM binário P6 de 255 níveis."""
+    with open(path, "rb") as file:
+        data = file.read()
+    header = re.match(rb"P6\s+(\d+)\s+(\d+)\s+255\s", data)   # cabeçalho: P6, largura, altura, 255
+    if not header:
+        sys.exit(f"{path}: PPM binário P6 de 255 níveis esperado")
+    width, height = int(header.group(1)), int(header.group(2))
+    pixels = data[header.end():]
+    if len(pixels) != width * height * 3:
+        sys.exit(f"{path}: {len(pixels)} bytes de pixels, {width * height * 3} esperados")
+    return width, height, pixels
+
+
+def bounding_box(path):
+    """Devolve (x_min, y_min, x_max, y_max) dos pixels não pretos, None se tudo for preto."""
+    width, height, pixels = read_ppm(path)
+    xs, ys = [], []
+    for index in range(0, len(pixels), 3):
+        if pixels[index:index + 3] != b"\x00\x00\x00":    # um pixel = 3 bytes
+            xs.append((index // 3) % width)               # coluna do pixel
+            ys.append((index // 3) // width)              # linha do pixel
+    return (min(xs), min(ys), max(xs), max(ys)) if xs else None
+```
+
+Testado com imagens sintéticas: um retângulo branco de 3 × 2 pixels dá `(3, 2, 5, 3)`, uma imagem toda preta `None`, um arquivo truncado ou de outro formato uma mensagem que nomeia o arquivo. O cabeçalho é lido por uma expressão regular e não dividindo o arquivo nos espaços: um primeiro pixel cujo byte vale 10 (quebra de linha) seria, caso contrário, engolido como separador.
+
+Se a aplicação **pulsa** (um [shader](/?c=fondamentaux&s=graphisme&p=tampons-textures-et-shaders-opengl), programa executado pela placa de vídeo, cujo brilho varia com o tempo), compare duas capturas **após normalizar o brilho** (dividir cada captura pelo seu próprio brilho médio); caso contrário, dois renderizados idênticos parecem diferentes.
+
+## Em outras máquinas
+
+| Situação | Comportamento |
+|---|---|
+| Servidor X11 (o caso comum) | `xdotool` e XTEST funcionam |
+| Wayland (outro servidor de exibição, cada vez mais comum) | o `xdotool` só alcança as aplicações lançadas pelo **XWayland** (a camada de compatibilidade com o X11); as demais exigem outra ferramenta |
+| Máquina sem tela (servidor, contêiner, integração contínua) | `xvfb-run comando` inicia um servidor X virtual (Xvfb) durante o comando |
+| Variável `DISPLAY` ausente ou errada | `xdotool` e `XOpenDisplay` falham: a mensagem deve nomear a variável, como em `release_if_stuck` |
+
+---
+
+## 📋 Recapitulação
+
+| | |
+|---|---|
+| **Para lembrar** | O `xdotool` injeta teclas pela extensão XTEST do servidor X, por meio de um teclado virtual. Uma digitação é uma pressão e depois uma liberação; se o script parar entre as duas, a tecla continua pressionada para a máquina inteira e se repete na janela que tem o foco. Reconhece-se com `xinput query-state` ou `XQueryKeymap`, e libera-se com `xdotool keyup` ou `XTestFakeKeyEvent`. |
+| **Ferramentas utilizáveis** | `xdotool key`/`keydown`/`keyup`, `xinput list`/`query-state`, `XQueryKeymap`, `XTestFakeKeyEvent`, `trap`, `wait`, `timeout`, `xvfb-run`. |
+| **Armadilhas a evitar** | Um `keydown` sem `keyup` garantido. Um `trap` adiado por um comando longo lançado em primeiro plano. Um `trap` em `EXIT INT TERM` executado duas vezes. `kill -9` num teste que mantém uma tecla. Código de tecla escrito fixo. Variável `DISPLAY` ausente sem sinalização. |
+| **Boas práticas** | Colocar `trap release EXIT` antes do `keydown`; lançar o comando longo em segundo plano e depois `wait $!`. Liberar cada tecla usada ao iniciar o teste seguinte. Pedir o código de tecla à Xlib. Testar sob o Xvfb em vez de na tela de trabalho. |

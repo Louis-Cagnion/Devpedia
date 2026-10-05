@@ -52,4 +52,47 @@ echo $((0.53 / 1))    # erreur en Bash -- 0.53 en zsh
 
 > **Piège :** un script écrit et testé en zsh peut donc produire un résultat numérique silencieusement différent (ou une erreur) une fois exécuté avec `bash script.sh` ou via un `#!/bin/bash` explicite. Pour un calcul décimal portable, utiliser [`bc`](https://www.gnu.org/software/bc) ou `awk` plutôt que `$(( ))`, quel que soit le shell cible.
 
+## Lire une touche : `read -k` (zsh) et `read -n` (Bash)
+
+`read` attend normalement une ligne entière validée par Entrée. Pour réagir à **une seule touche** (un menu, « appuyez sur une touche »), chaque shell a son option :
+
+| | Zsh | Bash |
+|---|---|---|
+| Lire un caractère, sans l'afficher | `read -s -k 1 touche` | `read -rsn1 touche` |
+| Limiter l'attente | `-t 0.05` (secondes) | `-t 0.05` (secondes) |
+
+Un script zsh qui utilise `-k` échoue dans Bash : `read: -k: invalid option` (code de sortie 2).
+
+**Les touches fléchées envoient plusieurs octets.** La flèche haut transmet d'un coup trois octets : Échap (code 27, noté `033` en octal), `[` puis `A`. Une lecture d'un seul caractère en voit donc trois « touches » successives. Mesuré en zsh, flèche haut tapée puis `x` :
+
+```text
+lecture 1 :  033
+lecture 2 :  [
+lecture 3 :  A
+```
+
+La parade : après un Échap, lire les octets suivants avec un **délai très court**. S'ils arrivent, c'est une séquence ; sinon, c'est la touche Échap seule.
+
+```zsh
+lire_touche() {
+  local k suite
+  read -s -k 1 k
+  if [[ $k == $'\e' ]]; then    # Échap : début d'une séquence, ou touche Échap seule
+    read -s -k 2 -t 0.05 suite  # les deux octets suivants, s'ils arrivent dans les 50 ms
+    k+=$suite
+  fi
+  REPLY=$k
+}
+```
+
+Mesuré : la flèche haut renvoie `033 [ A` d'un seul appel, la touche Échap seule renvoie `033`, et une touche ordinaire (`x`) reste lue seule. La même fonction s'écrit en Bash avec `read -rsn1` et `read -rsn2 -t 0.05` (résultat identique).
+
+> **Piège :** un délai trop court. Sur une connexion lente (SSH), les trois octets peuvent arriver séparés : la flèche est alors lue comme Échap suivie de caractères parasites.
+>
+> **Piège :** d'autres touches (Début, Fin, F1…) envoient des séquences plus longues, qu'un `-k 2` ne lit pas en entier.
+>
+> **Bonne pratique :** tester la fonction avec une flèche **et** avec Échap seule, dans un vrai terminal ; pour un menu complexe, utiliser un outil dédié plutôt que de décoder les séquences à la main.
+
+Un autre écart silencieux entre les deux shells (le `trap … EXIT` qui ne s'exécute pas sur un signal en zsh) est décrit dans [La gestion des processus](/?c=shells&s=bash&p=gestion-des-processus).
+
 Vous retrouverez les différents chapitres ci-dessous :

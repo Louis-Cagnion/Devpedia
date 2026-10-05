@@ -218,6 +218,8 @@ arquivos criados: criado-por-bloco-nao-protegido
 
 > **Armadilha:** sem as aspas em volta do delimitador, um comentário que contenha `$(...)` ou acentos graves executa comandos. O delimitador também precisa estar sozinho na linha e não aparecer em nenhum outro lugar do bloco. O mesmo script funciona no bash e no zsh (verificado). Para poucas linhas, um `#` na frente de cada uma é mais simples e mais seguro; o bloco serve sobretudo para documentar um script no topo do arquivo.
 
+> **Armadilha:** escrever a palavra final com espaços na frente (`  COMMENT`): ela deixa de ser reconhecida e o bloco se estende até o fim do arquivo, **todo o resto do script é engolido**. Medido: o Bash só mostra um aviso (`here-document … delimited by end-of-file`) e o zsh não mostra nada; ambos terminam com o código 0.
+
 ---
 
 ## 📋 Recapitulando
@@ -226,5 +228,5 @@ arquivos criados: criado-por-bloco-nao-protegido
 |---|---|
 | **Para lembrar** | O shebang indica ao sistema qual interpretador executa o script. `chmod +x` + `./script.sh` ou `bash script.sh` o lança. `$1`, `$@`, `$#`... dão acesso a seus argumentos. Cada script termina com um código de saída (`0` = sucesso), consultável via `$?`. |
 | **Ferramentas utilizáveis** | `set -euo pipefail` no início do script para parar no primeiro erro em vez de continuar sobre um estado inconsistente. Um bloco `: <<'COMMENT'` para comentar várias linhas. |
-| **Armadilhas a evitar** | Confundir `$@` e `$*` uma vez com aspas (veja acima). Escrever `#!/bin/sh` e depois usar uma extensão Bash (arrays, `[[ ]]`...): o script falha em qualquer sistema onde `/bin/sh` não é `bash`. Um bloco de comentário cujo delimitador não está entre aspas executa o seu conteúdo. |
-| **Boas práticas** | Sempre verificar `$?` (ou usar `&&`/`\|\|`) depois de um comando cuja falha deve mudar o comportamento do script, em vez de supor que ele teve sucesso. |
+| **Armadilhas a evitar** | Confundir `$@` e `$*` uma vez com aspas (veja acima). Escrever `#!/bin/sh` e depois usar uma extensão Bash (arrays, `[[ ]]`...): o script falha em qualquer sistema onde `/bin/sh` não é `bash`. Um comentário de bloco `: <<COMMENT` sem apóstrofos (ele executa seu conteúdo) ou cuja palavra final está recuada (ele engole o resto do script). |
+| **Boas práticas** | Sempre verificar `$?` (ou usar `&&`/`\|\|`) depois de um comando cuja falha deve mudar o comportamento do script, em vez de supor que ele teve sucesso. Reservar `: <<'COMMENT'` para desativar código temporariamente e comentar o resto linha a linha com `#`. |

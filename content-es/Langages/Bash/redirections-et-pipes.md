@@ -98,6 +98,63 @@ if comando; then echo "OK"; else echo "FALLO"; fi
 
 Un comando colocado a la izquierda de un `&&` o un `||` se considera "probado": su fallo **no interrumpe** el script incluso bajo `set -e`. Esto es lo que permite escribir `grep patron archivo || true` para neutralizar voluntariamente un fallo esperado, pero también es una fuente de sorpresa si se creía que `set -e` protegía toda la línea.
 
+## Mezclar salida y errores en un tubo: el búfer de 4 KB
+
+`2>&1` envía los errores (stderr) al mismo sitio que la salida normal (stdout). Hacia una terminal, el orden de visualización es el del programa. Hacia un tubo (`|`) o un archivo, ya no es cierto: un programa en C guarda su salida normal en memoria en un **búfer** (una zona de espera) de 4096 bytes, que solo escribe cuando está lleno, mientras que escribe sus errores de inmediato.
+
+```c
+#include <stdio.h>
+
+int main(void)
+{
+    for (int i = 1; i <= 300; i++) {
+        printf("linea %03d: una linea de texto lo bastante larga para llenar el bufer\n", i);
+        if (i == 150)
+            fprintf(stderr, "ERROR: problema en la línea 150\n");
+    }
+    return 0;
+}
+```
+
+```bash
+./programa 2>&1 | grep -B1 -A1 ERROR             # salida normal con búfer por bloques
+stdbuf -oL ./programa 2>&1 | grep -B1 -A1 ERROR  # búfer por línea
+```
+
+El programa escribe 300 líneas de 69 bytes y un error después de la línea 150. En un tubo, el error llega **por adelantado** (se cuela tras los bloques de 4096 bytes ya escritos, antes de las líneas que siguen en el búfer) y **corta una línea en dos**:
+
+```text
+linea 118: una linea de texto lo bastante larga para llenar el bufer
+linea 119: una linea de texto lo bastante larga paERROR: problema en la línea 150
+ra llenar el bufer
+```
+
+Con un búfer por línea, el orden es el del programa:
+
+```text
+linea 150: una linea de texto lo bastante larga para llenar el bufer
+ERROR: problema en la línea 150
+linea 151: una linea de texto lo bastante larga para llenar el bufer
+```
+
+| Salida hacia | Búfer de stdout | Error y salida normal |
+|---|---|---|
+| Terminal | Por línea | En el orden del programa |
+| Tubo o archivo | Por bloques de 4096 bytes | Error por adelantado, línea cortada en dos |
+
+| Remedio | Efecto |
+|---|---|
+| `stdbuf -oL comando` | Fuerza el búfer por línea sin tocar el programa; solo vale para programas en C enlazados dinámicamente a la biblioteca estándar ([manual de `stdbuf`](https://www.gnu.org/software/coreutils/manual/html_node/stdbuf-invocation.html)) |
+| `setvbuf(stdout, NULL, _IOLBF, 0)` al principio del programa | Búfer por línea (probado: salida en orden) |
+| `fflush(stdout)` antes de escribir en `stderr` | Vacía primero el búfer |
+| `python3 -u` | Python sin búfer |
+
+> **Trampa:** el defecto no se ve en pantalla, solo en un archivo de registro, una salida de pipeline o un `| tee`: un diagnóstico hecho a mano en una terminal no lo reproduce.
+>
+> **Trampa:** un búfer sin vaciar se **pierde** si el programa falla. Probado: un programa que escribe un mensaje y luego llama a `abort()` no envía **ninguna línea** a un tubo, mientras que el mismo mensaje aparece en una terminal. Los últimos mensajes antes del incidente, los más útiles, desaparecen.
+>
+> **Buena práctica:** para toda salida leída en directo (registro, integración continua), pedir un búfer por línea; y comprobar el orden de los errores en un archivo, no solo en pantalla.
+
 ## `tee`: redirigir conservando la visualización
 
 `tee` escribe su salida a la vez en un archivo **y** hacia la salida estándar (útil para ver un resultado mientras se guarda):
@@ -128,5 +185,5 @@ ls -l | tee resultados.txt   # muestra el resultado en pantalla Y lo guarda en r
 |---|---|
 | **Para recordar** | `>`/`>>`/`<` redirigen los flujos stdin/stdout/stderr hacia o desde un archivo; `\|` conecta la salida de un comando con la entrada del siguiente. `&&`/`\|\|`/`;` encadenan comandos según su código de salida. |
 | **Herramientas utilizables** | `2>&1` (fusionar stderr en stdout), `/dev/null` (ignorar una salida), `tee` (mostrar y guardar a la vez). |
-| **Trampas a evitar** | `>` que sobrescribe silenciosamente un archivo existente; el orden de `2>&1` respecto a `>` (`2>&1 > archivo` no hace lo esperado). |
-| **Buenas prácticas** | Escribir `> archivo 2>&1` (nunca al revés); preferir un `if` explícito a un `&& ... \|\| ...` en cuanto la lógica condicional sea realmente importante. |
+| **Trampas a evitar** | `>` que sobrescribe silenciosamente un archivo existente; el orden de `2>&1` respecto a `>` (`2>&1 > archivo` no hace lo esperado). Mezclar stdout y stderr con `2>&1` en un tubo o archivo sin pensar en el búfer: error por adelantado, línea cortada, últimos mensajes perdidos en un fallo. |
+| **Buenas prácticas** | Escribir `> archivo 2>&1` (nunca al revés); preferir un `if` explícito a un `&& ... \|\| ...` en cuanto la lógica condicional sea realmente importante. Pedir un búfer por línea (`stdbuf -oL`, `setvbuf`) para una salida leída en directo. |

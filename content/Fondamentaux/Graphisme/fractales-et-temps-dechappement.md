@@ -1,5 +1,5 @@
 ---
-order: 6
+order: 8
 ---
 
 # Les fractales par temps d'échappement : Mandelbrot et Julia

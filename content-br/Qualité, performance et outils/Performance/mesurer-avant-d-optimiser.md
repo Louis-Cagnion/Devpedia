@@ -328,6 +328,90 @@ Exemplo real no solucionador SAT: 3 grades, tempo médio por grade, uma versão 
 
 Para concluir a partir de várias grades e não de uma só (pareamento, teste do sinal, comparações múltiplas), veja [Comparar dois ajustes](/?c=qualite-performance-et-outils&s=performance&p=comparer-deux-reglages).
 
+## Um ganho de micro-benchmark não é um ganho do programa: o exemplo da divisão
+
+Uma divisão inteira é uma das instruções mais lentas de um processador: sua **latência** (o tempo até o resultado estar disponível) se conta em dezenas de ciclos, contra poucos ciclos de uma multiplicação. Quando o divisor muda de uma vez para outra mas só assume poucos valores, dá para trocar a divisão por uma multiplicação por um **inverso pré-calculado** (veja [Evitar o recálculo redundante](/?c=qualite-performance-et-outils&s=performance&p=eviter-le-recalcul-redondant)).
+
+```c
+#include <stdint.h>
+
+#define DMAX 128                // maior divisor usado
+#define XBITS 25                // os dividendos ficam abaixo de 2^XBITS
+static uint64_t inv[DMAX + 1];  // inv[d] = teto de 2^32 / d
+
+void init_inverses(void)
+{
+    for (uint64_t d = 1; d <= DMAX; d++)
+        inv[d] = ((1ULL << 32) + d - 1) / d;
+}
+
+// Quociente inteiro de x por d, para 1 <= d <= DMAX e x < 2^XBITS
+static inline uint32_t dividir(uint32_t x, uint32_t d)
+{
+    return (uint32_t)(((uint64_t)x * inv[d]) >> 32);
+}
+```
+
+**Por que o resultado é exato.** Seja `e = inv[d] × d − 2³²`: como `inv[d]` é arredondado para cima, `0 ≤ e < d`. Então `x × inv[d] / 2³² = x/d + x × e / (d × 2³²)`. Enquanto `x × e < 2³²` (aqui `x < 2²⁵` e `e < d ≤ 128 = 2⁷`), o termo acrescentado é menor que `1/d`. Ora, a parte fracionária de `x/d` vale no máximo `(d − 1)/d`: a soma fica abaixo do inteiro seguinte e o truncamento dá exatamente o quociente. Verificado aqui por enumeração completa: 128 divisores × 2²⁵ dividendos, ou seja 2³² casos, 0 erro.
+
+**Quanto ganha, conforme onde se mede.** Mesma soma calculada com a divisão (A) e com o inverso (B), em um Intel Core Ultra 5 228V (sob WSL, Ubuntu 24.04), gcc 13.3 em `-O2`, mediana de 7 rodadas alternadas, mesmas somas verificadas:
+
+| Situação medida | A: divisão | B: inverso | Ganho de B |
+|---|---|---|---|
+| 4 M divisões independentes | 8,6 ms | 2,3 ms | −73 % |
+| Cadeia em que cada divisão espera a anterior | 22,4 ms | 8,9 ms | −61 % |
+| 32 M acessos aleatórios em um array de 128 MB, uma divisão por acesso | 506 ms | 381 ms | −25 % |
+
+O ganho se dilui à medida que a divisão pesa menos no tempo total: o processador executa fora de ordem e **esconde** a latência da divisão atrás de outras instruções ou da espera da memória. Em um programa real (o solucionador de quebra-cabeça da pesquisa rush01, em que a divisão é apenas uma operação entre muitas), a mesma troca só ganhou 0,5 % do tempo total.
+
+> **Armadilha:** concluir a partir de um micro-benchmark (−73 %) que um programa inteiro ficará mais rápido. Só a medição do **programa real** diz quanto vale a otimização, com as [rodadas alternadas](#medir-em-rodadas-alternadas) acima.
+>
+> **Boa prática:** antes de trocar uma divisão, medir a parte que ela ocupa no perfil do programa; se for pequena, deixar o código simples.
+
+> **Armadilha:** o inverso em ponto flutuante (`1.0 / d`) não serve: `49 × (1.0 / 49)` vale `0,9999999999999999` e o truncamento dá 0 em vez de 1. Um valor fora do domínio anunciado (`x ≥ 2²⁵`, `d > 128`, `d = 0`) dá ainda um resultado errado **sem nenhum erro**.
+>
+> **Boa prática:** permanecer em inteiros com um inverso arredondado para cima, verificar a exatidão por enumeração sobre todo o domínio e proteger a entrada com uma asserção. Para um divisor **constante** em tempo de compilação, é inútil: o compilador já faz essa troca (o gcc produz um `imul` para `x / 7` e um `div` para `x / d`).
+
+## Medir a complexidade: dobrar o tamanho, no build normal
+
+Para saber como o tempo cresce com a quantidade de dados (a **complexidade**), **dobra-se o tamanho** da entrada e comparam-se os tempos:
+
+| Tempo após dobrar | Crescimento | Nome |
+|---|---|---|
+| × 2 | proporcional ao tamanho | linear |
+| × 4 | proporcional ao **quadrado** do tamanho | quadrática |
+
+Um programa quadrático costuma ser invisível com poucos dados e desmorona com muitos. Exemplo: acrescentar `n` inteiros um a um aumentando o array em **uma posição** de cada vez com [`realloc`](/?c=langages&s=c&p=memoire#redimensionar-um-bloco-realloc) (que pode copiar o array inteiro para outro lugar):
+
+```c
+for (long i = 0; i < n; i++)
+{
+	int *bigger = realloc(tab, (size_t)(i + 1) * sizeof *tab);   /* apenas mais um inteiro */
+
+	if (!bigger)
+	{
+		free(tab);
+		fprintf(stderr, "realloc falhou em i = %ld\n", i);
+		return 1;
+	}
+	tab = bigger;
+	tab[i] = (int)i;
+}
+```
+
+Medido (`gcc -O2`, duração do laço sozinho):
+
+| Build | n | Duração |
+|---|---|---|
+| normal (`-O2`) | 400 000 / 800 000 / 1 600 000 | 0,002 s / 0,004 s / 0,006 s (≈ × 2 por dobra) |
+| `-fsanitize=address` (ASan) | 6 250 / 12 500 / 25 000 | 0,094 s / 0,335 s / 1,166 s (≈ × 3,6 por dobra) |
+
+O **ASan** (*AddressSanitizer*) é uma opção de compilação que vigia cada acesso à memória para detectar estouros e usos após a liberação. Para isso, seu `realloc` **sempre aloca um bloco novo e copia tudo**, enquanto o da glibc em geral aumenta no lugar: o mesmo programa é **linear** no build normal e **quadrático** sob ASan. Com `n = 50 000`, o build ASan chegou a ultrapassar 2 GiB de memória (os blocos antigos ficam retidos por um tempo antes de serem reutilizados) e foi interrompido por `ASAN_OPTIONS=hard_rss_limit_mb=2000`.
+
+> **Armadilha (uma medida feita sob uma ferramenta de instrumentação):** os tempos de um build com sanitizer, de `valgrind` ou de um profiler nada dizem sobre a velocidade real, nem sobre sua complexidade: a própria ferramenta muda o algoritmo (aqui, de linear para quadrático). Meça a complexidade **no build normal** (`-O2`, sem instrumentação); reserve os sanitizers para a **correção** (ver [Valgrind](/?c=langages&s=c&p=memoire)). Um tempo que fica enorme somente sob uma ferramenta é um fato da ferramenta antes de ser um bug do programa.
+
+O remédio para o array aumentado de uma posição é a **duplicação de capacidade**: multiplica-se a capacidade por um fator constante (por exemplo 2) somente quando o array está cheio; as cópias ficam raras e o acréscimo continua linear em qualquer build.
+
 ## Mais threads, mais lento: os programas limitados pela memória
 
 Um programa pode ser limitado pelo **cálculo** (*CPU-bound*) ou pelos **acessos à memória** (*memory-bound*, ver [O cache da CPU](/?c=qualite-performance-et-outils&s=performance&p=cache-cpu-et-simd)). No segundo caso, as threads disputam a mesma largura de banda de memória: acrescentar mais pode **deixar tudo mais lento**. Medido em um solucionador de quebra-cabeça: 577 ms com uma thread, 893 ms com 8 threads (ver também [O paralelismo](/?c=qualite-performance-et-outils&s=performance&p=parallelisme)).
@@ -345,7 +429,7 @@ Outras duas lições do mesmo projeto:
 
 | | |
 |---|---|
-| **Para lembrar** | Nunca otimizar sem ter medido: a intuição sobre "o que é lento" geralmente mira no código que parece complicado, não no que realmente custa caro. Duas versões se comparam primeiro pelos resultados e contadores, e só depois pelo tempo, em rodadas alternadas. |
+| **Para lembrar** | Nunca otimizar sem ter medido: a intuição sobre "o que é lento" geralmente mira no código que parece complicado, não no que realmente custa caro. Duas versões se comparam primeiro pelos resultados e contadores, e só depois pelo tempo, em rodadas alternadas. Um ganho medido em um micro-benchmark não vale para o programa inteiro: o processador esconde a latência de uma instrução lenta (divisão) atrás do resto do trabalho. |
 | **Ferramentas utilizáveis** | Um profiler clássico (por função: `gprof`, `perf`, `valgrind --tool=callgrind`), uma instrumentação manual por fase quando o programa passa o tempo esperando; contadores de trabalho determinísticos para comparar duas versões; `cachegrind` (`--cache-sim=yes`) para as falhas de cache; `__rdtsc()` precedido de `_mm_lfence()` para a parte de um trecho de laço; `cmp -s` para comparar duas saídas. |
-| **Armadilhas a evitar** | Confiar em uma medição única: o ruído (rede, cache, carga da máquina) pode ultrapassar o efeito real de uma otimização; confiar em um nome de função inesperado em um perfil do `gprof` de um programa otimizado (verificar com `nm -n` ou callgrind); `cachegrind` sem `--cache-sim=yes`, ou em fontes modificadas desde o perfil; ler o contador de ciclos sem barreira; medir A e depois B em bloco numa máquina que deriva. |
-| **Boas práticas** | Sempre remedir depois de uma otimização (tempo E exatidão do resultado); fazer várias medições para distinguir um ganho real do ruído; verificar que duas versões fazem o mesmo trabalho antes de cronometrá-las; medir em rodadas alternadas, com a máquina em repouso. |
+| **Armadilhas a evitar** | Confiar em uma medição única: o ruído (rede, cache, carga da máquina) pode ultrapassar o efeito real de uma otimização; confiar em um nome de função inesperado em um perfil do `gprof` de um programa otimizado (verificar com `nm -n` ou callgrind); `cachegrind` sem `--cache-sim=yes`, ou em fontes modificadas desde o perfil; ler o contador de ciclos sem barreira; medir A e depois B em bloco numa máquina que deriva. Concluir a partir de um micro-benchmark (−73 %) que um programa inteiro ganhará o mesmo (0,5 % medido); um inverso em ponto flutuante, ou uma entrada fora do domínio verificado. julgar uma complexidade em um build com sanitizer ou valgrind. |
+| **Boas práticas** | Sempre remedir depois de uma otimização (tempo E exatidão do resultado); fazer várias medições para distinguir um ganho real do ruído; verificar que duas versões fazem o mesmo trabalho antes de cronometrá-las; medir em rodadas alternadas, com a máquina em repouso. Quantificar a parte de uma instrução no perfil antes de trocá-la, e verificar uma troca exata por enumeração sobre todo o seu domínio. medir a complexidade dobrando o tamanho (× 4 de tempo = quadrática) no build normal. |

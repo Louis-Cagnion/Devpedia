@@ -40,6 +40,31 @@ echo 'Bonjour $nom'  # Bonjour $nom -> les guillemets simples désactivent toute
 >
 > **Bonne pratique :** entourer systématiquement une variable de guillemets doubles à l'usage (`"$nom"`), sauf besoin précis du contraire. Seule exception courante : à l'intérieur d'un contexte numérique explicite (`[ $i -lt 5 ]`, `$(( i + 1 ))`), Bash ne fait aucun découpage en mots sur la valeur : les guillemets y sont donc inutiles, ce qui explique pourquoi les chapitres sur les conditions et les boucles ne les utilisent pas dans ces cas précis.
 
+## Une variable non guillemetée dans zsh : `${=var}`
+
+Le découpage en mots d'une variable sans guillemets est une particularité de Bash (et de `sh`). **zsh** (le shell par défaut de macOS) ne découpe pas : la valeur reste un seul mot. Un script écrit pour l'un se comporte donc autrement dans l'autre, sans aucune erreur.
+
+```bash
+sz="1920 1080"
+set -- $sz        # remplace les arguments positionnels ($1, $2...) par le résultat
+echo "$#"         # $# : nombre d'arguments positionnels
+set -- ${=sz}     # zsh : le = demande explicitement le découpage en mots
+```
+
+| Commande | Bash | zsh |
+|---|---|---|
+| `set -- $sz` puis `echo "$#"` | 2 (`1920` et `1080`) | **1** (`1920 1080`) |
+| `set -- "$sz"` puis `echo "$#"` | 1 | 1 |
+| `set -- ${=sz}` puis `echo "$#"` | (syntaxe propre à zsh) | 2 |
+| `f="a b.txt"; for x in $f; do echo "[$x]"; done` | `[a]` puis `[b.txt]` | `[a b.txt]` |
+
+| Pour obtenir... | Dans zsh |
+|---|---|
+| Le découpage de Bash, une fois | `${=var}` (ou `$=var`) |
+| Le découpage de Bash partout dans la session | `setopt SH_WORD_SPLIT` (mesuré : `set -- $sz` donne alors 2) |
+
+> **Piège :** un script copié de Bash vers zsh (ou l'inverse) sans changement peut passer sans erreur et se tromper : une boucle `for x in $liste` traite un seul élément au lieu de plusieurs. **Bonne pratique :** garder `"$var"` avec guillemets, qui se comporte pareil partout, et déclarer le shell attendu par un [shebang](/?c=shells&s=bash&p=scripts-et-shebang) (`#!/bin/bash`). Détails zsh : [documentation officielle des expansions](https://zsh.sourceforge.io/Doc/Release/Expansion.html).
+
 ## Substitution de commande
 
 Exécute une commande et remplace l'expression par sa sortie :

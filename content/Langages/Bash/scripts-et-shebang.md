@@ -219,6 +219,8 @@ fichiers créés : cree-par-bloc-non-protege
 
 > **Piège :** sans les apostrophes autour du délimiteur, un commentaire qui contient `$(...)` ou des accents graves exécute des commandes. Le délimiteur doit aussi être seul sur sa ligne et ne figurer nulle part ailleurs dans le bloc. Le même script fonctionne en bash et en zsh (vérifié). Pour quelques lignes, un `#` devant chacune reste plus simple et plus sûr ; le bloc sert surtout à documenter un script en tête de fichier.
 
+> **Piège :** écrire le mot de fin avec des espaces devant (`  COMMENT`) : il n'est plus reconnu, et le bloc s'étend jusqu'à la fin du fichier, **toute la suite du script est avalée**. Mesuré : Bash affiche seulement un avertissement (`here-document … delimited by end-of-file`) et zsh n'affiche rien ; les deux se terminent avec le code 0.
+
 ---
 
 ## 📋 Récapitulatif
@@ -227,5 +229,5 @@ fichiers créés : cree-par-bloc-non-protege
 |---|---|
 | **À retenir** | Le shebang indique au système quel interpréteur exécute le script. `chmod +x` + `./script.sh` ou `bash script.sh` le lance. `$1`, `$@`, `$#`... donnent accès à ses arguments. Chaque script se termine avec un code de sortie (`0` = succès), consultable via `$?`. |
 | **Outils utilisables** | `set -euo pipefail` en tête de script pour arrêter à la première erreur plutôt que de continuer sur un état incohérent. Un bloc `: <<'COMMENT'` pour commenter plusieurs lignes. |
-| **Pièges à éviter** | Confondre `$@` et `$*` une fois quotés (voir plus haut). Écrire `#!/bin/sh` puis utiliser une extension Bash (tableaux, `[[ ]]`...) : le script échoue sur tout système où `/bin/sh` n'est pas `bash`. Un bloc de commentaire dont le délimiteur n'est pas entre apostrophes exécute son contenu. |
-| **Bonnes pratiques** | Toujours vérifier `$?` (ou utiliser `&&`/`\|\|`) après une commande dont l'échec doit changer le comportement du script, plutôt que de supposer qu'elle a réussi. |
+| **Pièges à éviter** | Confondre `$@` et `$*` une fois quotés (voir plus haut). Écrire `#!/bin/sh` puis utiliser une extension Bash (tableaux, `[[ ]]`...) : le script échoue sur tout système où `/bin/sh` n'est pas `bash`. Un commentaire de bloc `: <<COMMENT` sans apostrophes (il exécute son contenu) ou dont le mot de fin est indenté (il avale la suite du script). |
+| **Bonnes pratiques** | Toujours vérifier `$?` (ou utiliser `&&`/`\|\|`) après une commande dont l'échec doit changer le comportement du script, plutôt que de supposer qu'elle a réussi. Réserver `: <<'COMMENT'` à la désactivation temporaire de code, et commenter le reste ligne par ligne avec `#`. |

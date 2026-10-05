@@ -110,6 +110,10 @@
             {
               "id": "couplages-et-filtrage-de-regin",
               "label": "Matchings, the Hall Test and Régin Filtering"
+            },
+            {
+              "id": "couplage-biparti-et-theoreme-de-hall",
+              "label": "Bipartite Matching, Hall's Theorem and Kuhn's Algorithm"
             }
           ]
         },
@@ -306,6 +310,10 @@
             {
               "id": "mesure-du-temps",
               "label": "Measuring Time and Waiting Precisely"
+            },
+            {
+              "id": "convertir-un-texte-en-nombre",
+              "label": "Converting Text to a Number Without the `atoi` Trap"
             }
           ]
         },
@@ -1406,6 +1414,10 @@
             {
               "id": "agents-azure-pipelines-auto-heberges",
               "label": "Self-hosted Azure Pipelines agents"
+            },
+            {
+              "id": "agents-auto-heberges-azure",
+              "label": "Self-hosted Azure DevOps agents"
             }
           ]
         },
@@ -1464,6 +1476,10 @@
             {
               "id": "protocoles-pair-a-pair",
               "label": "Peer-to-Peer (P2P) Protocols"
+            },
+            {
+              "id": "tunnel-ssh-et-redirection-de-port",
+              "label": "SSH Tunnels and Port Forwarding"
             }
           ]
         },
