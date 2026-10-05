@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`todo.md`) garde les points restants ; `git log` garde le détail mécanique de ce qui a été fait. Ce qui a été traité et commité n'apparaît pas ici comme une reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Section BOM dans « L'encodage des textes » (2026-10-05)
+
+Mesuré sur six fichiers (UTF-8 avec et sans BOM, UTF-16 et UTF-32 dans les deux ordres) : le BOM UTF-8 ne casse que la première directive (le reste du fichier est lu normalement, d'où la difficulté à remonter à la cause) ; UTF-16 et UTF-32 font tout ignorer, sans erreur. En UTF-16, `fgets` s'arrête au premier octet `0A` du `\n` encodé en `0A 00` : le `00` ouvre la ligne suivante, d'où 3 lignes ignorées en petit-boutiste et 2 en gros-boutiste. Le nombre d'octets lus par `fgets` dépend du texte de l'exemple (33 en français, 29 en anglais, 31 en espagnol), et `file` aligne ses colonnes sur le plus long nom de fichier : les sorties de chaque langue viennent de leur propre exécution. Le BOM UTF-32 petit-boutiste (`FF FE 00 00`) commence comme celui d'UTF-16 : le test à quatre octets doit précéder l'autre.
+
 ## Section « Un tableau de chaînes : le terminer avant de le remplir » dans C > Mémoire (2026-10-05)
 
 Le défaut du todo (`free_array` qui lit des cases non initialisées) n'apparaît que si la case en échec n'est pas écrite avant le test : avec `tab[i] = copy(...); if (!tab[i])`, la case vaut `NULL` et le parcours s'arrête juste, sans rapport sous ASan ni valgrind (mesuré, c'est donc le deuxième correctif du chapitre). Le défaut se voit seulement avec `word = copy(...); if (!word) { free_array(tab); } tab[i] = word;`. Sans outil, il reste silencieux (tas neuf à zéro) ; sous ASan, plantage reproductible (SEGV, adresse élevée, mémoire neuve remplie d'un motif non nul) ; sous valgrind, `Conditional jump or move depends on uninitialised value(s)`. Le banc doit rediriger `calloc` en plus de `malloc` (`-Wl,--wrap=calloc`), sinon le correctif par `calloc` échappe à l'injection.
