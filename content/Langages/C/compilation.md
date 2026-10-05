@@ -230,6 +230,59 @@ Le coût : quelques instructions dans chaque fonction qui a un tableau local (`o
 | Programme qui lit des données extérieures (fichiers reçus, réseau, saisie d'un utilisateur) | Le garder, toujours |
 | Programme de calcul aux entrées déjà validées, dont chaque pour cent compte | Le retirer est acceptable, **après** avoir mesuré le gain |
 
+## Vérifier à la compilation : `_Static_assert`
+
+Un contrôle ordinaire (`if`, `assert`) s'exécute **quand le programme tourne** : une valeur incohérente est découverte tard, parfois jamais. `_Static_assert(condition, "message");` (C11) vérifie une condition **pendant la compilation** : si elle est fausse, la compilation s'arrête avec le message et aucun programme n'est produit. Elle ne coûte rien à l'exécution, puisqu'elle ne génère aucun code.
+
+| Outil | Vérifie | Condition portant sur | Si la condition est fausse |
+|---|---|---|---|
+| `if` + message d'erreur | à l'exécution | n'importe quelles valeurs | message, chemin d'échec prévu par le programme |
+| `assert(c)` (`<assert.h>`) | à l'exécution, retiré par l'option `-DNDEBUG` (expliquée plus bas) | n'importe quelles valeurs | arrêt brutal du programme |
+| `_Static_assert(c, "m")` | à la compilation | **constantes** seulement | compilation refusée |
+
+La condition doit être une **expression constante entière** : calculable par le compilateur sans exécuter le programme (nombres écrits, `sizeof`, constantes `#define`).
+
+**Cas typique : des constantes surchargeables par `-D`.** L'option `-DNOM=valeur` de `gcc` définit une macro comme si le fichier commençait par `#define NOM valeur`. Un projet l'utilise pour régler des limites sans toucher au code ; un `#ifndef` (« si non défini ») donne la valeur par défaut. Rien ne garantit alors que les valeurs fournies restent cohérentes entre elles :
+
+```c
+#ifndef ZOOM_MIN                  /* si la ligne de commande ne l'a pas défini... */
+# define ZOOM_MIN 1               /* ...valeur par défaut */
+#endif
+#ifndef ZOOM_MAX
+# define ZOOM_MAX 10
+#endif
+
+_Static_assert(ZOOM_MIN < ZOOM_MAX, "ZOOM_MIN doit etre inferieur a ZOOM_MAX");
+```
+
+```text
+$ gcc -std=c11 -DZOOM_MIN=20 main.c
+main.c:10:1: error: static assertion failed: "ZOOM_MIN doit etre inferieur a ZOOM_MAX"
+```
+
+Sans cette vérification, rien ne signale l'erreur : un `clamp` (borner une valeur entre un minimum et un maximum) écrit `fminf(fmaxf(x, ZOOM_MIN), ZOOM_MAX)` avec un minimum de 20 et un maximum de 10 renvoie **toujours 10**, quelle que soit `x` (mesuré avec `x = 5`). Le message nomme la constante fautive et la relation attendue.
+
+`_Static_assert` sert aussi à vérifier une hypothèse sur la machine, par exemple `_Static_assert(sizeof(int) >= 4, "int trop petit");`, pour qu'un programme compilé sur une plateforme inattendue échoue à la compilation plutôt qu'à l'exécution. En C11, `static_assert` (sans le tiret bas) existe aussi, via `#include <assert.h>` ; depuis C23 (`-std=c2x` sous `gcc` 13), c'est un mot-clé et le message est facultatif.
+
+**Constantes flottantes : un avertissement à faire taire à cet endroit seulement.** Une comparaison de `float` (`NEAR_PLANE < FAR_PLANE`) n'est pas une expression constante *entière* : `gcc` l'accepte, mais l'option `-Wpedantic` (« pédant » : avertir de tout ce que la norme C n'autorise pas strictement) le signale :
+
+```text
+warning: expression in static assertion is not an integer constant expression [-Wpedantic]
+```
+
+Une directive `#pragma` est une instruction donnée au compilateur (comme `#pragma once`, voir [Les fichiers d'en-tête](/?c=langages-de-programmation&s=c&p=headers)). Trois lignes `#pragma GCC diagnostic` limitent le silence à l'assertion :
+
+```c
+#pragma GCC diagnostic push                       /* sauvegarde l'état des avertissements */
+#pragma GCC diagnostic ignored "-Wpedantic"       /* coupe celui-ci à partir d'ici */
+_Static_assert(NEAR_PLANE > 0.0f && NEAR_PLANE < FAR_PLANE, "plans near/far incoherents");
+#pragma GCC diagnostic pop                        /* restaure : le reste du fichier reste contrôlé */
+```
+
+`push` et `pop` encadrent le silence : couper `-Wpedantic` pour tout le fichier masquerait de vrais problèmes ailleurs. Ces directives sont reconnues par `gcc` et `clang` (pas par le compilateur de Microsoft, qui a sa propre syntaxe).
+
+> **Piège :** `_Static_assert` ne peut pas tester une valeur lue à l'exécution (argument de fonction, variable, entrée de l'utilisateur) : pour celles-là, un `if` avec un message d'erreur reste nécessaire.
+
 ## Erreurs de compilation vs erreurs d'édition de liens
 
 Savoir à quelle étape une erreur survient aide à la diagnostiquer :
@@ -246,7 +299,7 @@ Savoir à quelle étape une erreur survient aide à la diagnostiquer :
 
 | | |
 |---|---|
-| **À retenir** | Un programme C passe par 4 étapes avant l'exécution : préprocesseur → compilation (assembleur) → assemblage (code machine, `.o`) → édition de liens (exécutable final). Le niveau d'optimisation (`-O0` à `-O3`, `-Os`) se règle à l'étape de compilation. Le compilateur ne voit qu'une unité de compilation à la fois : sans `static inline` ni `-flto`, une fonction d'un autre `.c` n'est jamais inlinée. La PGO optimise d'après une exécution d'essai ; le canari de pile arrête un programme dont un tampon local a débordé. |
-| **Outils utilisables** | `gcc -E`/`-S`/`-c` pour observer chaque étape séparément ; `-O0` à `-O3`/`-Os` pour régler le niveau d'optimisation ; `-march=native` pour le processeur de la machine ; `-pthread` pour un programme à threads ; `static inline` et `-flto` pour l'inlining entre fichiers ; `-fprofile-generate`/`-fprofile-use` pour la PGO ; `objdump -d` pour vérifier le code produit. |
-| **Pièges à éviter** | Confondre une erreur de compilation (syntaxe) avec une erreur d'édition de liens (`undefined reference`, fonction jamais liée) : le message indique l'étape concernée. Un avertissement invisible à `-O0` (masqué par deux fonctions non inlinées) peut apparaître, voire bloquer la compilation avec `-Werror`, dès `-O2`. Oublier `-flto` sur un seul fichier, ou changer de nom de sortie entre les deux étapes de la PGO : l'optimisation disparaît sans erreur. Retirer le canari d'un programme qui lit des données extérieures. |
-| **Bonnes pratiques** | Compiler chaque fichier `.c` en `.o` séparément sur un projet à plusieurs fichiers, pour ne relier que ce qui a changé plutôt que tout recompiler. Tester la compilation au niveau d'optimisation réellement utilisé en production, pas seulement `-O0`. Garder dans une même unité (ou en `static inline`) les fonctions appelées très souvent, et mesurer avant et après tout découpage ou changement d'option. |
+| **À retenir** | Un programme C passe par 4 étapes avant l'exécution : préprocesseur → compilation (assembleur) → assemblage (code machine, `.o`) → édition de liens (exécutable final). Le niveau d'optimisation (`-O0` à `-O3`, `-Os`) se règle à l'étape de compilation. Le compilateur ne voit qu'une unité de compilation à la fois : sans `static inline` ni `-flto`, une fonction d'un autre `.c` n'est jamais inlinée. La PGO optimise d'après une exécution d'essai ; le canari de pile arrête un programme dont un tampon local a débordé. `_Static_assert(condition, "message")` vérifie une condition constante à la compilation, sans coût à l'exécution. |
+| **Outils utilisables** | `gcc -E`/`-S`/`-c` pour observer chaque étape séparément ; `-O0` à `-O3`/`-Os` pour régler le niveau d'optimisation ; `-march=native` pour le processeur de la machine ; `-pthread` pour un programme à threads ; `static inline` et `-flto` pour l'inlining entre fichiers ; `-fprofile-generate`/`-fprofile-use` pour la PGO ; `objdump -d` pour vérifier le code produit. `_Static_assert` (C11) ; `-DNOM=valeur` pour régler une constante ; `#pragma GCC diagnostic push`/`ignored`/`pop` pour couper un avertissement sur quelques lignes. |
+| **Pièges à éviter** | Confondre une erreur de compilation (syntaxe) avec une erreur d'édition de liens (`undefined reference`, fonction jamais liée) : le message indique l'étape concernée. Un avertissement invisible à `-O0` (masqué par deux fonctions non inlinées) peut apparaître, voire bloquer la compilation avec `-Werror`, dès `-O2`. Oublier `-flto` sur un seul fichier, ou changer de nom de sortie entre les deux étapes de la PGO : l'optimisation disparaît sans erreur. Retirer le canari d'un programme qui lit des données extérieures. Laisser des constantes surchargeables par `-D` sans vérifier leur cohérence (un `clamp` dont le minimum dépasse le maximum renvoie toujours le maximum), couper `-Wpedantic` pour tout un fichier, tester avec `_Static_assert` une valeur connue seulement à l'exécution. |
+| **Bonnes pratiques** | Compiler chaque fichier `.c` en `.o` séparément sur un projet à plusieurs fichiers, pour ne relier que ce qui a changé plutôt que tout recompiler. Tester la compilation au niveau d'optimisation réellement utilisé en production, pas seulement `-O0`. Garder dans une même unité (ou en `static inline`) les fonctions appelées très souvent, et mesurer avant et après tout découpage ou changement d'option. Vérifier à la compilation, avec un message qui nomme la constante fautive, la cohérence des constantes entre elles et les hypothèses sur la machine ; limiter un `#pragma GCC diagnostic ignored` par `push` et `pop`. |
