@@ -55,13 +55,49 @@ Ce code de retour est ensuite consultable depuis le shell qui a lancé le progra
 
 > **Piège :** oublier de renvoyer un code non nul en cas d'erreur (`return 0;` ou l'absence de `return` explicite, qui vaut `0` par convention si `main` atteint sa fin normalement). Un script qui enchaîne des commandes avec `&&` ou teste `$?` croira alors que le programme a réussi, même s'il a en réalité échoué.
 
+## `atexit()` : tout libérer sur chaque chemin de sortie
+
+Un programme qui appelle `exit()` au fond d'une chaîne de fonctions saute le `free()` que `main` aurait fait à la fin : la mémoire n'est pas rendue proprement, et un outil de détection de fuites (voir [Mémoire](/?c=langages-de-programmation&s=c&p=memoire)) le signale. `atexit(fonction)` règle ce problème : elle **enregistre** une fonction que le programme appellera tout seul quand il se termine, quel que soit l'endroit d'où part la sortie.
+
+```c
+#include <stdlib.h>
+
+static char *g_buffer;   // global : la fonction enregistrée ne reçoit aucun argument
+
+static void cleanup(void)
+{
+    free(g_buffer);
+}
+
+int main(void)
+{
+    g_buffer = malloc(100);
+    atexit(cleanup);     // cleanup sera appelée à la fin, par return ou par exit()
+    // ...
+    return 0;
+}
+```
+
+Résultat mesuré avec deux fonctions enregistrées (`cleanup` d'abord, puis `log_end`), selon la façon de terminer :
+
+| Façon de terminer | Fonctions enregistrées appelées ? | Code de retour |
+|---|---|---|
+| `return 0;` dans `main` | Oui, dans l'ordre inverse : `log_end` puis `cleanup` | `0` |
+| `exit(EXIT_FAILURE);` appelé au fond de plusieurs fonctions | Oui, même ordre inverse | `1` |
+| `_exit(EXIT_FAILURE);` (`<unistd.h>`) | **Non**, rien n'est appelé | `1` |
+
+- **Ordre inverse** : la dernière fonction enregistrée s'exécute la première, comme une pile ; une ressource enregistrée en dernier (qui dépend des précédentes) est donc libérée avant elles.
+- **Limite** : la norme garantit au moins 32 fonctions enregistrables ; `atexit()` renvoie une valeur non nulle si l'enregistrement échoue.
+
+> **Piège :** `_exit()`, `abort()` et un signal mortel (voir [Signaux Unix](/?c=langages-de-programmation&s=c&p=signaux-unix)) terminent le programme sans appeler les fonctions enregistrées. Dans un processus créé par `fork()`, l'enfant qui doit s'arrêter après une erreur utilise `_exit()` pour ne pas rejouer les nettoyages du parent (tampons d'écriture vidés deux fois, fichiers temporaires supprimés trop tôt).
+
 ---
 
 ## 📋 Récapitulatif
 
 | | |
 |---|---|
-| **À retenir** | `return valeur;` dans `main` termine le programme et fixe son code de retour. `exit(code)` fait la même chose depuis n'importe quelle fonction. Par convention, `0` signale un succès, toute autre valeur un échec. |
-| **Outils utilisables** | `exit(code)`, `EXIT_SUCCESS`/`EXIT_FAILURE` (`<stdlib.h>`). |
-| **Pièges à éviter** | Renvoyer `0` par défaut sans vérifier qu'aucune erreur n'a eu lieu : un script qui teste `$?` croira alors à un succès qui n'a pas eu lieu. |
-| **Bonnes pratiques** | Utiliser `EXIT_SUCCESS`/`EXIT_FAILURE` plutôt que `0`/`1` bruts pour rendre l'intention explicite ; toujours renvoyer un code non nul dès qu'une erreur empêche le programme de faire ce qu'on attendait de lui. |
+| **À retenir** | `return valeur;` dans `main` termine le programme et fixe son code de retour. `exit(code)` fait la même chose depuis n'importe quelle fonction. Par convention, `0` signale un succès, toute autre valeur un échec. `atexit(fonction)` enregistre un nettoyage appelé à la sortie, dans l'ordre inverse de l'enregistrement. |
+| **Outils utilisables** | `exit(code)`, `EXIT_SUCCESS`/`EXIT_FAILURE` (`<stdlib.h>`), `atexit()`. |
+| **Pièges à éviter** | Renvoyer `0` par défaut sans vérifier qu'aucune erreur n'a eu lieu : un script qui teste `$?` croira alors à un succès qui n'a pas eu lieu. Compter sur `atexit()` après `_exit()`, `abort()` ou un signal mortel : rien n'est appelé. |
+| **Bonnes pratiques** | Utiliser `EXIT_SUCCESS`/`EXIT_FAILURE` plutôt que `0`/`1` bruts pour rendre l'intention explicite ; toujours renvoyer un code non nul dès qu'une erreur empêche le programme de faire ce qu'on attendait de lui ; enregistrer le nettoyage par `atexit()` plutôt que de répéter les `free()` avant chaque `exit()`. |

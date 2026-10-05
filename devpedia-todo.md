@@ -60,6 +60,7 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Langages/Bash/redirections-et-pipes` (section tampon de 4 Ko d'un tube).
 - `Langages/Bash/scripts-et-shebang` (section commentaire de bloc `: <<'COMMENT'`).
 - `Langages/Zsh/zsh` (section lire une touche : `read -k` et touches fléchées).
+- `Langages/C/exit-et-codes-de-retour` (section `atexit()`).
 
 ## 4. Notions du projet scop et de sa revue crash-test (01/10/2026, à rédiger, un chapitre à la fois)
 Source : toute la session (projet scop en C/OpenGL, revue crash-test, corrections vérifiées par exécution). Recherche faite dans `content/` : ce qui existe déjà est indiqué, le reste a 0 résultat. Ajouts à faire au fil des items de correction (les notions des items 11 à 20 s'ajouteront ici).
@@ -74,7 +75,6 @@ Source : toute la session (projet scop en C/OpenGL, revue crash-test, correction
 **Langages > C**
 - `appels-systeme-et-descripteurs` (ou nouveau chapitre « fichiers spéciaux ») : **FIFO / tube nommé** (`mkfifo`, différence avec le pipe anonyme `|`, ouverture bloquante tant qu'aucun écrivain), piège d'un programme qui croit ouvrir un fichier (`/dev/zero`, FIFO) ; parade : `open(O_NONBLOCK)`, `fstat()`, `S_ISREG()`, `fdopen()`. Renvoi vers `sockets-et-io-non-bloquante` et `pile-et-file`.
 - `memoire` (section `realloc` déjà là) : **tampon à doublement** (lecture d'un fichier entier en O(n) amorti) contre recopie à chaque ligne (O(n²) : 2,8 Mo = 51 s, après correction 0,06 s) ; `realloc` ne met pas la zone neuve à zéro (`memset` à faire) ; `strlen` dans la condition d'une boucle = O(n²) caché, à sortir de la boucle ; `ft_strndup` qui parcourt tout le reste d'une chaîne.
-- `exit-et-codes-de-retour` : `atexit()` pour tout libérer sur chaque chemin de sortie, y compris `exit()` appelé au fond d'une chaîne d'appels.
 - Nouveau chapitre « Convertir un texte en nombre sans le piège de `atoi`/`atof` » : `atoi`/`atof` renvoient 0 sur du texte invalide et débordent sans prévenir (`4294967297` devient `1`) ; `strtol`/`strtod` + `endptr` (texte restant) + `errno == ERANGE` ; refuser `NaN`/`inf` et le hors-plage `float` ; borner chaque valeur à son domaine (ex. transparence `d` de 0 à 1) ; décimal avec virgule et locale.
 - `Langages/C/appels-systeme-et-descripteurs` : **retrouver l'emplacement de son propre exécutable** (`readlink("/proc/self/exe")`, ce qu'est `/proc`, lien symbolique résolu, repli quand `/proc` est absent) pour ouvrir des fichiers livrés avec le programme (shaders) sans dépendre du dossier courant ; `argv[0]` n'est pas fiable (PATH, lien).
 - `Qualité et architecture du code` (ou Performance) : **inondation de logs** : un message d'erreur répété à chaque image d'une boucle de rendu (150 lignes/s sans limite) ; le signaler une seule fois par cause (liste bornée), ne jamais écrire sans limite sur `stderr` dans une boucle ; erreur d'une variable `uniform` absente (faute de frappe, ou supprimée par le compilateur car inutilisée).
