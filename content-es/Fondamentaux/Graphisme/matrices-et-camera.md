@@ -300,13 +300,101 @@ Ejemplo con cifras: radio 2, `fov = 1` rad, `aspect = 0,5` (ventana dos veces m�
 
 > **Trampa (el vértice fantasma):** un solo vértice que **ninguna cara utiliza** (resto de una exportación, una línea `v` olvidada) agranda la caja: el centro se desplaza, el radio se infla, el objeto aparece minúsculo y mal centrado. Calcular la caja **con los vértices realmente usados**, o quitar antes los vértices huérfanos.
 
+## Normalizar la escala de una escena
+
+Una **constante absoluta** es un valor expresado en las unidades de la escena: « la cámara avanza 0,1 por segundo », « nunca más cerca de 0,5 del objeto », « margen de 0,2 alrededor del modelo ». Solo es correcta para **un rango de tamaños**. Fuera de ese rango:
+
+| Tamaño de la escena (radio) | Efecto de las constantes absolutas |
+|---|---|
+| Diminuta (0,001) | 0,1 por segundo son **100 radios por segundo**: la cámara sale disparada; la distancia mínima 0,5 supera el objeto entero |
+| Dentro del rango (en torno a 1) | Todo está ajustado para este tamaño |
+| Enorme (5 000) | 0,1 por segundo son 0,00002 radio por segundo: la cámara parece inmóvil; un margen de 0,2 es invisible |
+
+Dos formas de remediarlo:
+
+| Enfoque | Coste | Efecto sobre lo existente |
+|---|---|---|
+| Hacer **cada constante relativa** al radio | Un cambio por constante, y hay que acordarse de todas las futuras | Cambia el renderizado de las escenas que funcionaban |
+| **Normalizar la escena una vez**: llevarla al rango al cargar | Un solo lugar | Ninguno, si no se tocan las escenas que ya están en el rango |
+
+Reglas de la normalización:
+
+1. **No cambiar nada dentro del rango** (p. ej. radio entre 0,5 y 2): las escenas ya bien ajustadas conservan exactamente su renderizado. Comprobarlo comparando capturas de pantalla antes y después.
+2. **Un único factor para toda la escena**, calculado sobre la esfera envolvente del conjunto (véase [Encuadrar automáticamente un objeto](#encuadrar-automaticamente-un-objeto)) y aplicado a todos los objetos: sus tamaños relativos se conservan. Un factor por objeto los dejaría todos del mismo tamaño.
+3. **Calcular en doble precisión**: el cuadrado de `1e30` supera el mayor `float` (≈ 3,4 × 10³⁸) y da infinito, mientras que un `double` lo soporta (véanse los [números de coma flotante](/?c=donnees&s=representation-des-donnees&p=nombres-flottants)).
+4. **Recentrar también** una escena muy alejada del origen (véase la trampa más abajo).
+
+```c
+#define RADIUS_MIN 0.5      /* rango de radios para el que se ajustan velocidades y margenes */
+#define RADIUS_MAX 2.0
+#define RADIUS_TARGET 1.0   /* radio buscado cuando hay que redimensionar */
+#define FAR_FACTOR 100.0    /* centro « lejos »: a mas de 100 radios del origen */
+
+/* Lleva in situ unos vertices (x, y, z consecutivos) al rango de tamanos de referencia.
+   No toca nada si el radio esta en el rango y el centro cerca del origen.
+   Devuelve 1 si se modifican, 0 si se dejan tal cual, -1 si son inutilizables (mensaje en stderr). */
+int normalize_scene(float *vertices, size_t count)
+{
+	double lo[3], hi[3], center[3], d[3], radius, scale = 1.0;
+	size_t i;
+	int k;
+
+	if (!vertices || count == 0)
+	{
+		fprintf(stderr, "escena vacia: nada que normalizar\n");
+		return -1;
+	}
+	for (k = 0; k < 3; k++)
+		lo[k] = hi[k] = vertices[k];                  /* caja envolvente: min y max por eje */
+	for (i = 0; i < count; i++)
+		for (k = 0; k < 3; k++)
+		{
+			double v = vertices[3 * i + k];           /* float convertido a double, sin perdida */
+
+			if (!isfinite(v))                         /* NaN o infinito: la caja seria falsa */
+			{
+				fprintf(stderr, "vertice %zu: coordenada %d no finita\n", i, k);
+				return -1;
+			}
+			lo[k] = fmin(lo[k], v);
+			hi[k] = fmax(hi[k], v);
+		}
+	for (k = 0; k < 3; k++)
+	{
+		center[k] = (lo[k] + hi[k]) / 2.0;
+		d[k] = hi[k] - lo[k];
+	}
+	radius = sqrt(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]) / 2.0;
+	if (!(radius > 0.0))                              /* rechaza tambien NaN; vertices todos coincidentes */
+	{
+		fprintf(stderr, "radio nulo: todos los vertices coinciden\n");
+		return -1;
+	}
+	if (radius < RADIUS_MIN || radius > RADIUS_MAX)
+		scale = RADIUS_TARGET / radius;               /* fuera del rango: se redimensiona */
+	else if (sqrt(center[0] * center[0] + center[1] * center[1]
+			+ center[2] * center[2]) <= FAR_FACTOR * radius)
+		return 0;                                     /* en el rango y centrada: no se toca nada */
+	for (i = 0; i < count; i++)
+		for (k = 0; k < 3; k++)
+			vertices[3 * i + k] = (float)((vertices[3 * i + k] - center[k]) * scale);
+	return 1;
+}
+```
+
+Probada con 8 escenas: un cubo de lado 1 queda intacto (devuelve 0); radios de `1e30`, `1e-30` y 5 000 vuelven todos a 1; una escena a `1e7` del origen se recentra; un `NaN`, una escena vacía y vértices coincidentes se rechazan, cada uno con su mensaje.
+
+> **Trampa (la precisión de un `float`):** un `float` conserva ≈ 7 cifras significativas. En `10 000 000`, dos `float` vecinos están separados por **1**: un objeto de radio 1 colocado allí solo tiene unas pocas posiciones posibles, sus vértices « saltan ». Reescalar no lo arregla, porque la pérdida ocurre **al leer el archivo**; solo una lectura en `double` ([`strtod`](/?c=langages-de-programmation&s=c&p=convertir-un-texte-en-nombre)), recentrada antes de la conversión a `float`, la evita.
+
+> **Trampa (un límite expresado en radios):** una distancia mínima de cámara del tipo `distancia ≥ 2 × radio` parece relativa, por tanto inofensiva. En una escena con varios objetos, sin embargo, es ella la que decide la distancia de la cámara: cambiarla o hacerla relativa altera el renderizado de esas escenas, incluso en el rango donde no se quería cambiar nada. Comparar capturas antes y después de cada ajuste.
+
 ---
 
 ## 📋 Resumen
 
 | | |
 |---|---|
-| **A recordar** | Tres matrices: M (objeto → mundo), V (mundo → cámara), P (cámara → pantalla), aplicadas de derecha a izquierda (`P * V * M * vértice`). OpenGL lee las matrices **columna por columna**. La vista se construye con `look_at` (frente, derecha, arriba); la perspectiva divide por `w` y exige `0 < near < far`, `0 < fov < π`, `aspect > 0`. Una rotación acumulada deriva: se endereza. Rodrigues da la rotación alrededor de un eje cualquiera; la extracción eje/ángulo tiene dos casos límite (0° y 180°). El encuadre sale de la esfera envolvente. |
+| **A recordar** | Tres matrices: M (objeto → mundo), V (mundo → cámara), P (cámara → pantalla), aplicadas de derecha a izquierda (`P * V * M * vértice`). OpenGL lee las matrices **columna por columna**. La vista se construye con `look_at` (frente, derecha, arriba); la perspectiva divide por `w` y exige `0 < near < far`, `0 < fov < π`, `aspect > 0`. Una rotación acumulada deriva: se endereza. Rodrigues da la rotación alrededor de un eje cualquiera; la extracción eje/ángulo tiene dos casos límite (0° y 180°). El encuadre sale de la esfera envolvente. Las constantes absolutas (velocidades, márgenes) solo valen para un rango de tamaños: se lleva la escena a ese rango una sola vez, con un factor común calculado en doble precisión, sin tocar las escenas que ya están en el rango. |
 | **Herramientas utilizables** | `glUniformMatrix4fv`, `tanf`/`atanf`/`acosf`, producto vectorial y escalar. Documentación: [Viewing and Transformations](https://www.khronos.org/opengl/wiki/Viewing_and_Transformations), [Rodrigues](https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula), [coordenadas homogéneas](https://en.wikipedia.org/wiki/Homogeneous_coordinates). |
-| **Trampas a evitar** | Matriz enviada fila por fila, orden `M * V * P` invertido. `look_at` mirando hacia arriba (producto vectorial nulo, `NaN`). `near = 0` o `near > far` (matriz infinita, profundidad invertida), `near` minúsculo (profundidad aplastada, parpadeo). Rotación acumulada nunca enderezada. `acos` de un valor ligeramente superior a 1. Eje de una rotación de 0° o 180° leído sin caso particular. Caja envolvente falseada por un vértice huérfano. |
-| **Buenas prácticas** | Validar cada parámetro (`!(a > b)` rechaza también `NaN`) y nombrar la causa en el mensaje. Acotar antes de `acos`. Reortonormalizar una rotación acumulada. Calcular `near` y `far` a partir del radio y acotarlos. Probar `look_at` y `perspective` con los casos límite antes de conectarlos al renderizado. |
+| **Trampas a evitar** | Matriz enviada fila por fila, orden `M * V * P` invertido. `look_at` mirando hacia arriba (producto vectorial nulo, `NaN`). `near = 0` o `near > far` (matriz infinita, profundidad invertida), `near` minúsculo (profundidad aplastada, parpadeo). Rotación acumulada nunca enderezada. `acos` de un valor ligeramente superior a 1. Eje de una rotación de 0° o 180° leído sin caso particular. Caja envolvente falseada por un vértice huérfano. Una constante absoluta aplicada a una escena diminuta o enorme, un factor por objeto, un cuadrado calculado en `float` (infinito), una escena lejana reescalada cuando la precisión ya se perdió, un límite « en radios » que cambia el renderizado de las escenas con varios objetos. |
+| **Buenas prácticas** | Validar cada parámetro (`!(a > b)` rechaza también `NaN`) y nombrar la causa en el mensaje. Acotar antes de `acos`. Reortonormalizar una rotación acumulada. Calcular `near` y `far` a partir del radio y acotarlos. Probar `look_at` y `perspective` con los casos límite antes de conectarlos al renderizado. Normalizar la escala al cargar en lugar de hacer cada constante relativa; comparar capturas antes y después. |

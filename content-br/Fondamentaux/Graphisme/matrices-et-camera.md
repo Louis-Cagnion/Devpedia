@@ -300,13 +300,101 @@ Exemplo com números: raio 2, `fov = 1` rad, `aspect = 0,5` (janela duas vezes m
 
 > **Cilada (o vértice fantasma):** um único vértice que **nenhuma face usa** (resto de uma exportação, uma linha `v` esquecida) aumenta a caixa: o centro se desloca, o raio infla, o objeto aparece minúsculo e mal centralizado. Calcular a caixa **sobre os vértices realmente usados**, ou remover antes os vértices órfãos.
 
+## Normalizar a escala de uma cena
+
+Uma **constante absoluta** é um valor expresso nas unidades da cena: « a câmera avança 0,1 por segundo », « nunca mais perto que 0,5 do objeto », « margem de 0,2 em volta do modelo ». Ela só é correta para **uma faixa de tamanhos**. Fora dessa faixa:
+
+| Tamanho da cena (raio) | Efeito das constantes absolutas |
+|---|---|
+| Minúscula (0,001) | 0,1 por segundo são **100 raios por segundo**: a câmera dispara; a distância mínima 0,5 ultrapassa o objeto inteiro |
+| Dentro da faixa (em torno de 1) | Tudo está ajustado para esse tamanho |
+| Enorme (5.000) | 0,1 por segundo são 0,00002 raio por segundo: a câmera parece parada; uma margem de 0,2 é invisível |
+
+Duas formas de resolver:
+
+| Abordagem | Custo | Efeito sobre o existente |
+|---|---|---|
+| Tornar **cada constante relativa** ao raio | Uma alteração por constante, e é preciso lembrar de todas as futuras | Muda a renderização das cenas que funcionavam |
+| **Normalizar a cena uma vez**: trazê-la para a faixa ao carregar | Um único lugar | Nenhum, se as cenas que já estão na faixa não forem tocadas |
+
+Regras da normalização:
+
+1. **Não mudar nada dentro da faixa** (p. ex. raio entre 0,5 e 2): as cenas já bem ajustadas mantêm exatamente sua renderização. Conferir comparando capturas de tela antes e depois.
+2. **Um único fator para toda a cena**, calculado sobre a esfera envolvente do conjunto (veja [Enquadrar automaticamente um objeto](#enquadrar-automaticamente-um-objeto)) e aplicado a todos os objetos: seus tamanhos relativos são preservados. Um fator por objeto deixaria todos do mesmo tamanho.
+3. **Calcular em precisão dupla**: o quadrado de `1e30` ultrapassa o maior `float` (≈ 3,4 × 10³⁸) e dá infinito, enquanto um `double` o suporta (veja os [números de ponto flutuante](/?c=donnees&s=representation-des-donnees&p=nombres-flottants)).
+4. **Recentralizar também** uma cena muito afastada da origem (veja a armadilha abaixo).
+
+```c
+#define RADIUS_MIN 0.5      /* faixa de raios para a qual velocidades e margens sao ajustadas */
+#define RADIUS_MAX 2.0
+#define RADIUS_TARGET 1.0   /* raio visado quando e preciso redimensionar */
+#define FAR_FACTOR 100.0    /* centro « longe »: a mais de 100 raios da origem */
+
+/* Traz no lugar uns vertices (x, y, z consecutivos) para a faixa de tamanhos de referencia.
+   Nao mexe em nada se o raio esta na faixa e o centro perto da origem.
+   Devolve 1 se modificados, 0 se deixados como estao, -1 se inutilizaveis (mensagem em stderr). */
+int normalize_scene(float *vertices, size_t count)
+{
+	double lo[3], hi[3], center[3], d[3], radius, scale = 1.0;
+	size_t i;
+	int k;
+
+	if (!vertices || count == 0)
+	{
+		fprintf(stderr, "cena vazia: nada a normalizar\n");
+		return -1;
+	}
+	for (k = 0; k < 3; k++)
+		lo[k] = hi[k] = vertices[k];                  /* caixa envolvente: min e max por eixo */
+	for (i = 0; i < count; i++)
+		for (k = 0; k < 3; k++)
+		{
+			double v = vertices[3 * i + k];           /* float convertido em double, sem perda */
+
+			if (!isfinite(v))                         /* NaN ou infinito: a caixa seria falsa */
+			{
+				fprintf(stderr, "vertice %zu: coordenada %d nao finita\n", i, k);
+				return -1;
+			}
+			lo[k] = fmin(lo[k], v);
+			hi[k] = fmax(hi[k], v);
+		}
+	for (k = 0; k < 3; k++)
+	{
+		center[k] = (lo[k] + hi[k]) / 2.0;
+		d[k] = hi[k] - lo[k];
+	}
+	radius = sqrt(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]) / 2.0;
+	if (!(radius > 0.0))                              /* recusa tambem NaN; vertices todos coincidentes */
+	{
+		fprintf(stderr, "raio nulo: todos os vertices coincidem\n");
+		return -1;
+	}
+	if (radius < RADIUS_MIN || radius > RADIUS_MAX)
+		scale = RADIUS_TARGET / radius;               /* fora da faixa: redimensiona */
+	else if (sqrt(center[0] * center[0] + center[1] * center[1]
+			+ center[2] * center[2]) <= FAR_FACTOR * radius)
+		return 0;                                     /* na faixa e centrada: nao mexe em nada */
+	for (i = 0; i < count; i++)
+		for (k = 0; k < 3; k++)
+			vertices[3 * i + k] = (float)((vertices[3 * i + k] - center[k]) * scale);
+	return 1;
+}
+```
+
+Testada com 8 cenas: um cubo de lado 1 permanece inalterado (devolve 0); raios de `1e30`, `1e-30` e 5.000 voltam todos a 1; uma cena a `1e7` da origem é recentralizada; um `NaN`, uma cena vazia e vértices coincidentes são recusados, cada um com sua mensagem.
+
+> **Armadilha (a precisão de um `float`):** um `float` guarda ≈ 7 dígitos significativos. Em `10.000.000`, dois `float` vizinhos estão separados por **1**: um objeto de raio 1 colocado ali tem só algumas posições possíveis, seus vértices « pulam ». Reescalar não resolve, pois a perda acontece **na leitura do arquivo**; só uma leitura em `double` ([`strtod`](/?c=langages-de-programmation&s=c&p=convertir-un-texte-en-nombre)), recentralizada antes da conversão para `float`, a evita.
+
+> **Armadilha (um limite expresso em raios):** uma distância mínima de câmera do tipo `distância ≥ 2 × raio` parece relativa, portanto inofensiva. Numa cena com vários objetos, porém, é ela que decide a distância da câmera: mudá-la ou torná-la relativa altera a renderização dessas cenas, mesmo na faixa em que se queria não mudar nada. Comparar capturas antes e depois de cada ajuste.
+
 ---
 
 ## 📋 Recapitulação
 
 | | |
 |---|---|
-| **A lembrar** | Três matrizes: M (objeto → mundo), V (mundo → câmera), P (câmera → tela), aplicadas da direita para a esquerda (`P * V * M * vértice`). O OpenGL lê as matrizes **coluna por coluna**. A vista é construída com `look_at` (frente, direita, cima); a perspectiva divide por `w` e exige `0 < near < far`, `0 < fov < π`, `aspect > 0`. Uma rotação acumulada deriva: ela é endireitada. Rodrigues dá a rotação em torno de um eixo qualquer; a extração eixo/ângulo tem dois casos-limite (0° e 180°). O enquadramento vem da esfera envolvente. |
+| **A lembrar** | Três matrizes: M (objeto → mundo), V (mundo → câmera), P (câmera → tela), aplicadas da direita para a esquerda (`P * V * M * vértice`). O OpenGL lê as matrizes **coluna por coluna**. A vista é construída com `look_at` (frente, direita, cima); a perspectiva divide por `w` e exige `0 < near < far`, `0 < fov < π`, `aspect > 0`. Uma rotação acumulada deriva: ela é endireitada. Rodrigues dá a rotação em torno de um eixo qualquer; a extração eixo/ângulo tem dois casos-limite (0° e 180°). O enquadramento vem da esfera envolvente. As constantes absolutas (velocidades, margens) só valem para uma faixa de tamanhos: traz-se a cena para essa faixa uma única vez, com um fator comum calculado em precisão dupla, sem mexer nas cenas que já estão na faixa. |
 | **Ferramentas utilizáveis** | `glUniformMatrix4fv`, `tanf`/`atanf`/`acosf`, produto vetorial e escalar. Documentação: [Viewing and Transformations](https://www.khronos.org/opengl/wiki/Viewing_and_Transformations), [Rodrigues](https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula), [coordenadas homogêneas](https://en.wikipedia.org/wiki/Homogeneous_coordinates). |
-| **Ciladas a evitar** | Matriz enviada linha por linha, ordem `M * V * P` invertida. `look_at` olhando para cima (produto vetorial nulo, `NaN`). `near = 0` ou `near > far` (matriz infinita, profundidade invertida), `near` minúsculo (profundidade achatada, cintilação). Rotação acumulada nunca endireitada. `acos` de um valor ligeiramente acima de 1. Eixo de uma rotação de 0° ou 180° lido sem caso particular. Caixa envolvente falseada por um vértice órfão. |
-| **Boas práticas** | Validar cada parâmetro (`!(a > b)` rejeita também `NaN`) e nomear a causa na mensagem. Limitar antes do `acos`. Reortonormalizar uma rotação acumulada. Calcular `near` e `far` a partir do raio e limitá-los. Testar `look_at` e `perspective` nos casos-limite antes de ligá-los à renderização. |
+| **Ciladas a evitar** | Matriz enviada linha por linha, ordem `M * V * P` invertida. `look_at` olhando para cima (produto vetorial nulo, `NaN`). `near = 0` ou `near > far` (matriz infinita, profundidade invertida), `near` minúsculo (profundidade achatada, cintilação). Rotação acumulada nunca endireitada. `acos` de um valor ligeiramente acima de 1. Eixo de uma rotação de 0° ou 180° lido sem caso particular. Caixa envolvente falseada por um vértice órfão. Uma constante absoluta aplicada a uma cena minúscula ou enorme, um fator por objeto, um quadrado calculado em `float` (infinito), uma cena distante reescalada depois que a precisão já se perdeu, um limite « em raios » que muda a renderização das cenas com vários objetos. |
+| **Boas práticas** | Validar cada parâmetro (`!(a > b)` rejeita também `NaN`) e nomear a causa na mensagem. Limitar antes do `acos`. Reortonormalizar uma rotação acumulada. Calcular `near` e `far` a partir do raio e limitá-los. Testar `look_at` e `perspective` nos casos-limite antes de ligá-los à renderização. Normalizar a escala ao carregar em vez de tornar cada constante relativa; comparar capturas antes e depois. |
