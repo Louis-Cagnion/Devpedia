@@ -58,7 +58,7 @@ Au-delà, la réservation de mémoire échoue : en C, [`malloc`](/?c=langages&s=
 |---|---|
 | Plafonne l'espace **réservé**, pas la mémoire réellement utilisée | Un programme peut échouer alors qu'il n'a presque rien écrit |
 | S'applique à **chaque** processus séparément | Un programme qui lance dix enfants peut consommer dix fois le plafond |
-| Incompatible avec ASan, qui réserve un très grand espace virtuel | Le programme échoue dès son démarrage |
+| Incompatible avec ASan, qui réserve un très grand espace virtuel | Le programme échoue dès son démarrage (voir [Sanitizers et tests d'allocation](/?c=qualite-performance-et-outils&s=qualite-et-architecture-du-code&p=sanitizers-et-tests-d-allocation)) |
 
 ## cgroups et `systemd-run` : un plafond pour tout le groupe
 

@@ -58,7 +58,7 @@ Beyond it, the memory reservation fails: in C, [`malloc`](/?c=langages&s=c&p=mem
 |---|---|
 | Caps the **reserved** space, not the memory actually used | A program can fail while having written almost nothing |
 | Applies to **each** process separately | A program that launches ten children can use ten times the cap |
-| Incompatible with ASan, which reserves a very large virtual space | The program fails as soon as it starts |
+| Incompatible with ASan, which reserves a very large virtual space | The program fails as soon as it starts (see [Sanitizers and Allocation Tests](/?c=qualite-performance-et-outils&s=qualite-et-architecture-du-code&p=sanitizers-et-tests-d-allocation)) |
 
 ## cgroups and `systemd-run`: one cap for the whole group
 

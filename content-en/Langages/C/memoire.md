@@ -274,7 +274,7 @@ free(p);
 free(p); // double free: undefined behavior
 ```
 
-> **Note:** These bugs do not always cause an immediate, visible crash, which is what makes them difficult to detect. A tool like [**Valgrind**](https://valgrind.org) (`valgrind ./my_program`) runs the program and reports memory leaks and invalid accesses in detail, along with the line of code responsible.
+> **Note:** These bugs do not always cause an immediate, visible crash, which is what makes them difficult to detect. A tool like [**Valgrind**](https://valgrind.org) (`valgrind ./my_program`) runs the program and reports memory leaks and invalid accesses in detail, along with the line of code responsible. Compile-time sanitizers (`-fsanitize=address`) do the same: see [Sanitizers and Allocation Tests](/?c=qualite-performance-et-outils&s=qualite-et-architecture-du-code&p=sanitizers-et-tests-d-allocation).
 
 ## Buffer overflow: a bug with security consequences
 

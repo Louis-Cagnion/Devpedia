@@ -58,7 +58,7 @@ Más allá, la reserva de memoria falla: en C, [`malloc`](/?c=langages&s=c&p=mem
 |---|---|
 | Limita el espacio **reservado**, no la memoria realmente usada | Un programa puede fallar habiendo escrito casi nada |
 | Se aplica a **cada** proceso por separado | Un programa que lanza diez hijos puede consumir diez veces el límite |
-| Incompatible con ASan, que reserva un espacio virtual muy grande | El programa falla nada más arrancar |
+| Incompatible con ASan, que reserva un espacio virtual muy grande | El programa falla nada más arrancar (véase [Sanitizers y pruebas de asignación](/?c=qualite-performance-et-outils&s=qualite-et-architecture-du-code&p=sanitizers-et-tests-d-allocation)) |
 
 ## cgroups y `systemd-run`: un límite para todo el grupo
 

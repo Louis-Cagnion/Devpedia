@@ -108,12 +108,12 @@
               "label": "Les problèmes NP-complets : pourquoi un problème « exponentiel » se résout quand même"
             },
             {
-              "id": "couplages-et-filtrage-de-regin",
-              "label": "Couplages, test de Hall et filtrage de Régin"
-            },
-            {
               "id": "couplage-biparti-et-theoreme-de-hall",
               "label": "Couplage biparti, théorème de Hall et algorithme de Kuhn"
+            },
+            {
+              "id": "couplages-et-filtrage-de-regin",
+              "label": "Couplages, test de Hall et filtrage de Régin"
             }
           ]
         },
@@ -955,6 +955,10 @@
             {
               "id": "inondation-de-logs",
               "label": "L'inondation de logs : signaler chaque cause une seule fois"
+            },
+            {
+              "id": "sanitizers-et-tests-d-allocation",
+              "label": "Sanitizers et tests d'allocation"
             }
           ]
         },
@@ -1424,12 +1428,12 @@
               "label": "Azure Pipelines contre GitHub Actions"
             },
             {
-              "id": "agents-azure-pipelines-auto-heberges",
-              "label": "Les agents Azure Pipelines auto-hébergés"
-            },
-            {
               "id": "agents-auto-heberges-azure",
               "label": "Les agents Azure DevOps auto-hébergés"
+            },
+            {
+              "id": "agents-azure-pipelines-auto-heberges",
+              "label": "Les agents Azure Pipelines auto-hébergés"
             }
           ]
         },

@@ -29,6 +29,8 @@ Un [buffer overflow](/?c=securite&s=securite-offensive&p=corruption-memoire) que
 |---|---|
 | El desbordamiento sobrescribe silenciosamente un dato vecino, el programa sigue normalmente | El desbordamiento se detecta de inmediato, el programa se detiene con un informe preciso (archivo, línea, tipo de error) |
 
+Los sanitizers, su coste medido y sus puntos ciegos se detallan en [Sanitizers y pruebas de asignación](/?c=qualite-performance-et-outils&s=qualite-et-architecture-du-code&p=sanitizers-et-tests-d-allocation).
+
 ## Triaje: distinguir un fallo real de un duplicado
 
 Una campaña de fuzzing puede generar miles de fallos en unas horas, muchos de los cuales comparten en realidad la misma causa profunda. El **triaje** consiste en agrupar esos fallos por causa real (a menudo mediante la pila de llamadas en el momento del fallo, véase [Cómo se ejecuta realmente un programa](/?c=securite&s=securite-offensive&p=bas-niveau-execution-dun-programme)), para tratar cada bug distinto una sola vez en lugar de miles de ocurrencias del mismo problema.
