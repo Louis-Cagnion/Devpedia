@@ -178,6 +178,14 @@
               "label": "Abrir uma janela OpenGL moderna: GLFW, GLAD e o loop de renderização"
             },
             {
+              "id": "tampons-textures-et-shaders-opengl",
+              "label": "Buffers, texturas e shaders do OpenGL"
+            },
+            {
+              "id": "matrices-et-camera",
+              "label": "Matrizes e câmera"
+            },
+            {
               "id": "effets-de-rendu-et-interaction-3d",
               "label": "Efeitos de renderização e interação 3D"
             },
@@ -943,6 +951,14 @@
             {
               "id": "robustesse-traitement-par-lots",
               "label": "Robustez de um processamento em lote"
+            },
+            {
+              "id": "inondation-de-logs",
+              "label": "A inundação de logs: sinalizar cada causa uma única vez"
+            },
+            {
+              "id": "sanitizers-et-tests-d-allocation",
+              "label": "Sanitizers e testes de alocação"
             }
           ]
         },
@@ -1457,6 +1473,14 @@
             {
               "id": "acces-a-distance-windows",
               "label": "Windows: acesso remoto (RDP, tscon, shadowing)"
+            },
+            {
+              "id": "garde-fous-de-ressources",
+              "label": "Limitar os recursos de um programa"
+            },
+            {
+              "id": "touche-coincee-clavier-virtuel-xtest",
+              "label": "Tecla travada: o teclado virtual XTEST e o `xdotool`"
             }
           ]
         },

@@ -29,6 +29,8 @@ A [buffer overflow](/?c=securite&s=securite-offensive&p=corruption-memoire) that
 |---|---|
 | The overflow silently overwrites neighboring data, the program continues normally | The overflow is detected immediately, the program stops with a precise report (file, line, error type) |
 
+Sanitizers, their measured cost and their blind spots are detailed in [Sanitizers and Allocation Tests](/?c=qualite-performance-et-outils&s=qualite-et-architecture-du-code&p=sanitizers-et-tests-d-allocation).
+
 ## Triage: Telling a Real Bug From a Duplicate
 
 A fuzzing campaign can generate thousands of crashes in a few hours, many of which actually share the same root cause. **Triage** consists of grouping these crashes by their actual cause (often via the call stack at the time of the crash, see [How a Program Actually Executes](/?c=securite&s=securite-offensive&p=bas-niveau-execution-dun-programme)), so each distinct bug is only handled once instead of as thousands of occurrences of the same problem.

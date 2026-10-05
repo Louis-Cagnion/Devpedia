@@ -275,7 +275,7 @@ free(p);
 free(p); // double free: comportamiento indefinido
 ```
 
-> **Nota:** estos errores no siempre provocan un fallo inmediato y visible: es justamente lo que los hace difíciles de detectar. Una herramienta como [**Valgrind**](https://valgrind.org) (`valgrind ./mi_programa`) ejecuta el programa e informa con precisión de las fugas de memoria y los accesos no válidos, indicando la línea de código responsable.
+> **Nota:** estos errores no siempre provocan un fallo inmediato y visible: es justamente lo que los hace difíciles de detectar. Una herramienta como [**Valgrind**](https://valgrind.org) (`valgrind ./mi_programa`) ejecuta el programa e informa con precisión de las fugas de memoria y los accesos no válidos, indicando la línea de código responsable. Los sanitizers de compilación (`-fsanitize=address`) hacen lo mismo: véase [Sanitizers y pruebas de asignación](/?c=qualite-performance-et-outils&s=qualite-et-architecture-du-code&p=sanitizers-et-tests-d-allocation).
 
 ## El desbordamiento de búfer (*buffer overflow*), un error con consecuencias de seguridad
 

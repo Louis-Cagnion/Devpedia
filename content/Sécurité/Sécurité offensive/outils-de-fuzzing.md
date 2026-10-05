@@ -29,6 +29,8 @@ Un [buffer overflow](/?c=securite&s=securite-offensive&p=corruption-memoire) qui
 |---|---|
 | Le dépassement écrase silencieusement une donnée voisine, le programme continue normalement | Le dépassement est détecté immédiatement, le programme s'arrête avec un rapport précis (fichier, ligne, type d'erreur) |
 
+Les sanitizers, leur coût mesuré et leurs angles morts sont détaillés dans [Sanitizers et tests d'allocation](/?c=qualite-performance-et-outils&s=qualite-et-architecture-du-code&p=sanitizers-et-tests-d-allocation).
+
 ## Triage : distinguer un vrai bug d'un doublon
 
 Une campagne de fuzzing peut générer des milliers de plantages en quelques heures, dont beaucoup partagent en réalité la même cause profonde. Le **triage** consiste à regrouper ces plantages par cause réelle (souvent via la pile d'appel au moment du plantage, voir [Comment un programme s'exécute réellement](/?c=securite&s=securite-offensive&p=bas-niveau-execution-dun-programme)), pour ne traiter qu'une fois chaque bug distinct plutôt que des milliers d'occurrences du même problème.

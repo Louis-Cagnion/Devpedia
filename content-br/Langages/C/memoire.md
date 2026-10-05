@@ -274,7 +274,7 @@ free(p);
 free(p); // double free: comportamento indefinido
 ```
 
-> **Nota:** esses bugs nem sempre provocam um crash imediato e visível: é isso que os torna difíceis de detectar. Uma ferramenta como o [**Valgrind**](https://valgrind.org) (`valgrind ./meu_programa`) executa o programa e relata precisamente os vazamentos de memória e os acessos inválidos, com a linha de código responsável.
+> **Nota:** esses bugs nem sempre provocam um crash imediato e visível: é isso que os torna difíceis de detectar. Uma ferramenta como o [**Valgrind**](https://valgrind.org) (`valgrind ./meu_programa`) executa o programa e relata precisamente os vazamentos de memória e os acessos inválidos, com a linha de código responsável. Os sanitizers de compilação (`-fsanitize=address`) fazem o mesmo: veja [Sanitizers e testes de alocação](/?c=qualite-performance-et-outils&s=qualite-et-architecture-du-code&p=sanitizers-et-tests-d-allocation).
 
 ## O estouro de buffer (*buffer overflow*), um bug com consequências de segurança
 

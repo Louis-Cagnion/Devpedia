@@ -275,7 +275,7 @@ free(p);
 free(p); // double free : comportement indéfini
 ```
 
-> **Note :** ces bugs ne provoquent pas toujours un crash immédiat et visible : c'est ce qui les rend difficiles à détecter. Un outil comme [**Valgrind**](https://valgrind.org) (`valgrind ./mon_programme`) exécute le programme et rapporte précisément les fuites mémoire et les accès invalides, avec la ligne de code responsable.
+> **Note :** ces bugs ne provoquent pas toujours un crash immédiat et visible : c'est ce qui les rend difficiles à détecter. Un outil comme [**Valgrind**](https://valgrind.org) (`valgrind ./mon_programme`) exécute le programme et rapporte précisément les fuites mémoire et les accès invalides, avec la ligne de code responsable. Les *sanitizers* de compilation (`-fsanitize=address`) font de même : voir [Sanitizers et tests d'allocation](/?c=qualite-performance-et-outils&s=qualite-et-architecture-du-code&p=sanitizers-et-tests-d-allocation).
 
 ## Le débordement de tampon (*buffer overflow*), un bug avec des conséquences de sécurité
 

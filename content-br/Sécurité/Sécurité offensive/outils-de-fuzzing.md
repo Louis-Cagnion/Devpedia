@@ -29,6 +29,8 @@ Um [buffer overflow](/?c=securite&s=securite-offensive&p=corruption-memoire) que
 |---|---|
 | O estouro sobrescreve silenciosamente um dado vizinho, o programa continua normalmente | O estouro é detectado imediatamente, o programa para com um relatório preciso (arquivo, linha, tipo de erro) |
 
+Os sanitizers, seu custo medido e seus pontos cegos são detalhados em [Sanitizers e testes de alocação](/?c=qualite-performance-et-outils&s=qualite-et-architecture-du-code&p=sanitizers-et-tests-d-allocation).
+
 ## Triagem: distinguir um bug real de um duplicado
 
 Uma campanha de fuzzing pode gerar milhares de quedas em poucas horas, muitas das quais compartilham na verdade a mesma causa raiz. A **triagem** consiste em agrupar essas quedas por causa real (geralmente via a pilha de chamadas no momento da queda, ver [Como um programa é executado de verdade](/?c=securite&s=securite-offensive&p=bas-niveau-execution-dun-programme)), para tratar cada bug distinto apenas uma vez, em vez de milhares de ocorrências do mesmo problema.

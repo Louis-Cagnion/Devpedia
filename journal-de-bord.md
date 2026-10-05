@@ -2,6 +2,12 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`todo.md`) garde les points restants ; `git log` garde le détail mécanique de ce qui a été fait. Ce qui a été traité et commité n'apparaît pas ici comme une reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Chapitre « Sanitizers et tests d'allocation » (2026-10-05)
+
+Tout est rejoué sur cette machine (gcc 12.4, clang 18.1, valgrind 3.22, Ubuntu 24.04), pas sous WSL comme les notes du todo (gcc 13.3, pas de valgrind) : les chiffres du chapitre sont ceux d'ici. Trois résultats imprévus, tous dans le chapitre : `hard_rss_limit_mb` n'est pas un plafond (limite 200 Mio, arrêt à 249 ; limite 300, arrêt à 505, vérification périodique) ; quand LeakSanitizer trouve une fuite, un `stdout` redirigé vers un fichier est perdu (0 octet, les lignes s'affichent sur un terminal) ; le balayage exhaustif à 4 caractères ne voit qu'une divergence sur les 8 874 que le fuzz trouve (nombres de plus de 9 chiffres). `LD_PRELOAD` qui fait échouer la 2e allocation tue aussi `sh` et `valgrind` (code 2). Les tailles de fuite changent avec les mots des exemples traduits (8 et 6 octets en français, 9 et 6 en anglais, 6 et 5 en espagnol et en portugais) : les trois traductions ont été recompilées et leurs sorties comparées au texte.
+
+Les structures traduites (`struct-en/es/br.json`) ne listaient pas cinq chapitres arrivés par la fusion du 05/10 (`tampons-textures-et-shaders-opengl`, `matrices-et-camera`, `inondation-de-logs`, `garde-fous-de-ressources`, `touche-coincee-clavier-virtuel-xtest`) : le chapitre existait en quatre langues mais n'était pas navigable en en/es/br. Ajoutés à la main, avec le titre du fichier traduit. À vérifier à chaque fusion : comparer les identifiants de chapitres des quatre structures.
+
 ## Navigateur automatisé et tunnel SSH (2026-10-05)
 
 `attaques-navigateur-automatise` gagne quatre sections (headless, captchas, profil persistant, débogage à distance) et un chapitre `tunnel-ssh-et-redirection-de-port` vient dans Réseaux (le port de débogage de Chrome n'est joignable à distance que par ce tunnel). Fait vérifié en ligne : depuis Chrome 136, `--remote-debugging-port` n'est plus pris en compte sur le profil par défaut, un `--user-data-dir` dédié est obligatoire. Aucun exemple rejoué : pas de serveur SSH ni de profil Chrome distant sous la main.

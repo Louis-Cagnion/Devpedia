@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : rédiger le point 4 en commençant par l'item `Qualité, performance et outils` (faux positifs de l'outil de test), puis les autres items dans l'ordre, un item à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). Point 5 (vérifications GLSL et OpenGL non exécutées) : Louis a précisé qu'il n'a pas de rendu graphique sur cette machine, ne pas lui redemander tant qu'il n'a pas changé de machine. En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : rédiger les items restants du point 4 en commençant par `Qualité et architecture du code` (contexte de travail pour découper une grosse fonction), puis les autres items dans l'ordre, un item à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). Point 5 (vérifications GLSL et OpenGL non exécutées) : Louis a précisé qu'il n'a pas de rendu graphique sur cette machine, ne pas lui redemander tant qu'il n'a pas changé de machine. En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2), arbitrage des doublons (point 7).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -86,12 +86,12 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Infrastructure & DevOps/Administration système/touche-coincee-clavier-virtuel-xtest` (section envoyer une touche à la bonne fenêtre : protocole sûr).
 - `Infrastructure & DevOps/Administration système/touche-coincee-clavier-virtuel-xtest` (section mesurer ce que l'application affiche : capture `ffmpeg` et pixels).
 - `Qualité, performance et outils/Performance/mesurer-avant-d-optimiser` (section mesurer la complexité : doubler la taille, sur le build normal ; sanitizers et `realloc`).
+- Renvois vers `sanitizers-et-tests-d-allocation` ajoutés à `Langages/C/memoire` (note Valgrind), `Sécurité/Sécurité offensive/outils-de-fuzzing` (section sanitizers) et `Infrastructure & DevOps/Administration système/garde-fous-de-ressources` (ligne `ulimit -v` et ASan).
 
 ## 4. Notions du projet scop et de sa revue crash-test (01/10/2026, à rédiger, un chapitre à la fois)
 Source : toute la session (projet scop en C/OpenGL, revue crash-test, corrections vérifiées par exécution). Recherche faite dans `content/` : ce qui existe déjà est indiqué, le reste a 0 résultat. Ajouts à faire au fil des items de correction (les notions des items 11 à 20 s'ajouteront ici).
 
 **Langages > C**
-- `Qualité, performance et outils` (chapitre « sanitizers et tests » ou nouveau) : **les faux positifs de l'outil de test** : un vérificateur qui lit les triangles par numéro de sommet casse quand on renumérote ; un curseur de souris dans une capture fausse la boîte englobante (`ffmpeg -draw_mouse 0`) ; recompiler l'outil pendant qu'une série tourne ; un test qui lit une valeur avant l'appel qui la modifie ; toujours confirmer une alerte inattendue sur l'ancien code avant d'accuser le nouveau (ici 7 alertes, toutes dues à l'outil) ; comparer deux rendus après **normalisation de la luminosité** quand le shader pulse.
 - `Qualité, performance et outils/Qualité et architecture du code` : **un contexte de travail (struct) pour découper une grosse fonction** : regrouper l'objet, le chemin du fichier, la liste en cours et la normale dans une structure (`Face_job`) passée par pointeur évite les listes de six paramètres et les variables globales, et permet à un seul `fail_face` de tout libérer ; plafonner la longueur d'une fonction et la découper en sous-fonctions au-delà de 100 lignes.
 - Un tableau de chaînes alloué par `malloc` sans le terminer : `free_array` qui parcourt jusqu'au `NULL` lit de la mémoire non initialisée si l'échec survient avant la terminaison (bug trouvé et corrigé dans `ft_split`).
 
@@ -99,7 +99,6 @@ Source : toute la session (projet scop en C/OpenGL, revue crash-test, correction
 - `encodage-des-textes` (BOM déjà couvert) : BOM UTF-16 (`FF FE` / `FE FF`), octets NUL qui coupent chaque ligne dans un lecteur C ; BOM UTF-8 collé à la première directive d'un fichier texte, qui la rend « inconnue » et la fait disparaître en silence.
 
 **Qualité, performance et outils**
-- Nouveau chapitre « Sanitizers et tests d'allocation » (déjà mesuré sous WSL, gcc 13.3 : `ulimit -v` fait échouer ASan faute de 16 To d'adressage virtuel, utiliser `ASAN_OPTIONS=hard_rss_limit_mb` ; `--wrap=malloc` + ASan détecte bien la fuite au 2e malloc ; pas de valgrind installé) : `-fsanitize=address,undefined`, LeakSanitizer, UBSan, `ASAN_OPTIONS=hard_rss_limit_mb`, comparaison avec valgrind ; **injection d'échecs d'allocation** (faire échouer la k-ième `malloc` avec `-Wl,--wrap=malloc`, piège de `LD_PRELOAD` qui touche aussi valgrind et le shell) ; valider l'outil de test sur l'ancien code défectueux ; balayage exhaustif de cas valides (formes × sens × départs × plans × échelles) et fuzz, régression conservée à partir d'un échec de fuzz ; comparer ancien et nouveau code sur les mêmes entrées.
 - `Qualité et architecture du code` : un **message d'erreur propre à chaque cause** (jamais `error("")` vide ni `exit(1)` nu, jamais un message partagé entre causes) ; échouer sans fuite sur chaque chemin ; ne jamais annoncer « corrigé » sans test réel.
 
 ## 5. Vérifications à faire quand le projet scop sera disponible sur la machine
