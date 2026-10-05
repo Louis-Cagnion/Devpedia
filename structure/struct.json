@@ -170,6 +170,10 @@
               "label": "Ouvrir une fenêtre OpenGL moderne : GLFW, GLAD et la boucle de rendu"
             },
             {
+              "id": "tampons-textures-et-shaders-opengl",
+              "label": "Tampons, textures et shaders OpenGL"
+            },
+            {
               "id": "effets-de-rendu-et-interaction-3d",
               "label": "Effets de rendu et interaction 3D"
             },

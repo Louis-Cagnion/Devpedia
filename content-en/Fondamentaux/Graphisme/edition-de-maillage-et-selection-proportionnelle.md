@@ -1,5 +1,5 @@
 ---
-order: 5
+order: 6
 ---
 
 # Mesh editing and proportional selection
