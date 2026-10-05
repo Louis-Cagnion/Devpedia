@@ -1378,6 +1378,10 @@
             {
               "id": "azure-pipelines-vs-github-actions",
               "label": "Azure Pipelines contra GitHub Actions"
+            },
+            {
+              "id": "agents-auto-heberges-azure",
+              "label": "Os agentes do Azure DevOps auto-hospedados"
             }
           ]
         },

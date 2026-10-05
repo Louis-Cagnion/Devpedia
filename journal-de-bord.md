@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le détail mécanique de ce qui a été fait. Ce qui a été traité et commité n'apparaît pas ici comme une reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Chapitre CI-CD : agents Azure DevOps auto-hébergés (2026-10-05)
+
+`agents-auto-heberges-azure` (order 5, 4 langues) vient de la doc Microsoft « Deploy an Azure Pipelines agent on Windows » (options `config.cmd`, PAT utilisé seulement à l'enregistrement, variables `VSTS_AGENT_INPUT_*`, un dossier par agent), relue en ligne le jour même : aucune commande n'a pu être exécutée ici (pas d'organisation Azure DevOps), le chapitre ne contient donc aucun exemple rejoué. Piège de méthode : régénérer `struct-en/es/br.json` par `buildStruct` réordonne tout (342 lignes de diff, ordre des sections Sécurité perdu) puisque ces fichiers sont alignés à la main sur le français ; l'entrée du nouveau chapitre s'y ajoute à la main, comme pour `struct.json`.
+
 ## Relecture indépendante des chapitres de la recherche rush01 (2026-10-04)
 
 Un agent relecteur a repris les 7 chapitres et les sections issus de la recherche : exemples rejoués, chiffres recoupés avec `RECAP-04-10.md` et `BILAN-RECHERCHE.md`. Deux pièges à retenir :
