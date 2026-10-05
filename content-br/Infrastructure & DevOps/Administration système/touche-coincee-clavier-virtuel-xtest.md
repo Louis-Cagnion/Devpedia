@@ -127,6 +127,50 @@ Testado com a liberação substituída por uma linha escrita em um arquivo (o `x
 
 > **Armadilha (`SIGKILL`):** nenhum `trap` captura `kill -9` nem uma parada forçada por falta de memória. Nunca matar um teste assim enquanto uma tecla estiver pressionada; e **ao iniciar** o teste seguinte, chamar `release_if_stuck` (acima) ou `xdotool keyup` em cada tecla usada, para reparar uma parada brusca anterior.
 
+## Enviar uma tecla à janela certa: um protocolo seguro
+
+Com a versão do `xdotool` testada, um pressionamento dirigido a uma janela que **já tem o foco** não é entregue a essa janela em particular: ele sai pelo teclado virtual XTEST, ou seja, para **qualquer janela que tenha o foco naquele instante**. Se o usuário trocou de janela nesse meio-tempo, o pressionamento (Esc, por exemplo) cai no editor ou no terminal.
+
+Três comandos do `xdotool` permitem verificar o alvo antes de agir. Uma janela é designada pelo seu **identificador** (um número que o servidor X atribui a cada janela); o **PID** é o número do processo dono da janela.
+
+| Comando | Pergunta feita |
+|---|---|
+| `xdotool getwindowname ID` | a janela ainda existe? (falha caso contrário) |
+| `xdotool getwindowfocus` | qual janela tem o foco? (deve ser `ID`) |
+| `xdotool getwindowpid ID` | a qual processo ela pertence? (deve ser o PID da aplicação testada) |
+
+```bash
+# Envia Esc à janela $1 da aplicação de PID $2, uma única vez, após três verificações.
+send_escape_once() {
+	local win=$1 pid=$2 focus owner
+
+	xdotool getwindowname "$win" > /dev/null 2>&1 \
+		|| { echo "janela $win não encontrada" >&2; return 1; }
+	focus=$(xdotool getwindowfocus)
+	[ "$focus" = "$win" ] \
+		|| { echo "a janela $win não tem o foco (foco: $focus)" >&2; return 1; }
+	owner=$(xdotool getwindowpid "$win")
+	[ "$owner" = "$pid" ] \
+		|| { echo "janela $win com PID $owner, esperado $pid" >&2; return 1; }
+	xdotool key --window "$win" Escape
+}
+```
+
+Regras do protocolo:
+
+- **Um único pressionamento**, nunca uma segunda tentativa se uma verificação falhar ou se a aplicação não reagir: um pressionamento repetido ao acaso é o mesmo perigo que a tecla travada. Em caso de falha, **interrompa a aplicação por um sinal** (`kill PID`) em vez de tentar de novo.
+- Cada verificação tem **sua própria mensagem**, que nomeia a janela, o valor encontrado e o valor esperado.
+
+**Provar o que o teclado virtual realmente enviou.** `xinput test-xi2 --root` exibe ao vivo cada evento do teclado, todas as janelas somadas. Ele é lançado em segundo plano para um arquivo durante o teste, e depois se conta:
+
+| O que contar no arquivo | Resultado esperado para um pressionamento correto |
+|---|---|
+| pressionamentos (`RawKeyPress`) | 1 |
+| liberações (`RawKeyRelease`) | 1 |
+| pressionamentos a mais (autorrepetição) | 0 |
+
+Um pressionamento sem liberação, ou vários pressionamentos seguidos, indica uma tecla travada ou repetida.
+
 ## Em outras máquinas
 
 | Situação | Comportamento |
