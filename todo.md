@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : rédiger le point 4 en commençant par l'item `Fondamentaux/Graphisme` ou `Algorithmes` (compacter un maillage), puis les autres items dans l'ordre, un item à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : rédiger le point 4 en commençant par l'item `Fondamentaux/Graphisme` « éclairage double face » (`gl_FrontFacing`), puis les autres items dans l'ordre, un item à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -72,12 +72,12 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Langages/C/appels-systeme-et-descripteurs` (sections fichiers spéciaux : FIFO, `/dev/zero`, `O_NONBLOCK` + `fstat` + `fdopen`, et emplacement de son propre exécutable : `/proc/self/exe`).
 - `Langages/C/memoire` (section tampon à doublement : `realloc` sans mise à zéro, `strlen` en condition de boucle, `strnlen`).
 - `Qualité, performance et outils/Qualité et architecture du code/inondation-de-logs` (nouveau).
+- `Fondamentaux/Graphisme/edition-de-maillage-et-selection-proportionnelle` (section compacter un maillage).
 
 ## 4. Notions du projet scop et de sa revue crash-test (01/10/2026, à rédiger, un chapitre à la fois)
 Source : toute la session (projet scop en C/OpenGL, revue crash-test, corrections vérifiées par exécution). Recherche faite dans `content/` : ce qui existe déjà est indiqué, le reste a 0 résultat. Ajouts à faire au fil des items de correction (les notions des items 11 à 20 s'ajouteront ici).
 
 **Langages > C**
-- `Fondamentaux/Graphisme` ou `Algorithmes` : **compacter un maillage** (retirer les sommets qu'aucune face n'utilise : table de renumérotation `remap`, déplacement en place car un sommet ne monte jamais, indices de faces et UV à renuméroter ensemble) ; pourquoi : un sommet isolé fausse la boîte englobante, donc le pivot et le cadrage de la caméra. Piège de test : un vérificateur qui lit les triangles par numéro de sommet casse quand on renumérote, comparer par coordonnées (et attention : deux coordonnées arrondies au même `float` rendent l'indice ambigu).
 - `Qualité, performance et outils` : les sanitizers faussent les mesures de performance (sous ASan, `realloc` recopie tout le tableau à chaque appel : 0,6 s en build normal contre plus de 100 s pour le même fichier) ; mesurer la complexité sur le build normal `-O2`, jamais sur un build instrumenté.
 - `Fondamentaux/Graphisme` (chapitre à choisir) : **éclairage double face** : `gl_FrontFacing` (vrai si le triangle apparaît dans le sens antihoraire à l'écran), normale retournée pour une face vue par son dos, ordre d'enroulement des sommets (CCW) qui définit le côté « avant » ; un maillage dont les normales pointent vers l'intérieur apparaît noir avec un éclairage à une face. Mesurer par la proportion de pixels noirs d'une capture (la pulsation de luminosité empêche une comparaison pixel à pixel).
 - `Données/Représentation des données` (ou `Fondamentaux/Mathématiques`) : **absorption en virgule flottante** : en `float`, `x + 1 == x` dès 2^24 (16 777 216) ; une soustraction de grands nombres proches donne 0 (`near = distance - radius` valait 0) ; comparer avec une marge relative, jamais avec une constante absolue ; `NaN` et `inf` passent toutes les comparaisons sans erreur.

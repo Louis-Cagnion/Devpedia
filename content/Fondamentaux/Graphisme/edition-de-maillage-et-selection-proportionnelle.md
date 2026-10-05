@@ -47,13 +47,83 @@ Chaque sommet à l'intérieur du rayon d'influence se déplace donc dans la mêm
 >
 > **Bonne pratique :** exprimer le rayon d'influence relativement à la taille de l'objet édité (par exemple, un pourcentage de sa boîte englobante), plutôt qu'en valeur absolue fixe.
 
+## Compacter un maillage : retirer les sommets qu'aucune face n'utilise
+
+Un fichier [`.obj`](/?c=fondamentaux&s=graphisme&p=wavefront-obj-et-modele-de-phong) peut déclarer des sommets (`v`) qu'aucune face (`f`) ne référence : des **sommets isolés**. Invisibles à l'écran, ils comptent pourtant dans le calcul de la **boîte englobante**, le plus petit parallélépipède aligné sur les axes qui contient tous les sommets. Or le programme s'en sert pour placer le **pivot** (le point autour duquel l'objet tourne, ici le centre de la boîte) et pour [cadrer la caméra](/?c=fondamentaux&s=graphisme&p=matrices-et-camera).
+
+```text
+Avec le sommet isole D :          Sans D :
++----------------------+          +-------+
+|  A---B             D |          | A---B |
+|   \ /                |          |  \ /  |
+|    C                 |          |   C   |
++----------------------+          +-------+
+pivot decentre, objet             pivot et cadrage
+petit et excentre                 corrects
+```
+
+La parade est de **compacter** le maillage : ne garder que les sommets utilisés, puis renuméroter les faces. Les faces désignent un sommet par son **indice** (sa position dans le tableau des sommets) : retirer le sommet n°2 décale tous les suivants, donc tout indice supérieur à 2 doit être corrigé.
+
+### Une table de renumérotation, remplie en trois passes
+
+La **table de renumérotation** (`remap`) associe à l'ancien indice de chaque sommet son nouvel indice, ou `-1` s'il disparaît.
+
+```c
+typedef struct {
+    float position[3];
+    float uv[2];        // coordonnées de texture : voyager avec le sommet
+} Sommet;
+
+// Retire en place les sommets inutilisés ; renvoie le nombre conservé,
+// -1 si l'allocation échoue, -2 si un indice de face sort du tableau.
+long compacter_maillage(Sommet *sommets, size_t nb_sommets,
+                        unsigned *indices, size_t nb_indices) {
+    long *remap = malloc(nb_sommets * sizeof *remap);
+
+    if (remap == NULL)
+        return -1;
+    for (size_t i = 0; i < nb_sommets; i++)
+        remap[i] = -1;
+    for (size_t k = 0; k < nb_indices; k++) {
+        if (indices[k] >= nb_sommets) {
+            free(remap);
+            return -2;
+        }
+        remap[indices[k]] = 0;          // marque « utilisé »
+    }
+    long nouveau = 0;
+    for (size_t i = 0; i < nb_sommets; i++) {
+        if (remap[i] < 0)
+            continue;
+        sommets[nouveau] = sommets[i];  // nouveau <= i : case déjà lue
+        remap[i] = nouveau++;
+    }
+    for (size_t k = 0; k < nb_indices; k++)
+        indices[k] = remap[indices[k]];
+    free(remap);
+    return nouveau;
+}
+```
+
+| Passe | Rôle |
+|---|---|
+| 1. Marquer | Pour chaque indice de face, passer `remap[indice]` de `-1` à « utilisé » |
+| 2. Déplacer | Parcourir les sommets dans l'ordre ; chaque sommet utilisé reçoit le prochain nouvel indice et est recopié à sa nouvelle place |
+| 3. Renuméroter | Remplacer chaque indice de face par `remap[indice]` |
+
+- **Pas de second tableau** : le déplacement se fait en place, car un sommet ne monte jamais (`nouveau <= i`). La case d'arrivée a donc déjà été lue, ou était inutilisée.
+- **Indice et UV ensemble** : les UV (coordonnées de texture, cf. [indexation `v/vt/vn`](/?c=fondamentaux&s=graphisme&p=wavefront-obj-et-modele-de-phong#lindexation-combinee-vvtvn-et-la-couture-uv)) voyagent avec le sommet dans la même structure. Si le fichier les garde dans un tableau séparé, ce tableau a sa propre table de renumérotation, appliquée aux mêmes faces.
+- **Valider avant de renuméroter** : un indice hors du tableau écrirait hors de `remap`. La fonction le refuse avec un code d'erreur dédié plutôt que de le supposer valide.
+
+> **Piège de test :** un vérificateur qui lit les triangles par numéro de sommet échoue après la renumérotation, puisque les numéros ont changé. Comparer les triangles par **coordonnées**, pas par indice. Attention aussi : deux sommets distincts dont les coordonnées s'arrondissent au même `float` rendent cet indice ambigu.
+
 ---
 
 ## 📋 Récapitulatif
 
 | | |
 |---|---|
-| **À retenir** | Déplacer un sommet isolément casse visuellement la surface d'un maillage. La sélection proportionnelle déplace aussi les voisins, avec une intensité qui décroît selon leur distance au sommet sélectionné, à l'intérieur d'un rayon d'influence. |
-| **Outils utilisables** | Une distance 3D entre sommets, un facteur d'atténuation linéaire ou lissé (`smoothstep`) selon cette distance. |
-| **Pièges à éviter** | Un rayon d'influence fixe, sans rapport avec l'échelle réelle de l'objet édité. |
-| **Bonnes pratiques** | Exprimer le rayon d'influence relativement à la taille de l'objet plutôt qu'en valeur absolue. Une courbe de décroissance lissée pour une transition sans changement de pente visible à la limite du rayon. |
+| **À retenir** | Déplacer un sommet isolément casse visuellement la surface d'un maillage. La sélection proportionnelle déplace aussi les voisins, avec une intensité qui décroît selon leur distance au sommet sélectionné, à l'intérieur d'un rayon d'influence. Un sommet qu'aucune face n'utilise fausse la boîte englobante, donc le pivot et le cadrage : on compacte le maillage. |
+| **Outils utilisables** | Une distance 3D entre sommets, un facteur d'atténuation linéaire ou lissé (`smoothstep`) selon cette distance. Une table de renumérotation (`remap`) remplie en trois passes (marquer, déplacer en place, renuméroter les faces). |
+| **Pièges à éviter** | Un rayon d'influence fixe, sans rapport avec l'échelle réelle de l'objet édité. Renuméroter sans valider les indices de face, ou comparer des triangles par indice après compactage. |
+| **Bonnes pratiques** | Exprimer le rayon d'influence relativement à la taille de l'objet plutôt qu'en valeur absolue. Une courbe de décroissance lissée pour une transition sans changement de pente visible à la limite du rayon. Renuméroter faces et UV ensemble ; comparer les triangles par coordonnées. |

@@ -47,13 +47,83 @@ Cada vértice dentro do raio de influência se move então na mesma direção qu
 >
 > **Boa prática:** expressar o raio de influência em relação ao tamanho do objeto editado (por exemplo, uma porcentagem de sua caixa delimitadora), em vez de como um valor absoluto fixo.
 
+## Compactar uma malha: remover os vértices que nenhuma face usa
+
+Um arquivo [`.obj`](/?c=fondamentaux&s=graphisme&p=wavefront-obj-et-modele-de-phong) pode declarar vértices (`v`) que nenhuma face (`f`) referencia: **vértices isolados**. Invisíveis na tela, eles contam mesmo assim no cálculo da **caixa envolvente**, a menor caixa alinhada aos eixos que contém todos os vértices. O programa a usa para posicionar o **pivô** (o ponto em torno do qual o objeto gira, aqui o centro da caixa) e para [enquadrar a câmera](/?c=fondamentaux&s=graphisme&p=matrices-et-camera).
+
+```text
+Com o vértice isolado D:          Sem D:
++----------------------+          +-------+
+|  A---B             D |          | A---B |
+|   \ /                |          |  \ /  |
+|    C                 |          |   C   |
++----------------------+          +-------+
+pivô descentralizado, objeto      pivô e enquadramento
+pequeno e excêntrico              corretos
+```
+
+A solução é **compactar** a malha: manter só os vértices usados e depois renumerar as faces. As faces designam um vértice pelo seu **índice** (sua posição no vetor de vértices): remover o vértice n.º 2 desloca todos os seguintes, então todo índice maior que 2 precisa ser corrigido.
+
+### Uma tabela de renumeração, preenchida em três passadas
+
+A **tabela de renumeração** (`remap`) associa a cada vértice seu índice antigo ao seu índice novo, ou a `-1` se ele desaparece.
+
+```c
+typedef struct {
+    float position[3];
+    float uv[2];        // coordenadas de textura: viajam com o vértice
+} Vertex;
+
+// Remove no lugar os vértices sem uso; devolve quantos são mantidos,
+// -1 se a alocação falha, -2 se um índice de face sai do vetor.
+long compact_mesh(Vertex *vertices, size_t vertex_count,
+                  unsigned *indices, size_t index_count) {
+    long *remap = malloc(vertex_count * sizeof *remap);
+
+    if (remap == NULL)
+        return -1;
+    for (size_t i = 0; i < vertex_count; i++)
+        remap[i] = -1;
+    for (size_t k = 0; k < index_count; k++) {
+        if (indices[k] >= vertex_count) {
+            free(remap);
+            return -2;
+        }
+        remap[indices[k]] = 0;          // marca «usado»
+    }
+    long next = 0;
+    for (size_t i = 0; i < vertex_count; i++) {
+        if (remap[i] < 0)
+            continue;
+        vertices[next] = vertices[i];   // next <= i: posição já lida
+        remap[i] = next++;
+    }
+    for (size_t k = 0; k < index_count; k++)
+        indices[k] = remap[indices[k]];
+    free(remap);
+    return next;
+}
+```
+
+| Passada | Função |
+|---|---|
+| 1. Marcar | Para cada índice de face, passar `remap[índice]` de `-1` para «usado» |
+| 2. Mover | Percorrer os vértices em ordem; cada vértice usado recebe o próximo índice novo e é copiado para seu novo lugar |
+| 3. Renumerar | Substituir cada índice de face por `remap[índice]` |
+
+- **Sem segundo vetor**: o deslocamento é feito no lugar, porque um vértice nunca sobe (`next <= i`). A posição de destino já foi lida ou estava sem uso.
+- **Índice e UV juntos**: as UV (coordenadas de textura, cf. [indexação `v/vt/vn`](/?c=fondamentaux&s=graphisme&p=wavefront-obj-et-modele-de-phong#a-indexacao-combinada-vvtvn-e-a-costura-uv)) viajam com o vértice na mesma estrutura. Se o arquivo as guarda em um vetor separado, esse vetor tem sua própria tabela de renumeração, aplicada às mesmas faces.
+- **Validar antes de renumerar**: um índice fora do vetor escreveria fora de `remap`. A função o recusa com um código de erro próprio em vez de supor que seja válido.
+
+> **Cilada de teste:** um verificador que lê os triângulos pelo número do vértice falha após a renumeração, pois os números mudaram. Comparar os triângulos por **coordenadas**, não por índice. Atenção também: dois vértices distintos cujas coordenadas arredondam para o mesmo `float` tornam esse índice ambíguo.
+
 ---
 
 ## 📋 Recapitulando
 
 | | |
 |---|---|
-| **Para lembrar** | Mover um vértice isoladamente quebra visualmente a superfície de uma malha. A seleção proporcional também move os vizinhos, com uma intensidade que decai conforme a distância deles até o vértice selecionado, dentro de um raio de influência. |
-| **Ferramentas utilizáveis** | Uma distância 3D entre vértices, um fator de atenuação linear ou suavizado (`smoothstep`) conforme essa distância. |
-| **Armadilhas a evitar** | Um raio de influência fixo, sem relação com a escala real do objeto editado. |
-| **Boas práticas** | Expressar o raio de influência em relação ao tamanho do objeto em vez de como valor absoluto. Uma curva de decaimento suavizada para uma transição sem mudança de inclinação visível no limite do raio. |
+| **Para lembrar** | Mover um vértice isoladamente quebra visualmente a superfície de uma malha. A seleção proporcional também move os vizinhos, com uma intensidade que decai conforme a distância deles até o vértice selecionado, dentro de um raio de influência. Um vértice que nenhuma face usa falseia a caixa envolvente, e com ela o pivô e o enquadramento: compacta-se a malha. |
+| **Ferramentas utilizáveis** | Uma distância 3D entre vértices, um fator de atenuação linear ou suavizado (`smoothstep`) conforme essa distância. Uma tabela de renumeração (`remap`) preenchida em três passadas (marcar, mover no lugar, renumerar as faces). |
+| **Armadilhas a evitar** | Um raio de influência fixo, sem relação com a escala real do objeto editado. Renumerar sem validar os índices de face, ou comparar triângulos por índice após compactar. |
+| **Boas práticas** | Expressar o raio de influência em relação ao tamanho do objeto em vez de como valor absoluto. Uma curva de decaimento suavizada para uma transição sem mudança de inclinação visível no limite do raio. Renumerar faces e UV juntas; comparar os triângulos por coordenadas. |
