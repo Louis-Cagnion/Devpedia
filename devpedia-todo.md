@@ -58,10 +58,11 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Qualité, performance et outils/Performance/eviter-le-recalcul-redondant` (sections réparer le résultat précédent et parcours par bitmap).
 - `Langages/Bash/gestion-des-processus` (sections `mktemp` et `trap`, `timeout` et Ctrl-C).
 - `Langages/Bash/redirections-et-pipes` (section tampon de 4 Ko d'un tube).
+- `Langages/Bash/scripts-et-shebang` (section commentaire de bloc `: <<'COMMENT'`).
 
 ## 4. Notions de la recherche rush01 du 27/09 à rédiger (un chapitre à la fois)
 Source : `rushs/rush01/RECAP-27-09.md` et `rushs/rush01/research/` du dépôt 42Piscine_100_percent (mesures, code et pièges vérifiés). Chaque ajout : français, puis en/es/br (fins de ligne d'origine de chaque fichier à préserver : certains sont en CRLF, y compris en français), exemples exécutés, liens validés par `validateInternalLinks`, ligne d'audio au point 3.
-- `Langages/Bash` (et Zsh) : `read -k` de zsh et touches fléchées (Échap suivi d'autres octets) ; bloc de commentaire `: <<'COMMENT'`.
+- `Langages/Bash` (et Zsh) : `read -k` de zsh et touches fléchées (Échap suivi d'autres octets).
 
 ## 5. Notions du projet scop et de sa revue crash-test (01/10/2026, à rédiger, un chapitre à la fois)
 Source : toute la session (projet scop en C/OpenGL, revue crash-test, corrections vérifiées par exécution). Recherche faite dans `content/` : ce qui existe déjà est indiqué, le reste a 0 résultat. Ajouts à faire au fil des items de correction (les notions des items 11 à 20 s'ajouteront ici).

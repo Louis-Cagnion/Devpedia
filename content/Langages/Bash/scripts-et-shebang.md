@@ -174,6 +174,32 @@ commande_qui_echoue | grep "motif"
 
 Voir aussi le chapitre sur la gestion des processus pour ce qui se passe après le lancement d'un script en arrière-plan.
 
+## Commenter un bloc de lignes : `: <<'COMMENT'`
+
+Bash n'a pas de commentaire multi-lignes : `#` ne vaut que jusqu'à la fin de la ligne. Une astuce courante désactive tout un bloc d'un coup : `:` est une commande intégrée qui ne fait rien (elle réussit, code de sortie 0), et `<<'COMMENT'` lui donne un **here-document** (un bloc de texte lu jusqu'à une ligne ne contenant que `COMMENT`) comme entrée, qu'elle ignore.
+
+```bash
+echo "avant"
+: <<'COMMENT'
+echo "ceci ne s'affiche pas"
+touch /tmp/ne-sera-pas-cree
+COMMENT
+echo "après"
+```
+
+Ce script affiche `avant` puis `après`, et ne crée aucun fichier. Le délimiteur doit être écrit **entre apostrophes** :
+
+| Délimiteur | Dans le bloc | Résultat mesuré (Bash et zsh) |
+|---|---|---|
+| `<<'COMMENT'` | Texte pris tel quel, rien n'est interprété | Rien n'est exécuté |
+| `<<COMMENT` | `$(…)` et `$variable` sont développés | Un `$(touch …)` écrit dans le bloc **a été exécuté** |
+
+> **Piège :** oublier les apostrophes : le « commentaire » exécute alors les substitutions de commande qu'il contient.
+>
+> **Piège :** écrire le mot de fin avec des espaces devant (`  COMMENT`) : il n'est plus reconnu, et le bloc s'étend jusqu'à la fin du fichier, **toute la suite du script est avalée**. Mesuré : Bash affiche seulement un avertissement (`here-document … delimited by end-of-file`) et zsh n'affiche rien ; les deux se terminent avec le code 0.
+>
+> **Bonne pratique :** ce procédé sert à désactiver temporairement un gros bloc de code ; pour un vrai commentaire, préférer un `#` en tête de chaque ligne (la plupart des éditeurs le font par un raccourci), plus lisible et indépendant de la syntaxe des here-documents.
+
 ---
 
 ## 📋 Récapitulatif
@@ -182,5 +208,5 @@ Voir aussi le chapitre sur la gestion des processus pour ce qui se passe après 
 |---|---|
 | **À retenir** | Le shebang indique au système quel interpréteur exécute le script. `chmod +x` + `./script.sh` ou `bash script.sh` le lance. `$1`, `$@`, `$#`... donnent accès à ses arguments. Chaque script se termine avec un code de sortie (`0` = succès), consultable via `$?`. |
 | **Outils utilisables** | `set -euo pipefail` en tête de script pour arrêter à la première erreur plutôt que de continuer sur un état incohérent. |
-| **Pièges à éviter** | Confondre `$@` et `$*` une fois quotés (voir plus haut). Écrire `#!/bin/sh` puis utiliser une extension Bash (tableaux, `[[ ]]`...) : le script échoue sur tout système où `/bin/sh` n'est pas `bash`. |
-| **Bonnes pratiques** | Toujours vérifier `$?` (ou utiliser `&&`/`\|\|`) après une commande dont l'échec doit changer le comportement du script, plutôt que de supposer qu'elle a réussi. |
+| **Pièges à éviter** | Confondre `$@` et `$*` une fois quotés (voir plus haut). Écrire `#!/bin/sh` puis utiliser une extension Bash (tableaux, `[[ ]]`...) : le script échoue sur tout système où `/bin/sh` n'est pas `bash`. Un commentaire de bloc `: <<COMMENT` sans apostrophes (il exécute son contenu) ou dont le mot de fin est indenté (il avale la suite du script). |
+| **Bonnes pratiques** | Toujours vérifier `$?` (ou utiliser `&&`/`\|\|`) après une commande dont l'échec doit changer le comportement du script, plutôt que de supposer qu'elle a réussi. Réserver `: <<'COMMENT'` à la désactivation temporaire de code, et commenter le reste ligne par ligne avec `#`. |
