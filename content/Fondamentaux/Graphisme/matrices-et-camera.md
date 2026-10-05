@@ -300,13 +300,101 @@ Exemple chiffré : rayon 2, `fov = 1` rad, `aspect = 0,5` (fenêtre deux fois pl
 
 > **Piège (le sommet fantôme) :** un seul sommet que **aucune face n'utilise** (reste d'un export, ligne `v` oubliée) agrandit la boîte : le centre se décale, le rayon gonfle, l'objet apparaît minuscule et mal centré. Calculer la boîte **sur les sommets réellement utilisés**, ou retirer les sommets orphelins avant.
 
+## Normaliser l'échelle d'une scène
+
+Une **constante absolue** est une valeur exprimée dans les unités de la scène : « la caméra avance de 0,1 par seconde », « jamais plus près que 0,5 de l'objet », « marge de 0,2 autour du modèle ». Elle n'est juste que pour **une plage de tailles**. Hors de cette plage :
+
+| Taille de la scène (rayon) | Effet des constantes absolues |
+|---|---|
+| Minuscule (0,001) | 0,1 par seconde fait **100 rayons par seconde** : la caméra file ; la distance minimale 0,5 dépasse l'objet entier |
+| Dans la plage (autour de 1) | Tout est réglé pour cette taille |
+| Énorme (5 000) | 0,1 par seconde fait 0,00002 rayon par seconde : la caméra semble figée ; une marge de 0,2 est invisible |
+
+Deux façons d'y remédier :
+
+| Approche | Coût | Effet sur l'existant |
+|---|---|---|
+| Rendre **chaque constante relative** au rayon | Une modification par constante, et il faut penser à toutes les futures | Change le rendu des scènes qui marchaient |
+| **Normaliser la scène une fois** : la ramener dans la plage au chargement | Un seul endroit | Aucun, si l'on ne touche pas aux scènes déjà dans la plage |
+
+Règles de la normalisation :
+
+1. **Ne rien changer dans la plage** (ex. rayon entre 0,5 et 2) : les scènes déjà bien réglées gardent exactement leur rendu. Vérifier en comparant des captures d'écran avant et après.
+2. **Un seul facteur pour toute la scène**, calculé sur la sphère englobante de l'ensemble (voir [Cadrer automatiquement un objet](#cadrer-automatiquement-un-objet)) et appliqué à tous les objets : leurs tailles relatives sont conservées. Un facteur par objet les mettrait tous à la même taille.
+3. **Calculer en double précision** : le carré de `1e30` dépasse le plus grand `float` (≈ 3,4 × 10³⁸), il donne l'infini, alors qu'un `double` le supporte (voir les [nombres à virgule flottante](/?c=donnees&s=representation-des-donnees&p=nombres-flottants)).
+4. **Recentrer aussi** une scène très éloignée de l'origine (voir le piège plus bas).
+
+```c
+#define RADIUS_MIN 0.5      /* plage de rayons pour laquelle vitesses et marges sont réglées */
+#define RADIUS_MAX 2.0
+#define RADIUS_TARGET 1.0   /* rayon visé quand il faut redimensionner */
+#define FAR_FACTOR 100.0    /* centre « loin » : à plus de 100 rayons de l'origine */
+
+/* Ramène en place des sommets (x, y, z consécutifs) dans la plage de tailles de référence.
+   Ne touche à rien si le rayon est dans la plage et le centre proche de l'origine.
+   Renvoie 1 si modifiés, 0 si laissés tels quels, -1 si inutilisables (message sur stderr). */
+int normalize_scene(float *vertices, size_t count)
+{
+	double lo[3], hi[3], center[3], d[3], radius, scale = 1.0;
+	size_t i;
+	int k;
+
+	if (!vertices || count == 0)
+	{
+		fprintf(stderr, "scene vide : rien a normaliser\n");
+		return -1;
+	}
+	for (k = 0; k < 3; k++)
+		lo[k] = hi[k] = vertices[k];                  /* boîte englobante : min et max par axe */
+	for (i = 0; i < count; i++)
+		for (k = 0; k < 3; k++)
+		{
+			double v = vertices[3 * i + k];           /* float converti en double, sans perte */
+
+			if (!isfinite(v))                         /* NaN ou infini : la boîte serait fausse */
+			{
+				fprintf(stderr, "sommet %zu : coordonnee %d non finie\n", i, k);
+				return -1;
+			}
+			lo[k] = fmin(lo[k], v);
+			hi[k] = fmax(hi[k], v);
+		}
+	for (k = 0; k < 3; k++)
+	{
+		center[k] = (lo[k] + hi[k]) / 2.0;
+		d[k] = hi[k] - lo[k];
+	}
+	radius = sqrt(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]) / 2.0;
+	if (!(radius > 0.0))                              /* refuse aussi NaN ; sommets tous confondus */
+	{
+		fprintf(stderr, "rayon nul : tous les sommets sont confondus\n");
+		return -1;
+	}
+	if (radius < RADIUS_MIN || radius > RADIUS_MAX)
+		scale = RADIUS_TARGET / radius;               /* hors plage : on redimensionne */
+	else if (sqrt(center[0] * center[0] + center[1] * center[1]
+			+ center[2] * center[2]) <= FAR_FACTOR * radius)
+		return 0;                                     /* dans la plage et centrée : on ne touche à rien */
+	for (i = 0; i < count; i++)
+		for (k = 0; k < 3; k++)
+			vertices[3 * i + k] = (float)((vertices[3 * i + k] - center[k]) * scale);
+	return 1;
+}
+```
+
+Testée sur 8 scènes : un cube de côté 1 reste inchangé (renvoie 0) ; des rayons de `1e30`, `1e-30` et 5 000 reviennent tous à 1 ; une scène à `1e7` de l'origine est recentrée ; un `NaN`, une scène vide et des sommets confondus sont refusés, chacun avec son message.
+
+> **Piège (la précision d'un `float`) :** un `float` garde ≈ 7 chiffres significatifs. À `10 000 000`, deux `float` voisins sont séparés de **1** : un objet de rayon 1 posé là n'a plus que quelques positions possibles, ses sommets « sautent ». Rescaler ne répare pas cela, car la perte a lieu **à la lecture du fichier** ; seule une lecture en `double` ([`strtod`](/?c=langages-de-programmation&s=c&p=convertir-un-texte-en-nombre)), recentrée avant la conversion en `float`, l'évite.
+
+> **Piège (une borne exprimée en rayon) :** un minimum de distance de caméra du type `distance ≥ 2 × rayon` semble relatif, donc sans danger. Dans une scène à plusieurs objets, c'est pourtant lui qui décide de la distance de la caméra : le changer ou le rendre relatif modifie le rendu de ces scènes, même dans la plage où l'on voulait ne rien changer. Comparer les captures avant et après chaque ajustement.
+
 ---
 
 ## 📋 Récapitulatif
 
 | | |
 |---|---|
-| **À retenir** | Trois matrices : M (objet → monde), V (monde → caméra), P (caméra → écran), appliquées de droite à gauche (`P * V * M * sommet`). OpenGL lit les matrices **colonne par colonne**. La vue se construit avec `look_at` (avant, droite, haut) ; la perspective divise par `w` et exige `0 < near < far`, `0 < fov < π`, `aspect > 0`. Une rotation accumulée dérive : on la redresse. Rodrigues donne la rotation autour d'un axe quelconque ; l'extraction angle/axe a deux cas limites (0° et 180°). Le cadrage vient de la sphère englobante. |
+| **À retenir** | Trois matrices : M (objet → monde), V (monde → caméra), P (caméra → écran), appliquées de droite à gauche (`P * V * M * sommet`). OpenGL lit les matrices **colonne par colonne**. La vue se construit avec `look_at` (avant, droite, haut) ; la perspective divise par `w` et exige `0 < near < far`, `0 < fov < π`, `aspect > 0`. Une rotation accumulée dérive : on la redresse. Rodrigues donne la rotation autour d'un axe quelconque ; l'extraction angle/axe a deux cas limites (0° et 180°). Le cadrage vient de la sphère englobante. Des constantes absolues (vitesses, marges) ne valent que pour une plage de tailles : on ramène la scène dans cette plage une seule fois, avec un facteur commun, calculé en double précision, sans toucher aux scènes déjà dans la plage. |
 | **Outils utilisables** | `glUniformMatrix4fv`, `tanf`/`atanf`/`acosf`, produit vectoriel et scalaire. Documentation : [Viewing and Transformations](https://www.khronos.org/opengl/wiki/Viewing_and_Transformations), [Rodrigues](https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula), [coordonnées homogènes](https://en.wikipedia.org/wiki/Homogeneous_coordinates). |
-| **Pièges à éviter** | Matrice envoyée ligne par ligne, ordre `M * V * P` inversé. `look_at` vers le haut (produit vectoriel nul, `NaN`). `near = 0` ou `near > far` (matrice infinie, profondeur inversée), `near` minuscule (profondeur écrasée, scintillement). Rotation accumulée jamais redressée. `acos` d'une valeur légèrement supérieure à 1. Axe d'une rotation à 0° ou 180° lu sans cas particulier. Boîte englobante faussée par un sommet orphelin. |
-| **Bonnes pratiques** | Valider chaque paramètre (`!(a > b)` refuse aussi `NaN`) et nommer la cause dans le message. Borner avant `acos`. Réorthonormaliser une rotation accumulée. Calculer `near` et `far` à partir du rayon et les borner. Tester `look_at` et `perspective` sur les cas limites avant de les brancher au rendu. |
+| **Pièges à éviter** | Matrice envoyée ligne par ligne, ordre `M * V * P` inversé. `look_at` vers le haut (produit vectoriel nul, `NaN`). `near = 0` ou `near > far` (matrice infinie, profondeur inversée), `near` minuscule (profondeur écrasée, scintillement). Rotation accumulée jamais redressée. `acos` d'une valeur légèrement supérieure à 1. Axe d'une rotation à 0° ou 180° lu sans cas particulier. Boîte englobante faussée par un sommet orphelin. Une constante absolue appliquée à une scène minuscule ou énorme, un facteur par objet, un carré calculé en `float` (infini), une scène lointaine rescalée après la perte de précision, une borne « en rayon » qui change le rendu des scènes à plusieurs objets. |
+| **Bonnes pratiques** | Valider chaque paramètre (`!(a > b)` refuse aussi `NaN`) et nommer la cause dans le message. Borner avant `acos`. Réorthonormaliser une rotation accumulée. Calculer `near` et `far` à partir du rayon et les borner. Tester `look_at` et `perspective` sur les cas limites avant de les brancher au rendu. Normaliser l'échelle au chargement plutôt que rendre chaque constante relative ; comparer des captures avant et après. |

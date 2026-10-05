@@ -300,13 +300,101 @@ Worked example: radius 2, `fov = 1` rad, `aspect = 0.5` (window twice as tall as
 
 > **Pitfall (the phantom vertex):** a single vertex that **no face uses** (leftover of an export, a forgotten `v` line) enlarges the box: the center shifts, the radius inflates, the object appears tiny and off-center. Compute the box **on the vertices actually used**, or remove the orphan vertices beforehand.
 
+## Normalizing a scene's scale
+
+An **absolute constant** is a value expressed in the scene's units: "the camera moves 0.1 per second", "never closer than 0.5 to the object", "margin of 0.2 around the model". It is only right for **one range of sizes**. Outside that range:
+
+| Scene size (radius) | Effect of absolute constants |
+|---|---|
+| Tiny (0.001) | 0.1 per second is **100 radii per second**: the camera races off; the minimum distance 0.5 exceeds the whole object |
+| Within the range (around 1) | Everything is tuned for this size |
+| Huge (5,000) | 0.1 per second is 0.00002 radius per second: the camera seems frozen; a margin of 0.2 is invisible |
+
+Two ways to fix it:
+
+| Approach | Cost | Effect on existing scenes |
+|---|---|---|
+| Make **every constant relative** to the radius | One change per constant, and every future one must be remembered | Changes the render of scenes that worked |
+| **Normalize the scene once**: bring it into the range at load time | A single place | None, as long as scenes already in the range are left alone |
+
+Rules for normalization:
+
+1. **Change nothing inside the range** (e.g. radius between 0.5 and 2): scenes that are already well tuned keep exactly their render. Check by comparing screenshots before and after.
+2. **One factor for the whole scene**, computed on the bounding sphere of the whole set (see [Automatically framing an object](#automatically-framing-an-object)) and applied to every object: their relative sizes are preserved. One factor per object would give them all the same size.
+3. **Compute in double precision**: the square of `1e30` exceeds the largest `float` (≈ 3.4 × 10³⁸) and gives infinity, whereas a `double` handles it (see [floating-point numbers](/?c=donnees&s=representation-des-donnees&p=nombres-flottants)).
+4. **Also recenter** a scene that is very far from the origin (see the pitfall below).
+
+```c
+#define RADIUS_MIN 0.5      /* radius range for which speeds and margins are tuned */
+#define RADIUS_MAX 2.0
+#define RADIUS_TARGET 1.0   /* radius aimed at when a rescale is needed */
+#define FAR_FACTOR 100.0    /* "far" center: more than 100 radii from the origin */
+
+/* Brings vertices (consecutive x, y, z) into the reference size range, in place.
+   Touches nothing if the radius is in the range and the center is near the origin.
+   Returns 1 if modified, 0 if left as is, -1 if unusable (message on stderr). */
+int normalize_scene(float *vertices, size_t count)
+{
+	double lo[3], hi[3], center[3], d[3], radius, scale = 1.0;
+	size_t i;
+	int k;
+
+	if (!vertices || count == 0)
+	{
+		fprintf(stderr, "empty scene: nothing to normalize\n");
+		return -1;
+	}
+	for (k = 0; k < 3; k++)
+		lo[k] = hi[k] = vertices[k];                  /* bounding box: min and max per axis */
+	for (i = 0; i < count; i++)
+		for (k = 0; k < 3; k++)
+		{
+			double v = vertices[3 * i + k];           /* float converted to double, lossless */
+
+			if (!isfinite(v))                         /* NaN or infinity: the box would be wrong */
+			{
+				fprintf(stderr, "vertex %zu: coordinate %d is not finite\n", i, k);
+				return -1;
+			}
+			lo[k] = fmin(lo[k], v);
+			hi[k] = fmax(hi[k], v);
+		}
+	for (k = 0; k < 3; k++)
+	{
+		center[k] = (lo[k] + hi[k]) / 2.0;
+		d[k] = hi[k] - lo[k];
+	}
+	radius = sqrt(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]) / 2.0;
+	if (!(radius > 0.0))                              /* also rejects NaN; all vertices coincide */
+	{
+		fprintf(stderr, "zero radius: all vertices coincide\n");
+		return -1;
+	}
+	if (radius < RADIUS_MIN || radius > RADIUS_MAX)
+		scale = RADIUS_TARGET / radius;               /* out of range: rescale */
+	else if (sqrt(center[0] * center[0] + center[1] * center[1]
+			+ center[2] * center[2]) <= FAR_FACTOR * radius)
+		return 0;                                     /* in range and centered: touch nothing */
+	for (i = 0; i < count; i++)
+		for (k = 0; k < 3; k++)
+			vertices[3 * i + k] = (float)((vertices[3 * i + k] - center[k]) * scale);
+	return 1;
+}
+```
+
+Tested on 8 scenes: a cube of side 1 stays unchanged (returns 0); radii of `1e30`, `1e-30` and 5,000 all come back to 1; a scene `1e7` away from the origin is recentered; a `NaN`, an empty scene and coinciding vertices are rejected, each with its own message.
+
+> **Pitfall (the precision of a `float`):** a `float` keeps ≈ 7 significant digits. At `10,000,000`, two neighboring `float`s are **1** apart: an object of radius 1 placed there has only a few possible positions, its vertices "jump". Rescaling does not fix that, because the loss happens **when the file is read**; only reading in `double` ([`strtod`](/?c=langages-de-programmation&s=c&p=convertir-un-texte-en-nombre)), recentered before the conversion to `float`, avoids it.
+
+> **Pitfall (a bound expressed in radii):** a minimum camera distance such as `distance ≥ 2 × radius` looks relative, hence harmless. In a scene with several objects, though, it is what decides the camera distance: changing it or making it relative alters the render of those scenes, even in the range where nothing was meant to change. Compare screenshots before and after each adjustment.
+
 ---
 
 ## 📋 Summary
 
 | | |
 |---|---|
-| **Key takeaway** | Three matrices: M (object → world), V (world → camera), P (camera → screen), applied from right to left (`P * V * M * vertex`). OpenGL reads matrices **column by column**. The view is built with `look_at` (forward, right, up); the perspective divides by `w` and requires `0 < near < far`, `0 < fov < π`, `aspect > 0`. An accumulated rotation drifts: it must be straightened. Rodrigues gives the rotation around an arbitrary axis; the axis/angle extraction has two limit cases (0° and 180°). Framing comes from the bounding sphere. |
+| **Key takeaway** | Three matrices: M (object → world), V (world → camera), P (camera → screen), applied from right to left (`P * V * M * vertex`). OpenGL reads matrices **column by column**. The view is built with `look_at` (forward, right, up); the perspective divides by `w` and requires `0 < near < far`, `0 < fov < π`, `aspect > 0`. An accumulated rotation drifts: it must be straightened. Rodrigues gives the rotation around an arbitrary axis; the axis/angle extraction has two limit cases (0° and 180°). Framing comes from the bounding sphere. Absolute constants (speeds, margins) only hold for one range of sizes: bring the scene into that range once, with a common factor computed in double precision, leaving scenes already in the range untouched. |
 | **Usable tools** | `glUniformMatrix4fv`, `tanf`/`atanf`/`acosf`, cross and dot products. Documentation: [Viewing and Transformations](https://www.khronos.org/opengl/wiki/Viewing_and_Transformations), [Rodrigues](https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula), [homogeneous coordinates](https://en.wikipedia.org/wiki/Homogeneous_coordinates). |
-| **Pitfalls to avoid** | Matrix sent row by row, reversed `M * V * P` order. `look_at` looking straight up (zero cross product, `NaN`). `near = 0` or `near > far` (infinite matrix, inverted depth), tiny `near` (squashed depth, flickering). Accumulated rotation never straightened. `acos` of a value slightly above 1. Axis of a 0° or 180° rotation read without a special case. Bounding box distorted by an orphan vertex. |
-| **Good practices** | Validate each parameter (`!(a > b)` also rejects `NaN`) and name the cause in the message. Clamp before `acos`. Re-orthonormalize an accumulated rotation. Compute `near` and `far` from the radius and clamp them. Test `look_at` and `perspective` on the limit cases before wiring them to the render. |
+| **Pitfalls to avoid** | Matrix sent row by row, reversed `M * V * P` order. `look_at` looking straight up (zero cross product, `NaN`). `near = 0` or `near > far` (infinite matrix, inverted depth), tiny `near` (squashed depth, flickering). Accumulated rotation never straightened. `acos` of a value slightly above 1. Axis of a 0° or 180° rotation read without a special case. Bounding box distorted by an orphan vertex. An absolute constant applied to a tiny or huge scene, one factor per object, a square computed in `float` (infinity), a far-away scene rescaled after the precision was already lost, a bound "in radii" that changes the render of multi-object scenes. |
+| **Good practices** | Validate each parameter (`!(a > b)` also rejects `NaN`) and name the cause in the message. Clamp before `acos`. Re-orthonormalize an accumulated rotation. Compute `near` and `far` from the radius and clamp them. Test `look_at` and `perspective` on the limit cases before wiring them to the render. Normalize the scale at load time rather than making every constant relative; compare screenshots before and after. |
