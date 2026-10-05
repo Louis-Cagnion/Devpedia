@@ -1,6 +1,6 @@
 # Journal de bord — Devpedia
 
-Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le détail mécanique de ce qui a été fait. Ce qui a été traité et commité n'apparaît pas ici comme une reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
+Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`todo.md`) garde les points restants ; `git log` garde le détail mécanique de ce qui a été fait. Ce qui a été traité et commité n'apparaît pas ici comme une reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
 ## Navigateur automatisé et tunnel SSH (2026-10-05)
 
@@ -219,7 +219,7 @@ Deux bugs d'infrastructure découverts en régénérant l'audio, sans rapport av
 - **`scripts/generate-audio.mjs`** codait en dur le chemin Piper en layout Unix (`.venv-piper/bin/python`), jamais testé depuis un Node Windows natif avant ce jour. Corrigé par une sélection de chemin selon `process.platform`.
 - **18 dossiers de contenu vides orphelins** traînaient depuis une fusion de catégories antérieure et se faisaient reprendre par `generate-struct.js` comme fausses catégories racine. Supprimés.
 
-Décisions de rangement prises pour 13 notions candidates encore ouvertes, question par question avec Louis ; détail dans `devpedia-todo.md`.
+Décisions de rangement prises pour 13 notions candidates encore ouvertes, question par question avec Louis ; détail dans `todo.md`.
 
 ## Vérification avant coupure d'une semaine : tirets cadratins résiduels (2026-09-04)
 
@@ -227,7 +227,7 @@ Vérification de routine avant une absence de Louis. 33 fichiers avec un tiret c
 
 ## Connecter une appli PHP locale à SQL Server, hors Devpedia (2026-09-04)
 
-Session sur un autre projet (`Backoffice-TC`, Slim 4 + SQL Server), matière candidate à un futur chapitre Devpedia sur l'environnement de dev local pour une appli PHP connectée à une base externe. Détail dans `devpedia-todo.md`.
+Session sur un autre projet (`Backoffice-TC`, Slim 4 + SQL Server), matière candidate à un futur chapitre Devpedia sur l'environnement de dev local pour une appli PHP connectée à une base externe. Détail dans `todo.md`.
 
 - **`php -S localhost:PORT` sur Windows** : le serveur se bind parfois uniquement en IPv6, invisible pour un hostname résolu en IPv4 via hosts. Correctif : binder explicitement sur `127.0.0.1:PORT`.
 - **Extensions PHP manquantes silencieusement bloquantes** : `composer install` échoue extension par extension plutôt que de tout lister d'un coup.

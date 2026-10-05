@@ -145,7 +145,7 @@ export function wrapSegmentWords(nodes) {
 }
 
 /* Estimated speaking rate driving word-by-word timing when `boundary` never fires (every browser
-   tested, cf. devpedia-todo.md). Recalibrated after every utterance (cf. calibrateRate() below);
+   tested, cf. todo.md). Recalibrated after every utterance (cf. calibrateRate() below);
    this default is just the starting guess before the first real measurement corrects it. */
 let charsPerSecond = 38;
 
