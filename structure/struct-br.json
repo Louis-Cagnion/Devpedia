@@ -963,6 +963,10 @@
             {
               "id": "contexte-de-travail-pour-decouper-une-fonction",
               "label": "Um contexto de trabalho para dividir uma função grande"
+            },
+            {
+              "id": "un-message-d-erreur-par-cause",
+              "label": "Uma mensagem de erro para cada causa"
             }
           ]
         },

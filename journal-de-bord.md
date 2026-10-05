@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`todo.md`) garde les points restants ; `git log` garde le détail mécanique de ce qui a été fait. Ce qui a été traité et commité n'apparaît pas ici comme une reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Chapitre « Un message d'erreur pour chaque cause » (2026-10-05)
+
+Deux défauts trouvés en écrivant l'exemple, absents du todo : un message qui citait la ligne lue gardait son `\n` (message coupé sur deux lignes), corrigé en nettoyant la ligne avant l'analyse ; et LeakSanitizer ne voit pas un `fclose` oublié (la bibliothèque C garde la trace des fichiers ouverts), la fuite de descripteurs ne se révèle qu'avec `ulimit -n`. Sous `ulimit -n 3`, un exécutable lié dynamiquement ne démarre même pas (le chargeur de bibliothèques a besoin d'un descripteur) : l'essai se fait avec un exécutable `-static`. Le texte d'erreur reste en anglais dans les quatre langues (comme les causes des autres chapitres), seuls les commentaires et les libellés de l'exemple sont traduits.
+
 ## Section BOM dans « L'encodage des textes » (2026-10-05)
 
 Mesuré sur six fichiers (UTF-8 avec et sans BOM, UTF-16 et UTF-32 dans les deux ordres) : le BOM UTF-8 ne casse que la première directive (le reste du fichier est lu normalement, d'où la difficulté à remonter à la cause) ; UTF-16 et UTF-32 font tout ignorer, sans erreur. En UTF-16, `fgets` s'arrête au premier octet `0A` du `\n` encodé en `0A 00` : le `00` ouvre la ligne suivante, d'où 3 lignes ignorées en petit-boutiste et 2 en gros-boutiste. Le nombre d'octets lus par `fgets` dépend du texte de l'exemple (33 en français, 29 en anglais, 31 en espagnol), et `file` aligne ses colonnes sur le plus long nom de fichier : les sorties de chaque langue viennent de leur propre exécution. Le BOM UTF-32 petit-boutiste (`FF FE 00 00`) commence comme celui d'UTF-16 : le test à quatre octets doit précéder l'autre.
