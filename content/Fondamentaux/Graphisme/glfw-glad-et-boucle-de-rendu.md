@@ -121,13 +121,95 @@ glfwSwapInterval(1);               // 1 = attendre 1 rafraîchissement par écha
 
 > **Bonne pratique :** ne jamais compter sur le vsync pour régler la vitesse. Le pilote graphique (le logiciel qui fait dialoguer le système avec la carte graphique) ou l'utilisateur peuvent le forcer à l'arrêt, et les FPS changent d'un écran à l'autre : seul le delta time garantit la même vitesse partout. Le vsync règle l'affichage, le delta time règle le mouvement.
 
+## Les limites de la carte graphique et `glGetError`
+
+Chaque carte graphique a ses **limites** : taille maximale d'une texture, taille maximale de la **zone de dessin** (*viewport*, le rectangle de la fenêtre où OpenGL écrit les pixels)... Elles changent d'une machine à l'autre : un programme qui marche chez son auteur peut échouer chez quelqu'un d'autre, sans que le code ait changé. On les **lit** au lieu de les supposer, avec `glGetIntegerv(constante, &valeur)` (la fonction qui lit un entier de l'état d'OpenGL ; `GLint` est le type entier d'OpenGL, 32 bits sur toutes les machines).
+
+| Constante | Ce qu'elle donne | Si on la dépasse |
+|---|---|---|
+| `GL_MAX_TEXTURE_SIZE` | côté maximal, en pixels, d'une [texture](/?c=fondamentaux&s=graphisme&p=tampons-textures-et-shaders-opengl#les-textures-une-image-collee-sur-la-surface) | l'envoi de l'image est refusé, la texture est inutilisable (lue noire) |
+| `GL_MAX_VIEWPORT_DIMS` | **deux** entiers : largeur et hauteur maximales de la zone de dessin | la spécification ne garantit rien : dessin tronqué selon le pilote |
+
+```c
+/* Vrai si une image width x height tient dans une texture de cette carte ; message sinon. */
+static int texture_fits(int width, int height)
+{
+	GLint max_size = 0;
+
+	if (width <= 0 || height <= 0)                 /* dimensions dégénérées : cause à part */
+	{
+		fprintf(stderr, "image de %d x %d : dimensions nulles ou negatives\n", width, height);
+		return 0;
+	}
+	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max_size); /* un entier ; contexte actif obligatoire */
+	if (width > max_size || height > max_size)
+	{
+		fprintf(stderr, "image %d x %d trop grande : cette carte accepte %d au maximum par cote\n",
+			width, height, max_size);
+		return 0;
+	}
+	return 1;
+}
+
+GLint max_viewport[2] = {0, 0};
+glGetIntegerv(GL_MAX_VIEWPORT_DIMS, max_viewport); /* ici deux valeurs : un tableau de 2 entiers */
+```
+
+> **Piège :** `glGetIntegerv` comme toute fonction OpenGL ne marche qu'**après** [`glfwMakeContextCurrent()` et le chargement de GLAD](#charger-les-fonctions-opengl-modernes-glad) : avant, le pointeur de fonction est nul et le programme plante.
+
+**OpenGL ne signale presque jamais une erreur par une valeur de retour.** Un appel refusé (taille trop grande, mauvais état) ne plante pas et n'affiche rien : il lève un **drapeau d'erreur** interne, que le programme lit avec `glGetError()`. Cette fonction renvoie un code et remet le drapeau à zéro ; `GL_NO_ERROR` (0) signifie « rien en attente ».
+
+| Code | Signification courante |
+|---|---|
+| `GL_INVALID_ENUM` | constante inconnue passée à une fonction |
+| `GL_INVALID_VALUE` | valeur numérique hors plage (taille trop grande, négative) |
+| `GL_INVALID_OPERATION` | appel interdit dans l'état actuel (mauvais ordre, objet non lié) |
+| `GL_OUT_OF_MEMORY` | la carte (ou le pilote) n'a plus de mémoire |
+| `GL_INVALID_FRAMEBUFFER_OPERATION` | dessin vers un tampon d'image incomplet |
+
+Les erreurs **s'empilent** et `glGetError()` en rend **une par appel** : on boucle jusqu'au vide, sinon l'erreur lue date d'un appel antérieur et non du dernier.
+
+```c
+/* Nom lisible d'un code d'erreur OpenGL. */
+static const char *gl_error_name(GLenum err)
+{
+	switch (err)
+	{
+	case GL_INVALID_ENUM: return "GL_INVALID_ENUM";
+	case GL_INVALID_VALUE: return "GL_INVALID_VALUE";
+	case GL_INVALID_OPERATION: return "GL_INVALID_OPERATION";
+	case GL_OUT_OF_MEMORY: return "GL_OUT_OF_MEMORY";
+	case GL_INVALID_FRAMEBUFFER_OPERATION: return "GL_INVALID_FRAMEBUFFER_OPERATION";
+	default: return "code inconnu";
+	}
+}
+
+/* Lit et affiche toutes les erreurs en attente, avec l'étape `where` ; renvoie leur nombre. */
+static int check_gl_errors(const char *where)
+{
+	int count = 0;
+	GLenum err;
+
+	while ((err = glGetError()) != GL_NO_ERROR)   /* chaque lecture retire une erreur de la pile */
+	{
+		fprintf(stderr, "OpenGL : %s pendant '%s'\n", gl_error_name(err), where);
+		count++;
+	}
+	return count;
+}
+```
+
+Usage : `check_gl_errors("glTexImage2D");` juste après l'appel suspect, pour nommer l'étape fautive (un `check_gl_errors("avant")` placé avant vide l'ancien contenu).
+
+> **Piège :** dans une boucle de rendu, un même problème se répéterait à **chaque image** (60 messages par seconde qui noient tout le reste). Signaler chaque cause **une seule fois** (liste bornée des codes déjà affichés), ou ne contrôler qu'au démarrage et en mode débogage.
+
 ---
 
 ## 📋 Récapitulatif
 
 | | |
 |---|---|
-| **À retenir** | GLFW crée la fenêtre et son contexte OpenGL ; GLAD charge ensuite les fonctions OpenGL modernes via `glfwGetProcAddress()`. Le double buffering (`glfwSwapBuffers()`) évite une image affichée à moitié dessinée. Une boucle de rendu répète : événements, effacement, dessin, échange des tampons. Le delta time (durée de l'image précédente, via `glfwGetTime()`) rend les vitesses indépendantes des FPS ; le vsync (`glfwSwapInterval(1)`) cale l'affichage sur l'écran. |
-| **Outils utilisables** | `glfwCreateWindow`/`glfwMakeContextCurrent`, `gladLoadGLLoader`, `glfwSwapBuffers`/`glfwPollEvents`/`glfwWindowShouldClose`, `glClear`, `glfwGetTime`, `glfwSwapInterval`. |
-| **Pièges à éviter** | Appeler GLAD avant `glfwMakeContextCurrent()`. Pointer `-I` sur le mauvais niveau de dossier pour les headers générés par GLAD. Oublier `glClear()` avant de redessiner. Déplacer un objet d'une distance fixe par image. Ne rafraîchir le delta time qu'à intervalle régulier. Laisser un delta géant après une pause. |
-| **Bonnes pratiques** | Vendorer un fichier généré une fois pour toutes (comme celui de GLAD) plutôt que d'en dépendre à chaque build ; réserver cette pratique aux fichiers qui n'évoluent pas régulièrement. Exprimer les vitesses en unités par seconde, recalculer le delta time à chaque image et le plafonner ; ne jamais s'appuyer sur le vsync pour régler la vitesse. |
+| **À retenir** | GLFW crée la fenêtre et son contexte OpenGL ; GLAD charge ensuite les fonctions OpenGL modernes via `glfwGetProcAddress()`. Le double buffering (`glfwSwapBuffers()`) évite une image affichée à moitié dessinée. Une boucle de rendu répète : événements, effacement, dessin, échange des tampons. Le delta time (durée de l'image précédente, via `glfwGetTime()`) rend les vitesses indépendantes des FPS ; le vsync (`glfwSwapInterval(1)`) cale l'affichage sur l'écran. Les limites de la carte (taille de texture, de zone de dessin) changent d'une machine à l'autre : on les lit ; OpenGL ne signale une erreur que par un drapeau qu'on lit avec `glGetError()`. |
+| **Outils utilisables** | `glfwCreateWindow`/`glfwMakeContextCurrent`, `gladLoadGLLoader`, `glfwSwapBuffers`/`glfwPollEvents`/`glfwWindowShouldClose`, `glClear`, `glfwGetTime`, `glfwSwapInterval`, `glGetIntegerv` (`GL_MAX_TEXTURE_SIZE`, `GL_MAX_VIEWPORT_DIMS`), `glGetError`. |
+| **Pièges à éviter** | Appeler GLAD avant `glfwMakeContextCurrent()`. Pointer `-I` sur le mauvais niveau de dossier pour les headers générés par GLAD. Oublier `glClear()` avant de redessiner. Déplacer un objet d'une distance fixe par image. Ne rafraîchir le delta time qu'à intervalle régulier. Laisser un delta géant après une pause. Supposer une limite de la carte au lieu de la lire, appeler `glGetIntegerv` sans contexte actif, lire une seule erreur au lieu de vider la pile, répéter le même message à chaque image. |
+| **Bonnes pratiques** | Vendorer un fichier généré une fois pour toutes (comme celui de GLAD) plutôt que d'en dépendre à chaque build ; réserver cette pratique aux fichiers qui n'évoluent pas régulièrement. Exprimer les vitesses en unités par seconde, recalculer le delta time à chaque image et le plafonner ; ne jamais s'appuyer sur le vsync pour régler la vitesse. Comparer une image à la limite de la carte avant de l'envoyer, avec un message qui nomme l'image, ses dimensions et la limite. Boucler sur `glGetError()` jusqu'à `GL_NO_ERROR` et nommer l'étape contrôlée. |
