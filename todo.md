@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : aucune de mon côté. En attente de Louis : test navigateur (point 1).
+> Prochaine tâche : aucune de mon côté. En attente de Louis : test navigateur (point 1), machine avec `ffmpeg` pour l'audio du point 2.
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -9,5 +9,6 @@ Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il
 - Reste à Louis : sur la page d'un chapitre (iPhone), bouton "aA" de la barre d'adresse Safari → "Demander la version pour ordinateur", et dire si le fond s'affiche correctement dans ce mode. Si ça ne suffit pas à trancher, étape suivante : inspecteur Safari distant (Mac connecté à l'iPhone).
 
 
-## 2. Relecture par Claude : chapitre « Les agents Azure Pipelines auto-hébergés » (quand le projet `scraping_infomediaires` sera disponible)
-`Infrastructure & DevOps/CI-CD/agents-azure-pipelines-auto-heberges` (fr/en/es/br) a été rédigé sans le projet `scraping_infomediaires` (absent de la machine de rédaction) et sans exécuter aucune commande Windows : tout vient de la documentation Microsoft Learn. Dès que le projet est disponible, Claude relit le chapitre en le confrontant à la configuration réelle de l'agent : mode service ou autologon retenu, compte d'exécution, nombre d'agents sur la machine, options de `config.cmd` effectivement utilisées. Si la pratique diffère, corriger le chapitre (4 langues, audio régénéré).
+## 2. Chapitre « Les agents Azure Pipelines auto-hébergés » : audio et confrontation à l'agent réel
+- Audio à générer (4 langues) sur une machine équipée de `ffmpeg` (absent de cette machine) : `node scripts/generate-audio.mjs agents-azure-pipelines-auto-heberges`.
+- Le projet `scraping_infomediaires` ne documente ni le compte d'exécution, ni le nombre d'agents sur la machine, ni les options de `config.cmd` : à confronter au chapitre uniquement si Louis donne la configuration de l'agent (onglet Capabilities ou machine de l'agent).
