@@ -107,6 +107,8 @@ No modo interativo, o agente é iniciado em seguida com `.\run.cmd` (Ctrl+C para
 
 Por que dois modos? Um serviço do Windows roda na **Sessão 0**, isolada da área de trabalho (veja [Windows: serviços, sessões e permissões](/?c=infrastructure-devops&s=administration-systeme&p=windows-services-sessions-et-droits)): ele não consegue abrir uma janela visível. Um teste que controla um navegador ou um aplicativo gráfico precisa de uma sessão real: esse é o papel do modo interativo. O agente é iniciado nele na inicialização pelo **login automático** (*autologon*; a senha fica guardada nos [segredos LSA](/?c=infrastructure-devops&s=administration-systeme&p=windows-services-sessions-et-droits)).
 
+**Como saber em qual modo um agente roda?** Azure DevOps > Organization settings > **Agent pools** > o pool > o agente > aba **Capabilities**: a capacidade de sistema `InteractiveSession` (uma informação que o agente publica sobre si mesmo, veja «Capacidades, exigências e diagnóstico» mais abaixo) vale `True` no modo interativo e `False` no modo serviço. Observado em um agente real: um robô que controla o Chrome não consegue abrir uma janela enquanto o agente está em modo serviço (`InteractiveSession = False`). Resta apenas o modo **sem janela** (*headless*), que alguns sites protegidos contra robôs detectam e bloqueiam: passar para o modo interativo é uma decisão de infraestrutura (login automático, conta dedicada), não um ajuste do código.
+
 | Armadilha do modo interativo | Por quê | Solução |
 |---|---|---|
 | Fechar uma sessão de Área de Trabalho Remota bloqueia a máquina | Os testes de interface em andamento falham | Devolver a sessão à tela física com `tscon` (veja [Windows: acesso remoto](/?c=infrastructure-devops&s=administration-systeme&p=acces-a-distance-windows)) |
@@ -198,7 +200,7 @@ pool:
 | Ponto | O que saber |
 |---|---|
 | Depois de instalar um software | **Reiniciar o agente** para que a nova capacidade apareça |
-| Variáveis de ambiente | Elas viram capacidades; `VSO_AGENT_IGNORE` (lista de nomes separados por vírgulas) permite excluir algumas |
+| Variáveis de ambiente | Elas viram capacidades; `VSO_AGENT_IGNORE` (lista de nomes separados por vírgulas) permite excluir algumas. **O valor delas aparece em texto claro** na aba Capabilities, legível por qualquer pessoa com acesso de leitura ao pool: nunca um segredo em uma variável de ambiente da máquina do agente |
 | Variáveis próprias de um agente | Um arquivo `.env` na raiz do agente, uma linha `NOME=valor` por variável, depois reiniciar |
 | Um agente que não inicia | `.\run --diagnostics` executa uma série de verificações |
 | Firewall | Permitir a **saída** para `dev.azure.com`, `*.dev.azure.com`, `login.microsoftonline.com` e `download.agent.dev.azure.com` (lista completa na documentação) |
@@ -232,6 +234,7 @@ Um agente executa os comandos do pipeline com os direitos da conta que o faz rod
 | Pasta de agente copiada | Mesmas credenciais e mesmo nome: um dos dois cai | Um arquivo novo por agente |
 | Pasta apagada sem `config.cmd remove` | O agente continua listado (offline) no pool | Removê-lo corretamente antes |
 | Um agente que executa código vindo de repositórios | É um programa feito para executar código baixado: alvo de execução remota | Permissões mínimas, máquina isolada, controle de quem escreve no pipeline |
+| Um segredo em uma variável de ambiente da máquina (por exemplo `SFTP_PASSWORD`) | Ela vira uma capacidade do agente, exibida em texto claro para todos os leitores do pool, mesmo que o pipeline em questão não a use: um agente compartilhado entre vários fluxos expõe os segredos de cada um | Segredo em um grupo de variáveis secreto do pipeline (ou um cofre), variável de máquina removida, senha trocada se foi exposta |
 
 ---
 
@@ -241,5 +244,5 @@ Um agente executa os comandos do pipeline com os direitos da conta que o faz rod
 |---|---|
 | **Para lembrar** | Um agente executa os jobs de um pipeline em uma máquina; ele consulta o servidor por HTTPS (nenhuma porta de entrada). Um PAT com o escopo **Agent Pools (read, manage)** só serve para o registro. Modo **serviço** por padrão; modo **interativo com autologon** somente se o job precisar de uma área de trabalho. `config.cmd --unattended` automatiza tudo; um agente por pasta, um nome único, uma pasta de trabalho própria. |
 | **Ferramentas utilizáveis** | `config.cmd` (com `--unattended`, `--runAsService`, `--runAsAutoLogon`, `--replace`, `--overwriteAutoLogon`, `--noRestart`), `run.cmd` e `run.cmd --once`, `config.cmd remove`, `services.msc`, `.\run --diagnostics`, os `demands` do pipeline, `tscon` para devolver uma sessão remota à tela, `workspace: clean: all` para limpar a pasta de trabalho. |
-| **Armadilhas a evitar** | PAT amplo demais, segredo na linha de comando, pasta do agente legível por todos, caminho com espaços, PowerShell sem elevação, conta de autologon pessoal, dois agentes com o mesmo nome, ferramenta instalada sem reiniciar o agente, PAT sem expiração, pasta de agente copiada, pasta apagada sem `config.cmd remove`. |
+| **Armadilhas a evitar** | PAT amplo demais, segredo na linha de comando, pasta do agente legível por todos, caminho com espaços, PowerShell sem elevação, conta de autologon pessoal, dois agentes com o mesmo nome, ferramenta instalada sem reiniciar o agente, PAT sem expiração, pasta de agente copiada, pasta apagada sem `config.cmd remove`, segredo em uma variável de ambiente da máquina (exibida em texto claro nas capacidades). |
 | **Boas práticas** | Tentar primeiro um agente hospedado pela Microsoft; uma conta de execução dedicada e diferente da que registra; segredos por variáveis de ambiente; um agente por máquina, salvo necessidade específica; conferir `.\config.cmd --help` para a versão instalada; PAT de expiração curta, revogado após o registro; revisão obrigatória das alterações de pipeline; um pool por nível de confiança. |

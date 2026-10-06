@@ -107,6 +107,8 @@ In interactive mode, you then start the agent with `.\run.cmd` (Ctrl+C to stop i
 
 Why two modes? A Windows service runs in **Session 0**, isolated from the desktop (see [Windows: services, sessions and permissions](/?c=infrastructure-devops&s=administration-systeme&p=windows-services-sessions-et-droits)): it cannot open a visible window. A test that drives a browser or a graphical application needs a real session: that is the role of interactive mode. The agent is started there at boot by the **autologon** (the password is kept in the [LSA secrets](/?c=infrastructure-devops&s=administration-systeme&p=windows-services-sessions-et-droits)).
 
+**How do you tell which mode an agent runs in?** Azure DevOps > Organization settings > **Agent pools** > the pool > the agent > **Capabilities** tab: the system capability `InteractiveSession` (a piece of information the agent publishes about itself, see "Capabilities, demands, and diagnostics" below) is `True` in interactive mode and `False` in service mode. Observed on a real agent: a robot that drives Chrome cannot open a window while the agent is in service mode (`InteractiveSession = False`). Only the **windowless** mode (*headless*) remains, which some sites protected against robots detect and block: switching to interactive mode is an infrastructure decision (autologon, dedicated account), not a code setting.
+
 | Interactive mode pitfall | Why | Remedy |
 |---|---|---|
 | Closing a Remote Desktop session locks the machine | UI tests in progress fail | Hand the session back to the physical screen with `tscon` (see [Windows: remote access](/?c=infrastructure-devops&s=administration-systeme&p=acces-a-distance-windows)) |
@@ -198,7 +200,7 @@ pool:
 | Point | Good to know |
 |---|---|
 | After installing software | **Restart the agent** so the new capability shows up |
-| Environment variables | They become capabilities; `VSO_AGENT_IGNORE` (comma-separated list of names) lets you exclude some |
+| Environment variables | They become capabilities; `VSO_AGENT_IGNORE` (comma-separated list of names) lets you exclude some. **Their value is shown in clear text** on the Capabilities tab, readable by anyone with read access to the pool: never put a secret in an environment variable of the agent's machine |
 | Variables specific to one agent | A `.env` file at the agent's root, one `NAME=value` line per variable, then restart |
 | An agent that won't start | `.\run --diagnostics` runs a series of checks |
 | Firewall | Allow **outbound** traffic to `dev.azure.com`, `*.dev.azure.com`, `login.microsoftonline.com` and `download.agent.dev.azure.com` (full list in the documentation) |
@@ -232,6 +234,7 @@ An agent runs the pipeline's commands with the rights of the account that runs i
 | Copied agent folder | Same credentials and same name: one of the two cuts out | One fresh archive per agent |
 | Folder deleted without `config.cmd remove` | The agent stays listed (offline) in the pool | Remove it properly first |
 | An agent that runs code coming from repositories | It is a program built to run downloaded code: a remote execution target | Minimal permissions, isolated machine, control over who can write to the pipeline |
+| A secret in an environment variable of the machine (for example `SFTP_PASSWORD`) | It becomes a capability of the agent, shown in clear text to every reader of the pool, even if the pipeline concerned does not use it: an agent shared between several flows exposes each one's secrets | Secret in a secret variable group of the pipeline (or a vault), machine variable deleted, password changed if it was exposed |
 
 ---
 
@@ -241,5 +244,5 @@ An agent runs the pipeline's commands with the rights of the account that runs i
 |---|---|
 | **Key Points** | An agent runs a pipeline's jobs on a machine; it polls the server over HTTPS (no inbound port). A PAT with the **Agent Pools (read, manage)** scope is used only for registration. **Service** mode by default; **interactive mode with autologon** only if the job needs a desktop. `config.cmd --unattended` automates everything; one agent per folder, a unique name, its own work folder. |
 | **Available Tools** | `config.cmd` (with `--unattended`, `--runAsService`, `--runAsAutoLogon`, `--replace`, `--overwriteAutoLogon`, `--noRestart`), `run.cmd` and `run.cmd --once`, `config.cmd remove`, `services.msc`, `.\run --diagnostics`, the pipeline's `demands`, `tscon` to hand a remote session back to the screen, `workspace: clean: all` to clean the working folder. |
-| **Pitfalls to Avoid** | Overly broad PAT, secret on the command line, agent folder readable by everyone, path with spaces, PowerShell without elevation, personal autologon account, two agents with the same name, tool installed without restarting the agent, PAT with no expiry, copied agent folder, folder deleted without `config.cmd remove`. |
+| **Pitfalls to Avoid** | Overly broad PAT, secret on the command line, agent folder readable by everyone, path with spaces, PowerShell without elevation, personal autologon account, two agents with the same name, tool installed without restarting the agent, PAT with no expiry, copied agent folder, folder deleted without `config.cmd remove`, secret in an environment variable of the machine (shown in clear text in the capabilities). |
 | **Best Practices** | Try a Microsoft-hosted agent first; a dedicated run account, different from the one that registers; secrets through environment variables; one agent per machine unless there is a specific need; check `.\config.cmd --help` for the installed version; short-lived PAT revoked after registration; mandatory review of pipeline changes; one pool per trust level. |
