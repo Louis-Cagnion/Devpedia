@@ -366,6 +366,7 @@ produit calculé sur 32 bits = 0
 | `d` ou `q` hors de la zone garantie | Quotient trop grand de 1, sans message | Borner `d` et `q` à la création de l'inverse, ou vérifier la zone par force brute comme plus haut |
 | Nombres négatifs | La division en C arrondit vers zéro (`-7 / 2` donne `-3`), l'astuce ne couvre que les entiers non signés | N'appliquer la technique qu'à des `unsigned` |
 | Diviseur nul | `inverse(0)` divise par zéro et arrête le programme | Refuser `q == 0` avant de calculer l'inverse |
+| Inverse en virgule flottante (`1.0 / q`) | `49 × (1.0 / 49)` vaut `0,9999999999999999` : la troncature donne 0 au lieu de 1 | Rester en entiers, avec un inverse arrondi vers le haut |
 
 ---
 
@@ -375,5 +376,5 @@ produit calculé sur 32 bits = 0
 |---|---|
 | **À retenir** | Diviser par `q`, c'est multiplier par l'inverse `2^32 / q` arrondi vers le haut, puis jeter les 32 bits de poids faible. C'est exact tant que `d × e < 2^32` (où `e < q` est l'erreur d'arrondi) : pour `q <= 128`, tout `d < 2^25`. Le calcul de l'inverse coûte une division, payée une seule fois. |
 | **Outils utilisables** | Le compilateur (diviseur constant : automatique), `objdump -d` pour vérifier qu'une instruction `div` a disparu, la bibliothèque [libdivide](https://libdivide.com/) pour une zone plus large, une boucle de force brute pour vérifier une zone, `clock_gettime` pour chronométrer. |
-| **Pièges à éviter** | Un produit calculé sur 32 bits, un `d` ou un `q` hors de la zone (résultat faux sans message), des nombres négatifs, un diviseur nul, un diviseur qui change à chaque appel (rien n'est gagné), et conclure d'un micro-test sans mesurer le programme entier. |
+| **Pièges à éviter** | Un produit calculé sur 32 bits, un `d` ou un `q` hors de la zone (résultat faux sans message), des nombres négatifs, un diviseur nul, un inverse en virgule flottante, un diviseur qui change à chaque appel (rien n'est gagné), et conclure d'un micro-test sans mesurer le programme entier. |
 | **Bonnes pratiques** | Laisser le compilateur faire quand le diviseur est connu à la compilation ; ne l'écrire à la main que pour un diviseur fixé à l'exécution et réutilisé des millions de fois ; prouver ou vérifier la zone d'exactitude ; comparer les deux versions sur le même travail avant de chronométrer ; chronométrer le programme complet. |

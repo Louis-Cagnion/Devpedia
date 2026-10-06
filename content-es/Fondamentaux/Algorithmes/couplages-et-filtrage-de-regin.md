@@ -57,6 +57,8 @@ Se colocan las casillas una a una. Cuando el valor deseado ya está ocupado, no 
 | 3 | C | Quiere 1, que posee B. B puede tomar 3: B se aparta, C toma 1 | C=1 A=2 B=3 |
 | 4 | D | Quiere 3, que posee B, al que ya no le queda valor libre (su valor 1 lo tiene C, que no tiene otra opción). Prueba 4: libre | C=1 A=2 B=3 D=4 |
 
+El **algoritmo voraz** (dar a cada casilla el primer valor libre, sin volver nunca sobre una decisión, véase [el algoritmo voraz](/?c=fondamentaux&s=algorithmes&p=algorithme-glouton)) fracasa en este ejemplo: A toma 1, B toma 3, C solo quiere 1 y se queda sin nada, aunque existe un emparejamiento perfecto. El [teorema de Berge](https://en.wikipedia.org/wiki/Berge%27s_theorem) (1957) garantiza que, cuando ya no queda ningún camino aumentante, el emparejamiento es de tamaño máximo. Para grafos muy grandes, [Hopcroft y Karp](https://en.wikipedia.org/wiki/Hopcroft%E2%80%93Karp_algorithm) lo hacen mejor (varios caminos a la vez); Kuhn basta para una fila de unas pocas decenas de casillas.
+
 Cada dominio es una **máscara de bits** (el bit `v` vale 1 si el valor `v` es posible; véanse [las máscaras](/?c=langages&s=c&p=operateurs-binaires#las-mascaras-la-verdadera-utilidad-del-dia-a-dia)): un `uint64_t` basta para 64 valores, y «tomar el menor valor posible» es una sola instrucción (`__builtin_ctzll`, véase [recorrer los bits a 1](/?c=langages&s=c&p=operateurs-binaires#recorrer-los-bits-a-1-las-funciones-integradas-del-compilador)).
 
 El código de este capítulo se guarda en un archivo de cabecera llamado `emparejamiento.h`, que los ejemplos siguientes incluyen.
@@ -531,6 +533,7 @@ desacuerdos con la fuerza bruta: 0
 | Más de 64 casillas libres o 64 valores | Una máscara `uint64_t` ya no basta | Limitar la prueba a las filas casi llenas, o pasar a máscaras más anchas |
 | Aprender cada retirada como una cláusula | La memoria explota, la búsqueda se bloquea (arena ×19 medida) | Apilar las explicaciones aparte y desapilarlas al retroceder |
 | Filtrar todas las filas | El coste supera la ganancia (24 casillas libres: 17 cuadrículas de 20 resueltas frente a 20 de 20) | Ajustar el umbral de casillas libres midiendo |
+| Probar Hall enumerando todos los grupos de casillas | 2ⁿ grupos: un millón para 20 casillas | Dejar que Kuhn decida; buscar el grupo culpable solo para explicarlo |
 
 ---
 
@@ -540,5 +543,5 @@ desacuerdos con la fuerza bruta: 0
 |---|---|
 | **Qué recordar** | Unas casillas que deben tomar valores todos distintos se modelan con un grafo bipartito; un emparejamiento perfecto es una manera válida de rellenarlas. El algoritmo de Kuhn lo busca mediante caminos aumentantes; su fallo produce un conjunto de Hall que explica la imposibilidad. El filtrado de Régin va más lejos: a partir de un emparejamiento perfecto, quita todo valor que no pertenece a ningún emparejamiento perfecto, gracias a las componentes fuertemente conexas del grafo de valores. |
 | **Herramientas utilizables** | Las máscaras de bits (`uint64_t`, `__builtin_ctzll`) para dominios de menos de 64 valores, el algoritmo de Tarjan para las componentes, una referencia por fuerza bruta para validar el código, el [artículo de Régin](https://cdn.aaai.org/AAAI/1994/AAAI94-055.pdf) para la demostración. |
-| **Trampas a evitar** | Filtrar sin emparejamiento perfecto, invertir el sentido de las flechas, superar los 64 valores con una sola máscara, aprender cada retirada como una cláusula, aplicar el filtrado a todas las filas sin medir. |
+| **Trampas a evitar** | Filtrar sin emparejamiento perfecto, invertir el sentido de las flechas, superar los 64 valores con una sola máscara, aprender cada retirada como una cláusula, aplicar el filtrado a todas las filas sin medir, conformarse con el algoritmo voraz, enumerar todos los grupos de casillas para probar Hall. |
 | **Buenas prácticas** | Lanzar la prueba solo en las filas casi llenas; retomar el emparejamiento anterior en vez de partir de cero; apilar las explicaciones aparte; validar cada algoritmo en casos pequeños contra una enumeración exhaustiva; ajustar los umbrales midiendo. |

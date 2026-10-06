@@ -366,6 +366,7 @@ produto calculado em 32 bits  = 0
 | `d` ou `q` fora da zona garantida | Quociente um a mais, sem mensagem | Limitar `d` e `q` ao criar o inverso, ou verificar a zona por força bruta como acima |
 | Números negativos | A divisão em C arredonda em direção a zero (`-7 / 2` dá `-3`); o truque só cobre inteiros sem sinal | Aplicar a técnica apenas a valores `unsigned` |
 | Divisor nulo | `inverso(0)` divide por zero e interrompe o programa | Recusar `q == 0` antes de calcular o inverso |
+| Inverso em ponto flutuante (`1.0 / q`) | `49 × (1.0 / 49)` vale `0,9999999999999999`: o truncamento dá 0 em vez de 1 | Ficar nos inteiros, com um inverso arredondado para cima |
 
 ---
 
@@ -375,5 +376,5 @@ produto calculado em 32 bits  = 0
 |---|---|
 | **O que reter** | Dividir por `q` é multiplicar pelo inverso `2^32 / q` arredondado para cima e depois descartar os 32 bits de menor peso. É exato enquanto `d × e < 2^32` (onde `e < q` é o erro de arredondamento): para `q <= 128`, todo `d < 2^25`. Calcular o inverso custa uma divisão, paga uma única vez. |
 | **Ferramentas utilizáveis** | O compilador (divisor constante: automático), `objdump -d` para verificar que uma instrução `div` desapareceu, a biblioteca [libdivide](https://libdivide.com/) para uma zona mais ampla, um laço de força bruta para verificar uma zona, `clock_gettime` para cronometrar. |
-| **Armadilhas a evitar** | Um produto calculado em 32 bits, um `d` ou um `q` fora da zona (resultado errado sem mensagem), números negativos, um divisor nulo, um divisor que muda a cada chamada (nada se ganha), e concluir a partir de um microteste sem medir o programa inteiro. |
+| **Armadilhas a evitar** | Um produto calculado em 32 bits, um `d` ou um `q` fora da zona (resultado errado sem mensagem), números negativos, um divisor nulo, um inverso em ponto flutuante, um divisor que muda a cada chamada (nada se ganha), e concluir a partir de um microteste sem medir o programa inteiro. |
 | **Boas práticas** | Deixar o compilador fazer quando o divisor é conhecido na compilação; escrever à mão apenas para um divisor fixado na execução e reutilizado milhões de vezes; provar ou verificar a zona de exatidão; comparar as duas versões sobre o mesmo trabalho antes de cronometrar; cronometrar o programa completo. |

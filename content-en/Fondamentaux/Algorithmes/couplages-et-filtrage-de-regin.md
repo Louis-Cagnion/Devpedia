@@ -57,6 +57,8 @@ Cells are placed one by one. When the wanted value is already taken, we do not g
 | 3 | C | Wants 1, held by B. B can take 3: B steps aside, C takes 1 | C=1 A=2 B=3 |
 | 4 | D | Wants 3, held by B, which has no free value left (its value 1 is held by C, which has no other choice). Tries 4: free | C=1 A=2 B=3 D=4 |
 
+The **greedy approach** (give each cell its first free value, never going back on a choice, see [greedy algorithms](/?c=fondamentaux&s=algorithmes&p=algorithme-glouton)) fails on this example: A takes 1, B takes 3, C only wants 1 and has nothing left, although a perfect matching exists. [Berge's theorem](https://en.wikipedia.org/wiki/Berge%27s_theorem) (1957) guarantees that, once no augmenting path remains, the matching has maximum size. For very large graphs, [Hopcroft and Karp](https://en.wikipedia.org/wiki/Hopcroft%E2%80%93Karp_algorithm) do better (several paths at once); Kuhn is enough for a row of a few dozen cells.
+
 Each domain is a **bit mask** (bit `v` is 1 if value `v` is possible; see [masks](/?c=langages&s=c&p=operateurs-binaires#masks-the-real-everyday-usefulness)): a `uint64_t` is enough for 64 values, and "take the smallest possible value" is a single instruction (`__builtin_ctzll`, see [walking through the 1 bits](/?c=langages&s=c&p=operateurs-binaires#walking-through-the-1-bits-compiler-built-in-functions)).
 
 The code of this chapter goes into a header file named `matching.h`, which the following examples include.
@@ -531,6 +533,7 @@ disagreements with brute force: 0
 | More than 64 free cells or 64 values | A `uint64_t` mask is no longer enough | Limit the test to nearly filled rows, or move to wider masks |
 | Learning each removal as a clause | Memory explodes, the search blocks (arena ×19 measured) | Stack the explanations separately, pop them on backtracking |
 | Filtering every row | The cost exceeds the gain (24 free cells: 17 grids out of 20 solved against 20 out of 20) | Tune the free-cell threshold by measurement |
+| Testing Hall by listing every group of cells | 2ⁿ groups: a million for 20 cells | Let Kuhn decide; look for the guilty group only to explain the failure |
 
 ---
 
@@ -540,5 +543,5 @@ disagreements with brute force: 0
 |---|---|
 | **Key points** | Cells that must take values that are all different are modeled as a bipartite graph; a perfect matching is one valid way of filling them. Kuhn's algorithm looks for it by augmenting paths; its failure produces a Hall set that explains the impossibility. Régin filtering goes further: from a perfect matching, it removes every value that belongs to no perfect matching, thanks to the strongly connected components of the graph of values. |
 | **Tools you can use** | Bit masks (`uint64_t`, `__builtin_ctzll`) for domains of fewer than 64 values, Tarjan's algorithm for the components, a brute-force reference to validate the code, [Régin's paper](https://cdn.aaai.org/AAAI/1994/AAAI94-055.pdf) for the proof. |
-| **Pitfalls to avoid** | Filtering without a perfect matching, reversing the direction of the arrows, exceeding 64 values with a single mask, learning each removal as a clause, applying the filtering to every row without measuring. |
+| **Pitfalls to avoid** | Filtering without a perfect matching, reversing the direction of the arrows, exceeding 64 values with a single mask, learning each removal as a clause, applying the filtering to every row without measuring, settling for the greedy approach, listing every group of cells to test Hall. |
 | **Best practices** | Run the test only on nearly filled rows; reuse the previous matching instead of starting over; stack the explanations separately; validate each algorithm on small cases against an exhaustive enumeration; tune thresholds by measurement. |

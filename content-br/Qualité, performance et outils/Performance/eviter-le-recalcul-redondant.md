@@ -83,78 +83,6 @@ def desenhar_frame(tela, cena, zonas_modificadas):
 
 É a lógica do **dirty rectangle** (retângulo sujo): a própria cena sinaliza quais zonas mudaram desde a última renderização, e só essas são redesenhadas. Em um cenário 90% estático, isso reduz o custo de cada frame a uma fração do de uma renderização completa, para um resultado visualmente idêntico.
 
-## Reparar o resultado anterior em vez de recalcular tudo
-
-Um solucionador repete o mesmo teste centenas de milhares de vezes, sobre dados que mal mudam de um teste para o seguinte. Exemplo: a restrição "todas diferentes" é testada por um [emparelhamento bipartido](/?c=fondamentaux&s=algorithmes&p=couplage-biparti-et-theoreme-de-hall) após cada retirada de um valor possível. Refazer o emparelhamento do zero recomeça todo o trabalho embora uma única aresta tenha desaparecido.
-
-A ideia é **guardar o emparelhamento anterior** e reparar apenas o que a mudança quebrou:
-
-| A aresta retirada | O que se faz |
-|---|---|
-| Não estava no emparelhamento | Nada: o emparelhamento continua válido |
-| Estava no emparelhamento | Uma única célula perde seu valor: uma única busca de caminho para recolocá-la |
-
-```c
-// Retira o valor v da célula c e depois repara o emparelhamento em vez de refazê-lo
-int apos_retirada(int c, int v)
-{
-    dom[c][v] = 0;
-    if (dono[v] == c) {          // a aresta retirada servia ao emparelhamento
-        dono[v] = -1;
-        valor_de[c] = -1;
-        memset(vista, 0, sizeof vista);
-        encontrar(c);            // uma única célula a recolocar
-    }
-    for (int k = 0; k < N; k++)  // uma célula sem valor: não há mais emparelhamento completo
-        if (valor_de[k] < 0)
-            return 0;
-    return 1;
-}
-```
-
-`valor_de[c]` memoriza o valor de cada célula (o `encontrar()` do capítulo sobre o emparelhamento o atualiza ao mesmo tempo que `dono`). Quando o valor retirado é recolocado, as células que ficaram sem valor tentam de novo: sem isso, o emparelhamento guardado ficaria pequeno demais para sempre.
-
-Medido em 200 000 retiradas sucessivas, 40 células, 40 valores, cada célula aceitando 12 % dos valores:
-
-| | Recalcular tudo | Reparar |
-|---|---|---|
-| Células examinadas pelas buscas | 61 566 318 | 832 601 (74 vezes menos) |
-| Tempo | cerca de 1 s | algumas dezenas de ms |
-| Respostas "emparelhamento completo?" | 198 112 sim | 198 112 sim, **idênticas teste a teste** (0 diferença) |
-
-**Mesma resposta, não necessariamente o mesmo emparelhamento.** Existem vários emparelhamentos completos: o emparelhamento reparado difere do que um cálculo completo dá em 1 972 casos de 1 973 comparados. A resposta sim/não é a mesma; mas se o resto do programa depende do próprio emparelhamento (uma explicação, uma ordem, um resultado a reproduzir de forma idêntica de uma execução para outra), **volta-se ao cálculo completo** para produzir esse resultado canônico, e mantém-se a versão reparada para todos os testes que só precisam da resposta. No solucionador da pesquisa rush01, essa combinação reduziu o tempo total em 6,2 %.
-
-> **Armadilha:** reparar um estado que não é mais válido. O invariante "o emparelhamento atual é válido para os dados atuais" deve ser restabelecido após **cada** tipo de mudança (retirada, recolocação, volta atrás de uma busca): um caso esquecido dá uma resposta errada, sem erro.
->
-> **Boa prática:** manter o cálculo completo como referência em um teste e comparar as respostas teste a teste (aqui 0 diferença em 200 000) antes de medir o tempo.
-
-## Percorrer apenas os elementos marcados: o bitmap
-
-Quando só uma pequena parte dos elementos mudou e eles foram marcados (como os "retângulos sujos" acima), percorrer um array de indicadores de um byte por elemento custa uma leitura por elemento, marcado ou não. Um **bitmap** guarda um indicador por bit: uma palavra de 64 bits contém 64 (veja [o filtro por bitmap](/?c=qualite-performance-et-outils&s=performance&p=cache-cpu-et-simd)), e `__builtin_ctzll` dá diretamente a posição do próximo bit em 1 ([funções embutidas](/?c=langages&s=c&p=operateurs-binaires)). Palavras vazias custam uma única leitura.
-
-```c
-for (uint32_t w = 0; w < N / 64; w++)
-    for (uint64_t m = bitmap[w]; m; m &= m - 1)  // bits restantes da palavra
-        processar(w * 64 + __builtin_ctzll(m));  // índice do bit em 1 mais baixo
-```
-
-`m &= m - 1` apaga o bit em 1 mais baixo: o laço para quando a palavra fica vazia, e `__builtin_ctzll` nunca é chamado com 0 (seu resultado seria indefinido).
-
-Medido em 1 M de elementos, 200 percursos, mediana de 7 rodadas alternadas, mesmas somas verificadas (Intel Core Ultra 5 228V sob WSL, gcc 13.3 em `-O2`):
-
-| Proporção de elementos marcados | Array de bytes | Bitmap | Diferença |
-|---|---|---|---|
-| 0,1 % | 84 ms | 2,9 ms | −97 % |
-| 1 % | 63 ms | 16 ms | −74 % |
-| 10 % | 67 ms | 44 ms | −35 % |
-| 50 % | 68 ms | 130 ms | **+91 %** |
-
-O ganho depende da **densidade** das marcas: com metade marcada, o bitmap é quase duas vezes mais lento, pois cada marca custa mais do que um byte lido em sequência. No solucionador da pesquisa rush01, esse percurso só ganhou 2 % do tempo total: só o programa real diz quanto vale a otimização (veja [Medir antes de otimizar](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser)).
-
-> **Armadilha:** adotar o bitmap porque é mais compacto ou mais rápido no caso esparso, sem medir a densidade real das marcas do programa.
->
-> **Boa prática:** medir a proporção de elementos marcados no programa real antes de escolher; o bitmap vale para marcas raras.
-
 ## Um exemplo tirado de um scraper: não confirmar o que já está provado
 
 Um scraper de anúncios classificados comparava dois anúncios para saber se descreviam o mesmo veículo (duplicata) ou dois veículos diferentes. A verificação completa abria a página detalhada de cada anúncio para comparar cerca de dez características (quilometragem, opcionais, histórico de manutenção): uma chamada de rede e um tempo de renderização não desprezíveis.
@@ -307,6 +235,10 @@ O reaproveitamento faz 124 vezes menos buscas, com exatamente as mesmas resposta
 | O veredito deve ser o mesmo a partir de qualquer ponto de partida | Senão a otimização muda a resposta | O algoritmo de Kuhn é exato a partir de qualquer emparelhamento válido: 0 divergências em 49.549 casos |
 | O que depende do ponto de partida não deve vazar | Uma explicação ou uma saída que muda altera o resto do programa | Em um conflito, volta-se ao cálculo completo (veja abaixo) |
 
+> **Armadilha:** reparar um estado que já não é válido. O invariante "o ponto de partida é válido para os dados atuais" deve ser restabelecido após **cada** tipo de mudança (retirada, devolução de um valor, retorno de uma busca): um caso esquecido dá uma resposta errada, sem nenhum erro.
+>
+> **Boa prática:** manter o cálculo completo como referência em um teste e comparar as respostas teste a teste, como acima (0 divergências em 49.549).
+
 O último ponto aparece na última linha da saída. Dos 2.000 conflitos, **1.725** deixam outra casa sem valor conforme o ponto de partida, embora o conjunto de valores alcançados seja o mesmo nos 2.000. Ora, a [explicação do conflito](/?c=fondamentaux&s=algorithmes&p=couplages-et-filtrage-de-regin#quando-nao-existe-nenhum-emparelhamento-o-conjunto-de-hall) é construída a partir dessa casa e dos detentores dos valores alcançados: ela depende, portanto, do emparelhamento de partida. O solucionador refaz então o cálculo completo original, **somente quando há conflito**: a explicação é a da versão sem reaproveitamento, a busca segue exatamente o mesmo caminho e os contadores (decisões, conflitos, propagações) permanecem idênticos nas 49 verificações do protocolo. Uma otimização com busca idêntica se mede com limpeza: só o tempo muda (veja [comparar em contadores de trabalho](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser#comparar-em-contadores-de-trabalho-nao-so-no-tempo)).
 
 > Um contador dividido por 124 não dá um programa 124 vezes mais rápido. O teste de Hall pesava **7,4 %** do tempo da busca (perfil por contador de ciclos, grade de 104 × 104: 4,7 % para construir o grafo, 2,5 % para o emparelhamento): o ganho máximo possível era, portanto, de cerca de 7 %. Medido: **6,2 %** (33,9 s contra 31,8 s com 96 × 96). Perfilar primeiro diz até onde vale a pena ir.
@@ -315,7 +247,7 @@ O último ponto aparece na última linha da saída. Dos 2.000 conflitos, **1.725
 
 O [filtro por bitmap](/?c=qualite-performance-et-outils&s=performance&p=cache-cpu-et-simd#filtro-por-bitmap) evita ler um elemento quando um bit indica que não há nada dentro. O mesmo bitmap serve também para **enumerar** apenas os elementos que têm algo, sem visitar os outros.
 
-Exemplo tirado do mesmo solucionador: a cada limpeza das cláusulas aprendidas, é preciso retirar de cada lista de vigilância as cláusulas removidas. O solucionador tem 13,6 milhões de listas (uma por literal), quase todas vazias. Um bit por lista diz se ela pode conter algo. O programa abaixo compara uma varredura de todas as listas com uma varredura apenas dos bits em 1: `bits &= bits - 1` apaga o bit mais baixo da palavra, `__builtin_ctzll` dá a posição do bit a tratar (veja [percorrer os bits 1](/?c=langages&s=c&p=operateurs-binaires#percorrer-os-bits-1-as-funcoes-embutidas-do-compilador)).
+Exemplo tirado do mesmo solucionador: a cada limpeza das cláusulas aprendidas, é preciso retirar de cada lista de vigilância as cláusulas removidas. O solucionador tem 13,6 milhões de listas (uma por literal), quase todas vazias. Um bit por lista diz se ela pode conter algo. O programa abaixo compara uma varredura de todas as listas com uma varredura apenas dos bits em 1: `bits &= bits - 1` apaga o bit mais baixo da palavra, `__builtin_ctzll` dá a posição do bit a tratar (veja [percorrer os bits 1](/?c=langages&s=c&p=operateurs-binaires#percorrer-os-bits-1-as-funcoes-embutidas-do-compilador)). O laço para quando a palavra fica vazia, e `__builtin_ctzll` nunca é chamado sobre 0 (seu resultado seria indefinido).
 
 ```c
 #include <stdint.h>
@@ -444,6 +376,8 @@ A mesma medição para várias proporções de listas não vazias (o melhor de 5
 O ganho não é garantido: depende da proporção de elementos que têm trabalho. Com 9 %, passar de uma lista marcada para a seguinte é um acesso aleatório em uma tabela de 435 MB, tão custoso quanto ler todas as listas de uma vez; uma leitura contínua é em parte favorecida pela pré-busca do processador (explicação provável, não isolada aqui). No solucionador, o bitmap é assim usado em dois lugares: a propagação pula as listas vazias (91 % das propagações encontram uma: 2,0 s contra 1,58 s com 48 × 48, mesmos contadores), e a purga só visita as listas marcadas (33,9 s contra 35,1 s com 96 × 96, 3,3 % a menos, busca idêntica).
 
 > **Armadilha:** o bitmap é um **contrato**. Um bit em 0 deve garantir que o elemento está vazio; um bit em 1 não garante nada (ele volta a 0 mais tarde). Esquecer de marcar um elemento não produz nenhum erro: a última linha da saída mostra que 129 marcas esquecidas fazem faltar 134 das 135.817 entradas mortas, sem nenhuma mensagem. Convém verificar toda otimização desse tipo comparando com a varredura completa em casos pequenos.
+>
+> **Boa prática:** medir a proporção de elementos marcados no programa real antes de escolher; o bitmap vale para marcas raras.
 
 ## Escrita atômica: nunca uma leitura pela metade
 
@@ -537,7 +471,7 @@ Cada `echo` seguido de `flush()` vai para o navegador imediatamente, sem esperar
 
 > **Armadilha:** esse streaming quebra assim que um servidor intermediário (proxy, load balancer, Nginx em modo `fastcgi_buffering`) coloca seu próprio buffer de volta: verificar a configuração de toda a cadeia de rede, não só a do PHP.
 
-## Recapitulando
+## Comparativo das situações
 
 | Situação | Sem o princípio | Com o princípio |
 |---|---|---|

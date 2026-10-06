@@ -366,6 +366,7 @@ producto calculado en 32 bits = 0
 | `d` o `q` fuera de la zona garantizada | Cociente uno más grande, sin mensaje | Acotar `d` y `q` al crear el inverso, o verificar la zona por fuerza bruta como arriba |
 | Números negativos | La división en C redondea hacia cero (`-7 / 2` da `-3`); el truco solo cubre enteros sin signo | Aplicar la técnica solo a valores `unsigned` |
 | Divisor nulo | `inverso(0)` divide entre cero y detiene el programa | Rechazar `q == 0` antes de calcular el inverso |
+| Inverso en coma flotante (`1.0 / q`) | `49 × (1.0 / 49)` vale `0,9999999999999999`: el truncamiento da 0 en lugar de 1 | Quedarse en enteros, con un inverso redondeado hacia arriba |
 
 ---
 
@@ -375,5 +376,5 @@ producto calculado en 32 bits = 0
 |---|---|
 | **Qué recordar** | Dividir entre `q` es multiplicar por el inverso `2^32 / q` redondeado hacia arriba y descartar luego los 32 bits de menor peso. Es exacto mientras `d × e < 2^32` (donde `e < q` es el error de redondeo): para `q <= 128`, todo `d < 2^25`. Calcular el inverso cuesta una división, que se paga una sola vez. |
 | **Herramientas utilizables** | El compilador (divisor constante: automático), `objdump -d` para comprobar que ha desaparecido una instrucción `div`, la biblioteca [libdivide](https://libdivide.com/) para una zona más amplia, un bucle de fuerza bruta para verificar una zona, `clock_gettime` para cronometrar. |
-| **Trampas a evitar** | Un producto calculado en 32 bits, un `d` o un `q` fuera de la zona (resultado erróneo sin mensaje), números negativos, un divisor nulo, un divisor que cambia en cada llamada (no se gana nada), y concluir a partir de un microtest sin medir el programa entero. |
+| **Trampas a evitar** | Un producto calculado en 32 bits, un `d` o un `q` fuera de la zona (resultado erróneo sin mensaje), números negativos, un divisor nulo, un inverso en coma flotante, un divisor que cambia en cada llamada (no se gana nada), y concluir a partir de un microtest sin medir el programa entero. |
 | **Buenas prácticas** | Dejar que lo haga el compilador cuando el divisor se conoce al compilar; escribirlo a mano solo para un divisor fijado en ejecución y reutilizado millones de veces; demostrar o verificar la zona de exactitud; comparar las dos versiones sobre el mismo trabajo antes de cronometrar; cronometrar el programa completo. |

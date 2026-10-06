@@ -10,6 +10,7 @@ A [pipeline](/?c=infrastructure-devops&s=ci-cd&p=pipeline-cicd) describes **what
 |---|---|
 | Agent | The program that runs a pipeline's steps on a machine |
 | Agent pool | A group of agents; the pipeline names a pool (`pool:`), not a specific agent |
+| Job | A set of steps given to a single agent of the pool |
 | Self-hosted agent | An agent installed on **your** machine, which you administer |
 | Personal access token (PAT) | A password with limited scope, used here to register the agent |
 | Service or interactive mode | The agent runs as a Windows service, or as a program in a logged-in session |
@@ -166,8 +167,11 @@ It is possible, but the documentation recommends **a single agent per machine**:
 | Avoid it if the jobs are heavy on disk or I/O | No efficiency gain |
 | Beware of "single-instance" tools (for example shared npm packages) | One job may update a dependency while another is using it: unstable results |
 | Autologon is a **machine** setting | Only one account logs in automatically; `--overwriteAutoLogon` replaces the existing one |
+| **Several jobs in parallel**: two agents in the same pool | Each agent runs one job at a time |
+| **Two separate uses** (robot, deployment): one pool per use | The pipeline names a pool; each pool has its own agents |
+| Never copy the folder of an already configured agent | Both would share credentials and name: one of them cuts out after a few minutes of conflict. Unzip a fresh archive for each agent |
 
-## Removing, replacing, reconfiguring
+## Maintenance: removing, replacing, reconfiguring
 
 | Need | Command |
 |---|---|
@@ -175,6 +179,10 @@ It is possible, but the documentation recommends **a single agent per machine**:
 | Replace an agent with the same name | Reconfigure with the same name and answer `Y` (or `--replace`), **then** remove the old one: otherwise, after a few minutes of conflict, one of the two stops |
 | Change a service's account | Reconfigure the agent; **not** from the services console |
 | An autologon that no longer starts the agent | Remove the agent, check that it has disappeared from the pool, reconfigure in a freshly unzipped folder |
+| Delete an agent's folder | Only **after** `config.cmd remove`: otherwise the agent stays listed (offline) in the pool |
+| Agent updates | Automatic: the agent updates itself when a job requires a newer version |
+| Disk filling up | Clean `_work` at every job with `workspace: clean: all` in the job's YAML |
+| State of a service-mode agent | `services.msc`, entry "Azure Pipelines Agent" (or `vstsagent.…`) |
 
 ## Capabilities, demands, and diagnostics
 
@@ -197,6 +205,17 @@ pool:
 
 > **Verification limit:** these Windows commands could not be run here. Their syntax and options were checked against the Microsoft documentation: [Windows agent](https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/windows-agent), [agents](https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/agents) and [registration by PAT](https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/personal-access-token-agent-registration).
 
+## Security: the agent runs the repository's code
+
+An agent runs the pipeline's commands with the rights of the account that runs it. Whoever can edit `azure-pipelines.yml` (or a script it calls) can therefore run code on your machine: Microsoft states it explicitly, the agent is designed to run downloaded code, so it is a possible target for remote code execution.
+
+| Risk | Remedy |
+|---|---|
+| A job reads the secrets in the agent's folder (credentials, logs) | Folder accessible only to administrators and the agent's account |
+| An overly powerful account (administrator, domain account) runs the agent | Dedicated local account with minimal rights ([least privilege](/?c=securite&s=cybersecurite&p=principes-de-developpement-securise) principle) |
+| An untrusted pipeline uses another project's agent | A separate pool per trust level, with the pool's usage rights restricted |
+| A repository where any contributor can propose a pipeline change is plugged into an agent that sees the internal network | Mandatory review before any change to a pipeline that uses a self-hosted agent; internal-network agents kept out of reach of uncontrolled repositories |
+
 ## Pitfalls
 
 | Pitfall | What happens | Remedy |
@@ -209,6 +228,9 @@ pool:
 | Personal autologon account | Anyone with access to the machine uses it | Dedicated, local, minimal account |
 | Two agents with the same name | Conflict, one stops | A unique name per agent, `--replace` then remove the old one |
 | Software installed without restarting the agent | The job stays "waiting for a compatible agent" | Restart the agent |
+| PAT with no expiry date | The token stays valid although the agent no longer needs it | Short expiry, revoke once the agent is registered |
+| Copied agent folder | Same credentials and same name: one of the two cuts out | One fresh archive per agent |
+| Folder deleted without `config.cmd remove` | The agent stays listed (offline) in the pool | Remove it properly first |
 | An agent that runs code coming from repositories | It is a program built to run downloaded code: a remote execution target | Minimal permissions, isolated machine, control over who can write to the pipeline |
 
 ---
@@ -218,6 +240,6 @@ pool:
 | | |
 |---|---|
 | **Key Points** | An agent runs a pipeline's jobs on a machine; it polls the server over HTTPS (no inbound port). A PAT with the **Agent Pools (read, manage)** scope is used only for registration. **Service** mode by default; **interactive mode with autologon** only if the job needs a desktop. `config.cmd --unattended` automates everything; one agent per folder, a unique name, its own work folder. |
-| **Available Tools** | `config.cmd` (with `--unattended`, `--runAsService`, `--runAsAutoLogon`, `--replace`, `--overwriteAutoLogon`, `--noRestart`), `run.cmd` and `run.cmd --once`, `config.cmd remove`, `services.msc`, `.\run --diagnostics`, the pipeline's `demands`, `tscon` to hand a remote session back to the screen. |
-| **Pitfalls to Avoid** | Overly broad PAT, secret on the command line, agent folder readable by everyone, path with spaces, PowerShell without elevation, personal autologon account, two agents with the same name, tool installed without restarting the agent. |
-| **Best Practices** | Try a Microsoft-hosted agent first; a dedicated run account, different from the one that registers; secrets through environment variables; one agent per machine unless there is a specific need; check `.\config.cmd --help` for the installed version. |
+| **Available Tools** | `config.cmd` (with `--unattended`, `--runAsService`, `--runAsAutoLogon`, `--replace`, `--overwriteAutoLogon`, `--noRestart`), `run.cmd` and `run.cmd --once`, `config.cmd remove`, `services.msc`, `.\run --diagnostics`, the pipeline's `demands`, `tscon` to hand a remote session back to the screen, `workspace: clean: all` to clean the working folder. |
+| **Pitfalls to Avoid** | Overly broad PAT, secret on the command line, agent folder readable by everyone, path with spaces, PowerShell without elevation, personal autologon account, two agents with the same name, tool installed without restarting the agent, PAT with no expiry, copied agent folder, folder deleted without `config.cmd remove`. |
+| **Best Practices** | Try a Microsoft-hosted agent first; a dedicated run account, different from the one that registers; secrets through environment variables; one agent per machine unless there is a specific need; check `.\config.cmd --help` for the installed version; short-lived PAT revoked after registration; mandatory review of pipeline changes; one pool per trust level. |
