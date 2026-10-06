@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : aucune de mon côté. En attente de Louis : test navigateur (point 1) ; audio de la section IA (point 2) en cours.
+> Prochaine tâche : aucune de mon côté. En attente de Louis : test navigateur (point 1).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -9,16 +9,11 @@ Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il
 - Reste à Louis : sur la page d'un chapitre (iPhone), bouton "aA" de la barre d'adresse Safari → "Demander la version pour ordinateur", et dire si le fond s'affiche correctement dans ce mode. Si ça ne suffit pas à trancher, étape suivante : inspecteur Safari distant (Mac connecté à l'iPhone).
 
 
-## 2. Section IA > Modèles de décision structurée (TypeSafe AI / Jev)
-- Générer l'audio des 4 langues de `content(-en/-es/-br)/IA/Modèles de décision structurée/` (12 chapitres + description, une seule passe, sur demande de Louis).
-
-Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https://docs.typesafe.ai/introduction
-
-## 3. Vérification restante (session Wayland)
+## 2. Vérification restante (session Wayland)
 - `Infrastructure & DevOps/Administration système/touche-coincee-clavier-virtuel-xtest` : sur une vraie session Wayland (la machine de Louis est en X11), vérifier que `xdotool` ne touche que les applications XWayland.
 
-## 4. Relecture par Claude : chapitre « Les agents Azure Pipelines auto-hébergés » (quand le projet `scraping_infomediaires` sera disponible)
+## 3. Relecture par Claude : chapitre « Les agents Azure Pipelines auto-hébergés » (quand le projet `scraping_infomediaires` sera disponible)
 `Infrastructure & DevOps/CI-CD/agents-azure-pipelines-auto-heberges` (fr/en/es/br) a été rédigé sans le projet `scraping_infomediaires` (absent de la machine de rédaction) et sans exécuter aucune commande Windows : tout vient de la documentation Microsoft Learn. Dès que le projet est disponible, Claude relit le chapitre en le confrontant à la configuration réelle de l'agent : mode service ou autologon retenu, compte d'exécution, nombre d'agents sur la machine, options de `config.cmd` effectivement utilisées. Si la pratique diffère, corriger le chapitre (4 langues, audio régénéré).
 
-## 5. Audio à régénérer après la fusion des doublons du 06/10/2026 (sur demande de Louis)
+## 4. Audio à régénérer après la fusion des doublons du 06/10/2026 (sur demande de Louis)
 Contenu modifié, audio (fr/en/es/br) encore celui d'avant : `couplages-et-filtrage-de-regin`, `agents-azure-pipelines-auto-heberges`, `mesurer-avant-d-optimiser`, `division-par-multiplication`, `eviter-le-recalcul-redondant`.
