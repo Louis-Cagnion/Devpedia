@@ -10,6 +10,7 @@ Un [pipeline](/?c=infrastructure-devops&s=ci-cd&p=pipeline-cicd) describe **qué
 |---|---|
 | Agente | El programa que ejecuta los steps de un pipeline en una máquina |
 | Pool de agentes | Un grupo de agentes; el pipeline designa un pool (`pool:`), no un agente concreto |
+| Job | Conjunto de pasos confiado a un solo agente del pool |
 | Agente autoalojado | Un agente instalado en **tu** máquina, que administras tú |
 | Token de acceso personal (PAT) | Una contraseña de alcance limitado, aquí para registrar el agente |
 | Modo servicio o interactivo | El agente se ejecuta como un servicio de Windows, o como un programa dentro de una sesión abierta |
@@ -166,8 +167,11 @@ Es posible, pero la documentación recomienda **un solo agente por máquina**: d
 | Evitarlo si los jobs son pesados en disco o en entrada/salida | Ninguna ganancia de eficiencia |
 | Cuidado con las herramientas «únicas» (por ejemplo, paquetes npm compartidos) | Un job puede actualizar una dependencia mientras otro la usa: resultados inestables |
 | El autologon es un ajuste de **la máquina** | Solo una cuenta se abre automáticamente; `--overwriteAutoLogon` reemplaza la que existe |
+| **Varios jobs en paralelo**: dos agentes en el mismo pool | Cada agente ejecuta un solo job a la vez |
+| **Dos usos separados** (robot, despliegue): un pool por uso | El pipeline designa un pool; cada pool tiene sus propios agentes |
+| No copiar nunca la carpeta de un agente ya configurado | Los dos compartirían credenciales y nombre: uno se corta tras unos minutos de conflicto. Descomprimir un archivo nuevo para cada agente |
 
-## Retirar, reemplazar, reconfigurar
+## Mantenimiento: retirar, reemplazar, reconfigurar
 
 | Necesidad | Comando |
 |---|---|
@@ -175,6 +179,10 @@ Es posible, pero la documentación recomienda **un solo agente por máquina**: d
 | Reemplazar un agente del mismo nombre | Reconfigurar con el mismo nombre y responder `Y` (o `--replace`), **y luego** retirar el antiguo: si no, tras unos minutos de conflicto, uno de los dos se detiene |
 | Cambiar la cuenta de un servicio | Reconfigurar el agente; **no** desde la consola de servicios |
 | Un autologon que ya no arranca el agente | Retirar el agente, comprobar que ha desaparecido del pool y reconfigurar en una carpeta recién descomprimida |
+| Borrar la carpeta de un agente | Solo **después** de `config.cmd remove`: si no, el agente sigue listado (sin conexión) en el pool |
+| Actualización del agente | Automática: el agente se actualiza cuando un job exige una versión más reciente |
+| Disco que se llena | Limpiar `_work` en cada job con `workspace: clean: all` en el YAML del job |
+| Estado de un agente en modo servicio | `services.msc`, entrada «Azure Pipelines Agent» (o `vstsagent.…`) |
 
 ## Capacidades, requisitos y diagnóstico
 
@@ -197,6 +205,17 @@ pool:
 
 > **Límite de verificación:** estos comandos de Windows no han podido ejecutarse aquí. Su sintaxis y sus opciones se han comprobado en la documentación de Microsoft: [agente de Windows](https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/windows-agent), [agentes](https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/agents) y [registro mediante PAT](https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/personal-access-token-agent-registration).
 
+## Seguridad: el agente ejecuta el código del repositorio
+
+Un agente ejecuta los comandos del pipeline con los derechos de la cuenta que lo hace funcionar. Quien pueda modificar `azure-pipelines.yml` (o un script al que llame) puede por tanto ejecutar código en su máquina: Microsoft lo dice explícitamente, el agente está diseñado para ejecutar código descargado, así que es un posible objetivo de ejecución remota de código.
+
+| Riesgo | Remedio |
+|---|---|
+| Un job lee los secretos de la carpeta del agente (credenciales, registros) | Carpeta accesible solo para los administradores y la cuenta del agente |
+| Una cuenta demasiado potente (administrador, cuenta del dominio) hace funcionar el agente | Cuenta local dedicada, con los mínimos derechos (principio de [mínimo privilegio](/?c=securite&s=cybersecurite&p=principes-de-developpement-securise)) |
+| Un pipeline no fiable usa el agente de otro proyecto | Un pool distinto por nivel de confianza, con los derechos de uso del pool restringidos |
+| Un repositorio en el que cualquier colaborador puede proponer un cambio de pipeline está conectado a un agente que ve la red interna | Revisión obligatoria antes de cualquier cambio de un pipeline que use un agente autoalojado; agentes de la red interna fuera del alcance de repositorios no controlados |
+
 ## Las trampas
 
 | Trampa | Lo que ocurre | Solución |
@@ -209,6 +228,9 @@ pool:
 | Cuenta de autologon personal | Cualquiera con acceso a la máquina la usa | Cuenta dedicada, local y mínima |
 | Dos agentes con el mismo nombre | Conflicto, uno se detiene | Un nombre único por agente, `--replace` y retirada del antiguo |
 | Software instalado sin reiniciar el agente | El job se queda «esperando un agente compatible» | Reiniciar el agente |
+| PAT sin fecha de caducidad | El token sigue siendo válido aunque el agente ya no lo necesite | Caducidad corta, revocación una vez registrado el agente |
+| Carpeta de agente copiada | Mismas credenciales y mismo nombre: uno de los dos se corta | Un archivo nuevo por agente |
+| Carpeta borrada sin `config.cmd remove` | El agente sigue listado (sin conexión) en el pool | Retirarlo correctamente primero |
 | Un agente que ejecuta código procedente de repositorios | Es un programa hecho para ejecutar código descargado: objetivo de ejecución remota | Permisos mínimos, máquina aislada, control de quién escribe en el pipeline |
 
 ---
@@ -218,6 +240,6 @@ pool:
 | | |
 |---|---|
 | **Para recordar** | Un agente ejecuta los jobs de un pipeline en una máquina; consulta al servidor por HTTPS (ningún puerto entrante). Un PAT con el alcance **Agent Pools (read, manage)** solo sirve para el registro. Modo **servicio** por defecto; modo **interactivo con autologon** solo si el job necesita un escritorio. `config.cmd --unattended` lo automatiza todo; un agente por carpeta, un nombre único, una carpeta de trabajo propia. |
-| **Herramientas utilizables** | `config.cmd` (con `--unattended`, `--runAsService`, `--runAsAutoLogon`, `--replace`, `--overwriteAutoLogon`, `--noRestart`), `run.cmd` y `run.cmd --once`, `config.cmd remove`, `services.msc`, `.\run --diagnostics`, los `demands` del pipeline, `tscon` para devolver una sesión remota a la pantalla. |
-| **Trampas a evitar** | PAT demasiado amplio, secreto en la línea de comandos, carpeta del agente legible por todos, ruta con espacios, PowerShell sin elevación, cuenta de autologon personal, dos agentes con el mismo nombre, herramienta instalada sin reiniciar el agente. |
-| **Buenas prácticas** | Probar primero un agente alojado por Microsoft; una cuenta de ejecución dedicada y distinta de la que registra; secretos mediante variables de entorno; un agente por máquina salvo necesidad concreta; comprobar `.\config.cmd --help` para la versión instalada. |
+| **Herramientas utilizables** | `config.cmd` (con `--unattended`, `--runAsService`, `--runAsAutoLogon`, `--replace`, `--overwriteAutoLogon`, `--noRestart`), `run.cmd` y `run.cmd --once`, `config.cmd remove`, `services.msc`, `.\run --diagnostics`, los `demands` del pipeline, `tscon` para devolver una sesión remota a la pantalla, `workspace: clean: all` para limpiar la carpeta de trabajo. |
+| **Trampas a evitar** | PAT demasiado amplio, secreto en la línea de comandos, carpeta del agente legible por todos, ruta con espacios, PowerShell sin elevación, cuenta de autologon personal, dos agentes con el mismo nombre, herramienta instalada sin reiniciar el agente, PAT sin caducidad, carpeta de agente copiada, carpeta borrada sin `config.cmd remove`. |
+| **Buenas prácticas** | Probar primero un agente alojado por Microsoft; una cuenta de ejecución dedicada y distinta de la que registra; secretos mediante variables de entorno; un agente por máquina salvo necesidad concreta; comprobar `.\config.cmd --help` para la versión instalada; PAT de caducidad corta, revocado tras el registro; revisión obligatoria de los cambios de pipeline; un pool por nivel de confianza. |

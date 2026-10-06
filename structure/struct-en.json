@@ -110,10 +110,6 @@
             {
               "id": "couplages-et-filtrage-de-regin",
               "label": "Matchings, the Hall Test and Régin Filtering"
-            },
-            {
-              "id": "couplage-biparti-et-theoreme-de-hall",
-              "label": "Bipartite Matching, Hall's Theorem and Kuhn's Algorithm"
             }
           ]
         },
@@ -1438,10 +1434,6 @@
             {
               "id": "agents-azure-pipelines-auto-heberges",
               "label": "Self-hosted Azure Pipelines agents"
-            },
-            {
-              "id": "agents-auto-heberges-azure",
-              "label": "Self-hosted Azure DevOps agents"
             }
           ]
         },

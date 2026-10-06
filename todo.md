@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : aucune de mon côté. En attente de Louis : test navigateur (point 1), relance de l'audio de la section IA > Modèles de décision structurée (point 2), arbitrage des doublons (point 5).
+> Prochaine tâche : aucune de mon côté. En attente de Louis : test navigateur (point 1) ; audio de la section IA (point 2) en cours.
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -14,17 +14,11 @@ Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il
 
 Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https://docs.typesafe.ai/introduction
 
-## 3. Vérifications restantes (machine à pilote graphique)
-- `Fondamentaux/Graphisme/glfw-glad-et-boucle-de-rendu` (section « Comment OpenGL connaît la machine ») : `glxinfo -B | grep -i renderer` n'a pas été exécuté (paquet `mesa-utils` absent) ; vérifier qu'il affiche le même renderer que `GL_RENDERER`.
-- `Infrastructure & DevOps/Administration système/touche-coincee-clavier-virtuel-xtest` : sur une session Wayland, vérifier que `xdotool` ne touche que les applications XWayland (la session de Louis est en X11) ; sur la session réelle, `xinput query-state` a été vérifié avec F13, pas avec Échap.
+## 3. Vérification restante (session Wayland)
+- `Infrastructure & DevOps/Administration système/touche-coincee-clavier-virtuel-xtest` : sur une vraie session Wayland (la machine de Louis est en X11), vérifier que `xdotool` ne touche que les applications XWayland.
 
 ## 4. Relecture par Claude : chapitre « Les agents Azure Pipelines auto-hébergés » (quand le projet `scraping_infomediaires` sera disponible)
 `Infrastructure & DevOps/CI-CD/agents-azure-pipelines-auto-heberges` (fr/en/es/br) a été rédigé sans le projet `scraping_infomediaires` (absent de la machine de rédaction) et sans exécuter aucune commande Windows : tout vient de la documentation Microsoft Learn. Dès que le projet est disponible, Claude relit le chapitre en le confrontant à la configuration réelle de l'agent : mode service ou autologon retenu, compte d'exécution, nombre d'agents sur la machine, options de `config.cmd` effectivement utilisées. Si la pratique diffère, corriger le chapitre (4 langues, audio régénéré).
 
-## 5. Doublons à arbitrer après le merge du 05/10/2026
-Deux machines ont rédigé les mêmes sujets en parallèle ; les deux versions ont été conservées (struct et fichiers), rien n'a été supprimé. Pour chaque paire, choisir de fusionner ou de supprimer l'une des deux (4 langues, `struct*.json`, renvois, audio) :
-- `couplages-et-filtrage-de-regin` (Hall, Kuhn, Régin, mesures solveur) et `couplage-biparti-et-theoreme-de-hall` (Hall et Kuhn seuls).
-- `agents-azure-pipelines-auto-heberges` et `agents-auto-heberges-azure` (CI-CD).
-- `mesurer-avant-d-optimiser` : section « l'exemple de la division » (distant) face au chapitre `division-par-multiplication` (local).
-- `eviter-le-recalcul-redondant` : sections « Réparer le résultat précédent » / « le bitmap » (distant) face à « Reprendre le résultat précédent » / « parcourir une bitmap » (local) ; récapitulatif conservé côté local.
-- `scripts-et-shebang` : section `: <<'COMMENT'` conservée côté local, piège du mot de fin indenté repris du distant.
+## 5. Audio à régénérer après la fusion des doublons du 06/10/2026 (sur demande de Louis)
+Contenu modifié, audio (fr/en/es/br) encore celui d'avant : `couplages-et-filtrage-de-regin`, `agents-azure-pipelines-auto-heberges`, `mesurer-avant-d-optimiser`, `division-par-multiplication`, `eviter-le-recalcul-redondant`.

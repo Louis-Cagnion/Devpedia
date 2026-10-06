@@ -57,6 +57,8 @@ As casas são colocadas uma a uma. Quando o valor desejado já está ocupado, n�
 | 3 | C | Quer 1, detido por B. B pode assumir 3: B se afasta, C assume 1 | C=1 A=2 B=3 |
 | 4 | D | Quer 3, detido por B, que não tem mais valor livre (seu valor 1 é detido por C, que não tem outra escolha). Tenta 4: livre | C=1 A=2 B=3 D=4 |
 
+O **algoritmo guloso** (dar a cada casa o primeiro valor livre, sem nunca voltar atrás numa escolha, veja [o algoritmo guloso](/?c=fondamentaux&s=algorithmes&p=algorithme-glouton)) falha neste exemplo: A fica com 1, B fica com 3, C só quer 1 e fica sem nada, embora exista um emparelhamento perfeito. O [teorema de Berge](https://en.wikipedia.org/wiki/Berge%27s_theorem) (1957) garante que, quando não resta nenhum caminho aumentante, o emparelhamento tem tamanho máximo. Para grafos muito grandes, [Hopcroft e Karp](https://en.wikipedia.org/wiki/Hopcroft%E2%80%93Karp_algorithm) fazem melhor (vários caminhos de uma vez); Kuhn basta para uma linha de algumas dezenas de casas.
+
 Cada domínio é uma **máscara de bits** (o bit `v` vale 1 se o valor `v` é possível; veja [as máscaras](/?c=langages&s=c&p=operateurs-binaires#as-mascaras-a-real-utilidade-no-dia-a-dia)): um `uint64_t` basta para 64 valores, e «pegar o menor valor possível» é uma única instrução (`__builtin_ctzll`, veja [percorrer os bits 1](/?c=langages&s=c&p=operateurs-binaires#percorrer-os-bits-1-as-funcoes-embutidas-do-compilador)).
 
 O código deste capítulo fica em um arquivo de cabeçalho chamado `emparelhamento.h`, que os exemplos seguintes incluem.
@@ -531,6 +533,7 @@ divergências com a força bruta: 0
 | Mais de 64 casas livres ou 64 valores | Uma máscara `uint64_t` não basta mais | Limitar o teste às linhas quase preenchidas, ou passar a máscaras mais largas |
 | Aprender cada retirada como uma cláusula | A memória explode, a busca trava (arena ×19 medida) | Empilhar as explicações à parte e desempilhá-las no retrocesso |
 | Filtrar todas as linhas | O custo supera o ganho (24 casas livres: 17 grades de 20 resolvidas contra 20 de 20) | Ajustar o limite de casas livres medindo |
+| Testar Hall enumerando todos os grupos de casas | 2ⁿ grupos: um milhão para 20 casas | Deixar o Kuhn decidir; procurar o grupo culpado só para explicá-lo |
 
 ---
 
@@ -540,5 +543,5 @@ divergências com a força bruta: 0
 |---|---|
 | **O que reter** | Casas que devem assumir valores todos diferentes são modeladas por um grafo bipartido; um emparelhamento perfeito é uma maneira válida de preenchê-las. O algoritmo de Kuhn o procura por caminhos aumentantes; sua falha produz um conjunto de Hall que explica a impossibilidade. A filtragem de Régin vai além: a partir de um emparelhamento perfeito, retira todo valor que não pertence a nenhum emparelhamento perfeito, graças às componentes fortemente conexas do grafo de valores. |
 | **Ferramentas utilizáveis** | As máscaras de bits (`uint64_t`, `__builtin_ctzll`) para domínios de menos de 64 valores, o algoritmo de Tarjan para as componentes, uma referência por força bruta para validar o código, o [artigo de Régin](https://cdn.aaai.org/AAAI/1994/AAAI94-055.pdf) para a prova. |
-| **Armadilhas a evitar** | Filtrar sem emparelhamento perfeito, inverter o sentido das setas, ultrapassar 64 valores com uma única máscara, aprender cada retirada como uma cláusula, aplicar a filtragem a todas as linhas sem medir. |
+| **Armadilhas a evitar** | Filtrar sem emparelhamento perfeito, inverter o sentido das setas, ultrapassar 64 valores com uma única máscara, aprender cada retirada como uma cláusula, aplicar a filtragem a todas as linhas sem medir, contentar-se com o algoritmo guloso, enumerar todos os grupos de casas para testar Hall. |
 | **Boas práticas** | Lançar o teste só nas linhas quase preenchidas; retomar o emparelhamento anterior em vez de recomeçar do zero; empilhar as explicações à parte; validar cada algoritmo em casos pequenos contra uma enumeração exaustiva; ajustar os limites medindo. |

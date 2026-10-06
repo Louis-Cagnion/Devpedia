@@ -32,9 +32,19 @@ Les structures traduites (`struct-en/es/br.json`) ne listaient pas cinq chapitre
 
 `attaques-navigateur-automatise` gagne quatre sections (headless, captchas, profil persistant, débogage à distance) et un chapitre `tunnel-ssh-et-redirection-de-port` vient dans Réseaux (le port de débogage de Chrome n'est joignable à distance que par ce tunnel). Fait vérifié en ligne : depuis Chrome 136, `--remote-debugging-port` n'est plus pris en compte sur le profil par défaut, un `--user-data-dir` dédié est obligatoire. Aucun exemple rejoué : pas de serveur SSH ni de profil Chrome distant sous la main.
 
+## Fusion des doublons du merge du 05/10/2026 (2026-10-06)
+
+Deux machines avaient rédigé les mêmes sujets ; pour chaque paire, la version la plus complète est gardée et l'autre n'apporte que ce qu'elle seule contenait.
+- `couplage-biparti-et-theoreme-de-hall` supprimé : `couplages-et-filtrage-de-regin` contient déjà Kuhn, l'ensemble de Hall et plus. Repris dans Régin : l'échec du glouton sur son propre exemple, le théorème de Berge, Hopcroft-Karp, le piège des 2ⁿ groupes.
+- `agents-auto-heberges-azure` supprimé : `agents-azure-pipelines-auto-heberges` couvre mieux l'enregistrement, les options et le diagnostic. Repris : le terme job, la section sécurité, l'entretien (`workspace: clean: all`, `services.msc`), pools multiples, dossier d'agent copié.
+- `mesurer-avant-d-optimiser` : la section sur la division ne garde que sa mesure (3 situations, 0,5 % sur le programme réel) et renvoie à `division-par-multiplication` pour le code et la preuve ; le piège de l'inverse flottant (`49 × (1.0 / 49)` ≠ 1) passe dans ce dernier.
+- `eviter-le-recalcul-redondant` : les sections « Réparer le résultat précédent » et « le bitmap » supprimées au profit des versions complètes (programme exécutable, 124 fois moins de recherches, densités mesurées) ; le piège d'invariant et la bonne pratique de densité y sont repris. Le tableau comparatif s'appelle désormais « Comparatif des situations ».
+- `scripts-et-shebang` : déjà fusionné au merge.
+Vérifié : `struct*.json` identique à une régénération depuis le disque, aucun renvoi interne cassé (468 ids), rendu du chapitre d'agents contrôlé dans Chrome. L'audio des cinq chapitres modifiés n'est pas régénéré.
+
 ## Chapitre CI-CD : agents Azure DevOps auto-hébergés (2026-10-05)
 
-`agents-auto-heberges-azure` (order 5, 4 langues) vient de la doc Microsoft « Deploy an Azure Pipelines agent on Windows » (options `config.cmd`, PAT utilisé seulement à l'enregistrement, variables `VSTS_AGENT_INPUT_*`, un dossier par agent), relue en ligne le jour même : aucune commande n'a pu être exécutée ici (pas d'organisation Azure DevOps), le chapitre ne contient donc aucun exemple rejoué. Piège de méthode : régénérer `struct-en/es/br.json` par `buildStruct` réordonne tout (342 lignes de diff, ordre des sections Sécurité perdu) puisque ces fichiers sont alignés à la main sur le français ; l'entrée du nouveau chapitre s'y ajoute à la main, comme pour `struct.json`.
+`agents-auto-heberges-azure` (order 5, 4 langues, fusionné depuis le 2026-10-06 dans `agents-azure-pipelines-auto-heberges`) vient de la doc Microsoft « Deploy an Azure Pipelines agent on Windows » (options `config.cmd`, PAT utilisé seulement à l'enregistrement, variables `VSTS_AGENT_INPUT_*`, un dossier par agent), relue en ligne le jour même : aucune commande n'a pu être exécutée ici (pas d'organisation Azure DevOps), le chapitre ne contient donc aucun exemple rejoué. Piège de méthode : régénérer `struct-en/es/br.json` par `buildStruct` réordonne tout (342 lignes de diff, ordre des sections Sécurité perdu) puisque ces fichiers sont alignés à la main sur le français ; l'entrée du nouveau chapitre s'y ajoute à la main, comme pour `struct.json`.
 
 ## Chapitre « Les agents Azure Pipelines auto-hébergés » (2026-10-05)
 

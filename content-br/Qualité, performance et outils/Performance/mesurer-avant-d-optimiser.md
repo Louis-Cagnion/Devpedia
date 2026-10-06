@@ -330,29 +330,7 @@ Para concluir a partir de várias grades e não de uma só (pareamento, teste do
 
 ## Um ganho de micro-benchmark não é um ganho do programa: o exemplo da divisão
 
-Uma divisão inteira é uma das instruções mais lentas de um processador: sua **latência** (o tempo até o resultado estar disponível) se conta em dezenas de ciclos, contra poucos ciclos de uma multiplicação. Quando o divisor muda de uma vez para outra mas só assume poucos valores, dá para trocar a divisão por uma multiplicação por um **inverso pré-calculado** (veja [Evitar o recálculo redundante](/?c=qualite-performance-et-outils&s=performance&p=eviter-le-recalcul-redondant)).
-
-```c
-#include <stdint.h>
-
-#define DMAX 128                // maior divisor usado
-#define XBITS 25                // os dividendos ficam abaixo de 2^XBITS
-static uint64_t inv[DMAX + 1];  // inv[d] = teto de 2^32 / d
-
-void init_inverses(void)
-{
-    for (uint64_t d = 1; d <= DMAX; d++)
-        inv[d] = ((1ULL << 32) + d - 1) / d;
-}
-
-// Quociente inteiro de x por d, para 1 <= d <= DMAX e x < 2^XBITS
-static inline uint32_t dividir(uint32_t x, uint32_t d)
-{
-    return (uint32_t)(((uint64_t)x * inv[d]) >> 32);
-}
-```
-
-**Por que o resultado é exato.** Seja `e = inv[d] × d − 2³²`: como `inv[d]` é arredondado para cima, `0 ≤ e < d`. Então `x × inv[d] / 2³² = x/d + x × e / (d × 2³²)`. Enquanto `x × e < 2³²` (aqui `x < 2²⁵` e `e < d ≤ 128 = 2⁷`), o termo acrescentado é menor que `1/d`. Ora, a parte fracionária de `x/d` vale no máximo `(d − 1)/d`: a soma fica abaixo do inteiro seguinte e o truncamento dá exatamente o quociente. Verificado aqui por enumeração completa: 128 divisores × 2²⁵ dividendos, ou seja 2³² casos, 0 erro.
+Uma divisão inteira é uma das instruções mais lentas de um processador: quando o divisor assume poucos valores, é possível substituí-la por uma multiplicação por um **inverso pré-calculado** (técnica detalhada em [Substituir uma divisão por uma multiplicação](/?c=qualite-performance-et-outils&s=performance&p=division-par-multiplication), que prova sua exatidão e lista suas armadilhas).
 
 **Quanto ganha, conforme onde se mede.** Mesma soma calculada com a divisão (A) e com o inverso (B), em um Intel Core Ultra 5 228V (sob WSL, Ubuntu 24.04), gcc 13.3 em `-O2`, mediana de 7 rodadas alternadas, mesmas somas verificadas:
 
@@ -367,10 +345,6 @@ O ganho se dilui à medida que a divisão pesa menos no tempo total: o processad
 > **Armadilha:** concluir a partir de um micro-benchmark (−73 %) que um programa inteiro ficará mais rápido. Só a medição do **programa real** diz quanto vale a otimização, com as [rodadas alternadas](#medir-em-rodadas-alternadas) acima.
 >
 > **Boa prática:** antes de trocar uma divisão, medir a parte que ela ocupa no perfil do programa; se for pequena, deixar o código simples.
-
-> **Armadilha:** o inverso em ponto flutuante (`1.0 / d`) não serve: `49 × (1.0 / 49)` vale `0,9999999999999999` e o truncamento dá 0 em vez de 1. Um valor fora do domínio anunciado (`x ≥ 2²⁵`, `d > 128`, `d = 0`) dá ainda um resultado errado **sem nenhum erro**.
->
-> **Boa prática:** permanecer em inteiros com um inverso arredondado para cima, verificar a exatidão por enumeração sobre todo o domínio e proteger a entrada com uma asserção. Para um divisor **constante** em tempo de compilação, é inútil: o compilador já faz essa troca (o gcc produz um `imul` para `x / 7` e um `div` para `x / d`).
 
 ## Medir a complexidade: dobrar o tamanho, no build normal
 

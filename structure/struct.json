@@ -108,10 +108,6 @@
               "label": "Les problèmes NP-complets : pourquoi un problème « exponentiel » se résout quand même"
             },
             {
-              "id": "couplage-biparti-et-theoreme-de-hall",
-              "label": "Couplage biparti, théorème de Hall et algorithme de Kuhn"
-            },
-            {
               "id": "couplages-et-filtrage-de-regin",
               "label": "Couplages, test de Hall et filtrage de Régin"
             }
@@ -1434,10 +1430,6 @@
             {
               "id": "azure-pipelines-vs-github-actions",
               "label": "Azure Pipelines contre GitHub Actions"
-            },
-            {
-              "id": "agents-auto-heberges-azure",
-              "label": "Les agents Azure DevOps auto-hébergés"
             },
             {
               "id": "agents-azure-pipelines-auto-heberges",

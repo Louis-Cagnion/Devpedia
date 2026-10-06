@@ -330,29 +330,7 @@ To conclude from several grids rather than a single one (pairing, the sign test,
 
 ## A Micro-Benchmark Gain Is Not a Program Gain: the Division Example
 
-An integer division is one of the slowest instructions of a processor: its **latency** (the time before the result is available) is counted in tens of cycles, against a few cycles for a multiplication. When the divisor changes from one call to the next but only takes a few values, the division can be replaced by a multiplication by a **precomputed inverse** (see [Avoiding Redundant Recomputation](/?c=qualite-performance-et-outils&s=performance&p=eviter-le-recalcul-redondant)).
-
-```c
-#include <stdint.h>
-
-#define DMAX 128                // largest divisor used
-#define XBITS 25                // dividends stay below 2^XBITS
-static uint64_t inv[DMAX + 1];  // inv[d] = ceiling of 2^32 / d
-
-void init_inverses(void)
-{
-    for (uint64_t d = 1; d <= DMAX; d++)
-        inv[d] = ((1ULL << 32) + d - 1) / d;
-}
-
-// Integer quotient of x by d, for 1 <= d <= DMAX and x < 2^XBITS
-static inline uint32_t divide(uint32_t x, uint32_t d)
-{
-    return (uint32_t)(((uint64_t)x * inv[d]) >> 32);
-}
-```
-
-**Why the result is exact.** Let `e = inv[d] × d − 2³²`: since `inv[d]` is rounded up, `0 ≤ e < d`. Then `x × inv[d] / 2³² = x/d + x × e / (d × 2³²)`. As long as `x × e < 2³²` (here `x < 2²⁵` and `e < d ≤ 128 = 2⁷`), the added term is less than `1/d`. Now the fractional part of `x/d` is at most `(d − 1)/d`: the sum stays below the next integer, and truncation gives exactly the quotient. Checked here by exhaustive enumeration: 128 divisors × 2²⁵ dividends, i.e. 2³² cases, 0 errors.
+An integer division is one of the slowest instructions of a processor: when the divisor takes only a few values, it can be replaced by a multiplication by a **precomputed inverse** (technique detailed in [Replacing a Division with a Multiplication](/?c=qualite-performance-et-outils&s=performance&p=division-par-multiplication), which proves its exactness and lists its pitfalls).
 
 **How much it gains, depending on where you measure.** Same sum computed with the division (A) and with the inverse (B), on an Intel Core Ultra 5 228V (under WSL, Ubuntu 24.04), gcc 13.3 at `-O2`, median of 7 alternating rounds, same sums checked:
 
@@ -367,10 +345,6 @@ The gain melts away as the division weighs less in the total time: the processor
 > **Pitfall:** concluding from a micro-benchmark (−73 %) that a whole program will go faster. Only measuring the **real program** tells what the optimization is worth, with the [alternating rounds](#measuring-in-alternating-rounds) above.
 >
 > **Best practice:** before replacing a division, measure the share it takes in the program's profile; if it is small, leave the code simple.
-
-> **Pitfall:** the floating-point inverse (`1.0 / d`) does not work: `49 × (1.0 / 49)` is `0.9999999999999999`, and truncation gives 0 instead of 1. A value outside the announced domain (`x ≥ 2²⁵`, `d > 128`, `d = 0`) also gives a wrong result **with no error at all**.
->
-> **Best practice:** stay in integers with an inverse rounded up, check exactness by enumeration over the whole domain, and guard the input with an assertion. For a divisor that is **constant** at compile time, it is pointless: the compiler already makes this replacement (gcc produces an `imul` for `x / 7` and a `div` for `x / d`).
 
 ## Measuring Complexity: Doubling the Size, on the Normal Build
 

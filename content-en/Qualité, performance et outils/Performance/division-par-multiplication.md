@@ -366,6 +366,7 @@ product computed on 32 bits = 0
 | `d` or `q` outside the guaranteed zone | Quotient one too big, with no message | Bound `d` and `q` when creating the inverse, or check the zone by brute force as above |
 | Negative numbers | Division in C rounds toward zero (`-7 / 2` gives `-3`), the trick only covers unsigned integers | Apply the technique only to `unsigned` values |
 | Zero divisor | `inverse(0)` divides by zero and stops the program | Refuse `q == 0` before computing the inverse |
+| Floating-point inverse (`1.0 / q`) | `49 × (1.0 / 49)` is `0.9999999999999999`: truncation gives 0 instead of 1 | Stay in integers, with an inverse rounded up |
 
 ---
 
@@ -375,5 +376,5 @@ product computed on 32 bits = 0
 |---|---|
 | **Key points** | Dividing by `q` means multiplying by the inverse `2^32 / q` rounded up, then throwing away the 32 low-order bits. It is exact as long as `d × e < 2^32` (where `e < q` is the rounding error): for `q <= 128`, every `d < 2^25`. Computing the inverse costs one division, paid only once. |
 | **Tools you can use** | The compiler (constant divisor: automatic), `objdump -d` to check that a `div` instruction has disappeared, the [libdivide](https://libdivide.com/) library for a wider zone, a brute-force loop to check a zone, `clock_gettime` to time. |
-| **Pitfalls to avoid** | A product computed on 32 bits, a `d` or `q` outside the zone (wrong result with no message), negative numbers, a zero divisor, a divisor that changes at every call (nothing is gained), and drawing conclusions from a micro-test without timing the whole program. |
+| **Pitfalls to avoid** | A product computed on 32 bits, a `d` or `q` outside the zone (wrong result with no message), negative numbers, a zero divisor, a floating-point inverse, a divisor that changes at every call (nothing is gained), and drawing conclusions from a micro-test without timing the whole program. |
 | **Best practices** | Let the compiler do it when the divisor is known at compile time; write it by hand only for a divisor fixed at run time and reused millions of times; prove or check the exactness zone; compare both versions on the same work before timing; time the complete program. |

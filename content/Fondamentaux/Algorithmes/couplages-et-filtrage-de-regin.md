@@ -57,6 +57,8 @@ On place les cases une par une. Quand la valeur voulue est déjà prise, on ne r
 | 3 | C | Veut 1, détenu par B. B peut prendre 3 : B s'écarte, C prend 1 | C=1 A=2 B=3 |
 | 4 | D | Veut 3, détenu par B, qui n'a plus de valeur libre (sa valeur 1 est tenue par C, qui n'a pas d'autre choix). Essaie 4 : libre | C=1 A=2 B=3 D=4 |
 
+Le **glouton** (donner à chaque case la première valeur libre, sans jamais revenir sur un choix, voir [l'algorithme glouton](/?c=fondamentaux&s=algorithmes&p=algorithme-glouton)) échoue sur cet exemple : A prend 1, B prend 3, C ne veut que 1 et n'a plus rien, alors qu'un couplage complet existe. Le [théorème de Berge](https://en.wikipedia.org/wiki/Berge%27s_theorem) (1957) garantit que, s'il n'existe plus de chemin augmentant, le couplage est de taille maximale. Pour de très grands graphes, [Hopcroft et Karp](https://en.wikipedia.org/wiki/Hopcroft%E2%80%93Karp_algorithm) font mieux (plusieurs chemins à la fois) ; Kuhn suffit pour une ligne de quelques dizaines de cases.
+
 Chaque domaine est un **masque de bits** (le bit `v` vaut 1 si la valeur `v` est possible ; voir [les masques](/?c=langages&s=c&p=operateurs-binaires#les-masques-la-vraie-utilite-au-quotidien)) : un `uint64_t` suffit pour 64 valeurs, et « prendre la plus petite valeur possible » est une instruction (`__builtin_ctzll`, voir [parcourir les bits à 1](/?c=langages&s=c&p=operateurs-binaires#parcourir-les-bits-a-1-les-fonctions-integrees-du-compilateur)).
 
 Le code de ce chapitre se range dans un fichier d'en-tête nommé `couplage.h`, que les exemples suivants incluent.
@@ -531,6 +533,7 @@ désaccords avec la force brute : 0
 | Plus de 64 cases libres ou 64 valeurs | Un masque `uint64_t` ne suffit plus | Limiter le test aux lignes presque remplies, ou passer à des masques plus larges |
 | Apprendre chaque retrait comme une clause | La mémoire explose, la recherche se bloque (arène ×19 mesurée) | Empiler les explications à part, les dépiler au retour arrière |
 | Filtrer toutes les lignes | Le coût dépasse le gain (24 cases libres : 17 grilles sur 20 résolues contre 20 sur 20) | Régler le seuil de cases libres par la mesure |
+| Tester Hall en énumérant tous les groupes de cases | 2ⁿ groupes : un million pour 20 cases | Laisser Kuhn décider, ne chercher le groupe fautif que pour l'expliquer |
 
 ---
 
@@ -540,5 +543,5 @@ désaccords avec la force brute : 0
 |---|---|
 | **À retenir** | Des cases qui doivent prendre des valeurs toutes différentes se modélisent par un graphe biparti ; un couplage complet est une façon valide de les remplir. L'algorithme de Kuhn le cherche par chemins augmentants ; son échec produit un ensemble de Hall qui explique l'impossibilité. Le filtrage de Régin va plus loin : à partir d'un couplage complet, il retire toute valeur qui n'appartient à aucun couplage complet, grâce aux composantes fortement connexes du graphe des valeurs. |
 | **Outils utilisables** | Les masques de bits (`uint64_t`, `__builtin_ctzll`) pour des domaines de moins de 64 valeurs, l'algorithme de Tarjan pour les composantes, une référence par force brute pour valider le code, le [papier de Régin](https://cdn.aaai.org/AAAI/1994/AAAI94-055.pdf) pour la preuve. |
-| **Pièges à éviter** | Filtrer sans couplage complet, inverser le sens des flèches, dépasser 64 valeurs avec un seul masque, apprendre chaque retrait comme une clause, appliquer le filtrage à toutes les lignes sans mesurer. |
+| **Pièges à éviter** | Filtrer sans couplage complet, inverser le sens des flèches, dépasser 64 valeurs avec un seul masque, apprendre chaque retrait comme une clause, appliquer le filtrage à toutes les lignes sans mesurer, se contenter du glouton, énumérer tous les groupes de cases pour tester Hall. |
 | **Bonnes pratiques** | Lancer le test sur les lignes presque remplies seulement ; reprendre le couplage précédent plutôt que de repartir de zéro ; empiler les explications à part ; valider chaque algorithme sur de petits cas contre une énumération exhaustive ; régler les seuils par mesure. |

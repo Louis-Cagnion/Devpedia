@@ -110,10 +110,6 @@
             {
               "id": "couplages-et-filtrage-de-regin",
               "label": "Emparejamientos, prueba de Hall y filtrado de Régin"
-            },
-            {
-              "id": "couplage-biparti-et-theoreme-de-hall",
-              "label": "Emparejamiento bipartito, teorema de Hall y algoritmo de Kuhn"
             }
           ]
         },
@@ -1438,10 +1434,6 @@
             {
               "id": "agents-azure-pipelines-auto-heberges",
               "label": "Los agentes autoalojados de Azure Pipelines"
-            },
-            {
-              "id": "agents-auto-heberges-azure",
-              "label": "Los agentes de Azure DevOps autoalojados"
             }
           ]
         },
