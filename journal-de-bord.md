@@ -40,7 +40,7 @@ Deux machines avaient rédigé les mêmes sujets ; pour chaque paire, la version
 - `mesurer-avant-d-optimiser` : la section sur la division ne garde que sa mesure (3 situations, 0,5 % sur le programme réel) et renvoie à `division-par-multiplication` pour le code et la preuve ; le piège de l'inverse flottant (`49 × (1.0 / 49)` ≠ 1) passe dans ce dernier.
 - `eviter-le-recalcul-redondant` : les sections « Réparer le résultat précédent » et « le bitmap » supprimées au profit des versions complètes (programme exécutable, 124 fois moins de recherches, densités mesurées) ; le piège d'invariant et la bonne pratique de densité y sont repris. Le tableau comparatif s'appelle désormais « Comparatif des situations ».
 - `scripts-et-shebang` : déjà fusionné au merge.
-Vérifié : `struct*.json` identique à une régénération depuis le disque, aucun renvoi interne cassé (468 ids), rendu du chapitre d'agents contrôlé dans Chrome. L'audio des cinq chapitres modifiés n'est pas régénéré.
+Vérifié : `struct*.json` identique à une régénération depuis le disque, aucun renvoi interne cassé (468 ids), rendu du chapitre d'agents contrôlé dans Chrome. L'audio des cinq chapitres modifiés a été régénéré dans les quatre langues.
 
 ## Chapitre CI-CD : agents Azure DevOps auto-hébergés (2026-10-05)
 

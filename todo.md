@@ -14,6 +14,3 @@ Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il
 
 ## 3. Relecture par Claude : chapitre « Les agents Azure Pipelines auto-hébergés » (quand le projet `scraping_infomediaires` sera disponible)
 `Infrastructure & DevOps/CI-CD/agents-azure-pipelines-auto-heberges` (fr/en/es/br) a été rédigé sans le projet `scraping_infomediaires` (absent de la machine de rédaction) et sans exécuter aucune commande Windows : tout vient de la documentation Microsoft Learn. Dès que le projet est disponible, Claude relit le chapitre en le confrontant à la configuration réelle de l'agent : mode service ou autologon retenu, compte d'exécution, nombre d'agents sur la machine, options de `config.cmd` effectivement utilisées. Si la pratique diffère, corriger le chapitre (4 langues, audio régénéré).
-
-## 4. Audio à régénérer après la fusion des doublons du 06/10/2026 (sur demande de Louis)
-Contenu modifié, audio (fr/en/es/br) encore celui d'avant : `couplages-et-filtrage-de-regin`, `agents-azure-pipelines-auto-heberges`, `mesurer-avant-d-optimiser`, `division-par-multiplication`, `eviter-le-recalcul-redondant`.
