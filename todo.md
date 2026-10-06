@@ -10,4 +10,4 @@ Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il
 
 
 ## 2. Chapitre « Les agents Azure Pipelines auto-hébergés » : confrontation à l'agent réel
-- Le projet `scraping_infomediaires` ne documente ni le compte d'exécution, ni le nombre d'agents sur la machine, ni les options de `config.cmd` : à confronter au chapitre uniquement si Louis donne la configuration de l'agent (onglet Capabilities ou machine de l'agent).
+Le dépôt `~/Desktop/dev/pipelines_files` ne contient ni le compte d'exécution, ni le nombre d'agents sur la machine, ni les options de `config.cmd`. Reste à confronter au chapitre : ces trois points, si Louis donne la configuration de l'agent TCHPOWBI (onglet Capabilities ou machine de l'agent).
