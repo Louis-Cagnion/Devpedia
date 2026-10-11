@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`todo.md`) garde les points restants ; `git log` garde le détail mécanique de ce qui a été fait. Ce qui a été traité et commité n'apparaît pas ici comme une reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Chapitre « ARIA dynamique et gestion du focus au clavier » (2026-10-11)
+
+Les trois exemples (barre d'onglets en roving tabindex, panneau `inert`, liste qui garde le focus) ont été rejoués dans Chrome sans fenêtre, dans les quatre langues : 16 vérifications chacune. Non testés ici : la touche Tab réelle et un lecteur d'écran. Défauts attrapés dans les traductions déléguées : un identifiant portugais écrit en espagnol (`contenedor`) et des variables anglaises `open`/`close` qui masquent `window.open`/`window.close`. À vérifier d'office sur toute traduction de code : langue des identifiants, noms globaux du navigateur, ids cités par `getElementById` ou `aria-controls`.
+
 ## Chapitre « Choisir le modèle et le niveau d'effort de Claude » (2026-10-11)
 
 Faits vérifiés le jour même avec la documentation officielle (skill `claude-api`) : Haiku 5.5 accepte les cinq niveaux d'effort (défaut `medium`), contrairement à Haiku 4.5. Le todo, `/best-practice` et la description de `builder-haiku` disent encore « Haiku ne supporte pas l'effort » ; le chapitre le précise. Les tarifs viennent du cache du skill (06/10/2026).
