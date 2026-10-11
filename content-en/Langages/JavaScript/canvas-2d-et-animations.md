@@ -55,7 +55,7 @@ requestAnimationFrame(frame);
 
 `now` (automatically provided by the browser, in milliseconds) lets the animation be based on **actual elapsed time** rather than the number of calls: an animation that advances by a fixed step on every call to `frame` would run faster on a 144Hz screen than a 60Hz one, whereas an animation based on `now` stays at the same perceived speed, regardless of the refresh rate.
 
-> **Best practice:** prefer `requestAnimationFrame` over `setInterval` for any visual animation. The browser can sync the call with its own screen refresh (smoother image) and automatically suspends calls for a tab that isn't visible (resource savings), neither of which a `setInterval` ever does on its own.
+> **Best practice:** prefer `requestAnimationFrame` over `setInterval` for any visual animation. The browser can sync the call with its own screen refresh (smoother image) and automatically suspends calls for a tab that isn't visible (resource savings), whereas a `setInterval` keeps running in a hidden tab, only slowed down (the browser enforces a minimum delay, around one second depending on the browser; [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout)).
 
 ## Exponential smoothing: following a target without jerkiness
 

@@ -55,7 +55,7 @@ requestAnimationFrame(frame);
 
 `maintenant` (fourni automatiquement par le navigateur, en millisecondes) permet de baser l'animation sur le **temps réel écoulé** plutôt que sur le nombre d'appels : une animation qui avance d'un pas fixe à chaque appel de `frame` irait plus vite sur un écran 144Hz que sur un écran 60Hz, alors qu'une animation basée sur `maintenant` reste à la même vitesse perçue, quel que soit le taux de rafraîchissement.
 
-> **Bonne pratique :** préférer `requestAnimationFrame` à `setInterval` pour toute animation visuelle. Le navigateur peut synchroniser l'appel avec son propre rafraîchissement d'écran (image plus fluide) et suspend automatiquement les appels d'un onglet non visible (économie de ressources), ce qu'un `setInterval` ne fait jamais de lui-même.
+> **Bonne pratique :** préférer `requestAnimationFrame` à `setInterval` pour toute animation visuelle. Le navigateur peut synchroniser l'appel avec son propre rafraîchissement d'écran (image plus fluide) et suspend automatiquement les appels d'un onglet non visible (économie de ressources), alors qu'un `setInterval` continue de tourner dans un onglet masqué, seulement ralenti (le navigateur impose un délai minimal, de l'ordre d'une seconde selon le navigateur ; [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout)).
 
 ## Le lissage exponentiel : suivre une cible sans à-coups
 
