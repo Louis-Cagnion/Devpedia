@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`todo.md`) garde les points restants ; `git log` garde le détail mécanique de ce qui a été fait. Ce qui a été traité et commité n'apparaît pas ici comme une reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Chapitre « Graphèmes, points de code et unités UTF-16 » (2026-10-11)
+
+Les 16 blocs de code ont été exécutés avec Node.js 22.22.3 (Unicode 17.0) et chaque résultat annoncé comparé à la sortie réelle : 69 vérifications, aucun écart. Piège de méthode : l'outil d'écriture transforme les séquences `\uXXXX` en caractères littéraux, ce qui rend invisible la différence entre les deux « é » (U+00E9 et `e` + accent combinant) ; relire le source pour vérifier que les échappements sont restés. Rédigé en français seulement : traductions, entrées de `struct-en/es/br.json` et audio restent à faire.
+
 ## Chapitre « Animations CSS performantes » (2026-10-11)
 
 Exemples exécutés dans Chrome sans fenêtre (valeurs par défaut de `animation` et `transition`, états intermédiaires figés avec `pause()` et `currentTime`, `will-change`, `prefers-reduced-motion` avec le drapeau `--force-prefers-reduced-motion`). Aucun gain de performance chiffré : le temps virtuel de Chrome sans fenêtre ne mesure pas la fluidité. Non testés : survol et clic réels, fluidité visuelle. Défaut trouvé en passant dans « Canvas 2D et animations » : la phrase disant qu'un `setInterval` « ne suspend jamais » ses appels dans un onglet masqué était fausse (le navigateur le ralentit, MDN `setTimeout`), corrigée dans les quatre langues sans régénérer l'audio de ce chapitre.
