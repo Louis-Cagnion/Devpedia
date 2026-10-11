@@ -711,6 +711,10 @@
             {
               "id": "degrades",
               "label": "Os degradês CSS (linear, radial, conic)"
+            },
+            {
+              "id": "animations-css-performantes",
+              "label": "Animações CSS performáticas"
             }
           ]
         },

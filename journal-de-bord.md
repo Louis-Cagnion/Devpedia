@@ -2,13 +2,17 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`todo.md`) garde les points restants ; `git log` garde le détail mécanique de ce qui a été fait. Ce qui a été traité et commité n'apparaît pas ici comme une reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Chapitre « Animations CSS performantes » (2026-10-11)
+
+Exemples exécutés dans Chrome sans fenêtre (valeurs par défaut de `animation` et `transition`, états intermédiaires figés avec `pause()` et `currentTime`, `will-change`, `prefers-reduced-motion` avec le drapeau `--force-prefers-reduced-motion`). Aucun gain de performance chiffré : le temps virtuel de Chrome sans fenêtre ne mesure pas la fluidité. Non testés : survol et clic réels, fluidité visuelle. Défaut trouvé en passant dans « Canvas 2D et animations » : la phrase disant qu'un `setInterval` « ne suspend jamais » ses appels dans un onglet masqué était fausse (le navigateur le ralentit, MDN `setTimeout`), corrigée dans les quatre langues sans régénérer l'audio de ce chapitre.
+
 ## Chapitre « ARIA dynamique et gestion du focus au clavier » (2026-10-11)
 
 Les trois exemples (barre d'onglets en roving tabindex, panneau `inert`, liste qui garde le focus) ont été rejoués dans Chrome sans fenêtre, dans les quatre langues : 16 vérifications chacune. Non testés ici : la touche Tab réelle et un lecteur d'écran. Défauts attrapés dans les traductions déléguées : un identifiant portugais écrit en espagnol (`contenedor`) et des variables anglaises `open`/`close` qui masquent `window.open`/`window.close`. À vérifier d'office sur toute traduction de code : langue des identifiants, noms globaux du navigateur, ids cités par `getElementById` ou `aria-controls`.
 
 ## Chapitre « Choisir le modèle et le niveau d'effort de Claude » (2026-10-11)
 
-Faits vérifiés le jour même avec la documentation officielle (skill `claude-api`) : Haiku 5.5 accepte les cinq niveaux d'effort (défaut `medium`), contrairement à Haiku 4.5. Le todo, `/best-practice` et la description de `builder-haiku` disent encore « Haiku ne supporte pas l'effort » ; le chapitre le précise. Les tarifs viennent du cache du skill (06/10/2026).
+Faits vérifiés le jour même avec la documentation officielle (skill `claude-api`) : Haiku 5.5 accepte les cinq niveaux d'effort (défaut `medium`), contrairement à Haiku 4.5. Le todo, `/best-practice` et la description de `builder-haiku` disent encore « Haiku ne supporte pas l'effort » ; le chapitre le précise. Les tarifs viennent du cache du skill (06/10/2026). Décision de Louis : le chapitre ne désigne aucun modèle par défaut (la recommandation d'Anthropic de commencer par Opus 5.5 est écartée) ; le choix s'estime d'après la tâche, et la partie modèle dit ce que le modèle change au-delà du prix (rapidité, difficulté des tâches).
 
 ## Vérifications graphiques et X11 des chapitres OpenGL et XTEST (2026-10-05)
 
