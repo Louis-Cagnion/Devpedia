@@ -711,6 +711,10 @@
             {
               "id": "degrades",
               "label": "CSS Gradients (linear, radial, conic)"
+            },
+            {
+              "id": "animations-css-performantes",
+              "label": "Performant CSS animations"
             }
           ]
         },
