@@ -55,7 +55,7 @@ requestAnimationFrame(frame);
 
 `ahora` (proporcionado automáticamente por el navegador, en milisegundos) permite basar la animación en el **tiempo real transcurrido** en lugar del número de llamadas: una animación que avanza un paso fijo en cada llamada a `frame` iría más rápido en una pantalla de 144Hz que en una de 60Hz, mientras que una animación basada en `ahora` mantiene la misma velocidad percibida, sea cual sea la tasa de refresco.
 
-> **Buena práctica:** preferir `requestAnimationFrame` a `setInterval` para cualquier animación visual. El navegador puede sincronizar la llamada con su propio refresco de pantalla (imagen más fluida) y suspende automáticamente las llamadas de una pestaña no visible (ahorro de recursos), algo que un `setInterval` nunca hace por sí mismo.
+> **Buena práctica:** preferir `requestAnimationFrame` a `setInterval` para cualquier animación visual. El navegador puede sincronizar la llamada con su propio refresco de pantalla (imagen más fluida) y suspende automáticamente las llamadas de una pestaña no visible (ahorro de recursos), mientras que un `setInterval` sigue funcionando en una pestaña oculta, solo que más lento (el navegador impone un retardo mínimo, del orden de un segundo según el navegador; [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout)).
 
 ## El suavizado exponencial: seguir un objetivo sin saltos
 
