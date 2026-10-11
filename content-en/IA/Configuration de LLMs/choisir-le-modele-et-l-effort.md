@@ -2,10 +2,7 @@
 order: 2
 ---
 
-# Choosing the model and the effort level of Claude
-
-> **Values verified on October 11, 2026.** Models, effort levels and prices change: check the official documentation of [Anthropic](https://www.anthropic.com), the company that develops Claude, on the [models page](https://docs.claude.com/en/docs/about-claude/models) and on the [pricing page](https://www.anthropic.com/pricing).
-
+# Choosing the model and the effort level of Claude (October 11, 2026)
 **Claude** is a family of [LLMs](/?c=ia&s=nlp-llm&p=nlp-et-llm) (large language models, programs that produce text). Two settings determine both the result and the bill: the **model** (which program answers) and the **effort** (how much work it does before answering). A poor choice costs money in both directions: too weak, the task fails; too strong, you pay for [tokens](/?c=ia&s=nlp-llm&p=nlp-et-llm) (the word fragments the model reads and writes, and that are billed) for nothing. This chapter gives the benchmarks to choose, then shows where to set each setting in [Claude Code](/?c=ia&s=applications-llm&p=assistant-agentique-terminal) and in the [API](/?c=infrastructure-devops&s=infrastructure&p=api-et-http) (the way to send requests to a service from a program).
 
 ## Two distinct settings
@@ -19,7 +16,7 @@ The two combine and are chosen together, as the decision tree below shows.
 
 ## Current models
 
-Each model has an **API identifier**: the exact string to provide when a program calls the service through the API. Prices are in dollars per million tokens (M). The **input** refers to the tokens sent to the model (the [prompt](/?c=ia&s=nlp-llm&p=prompt-engineering), that is the instruction and the documents provided), the **output** to those it produces (the response), which cost more.
+Each model has an **API identifier**: the exact string to provide when a program calls the service through the API. Prices are in dollars per million tokens (M). The **input** refers to the tokens sent to the model (the [prompt](/?c=ia&s=nlp-llm&p=prompt-engineering), that is the instruction and the documents provided), the **output** to those it produces (the response), which cost more. These values change: check them in the official documentation of [Anthropic](https://www.anthropic.com), the company that develops Claude, on the [models page](https://docs.claude.com/en/docs/about-claude/models) and on the [pricing page](https://www.anthropic.com/pricing).
 
 | Model | API identifier | Input ($/M) | Output ($/M) | Default effort | When to choose it |
 |---|---|---|---|---|---|

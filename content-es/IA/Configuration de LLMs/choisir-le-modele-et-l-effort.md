@@ -2,10 +2,7 @@
 order: 2
 ---
 
-# Elegir el modelo y el nivel de esfuerzo de Claude
-
-> **Valores verificados el 11/10/2026.** Los modelos, los niveles de esfuerzo y las tarifas evolucionan: hay que verificar la documentación oficial de [Anthropic](https://www.anthropic.com), la empresa que desarrolla Claude, en la [página de modelos](https://docs.claude.com/en/docs/about-claude/models) y en la [página de tarifas](https://www.anthropic.com/pricing).
-
+# Elegir el modelo y el nivel de esfuerzo de Claude (11/10/2026)
 **Claude** es una familia de [LLM](/?c=ia&s=nlp-llm&p=nlp-et-llm) (modelos de lenguaje de gran tamaño, programas que producen texto). Dos ajustes determinan el resultado y la factura: el **modelo** (qué programa responde) y el **esfuerzo** (cuánto trabajo aporta antes de responder). Una mala elección sale cara en los dos sentidos: si es demasiado débil, la tarea fracasa; si es demasiado fuerte, se pagan [tokens](/?c=ia&s=nlp-llm&p=nlp-et-llm) (los fragmentos de palabras que el modelo lee y escribe, y que se facturan) para nada. Este capítulo ofrece las pautas para elegir y luego muestra dónde fijar cada ajuste en [Claude Code](/?c=ia&s=applications-llm&p=assistant-agentique-terminal) y en la [API](/?c=infrastructure-devops&s=infrastructure&p=api-et-http) (la forma de enviar peticiones a un servicio desde un programa).
 
 ## Dos ajustes distintos
@@ -19,7 +16,7 @@ Ambos se combinan y se eligen juntos, como muestra el árbol de decisión más a
 
 ## Los modelos actuales
 
-Cada modelo tiene un **identificador de API**: la cadena exacta que hay que proporcionar cuando un programa llama al servicio mediante la API. Los precios están en dólares por millón de tokens (M). La **entrada** designa los tokens enviados al modelo (el [prompt](/?c=ia&s=nlp-llm&p=prompt-engineering), la instrucción y los documentos proporcionados), y la **salida** los que produce (la respuesta), que son más caros.
+Cada modelo tiene un **identificador de API**: la cadena exacta que hay que proporcionar cuando un programa llama al servicio mediante la API. Los precios están en dólares por millón de tokens (M). La **entrada** designa los tokens enviados al modelo (el [prompt](/?c=ia&s=nlp-llm&p=prompt-engineering), la instrucción y los documentos proporcionados), y la **salida** los que produce (la respuesta), que son más caros. Estos valores evolucionan: hay que releerlos en la documentación oficial de [Anthropic](https://www.anthropic.com), la empresa que desarrolla Claude, en la [página de modelos](https://docs.claude.com/en/docs/about-claude/models) y en la [página de tarifas](https://www.anthropic.com/pricing).
 
 | Modelo | Identificador de API | Entrada ($/M) | Salida ($/M) | Esfuerzo por defecto | Cuándo elegirlo |
 |---|---|---|---|---|---|
