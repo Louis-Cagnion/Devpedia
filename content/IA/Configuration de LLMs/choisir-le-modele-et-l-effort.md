@@ -9,8 +9,19 @@ order: 2
 
 | Réglage | Question | Ce qu'il change |
 |---|---|---|
-| Modèle | Quel programme répond ? | Le prix par token, la capacité de raisonnement, le délai de réponse (la latence, voir [LLM en production](/?c=ia&s=nlp-llm&p=llm-en-production)) |
+| Modèle | Quel programme répond ? | Le prix par token, le délai de réponse (la latence, voir [LLM en production](/?c=ia&s=nlp-llm&p=llm-en-production)), et surtout le **plafond de qualité** : ce que Claude sait et comprend, et la difficulté maximale des tâches qu'il sait traiter |
 | Effort | Quel travail fournit-il pour cette réponse ? | Le nombre de tokens produits, donc le coût et le délai ; un effort bas donne aussi moins d'appels d'outils (actions comme lire un fichier, voir [Agents](/?c=ia&s=nlp-llm&p=agents)), moins de préambule (texte d'introduction avant d'agir) et des confirmations plus brèves |
+
+Une analogie : le modèle est la personne qui travaille (un stagiaire, un ingénieur confirmé, un expert), l'effort est le temps qu'elle consacre à ce dossier. Passer plus de temps ne donne ni les connaissances ni l'intuition qui manquent : un stagiaire qui y passe une semaine ne devient pas expert, et un expert qui y passe deux minutes peut rater un détail.
+
+| Combinaison | Effet |
+|---|---|
+| Petit modèle, effort élevé | Réfléchit longtemps mais reste borné par ce qu'il sait faire : des tokens dépensés sans garantie de réussite si la tâche est trop difficile pour lui |
+| Grand modèle, effort bas | Répond vite et pour peu de tokens, mais peut passer à côté d'un détail dans une tâche subtile |
+| Même modèle, effort différent | Même savoir, profondeur différente : plus ou moins de réflexion et d'actions avant de répondre |
+| Même effort, modèle différent | Même profondeur de travail, mais un autre plafond de qualité et un autre prix par token |
+
+L'effort n'est pas une limite stricte de tokens : c'est une consigne de profondeur que le modèle suit.
 
 Les deux se combinent et se choisissent ensemble, comme le montre l'arbre de décision plus bas.
 
@@ -18,19 +29,33 @@ Les deux se combinent et se choisissent ensemble, comme le montre l'arbre de dé
 
 Chaque modèle a un **identifiant API** : la chaîne exacte à fournir quand un programme appelle le service par l'API. Les prix sont en dollars par million de tokens (M). L'**entrée** désigne les tokens envoyés au modèle (le [prompt](/?c=ia&s=nlp-llm&p=prompt-engineering), la consigne et les documents fournis), la **sortie** ceux qu'il produit (la réponse), plus chers. Ces valeurs évoluent : les relire dans la documentation officielle d'[Anthropic](https://www.anthropic.com), l'entreprise qui développe Claude, sur la [page des modèles](https://docs.claude.com/en/docs/about-claude/models) et sur la [page des tarifs](https://www.anthropic.com/pricing).
 
-| Modèle | Identifiant API | Entrée ($/M) | Sortie ($/M) | Effort par défaut | Quand le choisir |
-|---|---|---|---|---|---|
-| Claude Haiku 5.5 | `claude-haiku-5-5` | 0,10 | 0,50 | medium | Tâches simples et nombreuses (classer, extraire, converser), sous-agents : le moins cher |
-| Claude Sonnet 5.5 | `claude-sonnet-5-5` | 2,00 | 10,00 | high | Palier intermédiaire : quand Haiku échoue sur un échantillon réel (quelques tâches représentatives de son propre travail) et que le surcoût d'Opus n'est pas justifié |
-| Claude Opus 5.5 | `claude-opus-5-5` | 4,00 | 20,00 | medium | Quand Sonnet échoue sur un échantillon réel ; sa réflexion ne peut pas être désactivée, l'effort est son seul réglage de profondeur |
-| Claude Fable 5.1 | `claude-fable-5-1` | 10,00 | 50,00 | high | Le plus cher : seulement quand Opus échoue à un effort adapté |
+| Modèle | Identifiant API | Entrée ($/M) | Sortie ($/M) | Effort par défaut |
+|---|---|---|---|---|
+| Claude Haiku 5.5 | `claude-haiku-5-5` | 0,10 | 0,50 | medium |
+| Claude Sonnet 5.5 | `claude-sonnet-5-5` | 2,00 | 10,00 | high |
+| Claude Opus 5.5 | `claude-opus-5-5` | 4,00 | 20,00 | medium |
+| Claude Fable 5.1 | `claude-fable-5-1` | 10,00 | 50,00 | high |
 
-Deux précisions :
+Une précision :
 
 - Haiku 5.5 est facturé au prix ci-dessus pour des prompts jusqu'à 100 000 tokens ; au-delà, 0,50 $ en entrée et 2,50 $ en sortie.
-- Les quatre modèles ont une fenêtre de contexte de 1 million de tokens : la quantité maximale de texte (prompt et réponse compris) qu'ils traitent en une fois (voir [la fenêtre de contexte](/?c=ia&s=nlp-llm&p=llm-en-production)).
 
-La colonne « Quand le choisir » applique une règle simple : prendre le modèle le moins cher qui réussit sur un échantillon réel de ses propres tâches, et ne monter d'un cran que si une mesure l'exige.
+## Ce que le modèle change, au-delà du prix
+
+Le prix n'est pas la seule différence. D'après la [comparaison officielle](https://platform.claude.com/docs/en/about-claude/models/overview) d'Anthropic, les modèles se distinguent par leur **rapidité de réponse** (la latence) et par la **difficulté des tâches** auxquelles ils sont destinés. Une tâche est plus difficile quand elle demande de raisonner en plusieurs étapes, de tenir compte de nombreuses consignes à la fois ou de trouver une cause cachée.
+
+| Modèle | Rapidité (comparée) | Destiné à (d'après Anthropic) |
+|---|---|---|
+| Claude Haiku 5.5 | La plus rapide | Tâches nombreuses où la rapidité compte : classer, extraire, aiguiller (*routing* : décider à qui ou à quoi envoyer une demande) |
+| Claude Sonnet 5.5 | Rapide | Le meilleur compromis entre rapidité et intelligence, pour le travail quotidien |
+| Claude Opus 5.5 | Moyenne | Travail long et autonome : code agentique (un agent qui lit, modifie et teste du code), travail de connaissance. Sa réflexion ne peut pas être désactivée : l'effort est son seul réglage de profondeur |
+| Claude Fable 5.1 | La plus lente | Raisonnement exigeant et travail autonome de longue durée ; à utiliser quand les évaluations sur Opus 5.5, même à un effort plus élevé, restent insuffisantes |
+
+Du plus petit au plus grand, la rapidité baisse, le prix monte et la capacité à venir à bout de tâches difficiles monte. La documentation ne donne pas d'échelle chiffrée de cette capacité : l'écart réel se mesure sur ses propres tâches.
+
+Ce qui **ne change pas** d'un modèle à l'autre, d'après la même comparaison : texte et images en entrée, texte en sortie, plusieurs langues, utilisation d'outils, fenêtre de contexte de 1 million de tokens (la quantité maximale de texte, prompt et réponse compris, qu'ils traitent en une fois, voir [la fenêtre de contexte](/?c=ia&s=nlp-llm&p=llm-en-production)), réponse de 128 000 tokens au plus, connaissances arrêtées à juin 2026. Choisir un modèle ne change donc pas ce que Claude peut lire ou produire, mais la qualité de son raisonnement sur les tâches difficiles, sa rapidité et son prix.
+
+Aucun modèle n'est le bon par défaut : le choix dépend de la tâche (voir « Estimer le modèle et l'effort d'une tâche » plus bas). Pour un gros volume où le prix ou la rapidité compte, on garde le plus petit modèle qui réussit sur un **échantillon réel** (quelques tâches représentatives de son propre travail).
 
 ## Les niveaux d'effort
 
@@ -68,16 +93,33 @@ Le niveau `max` suit donc une règle stricte : il n'est justifié que pour un pr
 | Pas de vérité garantie | Un effort élevé n'élimine pas les [hallucinations](/?c=ia&s=nlp-llm&p=llm-en-production) (affirmations inventées, énoncées avec assurance) : le résultat se vérifie toujours |
 | Pas de remplaçant d'une bonne consigne | Une demande floue reste floue à `max` : la [rédaction du prompt](/?c=ia&s=nlp-llm&p=prompt-engineering) prime |
 
+## Estimer le modèle et l'effort d'une tâche
+
+Aucun couple modèle et effort n'est le bon par défaut : on l'estime d'après la tâche, avec six questions. Les orientations sont des règles pratiques, pas des mesures d'Anthropic : un test sur un échantillon réel les confirme ou les corrige.
+
+| Question sur la tâche | Si oui | Orientation |
+|---|---|---|
+| Tient-elle en une étape, avec une réponse facile à vérifier (classer, extraire, reformuler) ? | Tâche simple | Haiku 5.5, effort `low` |
+| Est-elle bien décrite, avec un résultat attendu précis, mais sur plusieurs étapes ou fichiers (code courant, rédaction, débogage simple) ? | Tâche courante | Sonnet 5.5, effort `medium` |
+| Contient-elle une ambiguïté, une cause inconnue à trouver ou un choix d'architecture à trancher ? | Tâche difficile | Opus 5.5, effort `high` |
+| Opus 5.5 échoue-t-il encore à un effort élevé ? | Limite du modèle | Fable 5.1 ; `max` seulement après un échec constaté à `xhigh` |
+| Une erreur coûte-t-elle cher ou est-elle difficile à défaire (revue avant une action irréversible, travail long et autonome) ? | Enjeu élevé | Monter l'effort (`xhigh`) avant de changer de modèle |
+| Le volume est-il grand, ou la rapidité essentielle ? | Contrainte de prix ou de délai | Descendre d'un cran de modèle et valider sur un échantillon réel |
+
+Quand une tâche échoue, la question est : faut-il un modèle plus fort ou plus d'effort ? Si le modèle bâcle (oublis, réponse superficielle, étape sautée), on monte l'**effort**. S'il échoue malgré un effort élevé, parce qu'il lui manque le raisonnement ou le savoir pour cette tâche, on change de **modèle**. L'effort ne remplace pas ce qui manque au modèle, et un grand modèle à effort bas peut passer à côté d'un détail.
+
 ## Arbre de décision
 
 ```text
 Tâche à confier à Claude
         │
         ▼
-1. MODÈLE : partir du moins cher (Haiku 5.5), le tester sur un échantillon réel
+1. MODÈLE : choisir d'après la tâche
         │
-        ├─ réussit ──────────────► le garder
-        └─ échoue ───────────────► Sonnet 5.5, puis Opus 5.5, puis Fable 5.1
+        ├─ nombreuse, courte, rapidité essentielle ────────────► Haiku 5.5
+        ├─ travail quotidien, compromis rapidité/qualité ──────► Sonnet 5.5
+        ├─ travail long et autonome, cas général ──────────────► Opus 5.5
+        └─ raisonnement exigeant, Opus insuffisant ────────────► Fable 5.1
         │
         ▼
 2. EFFORT : partir du défaut du modèle, augmenter seulement si la tâche
@@ -158,6 +200,7 @@ Une requête est un message [JSON](/?c=infrastructure-devops&s=infrastructure&p=
 | Piège | Pourquoi c'est un problème |
 |---|---|
 | Choisir `max` par défaut ou par précaution | Coût maximal pour un gain le plus souvent nul : il se réserve à un échec constaté à `xhigh` |
+| Choisir le modèle sur son seul prix | Un modèle trop petit échoue sur les tâches difficiles et coûte des relances ; un modèle trop grand est plus lent et plus cher que nécessaire |
 | Monter l'effort avant de mesurer | Sans mesure sur un échantillon réel, on ne sait pas si le niveau inférieur suffisait |
 | Juger le coût par requête | Une requête moins chère qui demande plus de tours coûte autant ou plus par tâche terminée |
 | Comparer deux modèles à effort différent | Les défauts diffèrent (Sonnet 5.5 à `high`, Opus 5.5 à `medium`) : la comparaison ne mesure plus le modèle seul |
@@ -170,7 +213,7 @@ Une requête est un message [JSON](/?c=infrastructure-devops&s=infrastructure&p=
 
 | Bonne pratique | Pourquoi |
 |---|---|
-| Commencer par le modèle le moins cher et son effort par défaut | C'est le point de départ le plus économique ; on monte seulement si la tâche le justifie |
+| Choisir le modèle d'après la tâche, garder le plus petit qui réussit sur un échantillon réel, et partir de son effort par défaut | Le prix et la latence baissent vers Haiku, la capacité sur les tâches difficiles monte vers Fable ; on ne monte que si la tâche le justifie |
 | Augmenter pour une raison concrète : ambiguïté forte, enjeu élevé ou échec constaté | Chaque palier a un coût ; une raison précise évite d'en payer inutilement |
 | Réserver `max` à un échec constaté à `xhigh` sur un problème sans solution connue | Seul cas où la marge supplémentaire peut valoir son prix |
 | Mesurer sur un échantillon réel avant de monter un défaut | Une mesure prime sur l'intuition (voir [mesurer avant d'optimiser](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser)) |
@@ -181,6 +224,6 @@ Une requête est un message [JSON](/?c=infrastructure-devops&s=infrastructure&p=
 
 | | |
 |---|---|
-| **À retenir** | Deux réglages : le modèle (Haiku 5.5, Sonnet 5.5, Opus 5.5, Fable 5.1, du moins au plus cher) et l'effort (`low`, `medium`, `high`, `xhigh`, `max`). On commence par le défaut et on monte seulement sur une raison concrète. `max` est réservé à un échec constaté à `xhigh`. Dans Claude Code : `/model`, `/effort`, les lignes `model:` et `effort:` d'un agent ; côté API : `output_config`. |
+| **À retenir** | Deux réglages : le modèle (Haiku 5.5, Sonnet 5.5, Opus 5.5, Fable 5.1, du plus rapide et moins cher au plus capable et plus cher ; il fixe la rapidité, le prix et la difficulté des tâches réussies) et l'effort (`low`, `medium`, `high`, `xhigh`, `max`). On commence par le défaut et on monte seulement sur une raison concrète. `max` est réservé à un échec constaté à `xhigh`. Dans Claude Code : `/model`, `/effort`, les lignes `model:` et `effort:` d'un agent ; côté API : `output_config`. |
 | **Pièges à éviter** | `max` par défaut, monter sans mesurer, juger le coût par requête, comparer à effort différent, oublier qu'un réglage est enregistré, croire que Haiku 5.5 ne gère pas l'effort, attendre de l'effort qu'il corrige une consigne floue. |
-| **Bonnes pratiques** | Le moins cher d'abord, mesurer sur un échantillon réel, fixer le niveau dans l'en-tête des agents, juger le coût par tâche terminée, vérifier la documentation officielle. |
+| **Bonnes pratiques** | Modèle choisi d'après la tâche (le plus petit qui réussit), mesurer sur un échantillon réel, fixer le niveau dans l'en-tête des agents, juger le coût par tâche terminée, vérifier la documentation officielle. |
