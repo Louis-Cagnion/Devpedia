@@ -668,6 +668,10 @@
             {
               "id": "attributs-data-et-accessibilite",
               "label": "Atributos data-* e acessibilidade (ARIA)"
+            },
+            {
+              "id": "aria-dynamique-et-focus-clavier",
+              "label": "ARIA dinâmico e gerenciamento do foco pelo teclado"
             }
           ]
         },
