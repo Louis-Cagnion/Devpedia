@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`todo.md`) garde les points restants ; `git log` garde le détail mécanique de ce qui a été fait. Ce qui a été traité et commité n'apparaît pas ici comme une reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Chapitre « Choisir le modèle et le niveau d'effort de Claude » (2026-10-11)
+
+Faits vérifiés le jour même avec la documentation officielle (skill `claude-api`) : Haiku 5.5 accepte les cinq niveaux d'effort (défaut `medium`), contrairement à Haiku 4.5. Le todo, `/best-practice` et la description de `builder-haiku` disent encore « Haiku ne supporte pas l'effort » ; le chapitre le précise. Les tarifs viennent du cache du skill (06/10/2026).
+
 ## Vérifications graphiques et X11 des chapitres OpenGL et XTEST (2026-10-05)
 
 Le projet scop n'est pas sur cette machine (seule la sauvegarde `~/.claude/scop-crash-test` y est), mais les vérifications du todo n'en ont pas besoin : GLFW 3.3.10, un GLAD 1.x généré avec `pip install glad==0.1.36`, deux cartes (AMD 680M par défaut, NVIDIA RTX 3070) et Xorg suffisent. Le code des chapitres a été compilé tel quel. Trois résultats imprévus, ajoutés aux chapitres : `DRI_PRIME=1` retombe sur `llvmpipe` quand la carte dédiée est NVIDIA propriétaire ; `__GL_SYNC_TO_VBLANK=0` est sans effet en rendu délégué (PRIME offload) alors que `glfwSwapInterval(0)` marche ; le piège du `trap` retardé ne concerne que les traps de signal (`EXIT` seul tue et relâche aussitôt). Les essais clavier se font dans Xephyr (serveur imbriqué, Xvfb absent) et jamais en pressant une vraie touche de la session : seule F13, sans effet dans les applications et réparée aussitôt, l'a été pour confirmer que `xinput query-state` voit `key[N]=down` sur Xorg (Xephyr ne le montre pas). Un plafond de durée d'image fait perdre le temps d'un arrêt plus long que lui (3,81 au lieu de 5 après un arrêt d'environ 0,3 s du pilote NVIDIA).

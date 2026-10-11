@@ -1885,6 +1885,10 @@
             {
               "id": "hooks",
               "label": "Les hooks : automatiser un agent LLM à des points précis de son cycle de vie"
+            },
+            {
+              "id": "choisir-le-modele-et-l-effort",
+              "label": "Choisir le modèle et le niveau d'effort de Claude"
             }
           ]
         },

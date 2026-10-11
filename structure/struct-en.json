@@ -1885,6 +1885,10 @@
             {
               "id": "hooks",
               "label": "Hooks: automating an LLM agent at precise points in its lifecycle"
+            },
+            {
+              "id": "choisir-le-modele-et-l-effort",
+              "label": "Choosing the model and the effort level of Claude"
             }
           ]
         },
