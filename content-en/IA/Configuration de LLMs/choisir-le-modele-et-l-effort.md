@@ -9,8 +9,19 @@ order: 2
 
 | Setting | Question | What it changes |
 |---|---|---|
-| Model | Which program answers? | The price per token, the reasoning capacity, the response delay (latency, see [LLM in production](/?c=ia&s=nlp-llm&p=llm-en-production)) |
+| Model | Which program answers? | The price per token, the response delay (latency, see [LLM in production](/?c=ia&s=nlp-llm&p=llm-en-production)), and above all the **quality ceiling**: what Claude knows and understands, and the hardest tasks it can handle |
 | Effort | How much work does it put into this answer? | The number of tokens produced, hence the cost and the delay; low effort also means fewer tool calls (actions such as reading a file, see [agents](/?c=ia&s=nlp-llm&p=agents)), less preamble (introductory text before acting) and shorter confirmations |
+
+An analogy: the model is the person doing the work (an intern, an experienced engineer, an expert), and the effort is the time they spend on the case. Spending more time does not supply the knowledge or intuition that is missing: an intern who spends a week on it does not become an expert, and an expert who spends two minutes on it can miss a detail.
+
+| Combination | Effect |
+|---|---|
+| Small model, high effort | Thinks for a long time but stays limited by what it can do: tokens spent with no guarantee of success if the task is too hard for it |
+| Large model, low effort | Answers quickly and for few tokens, but can miss a detail in a subtle task |
+| Same model, different effort | Same knowledge, different depth: more or less thinking and action before answering |
+| Same effort, different model | Same depth of work, but a different quality ceiling and a different price per token |
+
+Effort is not a strict token limit: it is a depth instruction that the model follows.
 
 The two combine and are chosen together, as the decision tree below shows.
 
@@ -18,19 +29,33 @@ The two combine and are chosen together, as the decision tree below shows.
 
 Each model has an **API identifier**: the exact string to provide when a program calls the service through the API. Prices are in dollars per million tokens (M). The **input** refers to the tokens sent to the model (the [prompt](/?c=ia&s=nlp-llm&p=prompt-engineering), that is the instruction and the documents provided), the **output** to those it produces (the response), which cost more. These values change: check them in the official documentation of [Anthropic](https://www.anthropic.com), the company that develops Claude, on the [models page](https://docs.claude.com/en/docs/about-claude/models) and on the [pricing page](https://www.anthropic.com/pricing).
 
-| Model | API identifier | Input ($/M) | Output ($/M) | Default effort | When to choose it |
-|---|---|---|---|---|---|
-| Claude Haiku 5.5 | `claude-haiku-5-5` | 0.10 | 0.50 | medium | Simple, high-volume tasks (classifying, extracting, chatting), subagents: the cheapest |
-| Claude Sonnet 5.5 | `claude-sonnet-5-5` | 2.00 | 10.00 | high | Middle tier: when Haiku fails on a real sample (a few tasks representative of your own work) and the extra cost of Opus is not justified |
-| Claude Opus 5.5 | `claude-opus-5-5` | 4.00 | 20.00 | medium | When Sonnet fails on a real sample; its reasoning cannot be turned off, so effort is its only depth setting |
-| Claude Fable 5.1 | `claude-fable-5-1` | 10.00 | 50.00 | high | The most expensive: only when Opus fails at an appropriate effort |
+| Model | API identifier | Input ($/M) | Output ($/M) | Default effort |
+|---|---|---|---|---|
+| Claude Haiku 5.5 | `claude-haiku-5-5` | 0.10 | 0.50 | medium |
+| Claude Sonnet 5.5 | `claude-sonnet-5-5` | 2.00 | 10.00 | high |
+| Claude Opus 5.5 | `claude-opus-5-5` | 4.00 | 20.00 | medium |
+| Claude Fable 5.1 | `claude-fable-5-1` | 10.00 | 50.00 | high |
 
-Two details:
+One detail:
 
 - Haiku 5.5 is billed at the price above for prompts up to 100,000 tokens; beyond that, $0.50 for input and $2.50 for output.
-- All four models have a context window of 1 million tokens: the maximum amount of text (prompt and response included) they process at once (see [the context window](/?c=ia&s=nlp-llm&p=llm-en-production)).
 
-The "When to choose it" column applies a simple rule: take the cheapest model that succeeds on a real sample of your own tasks, and move up one step only if a measurement requires it.
+## What the model changes beyond the price
+
+Price is not the only difference. According to Anthropic's [official comparison](https://platform.claude.com/docs/en/about-claude/models/overview), the models differ in their **response speed** (latency) and in the **difficulty of the tasks** they are meant for. A task is harder when it requires reasoning in several steps, keeping many instructions in mind at once, or finding a hidden cause.
+
+| Model | Speed (compared) | Meant for (according to Anthropic) |
+|---|---|---|
+| Claude Haiku 5.5 | The fastest | Many tasks where speed matters: classifying, extracting, routing (deciding who or what a request is sent to) |
+| Claude Sonnet 5.5 | Fast | The best combination of speed and intelligence, for everyday work |
+| Claude Opus 5.5 | Moderate | Long, autonomous work: agentic coding (an agent that reads, edits and tests code), knowledge work. Its reasoning cannot be turned off: effort is its only depth setting |
+| Claude Fable 5.1 | The slowest | Demanding reasoning and long-running autonomous work; to use when evaluations on Opus 5.5, even at a higher effort, still fall short |
+
+From the smallest to the largest, speed goes down, price goes up, and the ability to handle hard tasks goes up. The documentation gives no numerical scale for that ability: the real gap is measured on your own tasks.
+
+What **does not change** from one model to another, according to the same comparison: text and images as input, text as output, several languages, tool use, a context window of 1 million tokens (the maximum amount of text, prompt and response included, they process at once, see [the context window](/?c=ia&s=nlp-llm&p=llm-en-production)), responses of at most 128,000 tokens, knowledge up to June 2026. Choosing a model therefore does not change what Claude can read or produce, but the quality of its reasoning on hard tasks, its speed and its price.
+
+No model is the right default: the choice depends on the task (see "Estimating the model and the effort of a task" below). For a large volume where price or speed matters, keep the smallest model that succeeds on a **real sample** (a few tasks representative of your own work).
 
 ## Effort levels
 
@@ -68,16 +93,33 @@ The `max` level therefore follows a strict rule: it is justified only for a fron
 | No guaranteed truth | High effort does not eliminate [hallucinations](/?c=ia&s=nlp-llm&p=llm-en-production) (invented claims, stated with confidence): the result must always be verified |
 | No replacement for a good instruction | A vague request stays vague at `max`: [prompt writing](/?c=ia&s=nlp-llm&p=prompt-engineering) comes first |
 
+## Estimating the model and the effort of a task
+
+No model and effort pair is the right default: you estimate it from the task, with six questions. The orientations are rules of thumb, not Anthropic measurements: a test on a real sample confirms or corrects them.
+
+| Question about the task | If yes | Orientation |
+|---|---|---|
+| Does it fit in one step, with an answer that is easy to check (classify, extract, rephrase)? | Simple task | Haiku 5.5, `low` effort |
+| Is it well described, with a precise expected result, but over several steps or files (everyday code, writing, simple debugging)? | Everyday task | Sonnet 5.5, `medium` effort |
+| Does it contain an ambiguity, an unknown cause to find, or an architecture choice to settle? | Hard task | Opus 5.5, `high` effort |
+| Does Opus 5.5 still fail at a high effort? | Limit of the model | Fable 5.1; `max` only after a failure observed at `xhigh` |
+| Does an error cost a lot or is it hard to undo (review before an irreversible action, long autonomous work)? | High stakes | Raise the effort (`xhigh`) before changing the model |
+| Is the volume large, or is speed essential? | Price or delay constraint | Go down one model tier and validate on a real sample |
+
+When a task fails, the question is: does it need a stronger model or more effort? If the model rushes (omissions, superficial answer, skipped step), raise the **effort**. If it fails despite a high effort, because it lacks the reasoning or the knowledge for this task, change the **model**. Effort does not replace what the model lacks, and a large model at low effort can miss a detail.
+
 ## Decision tree
 
 ```text
 Task to entrust to Claude
         │
         ▼
-1. MODEL: start with the cheapest (Haiku 5.5), test it on a real sample
+1. MODEL: choose according to the task
         │
-        ├─ succeeds ──────────────────────────► keep it
-        └─ fails ─────────────────────────────► Sonnet 5.5, then Opus 5.5, then Fable 5.1
+        ├─ many, short, speed essential ──────────────► Haiku 5.5
+        ├─ everyday work, speed/quality balance ──────► Sonnet 5.5
+        ├─ long autonomous work, general case ────────► Opus 5.5
+        └─ demanding reasoning, Opus not enough ──────► Fable 5.1
         │
         ▼
 2. EFFORT: start from the model's default, raise it only if the task
@@ -158,6 +200,7 @@ A request is a [JSON](/?c=infrastructure-devops&s=infrastructure&p=json) message
 | Pitfall | Why it's a problem |
 |---|---|
 | Choosing `max` by default or as a precaution | Maximum cost for a gain that is most often nil: it is reserved for a failure observed at `xhigh` |
+| Choosing the model on its price alone | A model that is too small fails on hard tasks and costs retries; a model that is too large is slower and more expensive than needed |
 | Raising the effort before measuring | Without a measurement on a real sample, you cannot know whether the lower level was enough |
 | Judging cost per request | A cheaper request that needs more turns costs as much or more per completed task |
 | Comparing two models at different effort | Defaults differ (Sonnet 5.5 at `high`, Opus 5.5 at `medium`): the comparison no longer measures the model alone |
@@ -170,7 +213,7 @@ A request is a [JSON](/?c=infrastructure-devops&s=infrastructure&p=json) message
 
 | Best practice | Why |
 |---|---|
-| Start with the cheapest model and its default effort | It is the most economical starting point; you move up only if the task justifies it |
+| Choose the model according to the task, keep the smallest one that succeeds on a real sample, and start from its default effort | Price and latency go down toward Haiku, the ability on hard tasks goes up toward Fable; you move up only if the task justifies it |
 | Raise the effort for a concrete reason: strong ambiguity, high stakes or an observed failure | Each step has a cost; a specific reason avoids paying for it unnecessarily |
 | Reserve `max` for an observed failure at `xhigh` on a problem with no known solution | The only case where the extra margin may be worth its price |
 | Measure on a real sample before raising a default | A measurement takes precedence over intuition (see [measure before optimizing](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser)) |
@@ -181,6 +224,6 @@ A request is a [JSON](/?c=infrastructure-devops&s=infrastructure&p=json) message
 
 | | |
 |---|---|
-| **Key Points** | Two settings: the model (Haiku 5.5, Sonnet 5.5, Opus 5.5, Fable 5.1, from cheapest to most expensive) and the effort (`low`, `medium`, `high`, `xhigh`, `max`). Start from the default and move up only for a concrete reason. `max` is reserved for a failure observed at `xhigh`. In Claude Code: `/model`, `/effort`, the `model:` and `effort:` lines of an agent; on the API side: `output_config`. |
+| **Key Points** | Two settings: the model (Haiku 5.5, Sonnet 5.5, Opus 5.5, Fable 5.1, from fastest and cheapest to most capable and most expensive; it sets the speed, the price and the difficulty of the tasks it can succeed at) and the effort (`low`, `medium`, `high`, `xhigh`, `max`). Start from the default and move up only for a concrete reason. `max` is reserved for a failure observed at `xhigh`. In Claude Code: `/model`, `/effort`, the `model:` and `effort:` lines of an agent; on the API side: `output_config`. |
 | **Pitfalls to Avoid** | `max` by default, raising the effort without measuring, judging cost per request, comparing at different effort, forgetting that a setting is saved, believing Haiku 5.5 does not handle effort, expecting effort to fix a vague instruction. |
-| **Best Practices** | Cheapest first, measure on a real sample, set the level in the agent header, judge the cost per completed task, check the official documentation. |
+| **Best Practices** | Model chosen according to the task (the smallest that succeeds), measure on a real sample, set the level in the agent header, judge the cost per completed task, check the official documentation. |
