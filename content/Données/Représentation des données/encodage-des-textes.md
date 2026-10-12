@@ -80,7 +80,7 @@ len(texte.encode("utf-8"))  # 5 -> le "é" prend 2 octets
 
 En C, où une chaîne est un tableau d'octets, `strlen("café")` renvoie **5**. Découper une telle chaîne à l'octet près peut couper un caractère en deux et produire des données invalides.
 
-Pire, "un caractère" est lui-même ambigu : certains signes visibles sont composés de **plusieurs** points de code (une lettre plus un accent combinant, un emoji drapeau, un emoji avec modificateur de teint). L'unité que perçoit un humain s'appelle un **graphème**, et compter les graphèmes demande une bibliothèque dédiée.
+Pire, "un caractère" est lui-même ambigu : certains signes visibles sont composés de **plusieurs** points de code (une lettre plus un accent combinant, un emoji drapeau, un emoji avec modificateur de teint). L'unité que perçoit un humain s'appelle un **graphème**, et compter les graphèmes demande une bibliothèque dédiée (voir [Graphèmes, points de code et unités UTF-16](/?c=donnees&s=representation-des-donnees&p=graphemes-et-decoupage-de-texte)).
 
 ## Le mojibake : diagnostiquer les caractères cassés
 

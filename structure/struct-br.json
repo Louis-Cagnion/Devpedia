@@ -1233,6 +1233,10 @@
             {
               "id": "empreinte-audio-reconnaissance-musicale",
               "label": "A impressão digital de áudio: reconhecer uma música em poucos segundos"
+            },
+            {
+              "id": "graphemes-et-decoupage-de-texte",
+              "label": "Grafemas, pontos de código e unidades UTF-16: dividir um texto sem quebrá-lo (11/10/2026)"
             }
           ]
         },

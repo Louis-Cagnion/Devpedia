@@ -1233,6 +1233,10 @@
             {
               "id": "empreinte-audio-reconnaissance-musicale",
               "label": "Audio fingerprinting: recognizing a song in a few seconds"
+            },
+            {
+              "id": "graphemes-et-decoupage-de-texte",
+              "label": "Graphemes, Code Points and UTF-16 Units: Splitting a Text Without Breaking It (11/10/2026)"
             }
           ]
         },

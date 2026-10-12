@@ -80,7 +80,7 @@ len(text.encode("utf-8"))    # 5 -> the "é" takes 2 bytes
 
 In C, where a string is an array of bytes, `strlen("café")` returns **5**. Splitting such a string at an exact byte offset can cut a character in half and produce invalid data.
 
-Worse, "a character" is itself ambiguous: some visible signs are made up of **several** code points (a letter plus a combining accent, a flag emoji, an emoji with a skin-tone modifier). The unit a human perceives is called a **grapheme**, and counting graphemes requires a dedicated library.
+Worse, "a character" is itself ambiguous: some visible signs are made up of **several** code points (a letter plus a combining accent, a flag emoji, an emoji with a skin-tone modifier). The unit a human perceives is called a **grapheme**, and counting graphemes requires a dedicated library (see [Graphemes, code points and UTF-16 units](/?c=donnees&s=representation-des-donnees&p=graphemes-et-decoupage-de-texte)).
 
 ## Mojibake: diagnosing broken characters
 

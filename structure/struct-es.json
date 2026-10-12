@@ -1233,6 +1233,10 @@
             {
               "id": "empreinte-audio-reconnaissance-musicale",
               "label": "La huella de audio: reconocer una canción en pocos segundos"
+            },
+            {
+              "id": "graphemes-et-decoupage-de-texte",
+              "label": "Grafemas, puntos de código y unidades UTF-16: trocear un texto sin romperlo (11/10/2026)"
             }
           ]
         },
