@@ -30,3 +30,22 @@ Sujets rencontrés à la revue du 12/10/2026, sans chapitre dédié (recherche d
 - Migration de données versionnée, mode simulation avant application, SQL en masse contre enregistrement un par un, garde-fou avant suppression : `V3_00Commands.php:298`, `V3_00Commands.php:350`.
 - Verrou applicatif sur une entité : `PwEntityLockManager.php:25`.
 - Invalidation de cache à chaque écriture et risque de déni de service : `pw_core.module:90-111`.
+
+### Famille F02 « Véhicule : référentiel et fiche » (revue du 12/10/2026)
+Déjà couverts (recherche dans `content/` du 12/10/2026) : trait PHP (`Langages/PHP/poo.md`), traversée de chemin et téléversement (`Sécurité/Cybersécurité/upload-de-fichiers.md`), XSS, affectation en masse, CSRF. Restent absents :
+- Affichage d'une entité de contenu (view builder, route d'entité `_entity_view`, contrôle d'accès d'entité) : `PwVehicleViewBuilder.php:22`, `PwVehicleHtmlRouteProvider.php:16`, `PwVehicleAccessControlHandler.php:20`.
+- Schéma de données construit par du code (définitions de champs, 243 colonnes) et champ calculé : `PwVehicleService.php:916`, `Plugin/Field/PwVehicleDaysIntoStorage.php`.
+- Bloc (plugin), chargement différé (lazy builder, espace réservé) : `PwVehicleSidebarInfosBlock.php:23`, `pw_core/src/PwBlockViewBuilder.php:17`.
+- Métadonnées de cache (contextes, étiquettes, durée de vie) : `PwVehicleMainBlock.php:39-49`.
+- Ressource REST (plugin) et authentification HTTP Basic : `PwVehicleSingleResource.php:20`.
+- Contrainte de validation de données (plugin) : `VinImmatConstraintValidator.php:30`.
+- Cycle de vie d'une entité (`preSave`, `postSave`, `preDelete`, `postDelete`) et effets de bord : `PwVehicle.php:313,463`.
+- Réplication applicative référentiel vers satellites (propagation synchrone par HTTP, identifiant externe, risque de satellites désynchronisés) : `PwEntity.php:27-58`, `PwVehicle.php:522-543`.
+- Machine à états applicative (statut du véhicule, statut de publication) : `EntityVehicleStatusTrait.php:243`.
+- Hook personnalisé (déclarer et appeler son propre point d'extension : `invokeAll`, `alter`) : `EntityVehicleCalculateFieldsTrait.php:594`.
+- Dépendance optionnelle (`moduleExists`) et dépendance non déclarée : `PwVehicle.php:332`.
+- Conversion automatique d'un paramètre de route en objet (param converter) : `{pw_vehicle}` dans `pw_vehicle.routing.yml`.
+- Désactiver la vérification TLS (`verify => FALSE`) et ses risques : `PwVehicleApiConsumerService.php:58`.
+- Redimensionnement d'images et format WebP : `PwVehicleImageResizeQueue.php:83`.
+- Données personnelles dans les journaux d'erreur et les réplications (RGPD hors IA) : `PwVehicleInfos.php:211-222`.
+- Vocabulaire métier automobile (VO, VN, VD, VP, VU, DMS, reprise, stock, jumeaux) : glossaire à envisager, d'après `PwVehicleService.php` et `pw_vehicle_infos`.
