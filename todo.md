@@ -15,3 +15,18 @@ Sujets utilisés dans le Portfolio de Louis, sans chapitre dédié. Procédure :
 - `Langages/JavaScript/` : les API de page `matchMedia`, `scrollIntoView`, `visibilitychange` (onglet masqué), `AbortController`, les événements pointeur (`pointerdown`, `pointer-events`) et le chargement des polices (`document.fonts.ready`, mesurer un texte après la police).
 - `Langages/CSS/` : unités et fonctions de taille (`clamp()`, `dvh`/`svh`), agrandissement de la police à 200 et 300 % (réflexion WCAG).
 - `Tests/` : tester une interface dans un navigateur sans fenêtre (banc de tests maison, Chrome DevTools Protocol) et `node:test`, en complément de `tests-end-to-end.md`.
+
+## 3. Notions issues du projet Parot (revue /review, Drupal 11 multisite)
+Sujets rencontrés à la revue du 12/10/2026, sans chapitre dédié (recherche dans `content/` faite le 12/10/2026 : couverts à part : injection SQL, CSRF, cron, injection de dépendances de base dans `Langages/PHP/poo.md`, idempotence, redirection ouverte). Famille F01 « Plateforme et noyau » ; d'autres suivront avec les familles suivantes. Chaque notion cite son exemple réel dans le projet.
+- Framework et inversion de contrôle : le framework appelle le code du projet via des déclarations (route, hook, service, plugin) ; exemple : `pw_core.module:81` (hook), `pw_core.services.yml:16` (service).
+- Hook et abonné d'événement (avec priorité) : `PwPathManagerSubscriber.php:143`.
+- Conteneur de services et fournisseur de services (remplacer un service du noyau) : `PwCoreServiceProvider.php:19`.
+- Entité de contenu et annotation/attribut de classe : `PwCronQueue.php:19`.
+- Multisite : un code, plusieurs sites, plusieurs bases (préfixes de tables) : `pw_global_helpers.php:23`.
+- Alias d'adresse, processeur d'adresse entrant et redirection 301 : `pw_path_manager.module:52`, `PwVehicleListPathProcessor.php:18`.
+- Gestionnaire de plugins : `PWIMPluginManager.php`.
+- File d'attente applicative et planificateur (cron applicatif, worker, supervisord) : `PwCronManager.php:127`.
+- Patron « méthode modèle » : `PwCronQueueProcessProvider.php:87`.
+- Migration de données versionnée, mode simulation avant application, SQL en masse contre enregistrement un par un, garde-fou avant suppression : `V3_00Commands.php:298`, `V3_00Commands.php:350`.
+- Verrou applicatif sur une entité : `PwEntityLockManager.php:25`.
+- Invalidation de cache à chaque écriture et risque de déni de service : `pw_core.module:90-111`.
