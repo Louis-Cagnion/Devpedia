@@ -80,7 +80,7 @@ len(texto.encode("utf-8"))  # 5 -> la "é" ocupa 2 bytes
 
 En C, donde una cadena es un array de bytes, `strlen("café")` devuelve **5**. Dividir una cadena así al byte exacto puede cortar un carácter en dos y producir datos inválidos.
 
-Peor aún, "un carácter" es en sí mismo ambiguo: ciertos signos visibles se componen de **varios** puntos de código (una letra más un acento combinante, un emoji de bandera, un emoji con modificador de tono de piel). La unidad que percibe un humano se llama un **grafema**, y contar grafemas requiere una biblioteca dedicada.
+Peor aún, "un carácter" es en sí mismo ambiguo: ciertos signos visibles se componen de **varios** puntos de código (una letra más un acento combinante, un emoji de bandera, un emoji con modificador de tono de piel). La unidad que percibe un humano se llama un **grafema**, y contar grafemas requiere una biblioteca dedicada (véase [Grafemas, puntos de código y unidades UTF-16](/?c=donnees&s=representation-des-donnees&p=graphemes-et-decoupage-de-texte)).
 
 ## El mojibake: diagnosticar los caracteres rotos
 

@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : point 2, traductions EN, ES, BR du chapitre `graphemes-et-decoupage-de-texte.md`, puis audio ; ensuite les chapitres SVG, API de page JavaScript, unités CSS et tests sans fenêtre. Point 1 : en attente de Louis (test navigateur).
+> Prochaine tâche : point 2, audio en, es, br du chapitre `graphemes-et-decoupage-de-texte.md` ; ensuite les chapitres SVG, API de page JavaScript, unités CSS et tests sans fenêtre. Point 1 : en attente de Louis (test navigateur).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -10,7 +10,7 @@ Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il
 
 ## 2. Chapitres issus du projet Portfolio (sujets absents de Devpedia)
 Sujets utilisés dans le Portfolio de Louis, sans chapitre dédié. Procédure : français, puis 3 agents de traduction (EN, ES, BR), puis audio des 4 langues. Écrire dans l'ordre, un chapitre à la fois ; chaque chapitre renvoie vers les chapitres voisins existants plutôt que de les répéter.
-- `Données/Représentation des données/graphemes-et-decoupage-de-texte.md` : traduire en EN, ES et BR (3 agents Haiku en parallèle), ajouter son entrée dans `structure/struct-en/es/br.json` à la main, ajouter un renvoi vers lui dans `encodage-des-textes.md` (4 langues), puis générer l'audio des 4 langues.
+- `Données/Représentation des données/graphemes-et-decoupage-de-texte.md` : générer l'audio en, es et br (le français existe).
 - `Langages/HTML/` ou `Langages/CSS/` : le SVG écrit dans la page (formes, `<text>`, animation, accessibilité), aujourd'hui cité en passant dans trois chapitres.
 - `Langages/JavaScript/` : les API de page `matchMedia`, `scrollIntoView`, `visibilitychange` (onglet masqué), `AbortController`, les événements pointeur (`pointerdown`, `pointer-events`) et le chargement des polices (`document.fonts.ready`, mesurer un texte après la police).
 - `Langages/CSS/` : unités et fonctions de taille (`clamp()`, `dvh`/`svh`), agrandissement de la police à 200 et 300 % (réflexion WCAG).

@@ -80,7 +80,7 @@ len(texto.encode("utf-8"))  # 5 -> o "e" com acento ocupa 2 bytes
 
 Em C, onde uma string é um array de bytes, `strlen("cafe")` retorna **5** (com o acento). Dividir uma string dessas exatamente no byte pode cortar um caractere no meio e produzir dados inválidos.
 
-Pior, "um caractere" é em si ambíguo: certos sinais visíveis são compostos de **vários** pontos de código (uma letra mais um acento combinante, um emoji de bandeira, um emoji com modificador de tom de pele). A unidade que um humano percebe se chama **grafema**, e contar grafemas exige uma biblioteca dedicada.
+Pior, "um caractere" é em si ambíguo: certos sinais visíveis são compostos de **vários** pontos de código (uma letra mais um acento combinante, um emoji de bandeira, um emoji com modificador de tom de pele). A unidade que um humano percebe se chama **grafema**, e contar grafemas exige uma biblioteca dedicada (veja [Grafemas, pontos de código e unidades UTF-16](/?c=donnees&s=representation-des-donnees&p=graphemes-et-decoupage-de-texte)).
 
 ## O mojibake: diagnosticar caracteres corrompidos
 
