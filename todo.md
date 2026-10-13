@@ -51,6 +51,9 @@ Déjà couverts (recherche dans `content/` du 12/10/2026) : trait PHP (`Langages
 - Vocabulaire métier automobile (VO, VN, VD, VP, VU, DMS, reprise, stock, jumeaux) : glossaire à envisager, d'après `PwVehicleService.php` et `pw_vehicle_infos`.
 
 
+## powershell
+- ajouter la creation d'alias dans powershell, des alias simples aux alias complexes, etendre aux autre shells si les niveaux de complexite d'alias ne sont pas gerer
+
 ## ajouter une partie sur les serveurs web
 - en lisant un chapitre sur les modeles de decision sctructuree, j'ai appris que les serveur peuvent renvoyer des 'retry-after', j'ai trouve ca interessant et je n'en ai jamais entendu parler, je pense donc que ce serait bien d'avoir une rubrique qui parle de la chose la plus commune qui soit sur internet : les serveurs web/sites internets.
 
