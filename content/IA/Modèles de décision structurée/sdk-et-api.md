@@ -28,7 +28,7 @@ from typesafe_sdk import TypeSafeClient, Choice
 
 with TypeSafeClient() as client:                    # lit TYPESAFE_API_KEY dans l'environnement
     resultat = client.system_one(
-        state="Je suis facture deux fois, aidez-moi.",
+        state="Je suis facturé deux fois, aidez-moi.",
         questions={"facturation": Choice(instructions="...", criteria={...})},
     )
     print(resultat.answers["facturation"].choice)
