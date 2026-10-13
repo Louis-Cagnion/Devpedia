@@ -61,3 +61,6 @@ Déjà couverts (recherche dans `content/` du 12/10/2026) : trait PHP (`Langages
 - mettre quelque chose pour annoncer qu'on change de rubrique en selectionnant les boutons pour passer au prochain chapitre
 - suivre la selection dans l'arbre en fonction du chapitre selectionne
 - l'introduction n'est pas prise en compte quand on change de rubrique en cliquant sur le bouton de changement de chapitres
+
+## fix
+tu parles de "Haskell, l'outil historique du domaine", mais on ne sait pas de quel domaine tu parles
