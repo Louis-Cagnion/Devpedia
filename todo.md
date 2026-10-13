@@ -22,3 +22,4 @@ Sujets utilisés dans le Portfolio de Louis, sans chapitre dédié. Procédure :
 ## UI
 - mettre quelque chose pour annoncer qu'on change de rubrique en selectionnant les boutons pour passer au prochain chapitre
 - suivre la selection dans l'arbre en fonction du chapitre selectionne
+- l'introduction n'est pas prise en compte quand on change de rubrique en cliquant sur le bouton de changement de chapitres
