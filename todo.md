@@ -18,3 +18,7 @@ Sujets utilisés dans le Portfolio de Louis, sans chapitre dédié. Procédure :
 
 ## ajouter une partie sur les serveurs web
 - en lisant un chapitre sur les modeles de decision sctructuree, j'ai appris que les serveur peuvent renvoyer des 'retry-after', j'ai trouve ca interessant et je n'en ai jamais entendu parler, je pense donc que ce serait bien d'avoir une rubrique qui parle de la chose la plus commune qui soit sur internet : les serveurs web/sites internets.
+
+## UI
+- mettre quelque chose pour annoncer qu'on change de rubrique en selectionnant les boutons pour passer au prochain chapitre
+- suivre la selection dans l'arbre en fonction du chapitre selectionne
