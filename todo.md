@@ -64,3 +64,9 @@ Déjà couverts (recherche dans `content/` du 12/10/2026) : trait PHP (`Langages
 
 ## fix
 tu parles de "Haskell, l'outil historique du domaine", mais on ne sait pas de quel domaine tu parles
+
+## 3. Notions de la revue finale de scop (19/10/2026)
+Vues pendant la revue de `collect_lines_file.c` et du parseur ; recherche dans `content/` faite, les autres notions (atexit, `O_NONBLOCK`/FIFO/`fstat`, caractères de contrôle, `strtod`, valgrind « definitely lost », `realloc`) sont déjà couvertes.
+- `Langages/C/` : appel système interrompu par un signal (`EINTR`), pourquoi `read` doit être relancé et `fread` le fait pour soi (aucune occurrence de `EINTR` dans `content/`).
+- `Langages/C/pointeurs.md` ou `memoire.md` : filtrage sur place avec un pointeur de lecture et un pointeur d'écriture (`*out++ = *p`), priorité de `*p++` contre `(*p)++`, différence de deux pointeurs (aucune occurrence de `*x++ =` dans `content/`). Exemple : `join_continued_lines` (`collect_lines_file.c`).
+
