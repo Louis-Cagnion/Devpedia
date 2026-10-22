@@ -1579,6 +1579,10 @@
           "folder": "Systèmes d'exploitation",
           "chapters": [
             {
+              "id": "composants-dun-ordinateur-et-demarrage",
+              "label": "Les composants d'un ordinateur et son démarrage"
+            },
+            {
               "id": "creer-un-systeme-d-exploitation",
               "label": "Créer un système d'exploitation, étape par étape"
             }
