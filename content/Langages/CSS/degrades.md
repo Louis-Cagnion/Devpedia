@@ -50,7 +50,7 @@ Contrairement aux deux précédents, la couleur ne progresse ni en ligne droite 
 | Direction de la progression | Ligne droite | Cercles concentriques, du centre vers l'extérieur | Rotation autour d'un point central |
 | Cas d'usage typique | Arrière-plan, bouton, superposition de lisibilité sur une image | Halo lumineux, vignette | Anneau/jauge de progression, roue chromatique |
 
-> **Bonne pratique :** `conic-gradient()` sur un élément `border-radius: 50%` est une alternative légère à un anneau de progression en SVG, tant que la forme reste un simple cercle rempli par pourcentage ; passer au SVG dès que la jauge a besoin d'une épaisseur de trait variable ou d'extrémités arrondies (`stroke-linecap`), que `conic-gradient()` ne sait pas produire.
+> **Bonne pratique :** `conic-gradient()` sur un élément `border-radius: 50%` est une alternative légère à un anneau de progression en [SVG](/?c=langages&s=html&p=svg-dans-la-page), tant que la forme reste un simple cercle rempli par pourcentage ; passer au SVG dès que la jauge a besoin d'une épaisseur de trait variable ou d'extrémités arrondies (`stroke-linecap`), que `conic-gradient()` ne sait pas produire.
 
 ---
 

@@ -50,7 +50,7 @@ Unlike the previous two, the color progresses neither in a straight line nor in 
 | Direction of progression | Straight line | Concentric circles, outward from the center | Rotation around a central point |
 | Typical use case | Background, button, readability overlay on an image | Light halo, vignette | Progress ring/gauge, color wheel |
 
-> **Best practice:** `conic-gradient()` on a `border-radius: 50%` element is a lightweight alternative to an SVG progress ring, as long as the shape stays a simple circle filled by percentage; switch to SVG as soon as the gauge needs a variable stroke width or rounded ends (`stroke-linecap`), which `conic-gradient()` can't produce.
+> **Best practice:** `conic-gradient()` on a `border-radius: 50%` element is a lightweight alternative to an [SVG](/?c=langages&s=html&p=svg-dans-la-page) progress ring, as long as the shape stays a simple circle filled by percentage; switch to SVG as soon as the gauge needs a variable stroke width or rounded ends (`stroke-linecap`), which `conic-gradient()` can't produce.
 
 ---
 

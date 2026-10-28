@@ -65,7 +65,7 @@ This chapter covers two cross-cutting mechanisms in CSS: **custom variables** (r
 
 ## Reading a CSS variable from JavaScript
 
-The write above (`setProperty`) has its opposite, **reading**: useful so that a rendering that doesn't understand CSS (drawing on a `<canvas>`, an [SVG](/?c=langages-de-balisage&s=html&p=html) chart generated in [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript)) still stays in sync with the colors declared in the stylesheet, without hard-coding a duplicate copy in the JS code.
+The write above (`setProperty`) has its opposite, **reading**: useful so that a rendering that doesn't understand CSS (drawing on a `<canvas>`, an [SVG](/?c=langages&s=html&p=svg-dans-la-page) chart generated in [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript)) still stays in sync with the colors declared in the stylesheet, without hard-coding a duplicate copy in the JS code.
 
 ```javascript
 const primaryColor = getComputedStyle(document.documentElement)
