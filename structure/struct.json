@@ -606,6 +606,10 @@
             {
               "id": "apache-echarts",
               "label": "La bibliothèque de graphiques Apache ECharts"
+            },
+            {
+              "id": "api-de-page-du-navigateur",
+              "label": "Les API de page du navigateur : thème, défilement, visibilité et annulation (28/10/2026)"
             }
           ]
         },

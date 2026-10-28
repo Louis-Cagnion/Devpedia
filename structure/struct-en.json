@@ -606,6 +606,10 @@
             {
               "id": "apache-echarts",
               "label": "The Apache ECharts charting library"
+            },
+            {
+              "id": "api-de-page-du-navigateur",
+              "label": "Page APIs of the Browser: Theme, Scrolling, Visibility and Cancellation (28/10/2026)"
             }
           ]
         },
