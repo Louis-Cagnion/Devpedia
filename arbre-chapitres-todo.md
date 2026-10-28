@@ -1,7 +1,8 @@
 # Arbre : chapitres du todo (chapitres validés 0/30)
 
 Statuts : [ ] à faire, [~] en cours, [x] faite, [v] validée (commitée, audio des 4 langues généré), [!] bloquée, [>] reportée.
-Prochaine feuille prête : audio graphemes (en cours), puis C02.
+Arbre validé par Louis le 28/10/2026 (lancement des 3 Haiku de traduction par chapitre compris).
+Prochaine feuille prête : C01.a en cours, puis C01.c.
 Moniteur : claude-sonnet-5-5, effort high (`modelSettings` de `settings.json`), réévalué à la clôture du premier chapitre.
 Échéance : tout est commité avant 17h (hygiène dès 16h45) ; un chapitre qui ne finit pas avant 16h45 ne démarre pas.
 
@@ -21,7 +22,7 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 | ID | Chapitre (dossier de `content/`) | Source du todo | Statut |
 |---|---|---|---|
 | C00 | Audio en, es, br de `graphemes-et-decoupage-de-texte` | point 2 | [~] |
-| C01 | SVG dans la page (`Langages/HTML/`) | point 2 | [ ] |
+| C01 | SVG dans la page (`Langages/HTML/`) | point 2 | [~] a : sonnet/high |
 | C02 | API de page : `matchMedia`, `scrollIntoView`, `visibilitychange`, `AbortController` (`Langages/JavaScript/`) | point 2 | [ ] |
 | C03 | Événements pointeur et chargement des polices (`Langages/JavaScript/`) | point 2 | [ ] |
 | C04 | Unités et fonctions de taille, police à 200 et 300 % (`Langages/CSS/`) | point 2 | [ ] |
