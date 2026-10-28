@@ -606,6 +606,10 @@
             {
               "id": "apache-echarts",
               "label": "La biblioteca de gráficos Apache ECharts"
+            },
+            {
+              "id": "api-de-page-du-navigateur",
+              "label": "Las API de página del navegador: tema, desplazamiento, visibilidad y cancelación (28/10/2026)"
             }
           ]
         },

@@ -1,8 +1,8 @@
-# Arbre : chapitres du todo (chapitres validés 1/30)
+# Arbre : chapitres du todo (chapitres validés 2/30)
 
 Statuts : [ ] à faire, [~] en cours, [x] faite, [v] validée (commitée, audio des 4 langues généré), [!] bloquée, [>] reportée.
 Arbre validé par Louis le 28/10/2026 (lancement des 3 Haiku de traduction par chapitre compris).
-Prochaine feuille prête : C02.a.
+Prochaine feuille prête : C03.a.
 Moniteur : claude-sonnet-5-5, effort high (`modelSettings` de `settings.json`), réévalué à la clôture du premier chapitre.
 Échéance : tout est commité avant 17h (hygiène dès 16h45) ; un chapitre qui ne finit pas avant 16h45 ne démarre pas.
 
@@ -23,7 +23,7 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 |---|---|---|---|
 | C00 | Audio en, es, br de `graphemes-et-decoupage-de-texte` | point 2 | [v] |
 | C01 | SVG dans la page (`Langages/HTML/`) | point 2 | [v] |
-| C02 | API de page : `matchMedia`, `scrollIntoView`, `visibilitychange`, `AbortController` (`Langages/JavaScript/`) | point 2 | [ ] |
+| C02 | API de page : `matchMedia`, `scrollIntoView`, `visibilitychange`, `AbortController` (`Langages/JavaScript/`) | point 2 | [v] |
 | C03 | Événements pointeur et chargement des polices (`Langages/JavaScript/`) | point 2 | [ ] |
 | C04 | Unités et fonctions de taille, police à 200 et 300 % (`Langages/CSS/`) | point 2 | [ ] |
 | C05 | Tester une interface dans un navigateur sans fenêtre (`Tests/`) | point 2 | [ ] |
@@ -56,5 +56,6 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 ## Faits pour la suite
 - C01 : a sonnet/high a tenu en 8 min (726 lignes, juste du premier coup) ; c haiku/medium x3 en 4 à 5 min chacun, fidèles aux comptes (fences, titres, tableaux, liens). Garder ces niveaux pour les chapitres semblables.
 - C01 : le builder FR écrit en CRLF, les traductions en LF (convention du dépôt) : le moniteur normalise le FR par `sed -i 's/\r$//'`. Les liens vers un nouveau chapitre depuis des chapitres existants (4 langues) sont posés par le moniteur après la relecture.
+- C02 : a sonnet/high en 9 min, juste du premier coup (22 blocs JS contrôlés par `node --check`) ; c haiku/medium x3 en 5 à 6 min, comptes identiques. Deux agents ont écrit d'abord un fichier au nom faux (`navegador`) : le brief donne maintenant le chemin exact à copier ; le moniteur supprime tout parasite. Les ancres internes `](#...)` des traductions se recalculent avec `slugify` de `js/text.js`.
 - Contrôle croisé des 4 langues (fences, titres, tableaux, liens identiques) : `bash ~/.claude/references/projects/devpedia/verif-chapitre.sh "<chemin sous content/>"`.
 - Les notions de revue de projet pro n'entrent dans aucun chapitre sous forme de nom de fichier ou de ligne du projet revu.
