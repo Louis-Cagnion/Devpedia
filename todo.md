@@ -60,7 +60,6 @@ Vues pendant la revue de `collect_lines_file.c` et du parseur ; recherche dans `
 
 ## 6. Audios à générer (chapitres commités sans audio complet)
 Un seul `generate-audio.mjs` à la fois (Piper sature le processeur), avec `ffmpeg` dans le `PATH` (`export PATH="$PWD/.tools/ffmpeg-9.0.1-essentials_build/bin:$PATH"`), le français séparément des trois autres langues. Chaque ligne se retire dans le commit qui ajoute l'audio.
-- `evenements-pointeur-et-polices` : en, es, br (le français existe).
 - `unites-et-fonctions-de-taille` : fr, en, es, br.
 - `boucle-de-jeu-sfml` : fr, en, es, br.
 - `signaler-une-faille-trouvee` : fr, en, es, br.

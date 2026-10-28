@@ -1,10 +1,10 @@
-# Arbre : chapitres du todo (chapitres validés 2/30)
+# Arbre : chapitres du todo (chapitres commités 7/30, audio complet 3/30)
 
 Statuts : [ ] à faire, [~] en cours, [x] faite, [v] validée (commitée, audio des 4 langues généré), [!] bloquée, [>] reportée.
 Arbre validé par Louis le 28/10/2026 (lancement des 3 Haiku de traduction par chapitre compris).
 Prochaine feuille prête : audios du todo point 6 (file série en cours), puis C05.a.
 Moniteur : claude-sonnet-5-5, effort high (`modelSettings` de `settings.json`), réévalué à la clôture du premier chapitre.
-Lot parallèle du 28/10/2026 (8 rédactions FR) arrêté par Louis à 14h : 5 chapitres FR récupérés (C03, C04, C08, C25, C26), 3 à relancer (C05, C07, C30). Retour aux conditions normales : une seule rédaction FR à la fois, traductions Haiku par trio, audio et commit avant de déclarer un chapitre validé.
+Lot parallèle du 28/10/2026 (8 rédactions FR) arrêté par Louis à 14h : 5 chapitres FR récupérés (C03, C04, C08, C25, C26), 3 à relancer (C05, C07, C30). Retour aux conditions normales : une seule rédaction FR à la fois, traductions Haiku par trio, un seul audio à la fois. Autorisé par Louis le 28/10/2026 : pendant qu'un trio Haiku traduit le chapitre N, un builder rédige déjà le FR du chapitre N+1 (jamais deux rédacteurs FR en même temps) ; commit dès les 4 langues relues, audio noté au todo point 6.
 Échéance : tout est commité avant 17h (hygiène dès 16h45) ; un chapitre qui ne finit pas avant 16h45 ne démarre pas.
 
 ## Pipeline d'un chapitre (un seul à la fois, audio compris avant le suivant)
@@ -25,11 +25,11 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 | C00 | Audio en, es, br de `graphemes-et-decoupage-de-texte` | point 2 | [v] |
 | C01 | SVG dans la page (`Langages/HTML/`) | point 2 | [v] |
 | C02 | API de page : `matchMedia`, `scrollIntoView`, `visibilitychange`, `AbortController` (`Langages/JavaScript/`) | point 2 | [v] |
-| C03 | Événements pointeur et chargement des polices (`Langages/JavaScript/`) | point 2 | [x] commité sans audio en/es/br (au todo point 6) |
+| C03 | Événements pointeur et chargement des polices (`Langages/JavaScript/`) | point 2 | [v] |
 | C04 | Unités et fonctions de taille, police à 200 et 300 % (`Langages/CSS/`) | point 2 | [x] commité sans audio (todo point 6) |
 | C05 | Tester une interface dans un navigateur sans fenêtre (`Tests/`) | point 2 | [ ] à relancer (agent arrêté sans fichier) |
 | C06 | `node:test` (`Tests/`) | point 2 | [ ] |
-| C07 | `constexpr` et constantes (`Langages/C++/`) | point 3 | [ ] à relancer (agent arrêté sans fichier) |
+| C07 | `constexpr` et constantes (`Langages/C++/`) | point 3 | [~] a sonnet/high en cours |
 | C08 | Boucle de jeu avec SFML (`Fondamentaux/Graphisme/`) | point 3 | [x] commité sans audio (todo point 6) |
 | C09 | Drupal : plateforme et noyau | point 4 | [ ] |
 | C10 | Drupal : entités, plugins et annotations | point 4 | [ ] |
