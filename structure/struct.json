@@ -192,6 +192,10 @@
             {
               "id": "fractales-et-temps-dechappement",
               "label": "Les fractales par temps d'échappement : Mandelbrot et Julia"
+            },
+            {
+              "id": "boucle-de-jeu-sfml",
+              "label": "La boucle de jeu avec SFML (28/10/2026)"
             }
           ]
         }
@@ -610,6 +614,10 @@
             {
               "id": "api-de-page-du-navigateur",
               "label": "Les API de page du navigateur : thème, défilement, visibilité et annulation (28/10/2026)"
+            },
+            {
+              "id": "evenements-pointeur-et-polices",
+              "label": "Les événements pointeur et le chargement des polices (28/10/2026)"
             }
           ]
         },
@@ -723,6 +731,10 @@
             {
               "id": "animations-css-performantes",
               "label": "Animations CSS performantes"
+            },
+            {
+              "id": "unites-et-fonctions-de-taille",
+              "label": "Les unités CSS et les fonctions de taille : de `rem` à `clamp()` (28/10/2026)"
             }
           ]
         },
@@ -1691,6 +1703,10 @@
             {
               "id": "fingerprinting-navigateur-et-appareil",
               "label": "Le fingerprinting : reconnaître un appareil sans rien y stocker"
+            },
+            {
+              "id": "signaler-une-faille-trouvee",
+              "label": "Signaler une faille trouvée sur un site : ce que la loi permet et la divulgation responsable (28/10/2026)"
             }
           ]
         },
@@ -1710,6 +1726,10 @@
             {
               "id": "rbac-et-abac",
               "label": "RBAC et ABAC : deux façons de modéliser l'autorisation"
+            },
+            {
+              "id": "bonnes-pratiques-mots-de-passe",
+              "label": "Les mots de passe : bonnes pratiques pour l'utilisateur et pour le site (28/10/2026)"
             }
           ]
         },
