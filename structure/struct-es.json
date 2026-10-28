@@ -192,6 +192,10 @@
             {
               "id": "fractales-et-temps-dechappement",
               "label": "Fractales por tiempo de escape: Mandelbrot y Julia"
+            },
+            {
+              "id": "boucle-de-jeu-sfml",
+              "label": "El bucle de juego con SFML (28/10/2026)"
             }
           ]
         }
@@ -610,6 +614,10 @@
             {
               "id": "api-de-page-du-navigateur",
               "label": "Las API de página del navegador: tema, desplazamiento, visibilidad y cancelación (28/10/2026)"
+            },
+            {
+              "id": "evenements-pointeur-et-polices",
+              "label": "Eventos de puntero y carga de fuentes (28/10/2026)"
             }
           ]
         },
@@ -723,6 +731,10 @@
             {
               "id": "animations-css-performantes",
               "label": "Animaciones CSS eficientes"
+            },
+            {
+              "id": "unites-et-fonctions-de-taille",
+              "label": "Las unidades CSS y las funciones de tamaño: de `rem` a `clamp()` (28/10/2026)"
             }
           ]
         },
@@ -1687,6 +1699,10 @@
             {
               "id": "fingerprinting-navigateur-et-appareil",
               "label": "El fingerprinting: reconocer un dispositivo sin almacenar nada en él"
+            },
+            {
+              "id": "signaler-une-faille-trouvee",
+              "label": "Informar de una vulnerabilidad encontrada en un sitio web: lo que permite la ley y la divulgación responsable (28/10/2026)"
             }
           ]
         },
@@ -1706,6 +1722,10 @@
             {
               "id": "rbac-et-abac",
               "label": "RBAC y ABAC: dos formas de modelar la autorización"
+            },
+            {
+              "id": "bonnes-pratiques-mots-de-passe",
+              "label": "Las contraseñas: buenas prácticas para el usuario y para el sitio (28/10/2026)"
             }
           ]
         },

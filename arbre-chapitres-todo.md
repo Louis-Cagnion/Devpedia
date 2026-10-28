@@ -2,8 +2,9 @@
 
 Statuts : [ ] à faire, [~] en cours, [x] faite, [v] validée (commitée, audio des 4 langues généré), [!] bloquée, [>] reportée.
 Arbre validé par Louis le 28/10/2026 (lancement des 3 Haiku de traduction par chapitre compris).
-Prochaine feuille prête : C03.a.
+Prochaine feuille prête : audios du todo point 6 (file série en cours), puis C05.a.
 Moniteur : claude-sonnet-5-5, effort high (`modelSettings` de `settings.json`), réévalué à la clôture du premier chapitre.
+Lot parallèle du 28/10/2026 (8 rédactions FR) arrêté par Louis à 14h : 5 chapitres FR récupérés (C03, C04, C08, C25, C26), 3 à relancer (C05, C07, C30). Retour aux conditions normales : une seule rédaction FR à la fois, traductions Haiku par trio, audio et commit avant de déclarer un chapitre validé.
 Échéance : tout est commité avant 17h (hygiène dès 16h45) ; un chapitre qui ne finit pas avant 16h45 ne démarre pas.
 
 ## Pipeline d'un chapitre (un seul à la fois, audio compris avant le suivant)
@@ -24,12 +25,12 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 | C00 | Audio en, es, br de `graphemes-et-decoupage-de-texte` | point 2 | [v] |
 | C01 | SVG dans la page (`Langages/HTML/`) | point 2 | [v] |
 | C02 | API de page : `matchMedia`, `scrollIntoView`, `visibilitychange`, `AbortController` (`Langages/JavaScript/`) | point 2 | [v] |
-| C03 | Événements pointeur et chargement des polices (`Langages/JavaScript/`) | point 2 | [ ] |
-| C04 | Unités et fonctions de taille, police à 200 et 300 % (`Langages/CSS/`) | point 2 | [ ] |
-| C05 | Tester une interface dans un navigateur sans fenêtre (`Tests/`) | point 2 | [ ] |
+| C03 | Événements pointeur et chargement des polices (`Langages/JavaScript/`) | point 2 | [x] commité sans audio en/es/br (au todo point 6) |
+| C04 | Unités et fonctions de taille, police à 200 et 300 % (`Langages/CSS/`) | point 2 | [x] commité sans audio (todo point 6) |
+| C05 | Tester une interface dans un navigateur sans fenêtre (`Tests/`) | point 2 | [ ] à relancer (agent arrêté sans fichier) |
 | C06 | `node:test` (`Tests/`) | point 2 | [ ] |
-| C07 | `constexpr` et constantes (`Langages/C++/`) | point 3 | [ ] |
-| C08 | Boucle de jeu avec SFML (`Fondamentaux/Graphisme/`) | point 3 | [ ] |
+| C07 | `constexpr` et constantes (`Langages/C++/`) | point 3 | [ ] à relancer (agent arrêté sans fichier) |
+| C08 | Boucle de jeu avec SFML (`Fondamentaux/Graphisme/`) | point 3 | [x] commité sans audio (todo point 6) |
 | C09 | Drupal : plateforme et noyau | point 4 | [ ] |
 | C10 | Drupal : entités, plugins et annotations | point 4 | [ ] |
 | C11 | Drupal : multisite et adresses | point 4 | [ ] |
@@ -46,14 +47,15 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 | C22 | Beer-Lambert et Euler semi-implicite (sections ajoutées à `effets-de-rendu-et-interaction-3d.md`) | point 5 | [ ] |
 | C23 | Blocage de cardan et rotation incrémentale | point 5 | [ ] |
 | C24 | Liens OWASP Top 10 et notions de l'introduction (`Sécurité/Cybersécurité/`) | cybersécurité | [ ] |
-| C25 | Signaler une faille trouvée sur un site : légalité et divulgation responsable | cybersécurité | [ ] |
-| C26 | Mots de passe : bonnes pratiques côté utilisateur et côté site | cybersécurité | [ ] |
+| C25 | Signaler une faille trouvée sur un site : légalité et divulgation responsable | cybersécurité | [x] commité sans audio (todo point 6) |
+| C26 | Mots de passe : bonnes pratiques côté utilisateur et côté site | cybersécurité | [x] commité sans audio (todo point 6) |
 | C27 | Serveurs web : rôle et fonctionnement (nouvelle sous-section) | serveurs web | [ ] |
 | C28 | Serveurs web : codes de statut et en-têtes de contrôle (`Retry-After`) | serveurs web | [ ] |
 | C29 | Serveurs web : proxy inverse et limitation de débit | serveurs web | [ ] |
-| C30 | Alias PowerShell, des simples aux complexes (`Langages/PowerShell/`), puis Bash et Zsh si absents | powershell | [ ] |
+| C30 | Alias PowerShell, des simples aux complexes (`Langages/PowerShell/`), puis Bash et Zsh si absents | powershell | [ ] à relancer (agent arrêté sans fichier) |
 
 ## Faits pour la suite
+- Audio : UN SEUL job à la fois. Seul, un chapitre de 3 000 clips sort en 4 à 5 minutes (C01) ; à trois en parallèle, moins de 100 clips par minute (saturation du processeur par Piper), donc plus lent au total. Les répertoires `.audio-tmp-*` appartiennent à des jobs vivants : ne jamais en supprimer sans avoir lu la ligne de commande de leurs processus Piper.
 - C01 : a sonnet/high a tenu en 8 min (726 lignes, juste du premier coup) ; c haiku/medium x3 en 4 à 5 min chacun, fidèles aux comptes (fences, titres, tableaux, liens). Garder ces niveaux pour les chapitres semblables.
 - C01 : le builder FR écrit en CRLF, les traductions en LF (convention du dépôt) : le moniteur normalise le FR par `sed -i 's/\r$//'`. Les liens vers un nouveau chapitre depuis des chapitres existants (4 langues) sont posés par le moniteur après la relecture.
 - C02 : a sonnet/high en 9 min, juste du premier coup (22 blocs JS contrôlés par `node --check`) ; c haiku/medium x3 en 5 à 6 min, comptes identiques. Deux agents ont écrit d'abord un fichier au nom faux (`navegador`) : le brief donne maintenant le chemin exact à copier ; le moniteur supprime tout parasite. Les ancres internes `](#...)` des traductions se recalculent avec `slugify` de `js/text.js`.

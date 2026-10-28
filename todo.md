@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : suivre `arbre-chapitres-todo.md` (prochaine feuille prête indiquée en tête). Point 1 : en attente de Louis (test navigateur).
+> Prochaine tâche : point 6, générer les audios des chapitres déjà commités (un seul job `generate-audio.mjs` à la fois), puis suivre `arbre-chapitres-todo.md` (C05, C06, C07, C30 à rédiger). Point 1 : en attente de Louis (test navigateur).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -10,14 +10,11 @@ Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il
 
 ## 2. Chapitres issus du projet Portfolio (sujets absents de Devpedia)
 Sujets utilisés dans le Portfolio de Louis, sans chapitre dédié. Procédure : français, puis 3 agents de traduction (EN, ES, BR), puis audio des 4 langues généré avant de passer au chapitre suivant. Écrire dans l'ordre, un chapitre à la fois ; chaque chapitre renvoie vers les chapitres voisins existants plutôt que de les répéter.
-- `Langages/JavaScript/` : les événements pointeur (`pointerdown`, `pointer-events`) et le chargement des polices (`document.fonts.ready`, mesurer un texte après la police).
-- `Langages/CSS/` : unités et fonctions de taille (`clamp()`, `dvh`/`svh`), agrandissement de la police à 200 et 300 % (réflexion WCAG).
-- `Tests/` : tester une interface dans un navigateur sans fenêtre (banc de tests maison, Chrome DevTools Protocol) et `node:test`, en complément de `tests-end-to-end.md`.
+- `Tests/` : tester une interface dans un navigateur sans fenêtre (banc de tests maison, Chrome DevTools Protocol), puis `node:test`, deux chapitres, en complément de `tests-end-to-end.md`.
 
 ## 3. Chapitres issus de la session d'apprentissage C++ (SFML)
 Même procédure que le point 2 (français, EN, ES et BR, audio des 4 langues généré avant le chapitre suivant). Un chapitre ne répète pas ce que couvre déjà un chapitre existant : il y renvoie par un lien.
 - `Langages/C++/constexpr-et-constantes.md` (`order: 12`, après `cast-cpp.md`) : `constexpr` (constante typée dont la valeur est connue à la compilation) comparé à `const` (valeur fixée à l'initialisation, possible à l'exécution : fichier, saisie) et à `#define` (remplacement de texte sans type ni portée, collisions entre noms identiques selon l'ordre d'inclusion, avantage : visible partout et réglable par `-D`) ; la portée d'une constante (classe, namespace, fonction), le membre `static constexpr` d'une classe, l'accès hors de la classe par `Classe::NOM` selon `private` ou `public` ; limites (valeur calculable à la compilation). Renvoyer vers `espaces-de-noms.md`, `classes-et-objets.md` et le chapitre C `compilation` (préprocesseur, `-D`). Exemple conseillé : une taille de case `static constexpr int TILE_SIZE = 64;` dans une classe de jeu.
-- `Fondamentaux/Graphisme/` : la boucle de jeu avec SFML (`Game::run`) : un tour de boucle enchaîne le temps écoulé depuis le tour précédent (delta time), les événements (clavier, fermeture), la mise à jour de l'état, puis le dessin de l'image entière avant son affichage ; sans la boucle le programme se termine aussitôt ; alternative : la boucle pilotée par événements (attente bloquante, presque aucun calcul au repos, mais rien ne bouge sans événement) ; limites (une opération longue dans un tour gèle le jeu, sans plafond d'images la boucle consomme tout le processeur, l'ordre des étapes compte) ; vitesse en pixels par seconde multipliée par le delta time, et déplacement en diagonale : deux touches additionnent les composantes et vont environ 1,41 fois plus vite, d'où la normalisation du vecteur direction (jamais d'un vecteur nul). Le double tampon et le delta time sont déjà dans `glfw-glad-et-boucle-de-rendu.md` et la normalisation dans `vecteurs-et-produit-scalaire.md` : y renvoyer sans les répéter.
 
 ## 4. Notions de Drupal 11 multisite (revue d'un projet Drupal)
 Même procédure que le point 2. Déjà couverts (recherche du 12/10/2026 dans `content/`) : injection SQL, CSRF, XSS, cron, injection de dépendances de base et trait PHP (`Langages/PHP/poo.md`), idempotence, redirection ouverte, traversée de chemin et téléversement (`Sécurité/Cybersécurité/upload-de-fichiers.md`), affectation en masse. Exemples génériques de Drupal uniquement, jamais le code du projet revu. Un chapitre par thème :
@@ -34,8 +31,6 @@ Même procédure que le point 2. Déjà couverts (recherche du 12/10/2026 dans `
 
 ## cybersecurite
 - evoque OWASP Top 10 sans renvoyer dessus par un lien, idem pour les notions abordees dans l'introduction, pas de liens vers les chapitres qui en parlent
-- est-ce qu'on peut rechercher des failles sur un site internet et prevenir de failles trouver les personnes qui gerent le site par email ou autre ou est-ce que c'est illegal ?
-- un chapitre sur les mots de passe utilisateur et les bonnes pratiques de gestion de mot de passe pour l'utilisateur et le site
 
 ## ajouter une partie sur les serveurs web
 - en lisant un chapitre sur les modeles de decision sctructuree, j'ai appris que les serveur peuvent renvoyer des 'retry-after', j'ai trouve ca interessant et je n'en ai jamais entendu parler, je pense donc que ce serait bien d'avoir une rubrique qui parle de la chose la plus commune qui soit sur internet : les serveurs web/sites internets.
@@ -62,3 +57,11 @@ Vues pendant la revue de `collect_lines_file.c` et du parseur ; recherche dans `
 - `Fondamentaux/Graphisme/effets-de-rendu-et-interaction-3d.md` : loi de Beer-Lambert (la lumière s'atténue de façon exponentielle dans un milieu, `1 - exp(-densité)`), à ajouter à la section du ray-marching qui existe : `crystal.frag:94-103` (aucune occurrence de « Beer » dans `content/`).
 - `Fondamentaux/Graphisme/effets-de-rendu-et-interaction-3d.md` : intégration d'Euler semi-implicite d'un ressort amorti (la vitesse est mise à jour avant la position, avec un pas de temps plafonné), à relier au ressort amorti déjà décrit : `inputs.c:276-282` (aucune occurrence de « semi-implicite » dans `content/`).
 - `Fondamentaux/Graphisme/` ou `Mathématiques/` : blocage de cardan (gimbal lock) des angles d'Euler et rotation incrémentale, accumuler chaque petit pas dans une matrice puis la ré-orthonormaliser pour effacer l'erreur d'arrondi : `inputs.c:232-264` (aucune occurrence de « cardan » ni de « gimbal » dans `content/`).
+
+## 6. Audios à générer (chapitres commités sans audio complet)
+Un seul `generate-audio.mjs` à la fois (Piper sature le processeur), avec `ffmpeg` dans le `PATH` (`export PATH="$PWD/.tools/ffmpeg-9.0.1-essentials_build/bin:$PATH"`), le français séparément des trois autres langues. Chaque ligne se retire dans le commit qui ajoute l'audio.
+- `evenements-pointeur-et-polices` : en, es, br (le français existe).
+- `unites-et-fonctions-de-taille` : fr, en, es, br.
+- `boucle-de-jeu-sfml` : fr, en, es, br.
+- `signaler-une-faille-trouvee` : fr, en, es, br.
+- `bonnes-pratiques-mots-de-passe` : fr, en, es, br.
