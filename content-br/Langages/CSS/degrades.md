@@ -50,7 +50,7 @@ Diferente dos dois anteriores, a cor não progride em linha reta nem em círculo
 | Direção da progressão | Linha reta | Círculos concêntricos, do centro para fora | Rotação em torno de um ponto central |
 | Caso de uso típico | Fundo, botão, sobreposição de legibilidade em uma imagem | Halo luminoso, vinheta | Anel/medidor de progresso, roda de cores |
 
-> **Boa prática:** `conic-gradient()` em um elemento `border-radius: 50%` é uma alternativa leve a um anel de progresso em SVG, desde que a forma permaneça um simples círculo preenchido por porcentagem; passar para SVG assim que o medidor precisar de uma espessura de traço variável ou extremidades arredondadas (`stroke-linecap`), que `conic-gradient()` não consegue produzir.
+> **Boa prática:** `conic-gradient()` em um elemento `border-radius: 50%` é uma alternativa leve a um anel de progresso em [SVG](/?c=langages&s=html&p=svg-dans-la-page), desde que a forma permaneça um simples círculo preenchido por porcentagem; passar para SVG assim que o medidor precisar de uma espessura de traço variável ou extremidades arredondadas (`stroke-linecap`), que `conic-gradient()` não consegue produzir.
 
 ---
 

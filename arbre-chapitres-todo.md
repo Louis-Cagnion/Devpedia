@@ -1,8 +1,8 @@
-# Arbre : chapitres du todo (chapitres validés 0/30)
+# Arbre : chapitres du todo (chapitres validés 1/30)
 
 Statuts : [ ] à faire, [~] en cours, [x] faite, [v] validée (commitée, audio des 4 langues généré), [!] bloquée, [>] reportée.
 Arbre validé par Louis le 28/10/2026 (lancement des 3 Haiku de traduction par chapitre compris).
-Prochaine feuille prête : C01.a en cours, puis C01.c.
+Prochaine feuille prête : C02.a.
 Moniteur : claude-sonnet-5-5, effort high (`modelSettings` de `settings.json`), réévalué à la clôture du premier chapitre.
 Échéance : tout est commité avant 17h (hygiène dès 16h45) ; un chapitre qui ne finit pas avant 16h45 ne démarre pas.
 
@@ -21,8 +21,8 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 
 | ID | Chapitre (dossier de `content/`) | Source du todo | Statut |
 |---|---|---|---|
-| C00 | Audio en, es, br de `graphemes-et-decoupage-de-texte` | point 2 | [~] |
-| C01 | SVG dans la page (`Langages/HTML/`) | point 2 | [~] a : sonnet/high |
+| C00 | Audio en, es, br de `graphemes-et-decoupage-de-texte` | point 2 | [v] |
+| C01 | SVG dans la page (`Langages/HTML/`) | point 2 | [v] |
 | C02 | API de page : `matchMedia`, `scrollIntoView`, `visibilitychange`, `AbortController` (`Langages/JavaScript/`) | point 2 | [ ] |
 | C03 | Événements pointeur et chargement des polices (`Langages/JavaScript/`) | point 2 | [ ] |
 | C04 | Unités et fonctions de taille, police à 200 et 300 % (`Langages/CSS/`) | point 2 | [ ] |
@@ -54,4 +54,7 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 | C30 | Alias PowerShell, des simples aux complexes (`Langages/PowerShell/`), puis Bash et Zsh si absents | powershell | [ ] |
 
 ## Faits pour la suite
+- C01 : a sonnet/high a tenu en 8 min (726 lignes, juste du premier coup) ; c haiku/medium x3 en 4 à 5 min chacun, fidèles aux comptes (fences, titres, tableaux, liens). Garder ces niveaux pour les chapitres semblables.
+- C01 : le builder FR écrit en CRLF, les traductions en LF (convention du dépôt) : le moniteur normalise le FR par `sed -i 's/\r$//'`. Les liens vers un nouveau chapitre depuis des chapitres existants (4 langues) sont posés par le moniteur après la relecture.
+- Contrôle croisé des 4 langues (fences, titres, tableaux, liens identiques) : `bash ~/.claude/references/projects/devpedia/verif-chapitre.sh "<chemin sous content/>"`.
 - Les notions de revue de projet pro n'entrent dans aucun chapitre sous forme de nom de fichier ou de ligne du projet revu.

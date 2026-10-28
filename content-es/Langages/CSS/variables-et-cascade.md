@@ -66,7 +66,7 @@ Este capítulo aborda dos mecanismos transversales de CSS: las **variables perso
 
 ## Leer una variable CSS desde JavaScript
 
-La escritura de arriba (`setProperty`) tiene su inversa, la **lectura**: útil para que un renderizado que no entiende CSS (dibujo en un `<canvas>`, gráfico en SVG generado en JavaScript) siga sincronizado con los colores declarados en la hoja de estilos, sin duplicarlos a mano en el código JS.
+La escritura de arriba (`setProperty`) tiene su inversa, la **lectura**: útil para que un renderizado que no entiende CSS (dibujo en un `<canvas>`, gráfico en [SVG](/?c=langages&s=html&p=svg-dans-la-page) generado en JavaScript) siga sincronizado con los colores declarados en la hoja de estilos, sin duplicarlos a mano en el código JS.
 
 ```javascript
 const colorPrimario = getComputedStyle(document.documentElement)

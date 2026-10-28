@@ -672,6 +672,10 @@
             {
               "id": "aria-dynamique-et-focus-clavier",
               "label": "Dynamic ARIA and keyboard focus management"
+            },
+            {
+              "id": "svg-dans-la-page",
+              "label": "SVG Written Directly in the Page"
             }
           ]
         },
