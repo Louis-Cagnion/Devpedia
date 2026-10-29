@@ -48,10 +48,10 @@ Même procédure que le point 2. Déjà couverts (recherche du 12/10/2026 dans `
 
 ## fix
 tu parles de "Haskell, l'outil historique du domaine", mais on ne sait pas de quel domaine tu parles
+- `Langages/C/boucles.md` (fr, en, es, br), ligne 139 : `&&`/`||` nu dans une cellule de tableau, ce qui coupe la ligne ; écrire `\|\|` comme dans `operateurs-binaires.md`.
 
 ## 5. Notions de la revue finale de scop (19/10/2026)
 Vues pendant la revue de `collect_lines_file.c` et du parseur ; recherche dans `content/` faite, les autres notions (atexit, `O_NONBLOCK`/FIFO/`fstat`, caractères de contrôle, `strtod`, valgrind « definitely lost », `realloc`) sont déjà couvertes.
-- `Langages/C/pointeurs.md` ou `memoire.md` : filtrage sur place avec un pointeur de lecture et un pointeur d'écriture (`*out++ = *p`), priorité de `*p++` contre `(*p)++`, différence de deux pointeurs (aucune occurrence de `*x++ =` dans `content/`). Exemple : `join_continued_lines` (`collect_lines_file.c`).
 
 - `Langages/C/` : écrire dans un champ de structure par son décalage (`offsetof`, `*(float *)((char *)p + offset)`) pour piloter une directive par un tableau de `{nom, décalage, min, max}` au lieu d'une chaîne de `if` (aucune occurrence de `offsetof` dans `content/`, la table de dispatch existe déjà en PHP, `routage.md`) : `parser.c:406-481`.
 - `Langages/C/` : littéral composé C99, `(Type){valeurs}`, une structure fabriquée sur place et passée en argument : `uv_seams.c:146-147` (aucune occurrence dans `content/`).

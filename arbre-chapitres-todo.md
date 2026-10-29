@@ -1,8 +1,8 @@
-# Arbre : chapitres du todo (chapitres commités 11/45, audio complet 11/45)
+# Arbre : chapitres du todo (chapitres commités 12/45, audio complet 12/45)
 
 Statuts : [ ] à faire, [~] en cours, [x] faite, [v] validée (commitée, audio des 4 langues généré), [!] bloquée, [>] reportée.
 Arbre validé par Louis le 28/10/2026 (lancement des 3 Haiku de traduction par chapitre compris).
-Prochaine feuille prête : C17.b (relecture du FR `Langages/C/filtrage-sur-place-deux-pointeurs.md`, non commité), puis trio Haiku, structure, audio, commit. Le prochain `order` libre de `Langages/C/` est 31.
+Prochaine feuille prête : C18.d (structure, audio, commit) une fois la traduction BR relue ; C19.b (relecture du FR `Fondamentaux/Algorithmes/tri-puis-balayage.md`). Le prochain `order` libre de `Langages/C/` est 32.
 Arrêt demandé par Louis le 29/10/2026 une fois le builder C05 revenu et les Haiku C07 finis ; à reprendre ici.
 Moniteur : claude-sonnet-5-5, effort high (`modelSettings` de `settings.json`, `CLAUDE_CODE_EFFORT_LEVEL` non défini), réévalué à la clôture du premier chapitre. Chapitres de faits spécialisés (Drupal, NCM, ft_linux) : revue `analyst` d'un niveau supérieur au moniteur entre a et b.
 Lot parallèle du 28/10/2026 (8 rédactions FR) arrêté par Louis à 14h : 5 chapitres FR récupérés (C03, C04, C08, C25, C26), 3 à relancer (C05, C07, C30). Retour aux conditions normales : une seule rédaction FR à la fois, traductions Haiku par trio, un seul audio à la fois. Autorisé par Louis le 28/10/2026 : pendant qu'un trio Haiku traduit le chapitre N, un builder rédige déjà le FR du chapitre N+1 (jamais deux rédacteurs FR en même temps) ; commit dès les 4 langues relues, audio noté au todo point 6.
@@ -40,8 +40,8 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 | C14 | Migrations de données sûres (`Données/Bases de données/`) | point 4 | [ ] |
 | C15 | Alias d'adresse, redirection 301, conversion de paramètre de route (`Langages/PHP/`) | point 4 | [ ] |
 | C16 | Appel système interrompu (`EINTR`) (`Langages/C/appel-systeme-interrompu-eintr.md`, `order: 29`) | point 5 | [v] |
-| C17 | Filtrage sur place à deux pointeurs (`Langages/C/filtrage-sur-place-deux-pointeurs.md`, `order: 30`) | point 5 | [~] a faite (29/10, non commité) ; b, c, d à faire |
-| C18 | `offsetof` et littéral composé (`Langages/C/`) | point 5 | [ ] |
+| C17 | Filtrage sur place à deux pointeurs (`Langages/C/filtrage-sur-place-deux-pointeurs.md`, `order: 30`) | point 5 | [v] |
+| C18 | `offsetof` et littéral composé (`Langages/C/offsetof-et-litteral-compose.md`, `order: 31`) | point 5 | [~] a, b faites (29/10, non commité) ; c en cours (EN, ES reçues) ; d à faire |
 | C19 | Tri puis balayage (sweep and prune) | point 5 | [ ] |
 | C20 | Précision des `float` loin de l'origine | point 5 | [ ] |
 | C21 | GLSL : `flat`, bruit de valeur et hash de shader | point 5 | [ ] |
@@ -83,3 +83,5 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 - Liens internes : forme canonique `c=langages` (`c=shells` n'est qu'une redirection historique, `js/legacy-category-redirects.js`).
 - C16 : le libellé du todo « `fread` relance pour soi » était faux (glibc 2.39 : `fread` et `fgets` s'arrêtent avec `ferror` et `errno` à `EINTR`) ; un brief qui contient une affirmation non vérifiée demande de la tester. `order` : le moniteur impose la valeur quand deux builders se suivent (29 pris par C16, 30 par C17).
 - Drupal (point 4) : décision de Louis du 29/10/2026, aucun sujet « Drupal » ; 17 chapitres rangés un par un dans les catégories existantes (C09 à C15 et C36 à C45), Drupal sert d'exemple dans le texte. Revue `analyst` des faits entre a et b.
+- `||` dans une cellule de tableau : toujours `\|\|` (le site coupe la ligne sinon) ; les briefs de rédaction le disent depuis C18. Défaut préexistant de `boucles.md` au todo (section fix).
+- Les sorties d'un programme d'essai sont recopiées dans le chapitre ; depuis C17 les traducteurs recompilent et réexécutent leurs blocs (sorties identiques exigées) ; un bloc de mesure non autonome se complète pour le test.
