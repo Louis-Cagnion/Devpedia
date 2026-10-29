@@ -1,8 +1,8 @@
-# Arbre : chapitres du todo (chapitres commités 10/35, audio complet 10/35)
+# Arbre : chapitres du todo (chapitres commités 11/35, audio complet 11/35)
 
 Statuts : [ ] à faire, [~] en cours, [x] faite, [v] validée (commitée, audio des 4 langues généré), [!] bloquée, [>] reportée.
 Arbre validé par Louis le 28/10/2026 (lancement des 3 Haiku de traduction par chapitre compris).
-Prochaine feuille prête : C16.b (relecture du FR `Langages/C/appel-systeme-interrompu-eintr.md`, 684 lignes, non commité), puis trio Haiku, structure, audio, commit. C05 bloquée : `content/Tests/tests-navigateur-sans-fenetre.md` (feuille a, non commité) n'existe pas sur cette machine Linux (ni dans Git, ni sur le disque, vérifié le 29/10/2026 à 18h56) ; il est resté sur la machine où il a été écrit (rapport de l'agent : 933 lignes, 22 tableaux, Chrome vérifié sous Windows seulement, 13 liens externes non vérifiés). Audio de C07 (point 6) à générer ici.
+Prochaine feuille prête : C17.b (relecture du FR `Langages/C/filtrage-sur-place-deux-pointeurs.md`, non commité), puis trio Haiku, structure, audio, commit. Le prochain `order` libre de `Langages/C/` est 31.
 Arrêt demandé par Louis le 29/10/2026 une fois le builder C05 revenu et les Haiku C07 finis ; à reprendre ici.
 Moniteur : claude-sonnet-5-5, effort high (`modelSettings` de `settings.json`, `CLAUDE_CODE_EFFORT_LEVEL` non défini), réévalué à la clôture du premier chapitre. Chapitres de faits spécialisés (Drupal, NCM, ft_linux) : revue `analyst` d'un niveau supérieur au moniteur entre a et b.
 Lot parallèle du 28/10/2026 (8 rédactions FR) arrêté par Louis à 14h : 5 chapitres FR récupérés (C03, C04, C08, C25, C26), 3 à relancer (C05, C07, C30). Retour aux conditions normales : une seule rédaction FR à la fois, traductions Haiku par trio, un seul audio à la fois. Autorisé par Louis le 28/10/2026 : pendant qu'un trio Haiku traduit le chapitre N, un builder rédige déjà le FR du chapitre N+1 (jamais deux rédacteurs FR en même temps) ; commit dès les 4 langues relues, audio noté au todo point 6.
@@ -39,8 +39,8 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 | C13 | Drupal : migration et propagation de données | point 4 | [ ] |
 | C14 | Drupal : cache et affichage | point 4 | [ ] |
 | C15 | Drupal : interfaces et hygiène | point 4 | [ ] |
-| C16 | Appel système interrompu (`EINTR`) (`Langages/C/`) | point 5 | [ ] |
-| C17 | Filtrage sur place à deux pointeurs (`Langages/C/`) | point 5 | [ ] |
+| C16 | Appel système interrompu (`EINTR`) (`Langages/C/appel-systeme-interrompu-eintr.md`, `order: 29`) | point 5 | [v] |
+| C17 | Filtrage sur place à deux pointeurs (`Langages/C/filtrage-sur-place-deux-pointeurs.md`, `order: 30`) | point 5 | [~] a faite (29/10, non commité) ; b, c, d à faire |
 | C18 | `offsetof` et littéral composé (`Langages/C/`) | point 5 | [ ] |
 | C19 | Tri puis balayage (sweep and prune) | point 5 | [ ] |
 | C20 | Précision des `float` loin de l'origine | point 5 | [ ] |
@@ -71,3 +71,4 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 - C30 : PowerShell absent de cette machine, blocs non exécutés (`@args` avec paramètres nommés, `$PSDefaultParameterValues` avec `-Force`) : vérification à faire sur une machine qui a `pwsh` (todo point 10).
 - `verif-chapitre.sh` pointe vers un chemin Windows : copie Linux dans le scratchpad (`sed 's#^cd /c/Users/lcagnion/Desktop/perso/Devpedia#cd <dépôt>#'`).
 - Liens internes : forme canonique `c=langages` (`c=shells` n'est qu'une redirection historique, `js/legacy-category-redirects.js`).
+- C16 : le libellé du todo « `fread` relance pour soi » était faux (glibc 2.39 : `fread` et `fgets` s'arrêtent avec `ferror` et `errno` à `EINTR`) ; un brief qui contient une affirmation non vérifiée demande de la tester. `order` : le moniteur impose la valeur quand deux builders se suivent (29 pris par C16, 30 par C17).
