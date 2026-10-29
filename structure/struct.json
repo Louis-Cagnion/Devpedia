@@ -1281,6 +1281,10 @@
             {
               "id": "graphemes-et-decoupage-de-texte",
               "label": "Graphèmes, points de code et unités UTF-16 : découper un texte sans le casser (11/10/2026)"
+            },
+            {
+              "id": "flottants-loin-de-l-origine",
+              "label": "Les flottants loin de l'origine : précision perdue et origine locale"
             }
           ]
         },

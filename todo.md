@@ -50,12 +50,15 @@ tu parles de "Haskell, l'outil historique du domaine", mais on ne sait pas de qu
 ## 5. Notions de la revue finale de scop (19/10/2026)
 Vues pendant la revue de `collect_lines_file.c` et du parseur ; recherche dans `content/` faite, les autres notions (atexit, `O_NONBLOCK`/FIFO/`fstat`, caractères de contrôle, `strtod`, valgrind « definitely lost », `realloc`) sont déjà couvertes.
 
-- `Fondamentaux/Graphisme/` : perte de précision des `float` loin de l'origine (24 bits de mantisse) et origine locale choisie par pas de puissance de deux, soustraite en double avant la conversion : `parser.c:308-354` (aucune occurrence de « loin de l'origine » ni de FLT_EPSILON dans `content/`).
 - `Fondamentaux/Graphisme/` : qualificateur `flat` des variables GLSL (une valeur par triangle, non interpolée entre ses sommets) : `shader.geom:10-15` (aucune occurrence de `flat` dans `content/`).
 - `Fondamentaux/Graphisme/` : bruit de valeur 3D (valeurs pseudo-aléatoires aux coins d'une grille, lissées entre elles) et deux hash de shader, `fract(sin(dot(...)))` et hash entier sans état (xor-décalages et multiplications par `0x7feb352d`, `0x846ca68b`) : `crystal.frag:17-30`, `shader.frag:27-32` (aucune occurrence de « bruit de valeur » ni de ce type de hash dans `content/`).
 - `Fondamentaux/Graphisme/effets-de-rendu-et-interaction-3d.md` : loi de Beer-Lambert (la lumière s'atténue de façon exponentielle dans un milieu, `1 - exp(-densité)`), à ajouter à la section du ray-marching qui existe : `crystal.frag:94-103` (aucune occurrence de « Beer » dans `content/`).
 - `Fondamentaux/Graphisme/effets-de-rendu-et-interaction-3d.md` : intégration d'Euler semi-implicite d'un ressort amorti (la vitesse est mise à jour avant la position, avec un pas de temps plafonné), à relier au ressort amorti déjà décrit : `inputs.c:276-282` (aucune occurrence de « semi-implicite » dans `content/`).
 - `Fondamentaux/Graphisme/` ou `Mathématiques/` : blocage de cardan (gimbal lock) des angles d'Euler et rotation incrémentale, accumuler chaque petit pas dans une matrice puis la ré-orthonormaliser pour effacer l'erreur d'arrondi : `inputs.c:232-264` (aucune occurrence de « cardan » ni de « gimbal » dans `content/`).
+
+## 6. Audios à générer (chapitres commités sans audio complet)
+Un seul `generate-audio.mjs` à la fois, le français séparément des trois autres langues (`--lang=fr` puis `--lang=en,es,br`). Une génération de `flottants-loin-de-l-origine` était en cours en fin de session : si `audio/*/Données/Représentation des données/flottants-loin-de-l-origine.*` existe déjà en non suivi, l'ajouter au commit suivant.
+- `flottants-loin-de-l-origine` : fr, en, es, br.
 
 ## 7. Notions de SQL pour un premier contact (session `/professor` du 29/10/2026)
 Même procédure que le point 2. Recherche dans `content/` faite le 29/10/2026 : `Langages/Domain-specific Languages (DSL)/sql.md` couvre déjà les agrégats, `JOIN`, `CREATE TABLE` avec `PRIMARY KEY`, `NULL`, les index, PDO, l'injection SQL et le moindre privilège ; `Données/Bases de données/schemas-et-tables-techniques.md` couvre le schéma et `dbo` ; SSMS n'est cité que pour restaurer une sauvegarde `.bak`. Exemples génériques uniquement (clients, livres, films), jamais le nom d'une base ou d'une table d'un serveur de travail. Ce qui manque, pour quelqu'un qui n'a jamais écrit de requête :
