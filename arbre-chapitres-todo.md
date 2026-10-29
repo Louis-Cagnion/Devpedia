@@ -1,8 +1,8 @@
-# Arbre : chapitres du todo (chapitres commités 16/45, audio complet 16/45)
+# Arbre : chapitres du todo (chapitres commités 17/45, audio complet 16/45)
 
 Statuts : [ ] à faire, [~] en cours, [x] faite, [v] validée (commitée, audio des 4 langues généré), [!] bloquée, [>] reportée.
 Arbre validé par Louis le 28/10/2026 (lancement des 3 Haiku de traduction par chapitre compris).
-Prochaine feuille prête : plus aucune rédaction FR en cours. Louis a arrêté les agents hors Haiku le 29/10/2026 (~21h) : les prochains chapitres (C22 puis C21, C23, C30.f, C06, C09 et suivants, ordre de la liste triée donnée à Louis) attendent une décision sur le modèle des builders FR. Reste à finir : traductions et commit de C20, commit de C19 (audio en cours).
+Prochaine feuille prête : aucune rédaction FR en cours. Louis a arrêté les agents hors Haiku le 29/10/2026 (~21h) : C22 (puis C21, C23, C30.f, C06, C09 et suivants, dans l'ordre de la liste triée donnée à Louis) attend une décision sur le modèle des builders FR.
 Arrêt demandé par Louis le 29/10/2026 une fois le builder C05 revenu et les Haiku C07 finis ; à reprendre ici.
 Moniteur : claude-sonnet-5-5, effort high (`modelSettings` de `settings.json`, `CLAUDE_CODE_EFFORT_LEVEL` non défini), réévalué à la clôture du premier chapitre. Chapitres de faits spécialisés (Drupal, NCM, ft_linux) : revue `analyst` d'un niveau supérieur au moniteur entre a et b.
 Lot parallèle du 28/10/2026 (8 rédactions FR) arrêté par Louis à 14h : 5 chapitres FR récupérés (C03, C04, C08, C25, C26), 3 à relancer (C05, C07, C30). Retour aux conditions normales : une seule rédaction FR à la fois, traductions Haiku par trio, un seul audio à la fois. Autorisé par Louis le 28/10/2026 : pendant qu'un trio Haiku traduit le chapitre N, un builder rédige déjà le FR du chapitre N+1 (jamais deux rédacteurs FR en même temps) ; commit dès les 4 langues relues, audio noté au todo point 6.
@@ -43,7 +43,7 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 | C17 | Filtrage sur place à deux pointeurs (`Langages/C/filtrage-sur-place-deux-pointeurs.md`, `order: 30`) | point 5 | [v] |
 | C18 | `offsetof` et littéral composé (`Langages/C/offsetof-et-litteral-compose.md`, `order: 31`) | point 5 | [v] |
 | C19 | Tri puis balayage (`Fondamentaux/Algorithmes/tri-puis-balayage.md`, `order: 13`) | point 5 | [v] |
-| C20 | Précision des `float` loin de l'origine (`Données/Représentation des données/flottants-loin-de-l-origine.md`) | point 5 | [~] a en cours (builder lancé le 29/10) |
+| C20 | Précision des `float` loin de l'origine (`Données/Représentation des données/flottants-loin-de-l-origine.md`, `order: 10`) | point 5 | [x] commité sans audio (todo point 6) |
 | C21 | GLSL : `flat`, bruit de valeur et hash de shader | point 5 | [ ] |
 | C22 | Beer-Lambert et Euler semi-implicite (sections ajoutées à `effets-de-rendu-et-interaction-3d.md`) | point 5 | [>] builder sonnet arrêté le 29/10/2026 à la demande de Louis ; travail partiel (359 lignes, non vérifié) sauvegardé dans `/tmp/claude-1000/-home-sung-jinwoo/ea39f87b-96b3-4b22-b60a-997f31188c59/scratchpad/c22a-partiel.patch` (à ne pas compter sur lui : le dossier `/tmp` peut disparaître), fichier du dépôt remis à l'état commité |
 | C23 | Blocage de cardan et rotation incrémentale | point 5 | [ ] |
@@ -85,3 +85,4 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 - Drupal (point 4) : décision de Louis du 29/10/2026, aucun sujet « Drupal » ; 17 chapitres rangés un par un dans les catégories existantes (C09 à C15 et C36 à C45), Drupal sert d'exemple dans le texte. Revue `analyst` des faits entre a et b.
 - `||` dans une cellule de tableau : toujours `\|\|` (le site coupe la ligne sinon) ; les briefs de rédaction le disent depuis C18. Défaut préexistant de `boucles.md` au todo (section fix).
 - Les sorties d'un programme d'essai sont recopiées dans le chapitre ; depuis C17 les traducteurs recompilent et réexécutent leurs blocs (sorties identiques exigées) ; un bloc de mesure non autonome se complète pour le test.
+- C20 : les traducteurs ont relevé une phrase fausse dans le FR (le cast `(double)` ne porte que sur le premier opérande) ; corrigée aux 4 langues avant le commit. Le builder avait aussi constaté que le pas de puissance de deux n'améliore pas l'exactitude de la soustraction en `double` (lemme de Sterbenz) : le chapitre le dit au lieu de reprendre l'argument du todo.

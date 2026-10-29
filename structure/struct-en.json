@@ -1281,6 +1281,10 @@
             {
               "id": "graphemes-et-decoupage-de-texte",
               "label": "Graphemes, Code Points and UTF-16 Units: Splitting a Text Without Breaking It (11/10/2026)"
+            },
+            {
+              "id": "flottants-loin-de-l-origine",
+              "label": "Floats far from the origin: lost precision and local origin"
             }
           ]
         },
