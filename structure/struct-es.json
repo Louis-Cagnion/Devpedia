@@ -322,6 +322,10 @@
             {
               "id": "convertir-un-texte-en-nombre",
               "label": "Convertir un texto en número sin la trampa de `atoi`"
+            },
+            {
+              "id": "appel-systeme-interrompu-eintr",
+              "label": "Llamada al sistema interrumpida por una señal (EINTR)"
             }
           ]
         },
