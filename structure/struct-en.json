@@ -330,6 +330,10 @@
             {
               "id": "filtrage-sur-place-deux-pointeurs",
               "label": "Filtering a string in place with two pointers"
+            },
+            {
+              "id": "offsetof-et-litteral-compose",
+              "label": "Driving fields by their offset (offsetof) and the compound literal"
             }
           ]
         },

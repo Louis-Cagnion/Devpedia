@@ -330,6 +330,10 @@
             {
               "id": "filtrage-sur-place-deux-pointeurs",
               "label": "Filtrer une chaîne sur place avec deux pointeurs"
+            },
+            {
+              "id": "offsetof-et-litteral-compose",
+              "label": "Piloter des champs par leur décalage (offsetof) et le littéral composé"
             }
           ]
         },

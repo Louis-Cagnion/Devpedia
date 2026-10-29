@@ -330,6 +330,10 @@
             {
               "id": "filtrage-sur-place-deux-pointeurs",
               "label": "Filtrar uma string no próprio lugar com dois ponteiros"
+            },
+            {
+              "id": "offsetof-et-litteral-compose",
+              "label": "Controlar campos pelo deslocamento (offsetof) e o literal composto"
             }
           ]
         },

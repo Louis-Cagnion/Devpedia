@@ -330,6 +330,10 @@
             {
               "id": "filtrage-sur-place-deux-pointeurs",
               "label": "Filtrar una cadena en el sitio con dos punteros"
+            },
+            {
+              "id": "offsetof-et-litteral-compose",
+              "label": "Controlar campos por su desplazamiento (offsetof) y el literal compuesto"
             }
           ]
         },
