@@ -1,12 +1,12 @@
-# Arbre : chapitres du todo (chapitres commités 9/30, audio complet 8/30)
+# Arbre : chapitres du todo (chapitres commités 9/35, audio complet 8/35)
 
 Statuts : [ ] à faire, [~] en cours, [x] faite, [v] validée (commitée, audio des 4 langues généré), [!] bloquée, [>] reportée.
 Arbre validé par Louis le 28/10/2026 (lancement des 3 Haiku de traduction par chapitre compris).
-Prochaine feuille prête : C05.b (relecture du FR, 933 lignes, 22 tableaux ; rapport de l'agent : Chrome vérifié sous Windows seulement, 13 liens externes non vérifiés), puis audio de C07 (point 6).
+Prochaine feuille prête : C30.a (builder). C05 bloquée : `content/Tests/tests-navigateur-sans-fenetre.md` (feuille a, non commité) n'existe pas sur cette machine Linux (ni dans Git, ni sur le disque, vérifié le 29/10/2026 à 18h56) ; il est resté sur la machine où il a été écrit (rapport de l'agent : 933 lignes, 22 tableaux, Chrome vérifié sous Windows seulement, 13 liens externes non vérifiés). Audio de C07 (point 6) à générer ici.
 Arrêt demandé par Louis le 29/10/2026 une fois le builder C05 revenu et les Haiku C07 finis ; à reprendre ici.
-Moniteur : claude-sonnet-5-5, effort high (`modelSettings` de `settings.json`), réévalué à la clôture du premier chapitre.
+Moniteur : claude-sonnet-5-5, effort high (`modelSettings` de `settings.json`, `CLAUDE_CODE_EFFORT_LEVEL` non défini), réévalué à la clôture du premier chapitre. Chapitres de faits spécialisés (Drupal, NCM, ft_linux) : revue `analyst` d'un niveau supérieur au moniteur entre a et b.
 Lot parallèle du 28/10/2026 (8 rédactions FR) arrêté par Louis à 14h : 5 chapitres FR récupérés (C03, C04, C08, C25, C26), 3 à relancer (C05, C07, C30). Retour aux conditions normales : une seule rédaction FR à la fois, traductions Haiku par trio, un seul audio à la fois. Autorisé par Louis le 28/10/2026 : pendant qu'un trio Haiku traduit le chapitre N, un builder rédige déjà le FR du chapitre N+1 (jamais deux rédacteurs FR en même temps) ; commit dès les 4 langues relues, audio noté au todo point 6.
-Échéance : tout est commité avant 17h (hygiène dès 16h45) ; un chapitre qui ne finit pas avant 16h45 ne démarre pas.
+Échéance du 28/10/2026 (tout commité avant 17h) : dépassée à la reprise du 29/10/2026 (18h56), Louis ne l'a pas rappelée.
 
 ## Pipeline d'un chapitre (un seul à la fois, audio compris avant le suivant)
 
@@ -54,6 +54,11 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 | C28 | Serveurs web : codes de statut et en-têtes de contrôle (`Retry-After`) | serveurs web | [ ] |
 | C29 | Serveurs web : proxy inverse et limitation de débit | serveurs web | [ ] |
 | C30 | Alias PowerShell, des simples aux complexes (`Langages/PowerShell/`), puis Bash et Zsh si absents | powershell | [ ] à relancer (agent arrêté sans fichier) |
+| C31 | SQL pour un premier contact : lire des lignes, types de colonne, variable de table (sections de `Langages/Domain-specific Languages (DSL)/sql.md`) | point 7 | [ ] |
+| C32 | Lire une base avec SSMS (`Infrastructure & DevOps/` ou `Outils/`) | point 7 | [ ] |
+| C33 | QEMU, KVM, deux sens de « hôte », disque `qcow2` et snapshots (`Infrastructure & DevOps/Administration système/`) | point 8 | [ ] |
+| C34 | Deux pièges de débutant dans `composants-dun-ordinateur-et-demarrage.md` (RAM, taille du stockage) | point 8 | [ ] |
+| C35 | Génération parallèle de texte : NCM et modèles de diffusion (`IA/`) | point 9 | [ ] |
 
 ## Faits pour la suite
 - Audio : UN SEUL job à la fois. Seul, un chapitre de 3 000 clips sort en 4 à 5 minutes (C01) ; à trois en parallèle, moins de 100 clips par minute (saturation du processeur par Piper), donc plus lent au total. Les répertoires `.audio-tmp-*` appartiennent à des jobs vivants : ne jamais en supprimer sans avoir lu la ligne de commande de leurs processus Piper.
