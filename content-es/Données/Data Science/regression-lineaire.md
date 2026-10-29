@@ -14,9 +14,9 @@ Una empresa de reparto quiere estimar la duración de un trayecto a partir de la
 duración (min)
    50 |                                    ●
    40 |                          ●      ╱
-   30 |                 ●     ╱‾
-   20 |        ●     ╱‾
-   10 |  ●  ╱‾
+   30 |                 ●     ╱¯
+   20 |        ●     ╱¯
+   10 |  ●  ╱¯
     0 +──────────────────────────────── distancia (km)
       0    5    10   15   20
 ```

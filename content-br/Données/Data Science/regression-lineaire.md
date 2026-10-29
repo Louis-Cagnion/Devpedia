@@ -14,9 +14,9 @@ Uma empresa de entregas quer estimar a duração de uma corrida a partir da dist
 duração (min)
    50 |                                    ●
    40 |                          ●      ╱
-   30 |                 ●     ╱‾
-   20 |        ●     ╱‾
-   10 |  ●  ╱‾
+   30 |                 ●     ╱¯
+   20 |        ●     ╱¯
+   10 |  ●  ╱¯
     0 +──────────────────────────────── distância (km)
       0    5    10   15   20
 ```
