@@ -61,12 +61,14 @@ $PROFILE   # exibe o caminho do perfil atual (a criar se ainda não existir)
 
 ```powershell
 Set-Alias -Name ll -Value Get-ChildItem
-Set-Alias -Name gs -Value "git status"
+Set-Alias -Name g -Value git
 
 ll   # equivalente a digitar "Get-ChildItem"
 ```
 
 Um alias definido diretamente no console não sobrevive ao seu fechamento: para que fique disponível em cada nova sessão, precisa ser adicionado em `$PROFILE`.
+
+Um alias designa apenas o **nome** de um comando, nunca um comando seguido de argumentos: `g status` executa `git status`, mas `"git status"` não pode ser o valor de um alias. Para fixar um argumento em um atalho, usa-se uma função: veja [Aliases e atalhos de comandos](/?c=langages&s=powershell&p=alias-et-raccourcis-de-commandes).
 
 ## `. $PROFILE`: recarregar o perfil
 

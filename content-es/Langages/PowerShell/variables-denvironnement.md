@@ -61,12 +61,14 @@ En este perfil es donde típicamente se añaden las modificaciones de `$env:PATH
 
 ```powershell
 Set-Alias -Name ll -Value Get-ChildItem
-Set-Alias -Name gs -Value "git status"
+Set-Alias -Name g -Value git
 
 ll   # equivalente a escribir "Get-ChildItem"
 ```
 
 Un alias definido directamente en la consola no sobrevive a su cierre: para que esté disponible en cada nueva sesión, debe añadirse en `$PROFILE`.
+
+Un alias solo designa el **nombre** de un comando, nunca un comando seguido de argumentos: `g status` ejecuta `git status`, pero `"git status"` no puede ser el valor de un alias. Para fijar un argumento en un atajo, se usa una función: véase [Alias y atajos de comandos](/?c=langages&s=powershell&p=alias-et-raccourcis-de-commandes).
 
 ## `. $PROFILE`: recargar el perfil
 

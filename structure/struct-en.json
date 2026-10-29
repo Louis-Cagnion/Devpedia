@@ -900,6 +900,10 @@
             {
               "id": "architecture-dun-shell",
               "label": "How PowerShell Works (Internal Architecture)"
+            },
+            {
+              "id": "alias-et-raccourcis-de-commandes",
+              "label": "Aliases and command shortcuts in PowerShell"
             }
           ]
         },

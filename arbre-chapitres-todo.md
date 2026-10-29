@@ -1,8 +1,8 @@
-# Arbre : chapitres du todo (chapitres commités 9/35, audio complet 8/35)
+# Arbre : chapitres du todo (chapitres commités 10/35, audio complet 10/35)
 
 Statuts : [ ] à faire, [~] en cours, [x] faite, [v] validée (commitée, audio des 4 langues généré), [!] bloquée, [>] reportée.
 Arbre validé par Louis le 28/10/2026 (lancement des 3 Haiku de traduction par chapitre compris).
-Prochaine feuille prête : C30.a (builder). C05 bloquée : `content/Tests/tests-navigateur-sans-fenetre.md` (feuille a, non commité) n'existe pas sur cette machine Linux (ni dans Git, ni sur le disque, vérifié le 29/10/2026 à 18h56) ; il est resté sur la machine où il a été écrit (rapport de l'agent : 933 lignes, 22 tableaux, Chrome vérifié sous Windows seulement, 13 liens externes non vérifiés). Audio de C07 (point 6) à générer ici.
+Prochaine feuille prête : C16.b (relecture du FR `Langages/C/appel-systeme-interrompu-eintr.md`, 684 lignes, non commité), puis trio Haiku, structure, audio, commit. C05 bloquée : `content/Tests/tests-navigateur-sans-fenetre.md` (feuille a, non commité) n'existe pas sur cette machine Linux (ni dans Git, ni sur le disque, vérifié le 29/10/2026 à 18h56) ; il est resté sur la machine où il a été écrit (rapport de l'agent : 933 lignes, 22 tableaux, Chrome vérifié sous Windows seulement, 13 liens externes non vérifiés). Audio de C07 (point 6) à générer ici.
 Arrêt demandé par Louis le 29/10/2026 une fois le builder C05 revenu et les Haiku C07 finis ; à reprendre ici.
 Moniteur : claude-sonnet-5-5, effort high (`modelSettings` de `settings.json`, `CLAUDE_CODE_EFFORT_LEVEL` non défini), réévalué à la clôture du premier chapitre. Chapitres de faits spécialisés (Drupal, NCM, ft_linux) : revue `analyst` d'un niveau supérieur au moniteur entre a et b.
 Lot parallèle du 28/10/2026 (8 rédactions FR) arrêté par Louis à 14h : 5 chapitres FR récupérés (C03, C04, C08, C25, C26), 3 à relancer (C05, C07, C30). Retour aux conditions normales : une seule rédaction FR à la fois, traductions Haiku par trio, un seul audio à la fois. Autorisé par Louis le 28/10/2026 : pendant qu'un trio Haiku traduit le chapitre N, un builder rédige déjà le FR du chapitre N+1 (jamais deux rédacteurs FR en même temps) ; commit dès les 4 langues relues, audio noté au todo point 6.
@@ -30,7 +30,7 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 | C04 | Unités et fonctions de taille, police à 200 et 300 % (`Langages/CSS/`) | point 2 | [v] |
 | C05 | Tester une interface dans un navigateur sans fenêtre (`Tests/`) | point 2 | [~] a faite (29/10, `Tests/tests-navigateur-sans-fenetre.md`, `order: 12`, non commité) ; b, c, d à faire |
 | C06 | `node:test` (`Tests/`) | point 2 | [ ] |
-| C07 | `constexpr` et constantes (`Langages/C++/`) | point 3 | [x] commité sans audio (todo point 6) |
+| C07 | `constexpr` et constantes (`Langages/C++/`) | point 3 | [v] |
 | C08 | Boucle de jeu avec SFML (`Fondamentaux/Graphisme/`) | point 3 | [v] |
 | C09 | Drupal : plateforme et noyau | point 4 | [ ] |
 | C10 | Drupal : entités, plugins et annotations | point 4 | [ ] |
@@ -53,7 +53,7 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 | C27 | Serveurs web : rôle et fonctionnement (nouvelle sous-section) | serveurs web | [ ] |
 | C28 | Serveurs web : codes de statut et en-têtes de contrôle (`Retry-After`) | serveurs web | [ ] |
 | C29 | Serveurs web : proxy inverse et limitation de débit | serveurs web | [ ] |
-| C30 | Alias PowerShell, des simples aux complexes (`Langages/PowerShell/`), puis Bash et Zsh si absents | powershell | [ ] à relancer (agent arrêté sans fichier) |
+| C30 | Alias PowerShell, des simples aux complexes (`Langages/PowerShell/alias-et-raccourcis-de-commandes.md`, `order: 14`) | powershell | [v] ; reste C30.f : alias avancés de Bash puis de Zsh (todo section « powershell ») |
 | C31 | SQL pour un premier contact : lire des lignes, types de colonne, variable de table (sections de `Langages/Domain-specific Languages (DSL)/sql.md`) | point 7 | [ ] |
 | C32 | Lire une base avec SSMS (`Infrastructure & DevOps/` ou `Outils/`) | point 7 | [ ] |
 | C33 | QEMU, KVM, deux sens de « hôte », disque `qcow2` et snapshots (`Infrastructure & DevOps/Administration système/`) | point 8 | [ ] |
@@ -67,3 +67,7 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 - C02 : a sonnet/high en 9 min, juste du premier coup (22 blocs JS contrôlés par `node --check`) ; c haiku/medium x3 en 5 à 6 min, comptes identiques. Deux agents ont écrit d'abord un fichier au nom faux (`navegador`) : le brief donne maintenant le chemin exact à copier ; le moniteur supprime tout parasite. Les ancres internes `](#...)` des traductions se recalculent avec `slugify` de `js/text.js`.
 - Contrôle croisé des 4 langues (fences, titres, tableaux, liens identiques) : `bash ~/.claude/references/projects/devpedia/verif-chapitre.sh "<chemin sous content/>"`.
 - Les notions de revue de projet pro n'entrent dans aucun chapitre sous forme de nom de fichier ou de ligne du projet revu.
+- C30 : a sonnet/high en 7 min 30 s, juste du premier coup sauf une cellule de tableau Zsh (corrigée par le moniteur) ; c haiku/medium x3 en 3 min chacun, comptes identiques ; libellés de la ligne « À retenir » du tableau final à aligner sur le chapitre voisin (`Key takeaways`, `Para recordar`, `Para lembrar`), brief à compléter pour les prochains chapitres.
+- C30 : PowerShell absent de cette machine, blocs non exécutés (`@args` avec paramètres nommés, `$PSDefaultParameterValues` avec `-Force`) : vérification à faire sur une machine qui a `pwsh` (todo point 10).
+- `verif-chapitre.sh` pointe vers un chemin Windows : copie Linux dans le scratchpad (`sed 's#^cd /c/Users/lcagnion/Desktop/perso/Devpedia#cd <dépôt>#'`).
+- Liens internes : forme canonique `c=langages` (`c=shells` n'est qu'une redirection historique, `js/legacy-category-redirects.js`).

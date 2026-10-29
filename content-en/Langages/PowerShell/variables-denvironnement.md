@@ -61,12 +61,14 @@ This profile is typically where `$env:PATH` changes, custom aliases, or function
 
 ```powershell
 Set-Alias -Name ll -Value Get-ChildItem
-Set-Alias -Name gs -Value "git status"
+Set-Alias -Name g -Value git
 
 ll   # equivalent to typing "Get-ChildItem"
 ```
 
 An alias defined directly in the console doesn't survive closing it: to have it available in every new session, it needs to be added to `$PROFILE`.
+
+An alias designates only a command **name**, never a command followed by arguments: `g status` runs `git status`, but `"git status"` cannot be the value of an alias. To fix an argument in a shortcut, use a function: see [Aliases and command shortcuts](/?c=langages&s=powershell&p=alias-et-raccourcis-de-commandes).
 
 ## `. $PROFILE`: reloading the profile
 
