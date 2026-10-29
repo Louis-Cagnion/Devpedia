@@ -1,8 +1,9 @@
-# Arbre : chapitres du todo (chapitres commités 7/30, audio complet 3/30)
+# Arbre : chapitres du todo (chapitres commités 9/30, audio complet 8/30)
 
 Statuts : [ ] à faire, [~] en cours, [x] faite, [v] validée (commitée, audio des 4 langues généré), [!] bloquée, [>] reportée.
 Arbre validé par Louis le 28/10/2026 (lancement des 3 Haiku de traduction par chapitre compris).
-Prochaine feuille prête : audios du todo point 6 (file série en cours), puis C05.a.
+Prochaine feuille prête : C05.b (relecture du FR, 933 lignes, 22 tableaux ; rapport de l'agent : Chrome vérifié sous Windows seulement, 13 liens externes non vérifiés), puis audio de C07 (point 6).
+Arrêt demandé par Louis le 29/10/2026 une fois le builder C05 revenu et les Haiku C07 finis ; à reprendre ici.
 Moniteur : claude-sonnet-5-5, effort high (`modelSettings` de `settings.json`), réévalué à la clôture du premier chapitre.
 Lot parallèle du 28/10/2026 (8 rédactions FR) arrêté par Louis à 14h : 5 chapitres FR récupérés (C03, C04, C08, C25, C26), 3 à relancer (C05, C07, C30). Retour aux conditions normales : une seule rédaction FR à la fois, traductions Haiku par trio, un seul audio à la fois. Autorisé par Louis le 28/10/2026 : pendant qu'un trio Haiku traduit le chapitre N, un builder rédige déjà le FR du chapitre N+1 (jamais deux rédacteurs FR en même temps) ; commit dès les 4 langues relues, audio noté au todo point 6.
 Échéance : tout est commité avant 17h (hygiène dès 16h45) ; un chapitre qui ne finit pas avant 16h45 ne démarre pas.
@@ -26,11 +27,11 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 | C01 | SVG dans la page (`Langages/HTML/`) | point 2 | [v] |
 | C02 | API de page : `matchMedia`, `scrollIntoView`, `visibilitychange`, `AbortController` (`Langages/JavaScript/`) | point 2 | [v] |
 | C03 | Événements pointeur et chargement des polices (`Langages/JavaScript/`) | point 2 | [v] |
-| C04 | Unités et fonctions de taille, police à 200 et 300 % (`Langages/CSS/`) | point 2 | [x] commité sans audio (todo point 6) |
-| C05 | Tester une interface dans un navigateur sans fenêtre (`Tests/`) | point 2 | [~] a sonnet/high en cours (29/10, `Tests/tests-navigateur-sans-fenetre.md`, port 9333) |
+| C04 | Unités et fonctions de taille, police à 200 et 300 % (`Langages/CSS/`) | point 2 | [v] |
+| C05 | Tester une interface dans un navigateur sans fenêtre (`Tests/`) | point 2 | [~] a faite (29/10, `Tests/tests-navigateur-sans-fenetre.md`, `order: 12`, non commité) ; b, c, d à faire |
 | C06 | `node:test` (`Tests/`) | point 2 | [ ] |
 | C07 | `constexpr` et constantes (`Langages/C++/`) | point 3 | [x] commité sans audio (todo point 6) |
-| C08 | Boucle de jeu avec SFML (`Fondamentaux/Graphisme/`) | point 3 | [x] commité sans audio (todo point 6) |
+| C08 | Boucle de jeu avec SFML (`Fondamentaux/Graphisme/`) | point 3 | [v] |
 | C09 | Drupal : plateforme et noyau | point 4 | [ ] |
 | C10 | Drupal : entités, plugins et annotations | point 4 | [ ] |
 | C11 | Drupal : multisite et adresses | point 4 | [ ] |
@@ -47,8 +48,8 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 | C22 | Beer-Lambert et Euler semi-implicite (sections ajoutées à `effets-de-rendu-et-interaction-3d.md`) | point 5 | [ ] |
 | C23 | Blocage de cardan et rotation incrémentale | point 5 | [ ] |
 | C24 | Liens OWASP Top 10 et notions de l'introduction (`Sécurité/Cybersécurité/`) | cybersécurité | [ ] |
-| C25 | Signaler une faille trouvée sur un site : légalité et divulgation responsable | cybersécurité | [x] commité sans audio (todo point 6) |
-| C26 | Mots de passe : bonnes pratiques côté utilisateur et côté site | cybersécurité | [x] commité sans audio (todo point 6) |
+| C25 | Signaler une faille trouvée sur un site : légalité et divulgation responsable | cybersécurité | [v] |
+| C26 | Mots de passe : bonnes pratiques côté utilisateur et côté site | cybersécurité | [v] |
 | C27 | Serveurs web : rôle et fonctionnement (nouvelle sous-section) | serveurs web | [ ] |
 | C28 | Serveurs web : codes de statut et en-têtes de contrôle (`Retry-After`) | serveurs web | [ ] |
 | C29 | Serveurs web : proxy inverse et limitation de débit | serveurs web | [ ] |
