@@ -14,9 +14,9 @@ A delivery company wants to estimate how long a delivery will take based on the 
 duration (min)
    50 |                                    ●
    40 |                          ●      ╱
-   30 |                 ●     ╱‾
-   20 |        ●     ╱‾
-   10 |  ●  ╱‾
+   30 |                 ●     ╱¯
+   20 |        ●     ╱¯
+   10 |  ●  ╱¯
     0 +──────────────────────────────── distance (km)
       0    5    10   15   20
 ```

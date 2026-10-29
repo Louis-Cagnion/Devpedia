@@ -380,6 +380,8 @@ em {
 /* inline code and fenced code blocks — always LTR: code syntax reads left-to-right
    regardless of the page's language, exactly like on GitHub or MDN's Arabic docs */
 code {
+    /* box-drawing and arrow glyphs: second JetBrains Mono link of index.html (text= subset),
+       else a narrower fallback font misaligns ASCII-art tables */
     font-family: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
     background-color: var(--bg-elevated-2);
     color: var(--accent-strong);

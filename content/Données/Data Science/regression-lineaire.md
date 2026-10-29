@@ -14,9 +14,9 @@ Une entreprise de livraison veut estimer la durée d'une course à partir de la 
 durée (min)
    50 |                                    ●
    40 |                          ●      ╱
-   30 |                 ●     ╱‾
-   20 |        ●     ╱‾
-   10 |  ●  ╱‾
+   30 |                 ●     ╱¯
+   20 |        ●     ╱¯
+   10 |  ●  ╱¯
     0 +──────────────────────────────── distance (km)
       0    5    10   15   20
 ```
