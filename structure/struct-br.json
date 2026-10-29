@@ -110,6 +110,10 @@
             {
               "id": "couplages-et-filtrage-de-regin",
               "label": "Emparelhamentos, teste de Hall e filtragem de Régin"
+            },
+            {
+              "id": "tri-puis-balayage",
+              "label": "Ordenar e varrer (sweep and prune): comparar apenas os vizinhos plausíveis"
             }
           ]
         },

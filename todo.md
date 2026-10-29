@@ -35,9 +35,6 @@ Même procédure que le point 2. Déjà couverts (recherche du 12/10/2026 dans `
 ## powershell
 - `Langages/Bash/` puis `Langages/Zsh/` : un chapitre d'alias avancés pour chacun (les niveaux au-delà de l'alias simple sont absents de `Bash/variables-denvironnement.md` et de `Zsh/fichiers-de-demarrage.md`) : alias contre fonction avec arguments (`$1`, `"$@"`), alias dans un script (`shopt -s expand_aliases`), contournement (`\nom`, `command`), et pour Zsh les alias globaux (`alias -g`) et de suffixe (`alias -s`). Le chapitre PowerShell `alias-et-raccourcis-de-commandes.md` renvoie vers les chapitres Bash et Zsh actuels : y ajouter un lien vers les nouveaux.
 
-## cybersecurite
-- evoque OWASP Top 10 sans renvoyer dessus par un lien, idem pour les notions abordees dans l'introduction, pas de liens vers les chapitres qui en parlent
-
 ## ajouter une partie sur les serveurs web
 - en lisant un chapitre sur les modeles de decision sctructuree, j'ai appris que les serveur peuvent renvoyer des 'retry-after', j'ai trouve ca interessant et je n'en ai jamais entendu parler, je pense donc que ce serait bien d'avoir une rubrique qui parle de la chose la plus commune qui soit sur internet : les serveurs web/sites internets.
 
@@ -53,7 +50,6 @@ tu parles de "Haskell, l'outil historique du domaine", mais on ne sait pas de qu
 ## 5. Notions de la revue finale de scop (19/10/2026)
 Vues pendant la revue de `collect_lines_file.c` et du parseur ; recherche dans `content/` faite, les autres notions (atexit, `O_NONBLOCK`/FIFO/`fstat`, caractères de contrôle, `strtod`, valgrind « definitely lost », `realloc`) sont déjà couvertes.
 
-- `Fondamentaux/Mathématiques/` ou `Graphisme/` : tri puis balayage (« sweep and prune »), ne comparer que les arêtes dont les boîtes englobantes se recouvrent pour détecter des croisements, au lieu de toutes les paires : `reshape_in_triangles.c:193-250` (le chapitre ear clipping existe, pas cette technique).
 - `Fondamentaux/Graphisme/` : perte de précision des `float` loin de l'origine (24 bits de mantisse) et origine locale choisie par pas de puissance de deux, soustraite en double avant la conversion : `parser.c:308-354` (aucune occurrence de « loin de l'origine » ni de FLT_EPSILON dans `content/`).
 - `Fondamentaux/Graphisme/` : qualificateur `flat` des variables GLSL (une valeur par triangle, non interpolée entre ses sommets) : `shader.geom:10-15` (aucune occurrence de `flat` dans `content/`).
 - `Fondamentaux/Graphisme/` : bruit de valeur 3D (valeurs pseudo-aléatoires aux coins d'une grille, lissées entre elles) et deux hash de shader, `fract(sin(dot(...)))` et hash entier sans état (xor-décalages et multiplications par `0x7feb352d`, `0x846ca68b`) : `crystal.frag:17-30`, `shader.frag:27-32` (aucune occurrence de « bruit de valeur » ni de ce type de hash dans `content/`).
@@ -73,7 +69,6 @@ Vues pendant la phase 0 du projet `ft_linux` (hôte d'appoint dans QEMU/KVM) ; r
 - `Infrastructure & DevOps/Administration système/virtualisation-et-choix-dos.md` (ou un chapitre voisin) : QEMU et KVM en ligne de commande (QEMU simule la machine, KVM l'accélère avec le processeur réel), commande de lancement (mémoire, cœurs, disque, ISO comme lecteur CD, disque essayé avant le CD au démarrage). Aucune occurrence de `qemu` ni de `kvm` dans `content/` ; le chapitre ne couvre que les hyperviseurs de type 2 à interface graphique.
 - Même chapitre : les deux sens du mot « hôte » (hôte de virtualisation contre « hôte de construction » du livre LFS, le Linux déjà installé qui sert à en fabriquer un autre), avec un schéma hôte, invité et disques. Confusion vécue par Louis le 22/10/2026 à cause du nom `host.qcow2`.
 - Même chapitre ou chapitre dédié : disque virtuel `qcow2` et snapshots (`qemu-img create`, `qemu-img snapshot` avec `-c`, `-l`, `-a`, `-d`). Snapshot « disque seul » (VM éteinte) contre « disque + RAM » (VM allumée, console de QEMU, `savevm`) ; un snapshot interne vit dans le fichier `qcow2` et disparaît avec lui, donc il ne remplace pas une copie du fichier ; éteindre la VM depuis l'intérieur avant le snapshot, car fermer la fenêtre revient à couper le courant. Aucune occurrence de `qcow` ni de snapshot de machine virtuelle dans `content/`.
-- `composants-dun-ordinateur-et-demarrage.md`, section « Les pièges » : ajouter deux erreurs de débutant observées le 22/10/2026, croire que la RAM lit tous ses bits en même temps (elle est à accès direct par adresse, comme le dit déjà la section sur la RAM) et attribuer la lenteur du stockage à sa taille (elle vient de sa technologie, une petite clé USB reste plus lente que la RAM).
 
 ## 9. Génération parallèle de texte : NCM et modèles de diffusion (vidéo du 29/10/2026)
 Même procédure que le point 2, titre daté (valeurs changeantes). Sujet encore au stade de la recherche : bon sur quelques tâches précises, en retrait sur la plupart, à présenter comme tel et non comme la fin des LLM. Recherche dans `content/` faite le 29/10/2026 : aucune occurrence de « autorégressif », de « modèle de diffusion » de texte ni de bande passante mémoire liée aux LLM ; `tpu-npu-lpu-vpu.md` cite seulement la génération token par token du LPU.
