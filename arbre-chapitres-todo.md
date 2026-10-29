@@ -1,4 +1,4 @@
-# Arbre : chapitres du todo (chapitres commités 17/45, audio complet 16/45)
+# Arbre : chapitres du todo (chapitres commités 17/45, audio complet 17/45)
 
 Statuts : [ ] à faire, [~] en cours, [x] faite, [v] validée (commitée, audio des 4 langues généré), [!] bloquée, [>] reportée.
 Arbre validé par Louis le 28/10/2026 (lancement des 3 Haiku de traduction par chapitre compris).
@@ -43,7 +43,7 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 | C17 | Filtrage sur place à deux pointeurs (`Langages/C/filtrage-sur-place-deux-pointeurs.md`, `order: 30`) | point 5 | [v] |
 | C18 | `offsetof` et littéral composé (`Langages/C/offsetof-et-litteral-compose.md`, `order: 31`) | point 5 | [v] |
 | C19 | Tri puis balayage (`Fondamentaux/Algorithmes/tri-puis-balayage.md`, `order: 13`) | point 5 | [v] |
-| C20 | Précision des `float` loin de l'origine (`Données/Représentation des données/flottants-loin-de-l-origine.md`, `order: 10`) | point 5 | [x] commité sans audio (todo point 6) |
+| C20 | Précision des `float` loin de l'origine (`Données/Représentation des données/flottants-loin-de-l-origine.md`, `order: 10`) | point 5 | [v] |
 | C21 | GLSL : `flat`, bruit de valeur et hash de shader | point 5 | [ ] |
 | C22 | Beer-Lambert et Euler semi-implicite (sections ajoutées à `effets-de-rendu-et-interaction-3d.md`) | point 5 | [>] builder sonnet arrêté le 29/10/2026 à la demande de Louis ; travail partiel (359 lignes, non vérifié) sauvegardé dans `/tmp/claude-1000/-home-sung-jinwoo/ea39f87b-96b3-4b22-b60a-997f31188c59/scratchpad/c22a-partiel.patch` (à ne pas compter sur lui : le dossier `/tmp` peut disparaître), fichier du dépôt remis à l'état commité |
 | C23 | Blocage de cardan et rotation incrémentale | point 5 | [ ] |
