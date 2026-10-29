@@ -27,9 +27,9 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 | C02 | API de page : `matchMedia`, `scrollIntoView`, `visibilitychange`, `AbortController` (`Langages/JavaScript/`) | point 2 | [v] |
 | C03 | Événements pointeur et chargement des polices (`Langages/JavaScript/`) | point 2 | [v] |
 | C04 | Unités et fonctions de taille, police à 200 et 300 % (`Langages/CSS/`) | point 2 | [x] commité sans audio (todo point 6) |
-| C05 | Tester une interface dans un navigateur sans fenêtre (`Tests/`) | point 2 | [ ] à relancer (agent arrêté sans fichier) |
+| C05 | Tester une interface dans un navigateur sans fenêtre (`Tests/`) | point 2 | [~] a sonnet/high en cours (29/10, `Tests/tests-navigateur-sans-fenetre.md`, port 9333) |
 | C06 | `node:test` (`Tests/`) | point 2 | [ ] |
-| C07 | `constexpr` et constantes (`Langages/C++/`) | point 3 | [~] a sonnet/high en cours |
+| C07 | `constexpr` et constantes (`Langages/C++/`) | point 3 | [x] commité sans audio (todo point 6) |
 | C08 | Boucle de jeu avec SFML (`Fondamentaux/Graphisme/`) | point 3 | [x] commité sans audio (todo point 6) |
 | C09 | Drupal : plateforme et noyau | point 4 | [ ] |
 | C10 | Drupal : entités, plugins et annotations | point 4 | [ ] |
