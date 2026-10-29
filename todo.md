@@ -53,8 +53,6 @@ tu parles de "Haskell, l'outil historique du domaine", mais on ne sait pas de qu
 ## 5. Notions de la revue finale de scop (19/10/2026)
 Vues pendant la revue de `collect_lines_file.c` et du parseur ; recherche dans `content/` faite, les autres notions (atexit, `O_NONBLOCK`/FIFO/`fstat`, caractères de contrôle, `strtod`, valgrind « definitely lost », `realloc`) sont déjà couvertes.
 
-- `Langages/C/` : écrire dans un champ de structure par son décalage (`offsetof`, `*(float *)((char *)p + offset)`) pour piloter une directive par un tableau de `{nom, décalage, min, max}` au lieu d'une chaîne de `if` (aucune occurrence de `offsetof` dans `content/`, la table de dispatch existe déjà en PHP, `routage.md`) : `parser.c:406-481`.
-- `Langages/C/` : littéral composé C99, `(Type){valeurs}`, une structure fabriquée sur place et passée en argument : `uv_seams.c:146-147` (aucune occurrence dans `content/`).
 - `Fondamentaux/Mathématiques/` ou `Graphisme/` : tri puis balayage (« sweep and prune »), ne comparer que les arêtes dont les boîtes englobantes se recouvrent pour détecter des croisements, au lieu de toutes les paires : `reshape_in_triangles.c:193-250` (le chapitre ear clipping existe, pas cette technique).
 - `Fondamentaux/Graphisme/` : perte de précision des `float` loin de l'origine (24 bits de mantisse) et origine locale choisie par pas de puissance de deux, soustraite en double avant la conversion : `parser.c:308-354` (aucune occurrence de « loin de l'origine » ni de FLT_EPSILON dans `content/`).
 - `Fondamentaux/Graphisme/` : qualificateur `flat` des variables GLSL (une valeur par triangle, non interpolée entre ses sommets) : `shader.geom:10-15` (aucune occurrence de `flat` dans `content/`).
