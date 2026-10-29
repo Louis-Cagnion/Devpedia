@@ -326,6 +326,10 @@
             {
               "id": "appel-systeme-interrompu-eintr",
               "label": "Interrupted system call (EINTR)"
+            },
+            {
+              "id": "filtrage-sur-place-deux-pointeurs",
+              "label": "Filtering a string in place with two pointers"
             }
           ]
         },

@@ -326,6 +326,10 @@
             {
               "id": "appel-systeme-interrompu-eintr",
               "label": "Llamada al sistema interrumpida por una señal (EINTR)"
+            },
+            {
+              "id": "filtrage-sur-place-deux-pointeurs",
+              "label": "Filtrar una cadena en el sitio con dos punteros"
             }
           ]
         },
