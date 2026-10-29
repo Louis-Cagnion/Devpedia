@@ -12,10 +12,6 @@ Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il
 Sujets utilisés dans le Portfolio de Louis, sans chapitre dédié. Procédure : français, puis 3 agents de traduction (EN, ES, BR), puis audio des 4 langues généré avant de passer au chapitre suivant. Écrire dans l'ordre, un chapitre à la fois ; chaque chapitre renvoie vers les chapitres voisins existants plutôt que de les répéter.
 - `Tests/` : tester une interface dans un navigateur sans fenêtre (banc de tests maison, Chrome DevTools Protocol), puis `node:test`, deux chapitres, en complément de `tests-end-to-end.md`.
 
-## 3. Chapitres issus de la session d'apprentissage C++ (SFML)
-Même procédure que le point 2 (français, EN, ES et BR, audio des 4 langues généré avant le chapitre suivant). Un chapitre ne répète pas ce que couvre déjà un chapitre existant : il y renvoie par un lien.
-- `Langages/C++/constexpr-et-constantes.md` (`order: 12`, après `cast-cpp.md`) : `constexpr` (constante typée dont la valeur est connue à la compilation) comparé à `const` (valeur fixée à l'initialisation, possible à l'exécution : fichier, saisie) et à `#define` (remplacement de texte sans type ni portée, collisions entre noms identiques selon l'ordre d'inclusion, avantage : visible partout et réglable par `-D`) ; la portée d'une constante (classe, namespace, fonction), le membre `static constexpr` d'une classe, l'accès hors de la classe par `Classe::NOM` selon `private` ou `public` ; limites (valeur calculable à la compilation). Renvoyer vers `espaces-de-noms.md`, `classes-et-objets.md` et le chapitre C `compilation` (préprocesseur, `-D`). Exemple conseillé : une taille de case `static constexpr int TILE_SIZE = 64;` dans une classe de jeu.
-
 ## 4. Notions de Drupal 11 multisite (revue d'un projet Drupal)
 Même procédure que le point 2. Déjà couverts (recherche du 12/10/2026 dans `content/`) : injection SQL, CSRF, XSS, cron, injection de dépendances de base et trait PHP (`Langages/PHP/poo.md`), idempotence, redirection ouverte, traversée de chemin et téléversement (`Sécurité/Cybersécurité/upload-de-fichiers.md`), affectation en masse. Exemples génériques de Drupal uniquement, jamais le code du projet revu. Un chapitre par thème :
 - Plateforme et noyau : framework et inversion de contrôle (le framework appelle le code du projet via des déclarations : route, hook, service, plugin) ; hook et abonné d'événement avec priorité ; conteneur de services et fournisseur de services (remplacer un service du noyau) ; hook personnalisé (déclarer et appeler son propre point d'extension : `invokeAll`, `alter`) ; dépendance optionnelle (`moduleExists`) et dépendance non déclarée.
@@ -64,3 +60,4 @@ Un seul `generate-audio.mjs` à la fois (Piper sature le processeur), avec `ffmp
 - `boucle-de-jeu-sfml` : fr, en, es, br.
 - `signaler-une-faille-trouvee` : fr, en, es, br.
 - `bonnes-pratiques-mots-de-passe` : fr, en, es, br.
+- `constexpr-et-constantes` : fr, en, es, br.

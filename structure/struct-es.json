@@ -373,6 +373,10 @@
             {
               "id": "cast-cpp",
               "label": "Los cast en C++"
+            },
+            {
+              "id": "constexpr-et-constantes",
+              "label": "`constexpr` y las constantes en C++ (28/10/2026)"
             }
           ]
         },
