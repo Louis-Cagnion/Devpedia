@@ -1,4 +1,4 @@
-# Arbre : chapitres du todo (chapitres commités 11/35, audio complet 11/35)
+# Arbre : chapitres du todo (chapitres commités 11/45, audio complet 11/45)
 
 Statuts : [ ] à faire, [~] en cours, [x] faite, [v] validée (commitée, audio des 4 langues généré), [!] bloquée, [>] reportée.
 Arbre validé par Louis le 28/10/2026 (lancement des 3 Haiku de traduction par chapitre compris).
@@ -32,13 +32,13 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 | C06 | `node:test` (`Tests/`) | point 2 | [ ] |
 | C07 | `constexpr` et constantes (`Langages/C++/`) | point 3 | [v] |
 | C08 | Boucle de jeu avec SFML (`Fondamentaux/Graphisme/`) | point 3 | [v] |
-| C09 | Drupal : plateforme et noyau | point 4 | [ ] |
-| C10 | Drupal : entités, plugins et annotations | point 4 | [ ] |
-| C11 | Drupal : multisite et adresses | point 4 | [ ] |
-| C12 | Drupal : files d'attente et verrous | point 4 | [ ] |
-| C13 | Drupal : migration et propagation de données | point 4 | [ ] |
-| C14 | Drupal : cache et affichage | point 4 | [ ] |
-| C15 | Drupal : interfaces et hygiène | point 4 | [ ] |
+| C09 | Inversion de contrôle et points d'extension : hooks, événements, dépendance optionnelle (`Qualité, performance et outils/Qualité et architecture du code/`) | point 4 | [ ] |
+| C10 | Le conteneur de services (`Qualité et architecture du code/`) | point 4 | [ ] |
+| C11 | L'architecture à plugins (`Qualité et architecture du code/`) | point 4 | [ ] |
+| C12 | Machine à états applicative (`Qualité et architecture du code/`) | point 4 | [ ] |
+| C13 | Cycle de vie d'une entité, schéma par code, champ calculé (`Données/Bases de données/`) | point 4 | [ ] |
+| C14 | Migrations de données sûres (`Données/Bases de données/`) | point 4 | [ ] |
+| C15 | Alias d'adresse, redirection 301, conversion de paramètre de route (`Langages/PHP/`) | point 4 | [ ] |
 | C16 | Appel système interrompu (`EINTR`) (`Langages/C/appel-systeme-interrompu-eintr.md`, `order: 29`) | point 5 | [v] |
 | C17 | Filtrage sur place à deux pointeurs (`Langages/C/filtrage-sur-place-deux-pointeurs.md`, `order: 30`) | point 5 | [~] a faite (29/10, non commité) ; b, c, d à faire |
 | C18 | `offsetof` et littéral composé (`Langages/C/`) | point 5 | [ ] |
@@ -59,6 +59,16 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 | C33 | QEMU, KVM, deux sens de « hôte », disque `qcow2` et snapshots (`Infrastructure & DevOps/Administration système/`) | point 8 | [ ] |
 | C34 | Deux pièges de débutant dans `composants-dun-ordinateur-et-demarrage.md` (RAM, taille du stockage) | point 8 | [ ] |
 | C35 | Génération parallèle de texte : NCM et modèles de diffusion (`IA/`) | point 9 | [ ] |
+| C36 | Afficher une entité : view builder, route, contrôle d'accès (`Langages/PHP/`) | point 4 | [ ] |
+| C37 | Un code, plusieurs sites (`Infrastructure & DevOps/Conception à grande échelle/`) | point 4 | [ ] |
+| C38 | Répliquer un référentiel vers des satellites (`Conception à grande échelle/`) | point 4 | [ ] |
+| C39 | File d'attente, worker, verrou, méthode modèle (`Infrastructure & DevOps/Automatisation/`) | point 4 | [ ] |
+| C40 | Métadonnées de cache et invalidation (`Qualité, performance et outils/Performance/`) | point 4 | [ ] |
+| C41 | Chargement différé : lazy builder et espace réservé (`Performance/`) | point 4 | [ ] |
+| C42 | Redimensionner des images et servir du WebP (`Performance/`) | point 4 | [ ] |
+| C43 | Désactiver la vérification TLS et ses risques (`Sécurité/Cybersécurité/`) | point 4 | [ ] |
+| C44 | Authentification HTTP Basic et ressource REST (`Cybersécurité/`) | point 4 | [ ] |
+| C45 | Données personnelles dans les journaux et les réplications (`Cybersécurité/`) | point 4 | [ ] |
 
 ## Faits pour la suite
 - Audio : UN SEUL job à la fois. Seul, un chapitre de 3 000 clips sort en 4 à 5 minutes (C01) ; à trois en parallèle, moins de 100 clips par minute (saturation du processeur par Piper), donc plus lent au total. Les répertoires `.audio-tmp-*` appartiennent à des jobs vivants : ne jamais en supprimer sans avoir lu la ligne de commande de leurs processus Piper.
@@ -72,3 +82,4 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 - `verif-chapitre.sh` pointe vers un chemin Windows : copie Linux dans le scratchpad (`sed 's#^cd /c/Users/lcagnion/Desktop/perso/Devpedia#cd <dépôt>#'`).
 - Liens internes : forme canonique `c=langages` (`c=shells` n'est qu'une redirection historique, `js/legacy-category-redirects.js`).
 - C16 : le libellé du todo « `fread` relance pour soi » était faux (glibc 2.39 : `fread` et `fgets` s'arrêtent avec `ferror` et `errno` à `EINTR`) ; un brief qui contient une affirmation non vérifiée demande de la tester. `order` : le moniteur impose la valeur quand deux builders se suivent (29 pris par C16, 30 par C17).
+- Drupal (point 4) : décision de Louis du 29/10/2026, aucun sujet « Drupal » ; 17 chapitres rangés un par un dans les catégories existantes (C09 à C15 et C36 à C45), Drupal sert d'exemple dans le texte. Revue `analyst` des faits entre a et b.
