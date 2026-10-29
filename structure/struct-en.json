@@ -110,6 +110,10 @@
             {
               "id": "couplages-et-filtrage-de-regin",
               "label": "Matchings, the Hall Test and Régin Filtering"
+            },
+            {
+              "id": "tri-puis-balayage",
+              "label": "Sort and sweep (sweep and prune): only compare plausible neighbors"
             }
           ]
         },

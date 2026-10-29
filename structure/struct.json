@@ -110,6 +110,10 @@
             {
               "id": "couplages-et-filtrage-de-regin",
               "label": "Couplages, test de Hall et filtrage de Régin"
+            },
+            {
+              "id": "tri-puis-balayage",
+              "label": "Tri puis balayage (sweep and prune) : ne comparer que les voisins plausibles"
             }
           ]
         },
