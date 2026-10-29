@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : point 6, générer les audios des chapitres déjà commités (un seul job `generate-audio.mjs` à la fois), puis suivre `arbre-chapitres-todo.md` (C05, C06, C07, C30 à rédiger). Point 1 : en attente de Louis (test navigateur).
+> Prochaine tâche : C05 (feuille b) : relire `content/Tests/tests-navigateur-sans-fenetre.md` (rédigé, non commité), puis le trio Haiku de traduction, `struct-*.json`, audio de C05 et de C07 (point 6, un seul job `generate-audio.mjs` à la fois), commit ; ensuite suivre `arbre-chapitres-todo.md` (C06, C30 à rédiger). Point 1 : en attente de Louis (test navigateur).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -10,7 +10,7 @@ Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il
 
 ## 2. Chapitres issus du projet Portfolio (sujets absents de Devpedia)
 Sujets utilisés dans le Portfolio de Louis, sans chapitre dédié. Procédure : français, puis 3 agents de traduction (EN, ES, BR), puis audio des 4 langues généré avant de passer au chapitre suivant. Écrire dans l'ordre, un chapitre à la fois ; chaque chapitre renvoie vers les chapitres voisins existants plutôt que de les répéter.
-- `Tests/` : tester une interface dans un navigateur sans fenêtre (banc de tests maison, Chrome DevTools Protocol), puis `node:test`, deux chapitres, en complément de `tests-end-to-end.md`.
+- `Tests/` : `node:test` (banc de tests Node, en complément de `tests-end-to-end.md` et du chapitre `tests-navigateur-sans-fenetre.md`).
 
 ## 4. Notions de Drupal 11 multisite (revue d'un projet Drupal)
 Même procédure que le point 2. Déjà couverts (recherche du 12/10/2026 dans `content/`) : injection SQL, CSRF, XSS, cron, injection de dépendances de base et trait PHP (`Langages/PHP/poo.md`), idempotence, redirection ouverte, traversée de chemin et téléversement (`Sécurité/Cybersécurité/upload-de-fichiers.md`), affectation en masse. Exemples génériques de Drupal uniquement, jamais le code du projet revu. Un chapitre par thème :
@@ -56,8 +56,4 @@ Vues pendant la revue de `collect_lines_file.c` et du parseur ; recherche dans `
 
 ## 6. Audios à générer (chapitres commités sans audio complet)
 Un seul `generate-audio.mjs` à la fois (Piper sature le processeur), avec `ffmpeg` dans le `PATH` (`export PATH="$PWD/.tools/ffmpeg-9.0.1-essentials_build/bin:$PATH"`), le français séparément des trois autres langues. Chaque ligne se retire dans le commit qui ajoute l'audio.
-- `unites-et-fonctions-de-taille` : fr, en, es, br.
-- `boucle-de-jeu-sfml` : fr, en, es, br.
-- `signaler-une-faille-trouvee` : fr, en, es, br.
-- `bonnes-pratiques-mots-de-passe` : fr, en, es, br.
 - `constexpr-et-constantes` : fr, en, es, br.
