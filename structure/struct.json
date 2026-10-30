@@ -204,6 +204,10 @@
             {
               "id": "glsl-flat-bruit-de-valeur-et-hash",
               "label": "GLSL : le qualificateur `flat`, le bruit de valeur et les fonctions de hachage"
+            },
+            {
+              "id": "blocage-de-cardan-et-rotation-incrementale",
+              "label": "Blocage de cardan et rotation incrémentale"
             }
           ]
         }
