@@ -86,6 +86,59 @@ Le résultat se mélange à la couleur du verre : `mix(glass_color, cloud_color,
 | Décalage d'un demi-pas (`+ 0.5`) | Échantillonne au milieu du pas plutôt qu'à son bord | Sans lui, les bandes des pas se voient |
 | Épaisseur traversée | Une valeur approchée suffit (par exemple le diamètre de l'objet) | La calculer exactement demande l'intersection rayon/objet |
 
+### La loi de Beer-Lambert : pourquoi l'opacité suit une exponentielle
+
+La ligne `opacity += (1.0 - opacity) * ...` de la boucle ci-dessus ajoute « ce qui reste à couvrir » à chaque pas : elle imite une loi physique, la loi de Beer-Lambert. Dans un milieu de densité uniforme (brouillard, fumée, verre dépoli), chaque tranche de même épaisseur absorbe la même **fraction** de la lumière qui lui arrive, et non la même quantité. La part de lumière qui traverse (la **transmission**) décroît donc de façon exponentielle avec l'épaisseur :
+
+```text
+transmission = exp(-densité x épaisseur)   part de la lumière qui traverse, entre 0 et 1
+opacité      = 1 - transmission            part arrêtée : 1 - exp(-densité x épaisseur)
+
+densité : absorption par unité d'épaisseur (2 = deux unités d'absorption par unité traversée)
+```
+
+`exp(x)` est la fonction **exponentielle** ([fiche de référence](https://registry.khronos.org/OpenGL-Refpages/gl4/html/exp.xhtml)) : le nombre e (environ 2,718281828) élevé à la puissance `x`. Elle vaut 1 pour `x = 0`, et `exp(-x)` se rapproche de 0 quand `x` grandit, sans jamais l'atteindre ni devenir négative. L'opacité reste donc toujours entre 0 et 1, aussi épais ou dense que soit le milieu. Pour une densité de 2 (valeurs calculées par un script) :
+
+| Épaisseur | Transmission `exp(-2 x épaisseur)` | Opacité `1 - exp(-2 x épaisseur)` | Opacité si on additionnait simplement (`2 x épaisseur`) |
+|---|---|---|---|
+| 0 | 1,0000 | 0,0000 | 0 |
+| 0,25 | 0,6065 | 0,3935 | 0,5 |
+| 0,5 | 0,3679 | 0,6321 | 1 |
+| 1 | 0,1353 | 0,8647 | 2 (impossible) |
+| 2 | 0,0183 | 0,9817 | 4 (impossible) |
+| 3 | 0,0025 | 0,9975 | 6 (impossible) |
+
+Deux demi-épaisseurs se **multiplient** : 0,3679 x 0,3679 = 0,1353, soit exactement la transmission de l'épaisseur 1 (0,135335 dans les deux cas, au millionième près). C'est ce qui rend la boucle possible : traverser le nuage tranche par tranche et multiplier les transmissions revient à traverser son épaisseur totale d'un coup.
+
+La boucle ci-dessus applique cette multiplication pas à pas, mais en remplaçant `exp(-x)` par `1 - x`, une bonne approximation seulement quand `x` (ici `densité x pas`) est petit. Une version plus fidèle additionne la densité sur tout le rayon (le total s'appelle l'**épaisseur optique**), puis applique `exp` **une seule fois**, à la sortie :
+
+```glsl
+float cloud_opacity_beer(vec3 entry, vec3 dir, float thickness)   // mêmes paramètres
+{
+	const int STEPS = 24;                             // nombre de pas, fixe
+	float step_len = thickness / float(STEPS);        // longueur d'un pas
+	float optical = 0.0;                              // épaisseur optique cumulée
+	for (int i = 0; i < STEPS && optical < 3.0; i++)  // 3.0 : opacité d'environ 0,95
+	{
+		vec3 p = entry + dir * (float(i) + 0.5) * step_len;   // milieu du pas i
+		optical += density(p) * step_len * 4.0;               // on additionne, sans borner
+	}
+	return 1.0 - exp(-optical);                       // un seul exp, hors de la boucle
+}
+```
+
+La sortie anticipée testait `opacity < 0.95` ; ici, `1 - exp(-3)` vaut 0,9502, d'où le seuil de 3 sur l'épaisseur optique. Comparaison pour une densité constante de 2 (le facteur `4.0` mis à 1, sans sortie anticipée), avec le résultat exact `1 - exp(-densité x épaisseur)` :
+
+| Épaisseur | Exact | Boucle ci-dessus, 4 pas | Boucle ci-dessus, 24 pas | Somme puis `exp`, 4 ou 24 pas |
+|---|---|---|---|---|
+| 0,5 | 0,6321 | 0,6836 | 0,6399 | 0,6321 |
+| 1 | 0,8647 | 0,9375 | 0,8761 | 0,8647 |
+| 2 | 0,9817 | 1,0000 | 0,9874 | 0,9817 |
+
+La somme suivie d'un `exp` donne le résultat exact quelle que soit la finesse du pas quand la densité est constante ; quand elle varie, l'erreur ne vient plus que de la finesse de l'échantillonnage. Le piège de la récurrence est plus grave que cet écart : avec 4 pas, une épaisseur de 3, la densité constante de 2 et le facteur `4.0` mis à 1 comme dans la comparaison ci-dessus, le premier pas ajoute déjà `densité x pas = 1,5` : l'opacité vaut 1,5 dès le premier tour, la sortie anticipée arrête la boucle et renvoie 1,5, une opacité impossible. Avec `1.0 - exp(-optical)`, le résultat ne quitte jamais l'intervalle de 0 à 1.
+
+> **Piège :** une densité négative (une fonction `density` mal bornée) donne `exp` d'un nombre positif, donc une opacité négative. D'où le `clamp(..., 0.0, 1.0)` dans `density` plus haut : le garder.
+
 ## Dessiner un objet transparent
 
 Un cristal laisse voir ce qui est derrière lui : il faut **mélanger** sa couleur à ce qui est déjà à l'écran. OpenGL le fait avec le **blending** (mélange), activé par `glEnable(GL_BLEND)`, avec la formule choisie par `glBlendFunc` :
@@ -166,6 +219,122 @@ void	spring_update(t_spring *s, float target, float stiffness, float damping, fl
 | Fort | Rejoint la cible lentement, sans dépasser |
 
 > **Piège (le pas de temps non borné) :** si une image dure très longtemps (fenêtre déplacée, programme suspendu une seconde), `dt` est grand et le pas ci-dessus dépasse la cible de plus que l'écart de départ : à chaque image l'écart grandit, la valeur diverge, puis devient `inf` ou `NaN`. D'où le plafond `dt <= 0.05` (50 ms) : le ressort rattrape son retard sur plusieurs images plutôt que d'exploser en une.
+
+### Euler semi-implicite : pourquoi la vitesse est mise à jour avant la position
+
+Le ressort ci-dessus avance image par image : c'est de l'**intégration numérique**, une simulation par petits pas où `dt` (la durée d'une image, en secondes, voir [le delta time](/?c=fondamentaux&s=graphisme&p=glfw-glad-et-boucle-de-rendu#le-delta-time-une-vitesse-independante-de-la-machine)) est le **pas de temps**. La règle la plus simple, la **méthode d'Euler**, dit : « nouvelle valeur = ancienne valeur + variation par seconde x `dt` ». Un ressort fait évoluer deux valeurs à la fois, sa position `pos` et sa vitesse `vel`, et l'ordre des deux mises à jour change le résultat :
+
+| Méthode | Ordre dans le pas | Ce que lit chaque ligne |
+|---|---|---|
+| Euler **explicite** | `pos += vel x dt`, puis `vel += accel x dt` | Les deux lignes lisent l'état du **début** du pas |
+| Euler **semi-implicite** (celui du ressort ci-dessus) | `vel += accel x dt`, puis `pos += vel x dt` | La position lit la vitesse **déjà mise à jour** : une valeur de la fin du pas, d'où « à moitié implicite » |
+
+Le test : un ressort **sans amortissement**, tiré à 1 puis lâché. En physique il oscille éternellement avec la même amplitude, car son **énergie** ne change jamais. L'énergie est la somme de celle du mouvement (`0,5 x vel x vel`) et de celle de l'étirement (`0,5 x raideur x pos x pos`) ; ici, 2 au départ. Une bonne méthode doit la garder à peu près constante.
+
+```c
+#include <stdio.h>                                  /* printf */
+
+typedef struct s_spring
+{
+	float	pos;   /* écart à la position de repos */
+	float	vel;   /* vitesse de variation de pos, en unités par seconde */
+}	t_spring;
+
+void	step_explicit(t_spring *s, float stiffness, float dt)
+{
+	float	accel;
+
+	accel = -stiffness * s->pos;   /* force de rappel (ni cible ni frottement ici) */
+	s->pos += s->vel * dt;         /* la position d'abord, avec l'ANCIENNE vitesse */
+	s->vel += accel * dt;          /* puis la vitesse, avec l'ancienne position */
+}
+
+void	step_semi_implicit(t_spring *s, float stiffness, float dt)
+{
+	float	accel;
+
+	accel = -stiffness * s->pos;   /* force de rappel, calculée une seule fois */
+	s->vel += accel * dt;          /* la vitesse d'abord... */
+	s->pos += s->vel * dt;         /* ...puis la position, avec la NOUVELLE vitesse */
+}
+
+float	energy(t_spring s, float stiffness)
+{
+	/* énergie de mouvement + énergie d'étirement */
+	return (0.5f * s.vel * s.vel + 0.5f * stiffness * s.pos * s.pos);
+}
+
+int	main(void)
+{
+	t_spring	a = {1.0f, 0.0f};   /* ressort tiré à 1, lâché sans vitesse */
+	t_spring	b = {1.0f, 0.0f};   /* même départ pour la seconde méthode */
+	int			n;
+
+	for (n = 1; n <= 10000; n++)
+	{
+		step_explicit(&a, 4.0f, 0.016f);        /* raideur 4, pas de 16 ms */
+		step_semi_implicit(&b, 4.0f, 0.016f);   /* mêmes valeurs */
+		if (n == 1 || n == 100 || n == 1000 || n == 10000)
+			printf("pas %5d : explicite %.4f, semi-implicite %.4f\n",
+				n, energy(a, 4.0f), energy(b, 4.0f));
+	}
+	return (0);
+}
+```
+
+Sortie réelle du programme (compilé avec `gcc -Wall -Wextra`) :
+
+```text
+pas     1 : explicite 2.0020, semi-implicite 1.9980
+pas   100 : explicite 2.2155, semi-implicite 1.9963
+pas  1000 : explicite 5.5657, semi-implicite 1.9708
+pas 10000 : explicite 55710.1133, semi-implicite 2.0244
+```
+
+| Méthode | Énergie après 10 000 pas (départ : 2) | Ce qui se passe |
+|---|---|---|
+| Euler explicite | 55710,1133 | Chaque pas multiplie l'énergie par `1 + raideur x dt x dt` (ici 1,001024) : le ressort **gagne** de l'énergie et ses oscillations grandissent sans fin |
+| Euler semi-implicite | 2,0244 (entre 1,9685 et 2,0325 sur toute la durée) | L'énergie **oscille** autour de 2 sans dériver : l'amplitude reste stable aussi longtemps qu'on veut |
+
+Le facteur de l'explicite se vérifie : 1,001024 à la puissance 1000 donne 2,7829, et 5,5657 / 2 donne bien 2,7829. Une erreur minuscule par pas (0,1 %), répétée à chaque image, devient énorme en quelques minutes. Avec l'amortissement de la section précédente, le défaut persiste : à raideur 4 et amortissement 0,01 (même pas), l'énergie mesurée après 10 000 pas vaut 11240 en explicite, alors que le frottement devrait l'éteindre, et 0,41 en semi-implicite, qui l'éteint bien. C'est pourquoi `spring_update` met à jour `vel` **avant** `pos`, et pourquoi l'ordre des deux lignes ne se permute pas « parce que ça revient au même ».
+
+Le plafond sur `dt` reste nécessaire, même en semi-implicite : cette méthode n'est stable que si `dt` est inférieur à `2 / sqrt(raideur)` (`sqrt` : la racine carrée). Pour une raideur de 400, la limite mesurée par dichotomie (on coupe l'intervalle en deux jusqu'à la trouver) est 0,10000, soit `2 / sqrt(400)`. La fonction ci-dessous mesure le plus grand écart atteint sur 200 pas (`isnan` teste si une valeur est `NaN`, *Not a Number*, le résultat d'un calcul impossible comme `inf - inf`, où `inf` est l'infini) :
+
+```c
+#include <math.h>                         /* fabsf : valeur absolue ; isnan */
+
+/* utilise t_spring et step_semi_implicit, définis plus haut */
+float	max_pos(float stiffness, float dt, int steps)
+{
+	t_spring	s = {1.0f, 0.0f};   /* départ : tiré à 1, sans vitesse */
+	float		big = 1.0f;         /* plus grand écart vu, 1 au départ */
+	int			i;
+
+	for (i = 0; i < steps; i++)
+	{
+		step_semi_implicit(&s, stiffness, dt);   /* un pas de la méthode */
+		if (isnan(s.pos))                        /* explosé : on s'arrête */
+			return (s.pos);
+		if (fabsf(s.pos) > big)                  /* nouveau record d'écart */
+			big = fabsf(s.pos);
+	}
+	return (big);
+}
+```
+
+| `dt` (raideur 400) | Plus grand écart sur 200 pas | Verdict |
+|---|---|---|
+| 0,016 (une image à 60 par seconde) | 1,01305 | Stable |
+| 0,050 (le plafond du ressort ci-dessus) | 1 | Stable |
+| 0,090 | 2,29416 | Amplitude gonflée |
+| 0,099 | 7,08858 | Juste sous la limite de 0,1 : très gonflée |
+| 0,101 | 1,4314e+25 | Juste au-dessus : divergence |
+| 0,110 | `NaN` (affiché `-nan`) | Explosé |
+| 1,000 (une seconde de pause) | `NaN` (affiché `-nan`) | Explosé |
+
+Le plafond de 0,05 est donc sûr tant que la raideur reste sous 1600 (`2 / 0,05` = 40, et 40 au carré = 1600) ; avec un ressort plus raide, il faut baisser le plafond.
+
+> **Piège :** inverser les deux lignes de mise à jour ne produit aucune erreur ni aucun avertissement : le ressort a l'air de fonctionner, et c'est seulement après des secondes ou des minutes, ou avec un amortissement faible, que l'oscillation prend de l'ampleur. Garder `vel` avant `pos`, puis plafonner `dt` en tenant compte de la raideur.
 
 ## Borner une déformation avec `tanh`
 
@@ -257,7 +426,7 @@ Concrètement, le clic 2D est d'abord converti en coordonnées normalisées (ent
 
 | | |
 |---|---|
-| **À retenir** | L'aberration chromatique simule la dispersion de la lumière en calculant la réfraction 3 fois (une par canal de couleur), avec un indice de réfraction légèrement différent à chaque fois. Une animation procédurale recalcule une position à chaque image via une formule dépendant du temps réel écoulé, sans données externes. Le reflet de Fresnel (approximation de Schlick) fait croître la part réfléchie avec l'angle de biais. Le ray-marching accumule une densité par petits pas pour un nuage intérieur. Un objet transparent se dessine après les opaques, en deux passes (dos puis face) avec `GL_SRC_ALPHA`. Un ressort amorti rejoint sa cible sans saut, et `tanh` borne une déformation en douceur. Le placage triplanaire texture un objet sans UV en projetant selon les trois axes. Le picking souris convertit un clic 2D en rayon 3D via les matrices de projection/vue inversées, dans l'ordre inverse du rendu normal. |
-| **Outils utilisables** | Une cubemap pour l'environnement réfracté et réfléchi, `reflect`, `mix`, `pow`. `glBlendFunc`, `glCullFace`, `glFrontFace` pour la transparence. Une formule temporelle (`sinf(temps * vitesse)`) ou un ressort amorti pour animer. `tanhf` pour borner. Trois lectures de texture pondérées par la normale pour le triplanaire. L'inverse des matrices de projection et de vue pour le picking. |
-| **Pièges à éviter** | Un écart trop grand entre les indices de réfraction (résultat irréaliste). Animer selon le nombre d'images plutôt que le temps réel écoulé. Dessiner un transparent avant les opaques, ou inverser le sens des sommets (objet noir ou vide, sans erreur). Un ressort sans plafond sur le pas de temps (divergence, `NaN`). Un `ray-marching` à trop de pas (coût par pixel). |
-| **Bonnes pratiques** | Garder les indices de réfraction proches les uns des autres pour un résultat crédible. Toujours baser une animation sur le temps réel, jamais sur le nombre d'images passées. Plafonner `dt` dans un ressort et refuser une limite nulle ou négative pour `tanh`. En cas d'objet noir, tester d'abord sans `GL_CULL_FACE`. |
+| **À retenir** | L'aberration chromatique simule la dispersion de la lumière en calculant la réfraction 3 fois (une par canal de couleur), avec un indice de réfraction légèrement différent à chaque fois. Une animation procédurale recalcule une position à chaque image via une formule dépendant du temps réel écoulé, sans données externes. Le reflet de Fresnel (approximation de Schlick) fait croître la part réfléchie avec l'angle de biais. Le ray-marching accumule une densité par petits pas pour un nuage intérieur, et la loi de Beer-Lambert (`opacité = 1 - exp(-densité x épaisseur)`) garde l'opacité entre 0 et 1. Un objet transparent se dessine après les opaques, en deux passes (dos puis face) avec `GL_SRC_ALPHA`. Un ressort amorti rejoint sa cible sans saut, avancé par Euler semi-implicite (la vitesse est mise à jour avant la position, ce qui garde l'énergie stable là où l'Euler explicite en gagne à chaque pas), et `tanh` borne une déformation en douceur. Le placage triplanaire texture un objet sans UV en projetant selon les trois axes. Le picking souris convertit un clic 2D en rayon 3D via les matrices de projection/vue inversées, dans l'ordre inverse du rendu normal. |
+| **Outils utilisables** | Une cubemap pour l'environnement réfracté et réfléchi, `reflect`, `mix`, `pow`, `exp` pour l'atténuation de Beer-Lambert. `glBlendFunc`, `glCullFace`, `glFrontFace` pour la transparence. Une formule temporelle (`sinf(temps * vitesse)`) ou un ressort amorti pour animer. `tanhf` pour borner. Trois lectures de texture pondérées par la normale pour le triplanaire. L'inverse des matrices de projection et de vue pour le picking. |
+| **Pièges à éviter** | Un écart trop grand entre les indices de réfraction (résultat irréaliste). Animer selon le nombre d'images plutôt que le temps réel écoulé. Dessiner un transparent avant les opaques, ou inverser le sens des sommets (objet noir ou vide, sans erreur). Un ressort sans plafond sur le pas de temps (divergence, `NaN`). Un `ray-marching` à trop de pas (coût par pixel). Une opacité additionnée sans `exp` (elle dépasse 1). Deux lignes de mise à jour du ressort dans le mauvais ordre (l'oscillation grandit sans erreur visible). |
+| **Bonnes pratiques** | Garder les indices de réfraction proches les uns des autres pour un résultat crédible. Toujours baser une animation sur le temps réel, jamais sur le nombre d'images passées. Additionner la densité sur le rayon puis appliquer `1.0 - exp(-optical)` une seule fois. Mettre `vel` à jour avant `pos`, plafonner `dt` sous `2 / sqrt(raideur)` dans un ressort et refuser une limite nulle ou négative pour `tanh`. En cas d'objet noir, tester d'abord sans `GL_CULL_FACE`. |

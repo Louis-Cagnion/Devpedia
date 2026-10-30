@@ -52,8 +52,6 @@ Vues pendant la revue de `collect_lines_file.c` et du parseur ; recherche dans `
 
 - `Fondamentaux/Graphisme/` : qualificateur `flat` des variables GLSL (une valeur par triangle, non interpolée entre ses sommets) : `shader.geom:10-15` (aucune occurrence de `flat` dans `content/`).
 - `Fondamentaux/Graphisme/` : bruit de valeur 3D (valeurs pseudo-aléatoires aux coins d'une grille, lissées entre elles) et deux hash de shader, `fract(sin(dot(...)))` et hash entier sans état (xor-décalages et multiplications par `0x7feb352d`, `0x846ca68b`) : `crystal.frag:17-30`, `shader.frag:27-32` (aucune occurrence de « bruit de valeur » ni de ce type de hash dans `content/`).
-- `Fondamentaux/Graphisme/effets-de-rendu-et-interaction-3d.md` : loi de Beer-Lambert (la lumière s'atténue de façon exponentielle dans un milieu, `1 - exp(-densité)`), à ajouter à la section du ray-marching qui existe : `crystal.frag:94-103` (aucune occurrence de « Beer » dans `content/`).
-- `Fondamentaux/Graphisme/effets-de-rendu-et-interaction-3d.md` : intégration d'Euler semi-implicite d'un ressort amorti (la vitesse est mise à jour avant la position, avec un pas de temps plafonné), à relier au ressort amorti déjà décrit : `inputs.c:276-282` (aucune occurrence de « semi-implicite » dans `content/`).
 - `Fondamentaux/Graphisme/` ou `Mathématiques/` : blocage de cardan (gimbal lock) des angles d'Euler et rotation incrémentale, accumuler chaque petit pas dans une matrice puis la ré-orthonormaliser pour effacer l'erreur d'arrondi : `inputs.c:232-264` (aucune occurrence de « cardan » ni de « gimbal » dans `content/`).
 
 ## 7. Notions de SQL pour un premier contact (session `/professor` du 29/10/2026)
@@ -78,3 +76,6 @@ Même procédure que le point 2, titre daté (valeurs changeantes). Sujet encore
 ## 10. Vérifications à faire sur une machine qui a PowerShell
 PowerShell est absent de la machine Linux : les blocs du chapitre `Langages/PowerShell/alias-et-raccourcis-de-commandes.md` ne sont pas exécutés. À jouer avec `pwsh -NoProfile` : (1) `function la { Get-ChildItem -Force @args }` puis `la -Recurse` (les paramètres nommés passent par `@args`) ; (2) `$PSDefaultParameterValues["Get-ChildItem:Force"] = $true` puis `Get-ChildItem` (les éléments cachés apparaissent) ; (3) `Set-Alias -Name gs -Value "git status"` puis `gs` (l'erreur dit que le terme n'est pas reconnu) ; (4) `function gl { git log --oneline @args }` puis `gl` (l'alias par défaut `gl` répond, pas la fonction) ; (5) `. .\raccourcis.ps1` contre `.\raccourcis.ps1` (l'alias survit seulement avec le point) ; corriger le chapitre aux 4 langues si un résultat diffère.
 - `Langages/PowerShell/` : `powershell.md` et `permissions-et-fichiers.md` portent tous deux `order: 11` ; en choisir un autre pour l'un des deux.
+
+## 11. Vérifications à faire sur une machine qui a un compilateur GLSL
+- `glslangValidator` absent ici : compiler le bloc `cloud_opacity_beer` de `Fondamentaux/Graphisme/effets-de-rendu-et-interaction-3d.md` (résultat attendu : aucune erreur) et ceux des chapitres GLSL rédigés ensuite.

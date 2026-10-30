@@ -86,6 +86,59 @@ El resultado se mezcla con el color del vidrio: `mix(glass_color, cloud_color, c
 | Desfase de medio paso (`+ 0.5`) | Muestrea en el medio del paso y no en su borde | Sin él, se ven las bandas de los pasos |
 | Grosor atravesado | Basta un valor aproximado (por ejemplo el diámetro del objeto) | Calcularlo exactamente exige la intersección rayo/objeto |
 
+### La ley de Beer-Lambert: por qué la opacidad sigue una exponencial
+
+La línea `opacity += (1.0 - opacity) * ...` del bucle de arriba añade «lo que queda por cubrir» en cada paso: imita una ley física, la ley de Beer-Lambert. En un medio de densidad uniforme (niebla, humo, vidrio esmerilado), cada capa del mismo grosor absorbe la misma **fracción** de la luz que le llega, y no la misma cantidad. La parte de luz que atraviesa (la **transmisión**) disminuye, por tanto, de forma exponencial con el grosor:
+
+```text
+transmisión = exp(-densidad x grosor)   parte de la luz que atraviesa, entre 0 y 1
+opacidad    = 1 - transmisión           parte detenida: 1 - exp(-densidad x grosor)
+
+densidad: absorción por unidad de grosor (2 = dos unidades de absorción por unidad)
+```
+
+`exp(x)` es la función **exponencial** ([ficha de referencia](https://registry.khronos.org/OpenGL-Refpages/gl4/html/exp.xhtml)): el número e (alrededor de 2,718281828) elevado a la potencia `x`. Vale 1 para `x = 0`, y `exp(-x)` se acerca a 0 cuando `x` crece, sin llegar nunca a alcanzarlo ni volverse negativo. La opacidad se mantiene, pues, siempre entre 0 y 1, por grueso o denso que sea el medio. Para una densidad de 2 (valores calculados con un script):
+
+| Grosor | Transmisión `exp(-2 x grosor)` | Opacidad `1 - exp(-2 x grosor)` | Opacidad si simplemente se sumara (`2 x grosor`) |
+|---|---|---|---|
+| 0 | 1,0000 | 0,0000 | 0 |
+| 0,25 | 0,6065 | 0,3935 | 0,5 |
+| 0,5 | 0,3679 | 0,6321 | 1 |
+| 1 | 0,1353 | 0,8647 | 2 (imposible) |
+| 2 | 0,0183 | 0,9817 | 4 (imposible) |
+| 3 | 0,0025 | 0,9975 | 6 (imposible) |
+
+Dos mitades de grosor se **multiplican**: 0,3679 x 0,3679 = 0,1353, es decir, exactamente la transmisión del grosor 1 (0,135335 en ambos casos, redondeado a la millonésima). Esto es lo que hace posible el bucle: atravesar la nube capa a capa y multiplicar las transmisiones equivale a atravesar su grosor total de una sola vez.
+
+El bucle de arriba aplica esta multiplicación paso a paso, pero sustituyendo `exp(-x)` por `1 - x`, una buena aproximación solo cuando `x` (aquí `densidad x paso`) es pequeño. Una versión más fiel suma la densidad a lo largo de todo el rayo (el total se llama **grosor óptico**) y aplica `exp` **una sola vez**, a la salida:
+
+```glsl
+float opacidad_nube_beer(vec3 entrada, vec3 dir, float grosor)   // mismos parámetros
+{
+	const int PASOS = 24;                             // número de pasos, fijo
+	float long_paso = grosor / float(PASOS);          // longitud de un paso
+	float optico = 0.0;                               // grosor óptico acumulado
+	for (int i = 0; i < PASOS && optico < 3.0; i++)   // 3.0: opacidad de unos 0,95
+	{
+		vec3 p = entrada + dir * (float(i) + 0.5) * long_paso;   // mitad del paso i
+		optico += density(p) * long_paso * 4.0;                  // suma sin acotar
+	}
+	return 1.0 - exp(-optico);                        // un solo exp, fuera del bucle
+}
+```
+
+La salida anticipada probaba `opacity < 0.95`; aquí, `1 - exp(-3)` vale 0,9502, de ahí el umbral de 3 en el grosor óptico. Comparación para una densidad constante de 2 (el factor `4.0` puesto a 1, sin salida anticipada), con el resultado exacto `1 - exp(-densidad x grosor)`:
+
+| Grosor | Exacto | Bucle de arriba, 4 pasos | Bucle de arriba, 24 pasos | Suma y luego `exp`, 4 o 24 pasos |
+|---|---|---|---|---|
+| 0,5 | 0,6321 | 0,6836 | 0,6399 | 0,6321 |
+| 1 | 0,8647 | 0,9375 | 0,8761 | 0,8647 |
+| 2 | 0,9817 | 1,0000 | 0,9874 | 0,9817 |
+
+La suma seguida de un `exp` da el resultado exacto sea cual sea la finura del paso cuando la densidad es constante; cuando varía, el error solo viene ya de la finura del muestreo. La trampa de sumar sin límite es más grave que esa diferencia: con 4 pasos, un grosor de 3, la densidad constante de 2 y el factor `4.0` fijado en 1 como en la comparación anterior, el primer paso suma ya `densidad x paso = 1,5`: la opacidad vale 1,5 desde la primera vuelta, la salida anticipada detiene el bucle y devuelve 1,5, una opacidad imposible. Con `1.0 - exp(-optico)`, el resultado nunca sale del intervalo de 0 a 1.
+
+> **Trampa:** una densidad negativa (una función `density` mal acotada) da `exp` de un número positivo, y por tanto una opacidad negativa. De ahí el `clamp(..., 0.0, 1.0)` de `density` más arriba: conservarlo.
+
 ## Dibujar un objeto transparente
 
 Un cristal deja ver lo que hay detrás: hay que **mezclar** su color con lo que ya está en pantalla. OpenGL lo hace con el **blending** (mezcla), activado con `glEnable(GL_BLEND)`, con la fórmula elegida por `glBlendFunc`:
@@ -166,6 +219,122 @@ void	spring_update(t_spring *s, float target, float stiffness, float damping, fl
 | Alto | Alcanza el objetivo lentamente, sin sobrepasarlo |
 
 > **Trampa (el paso de tiempo sin acotar):** si un fotograma dura mucho (ventana arrastrada, programa suspendido un segundo), `dt` es grande y el paso anterior sobrepasa el objetivo en más que la diferencia inicial: en cada fotograma la diferencia crece, el valor diverge y acaba siendo `inf` o `NaN`. De ahí el tope `dt <= 0.05` (50 ms): el muelle recupera su retraso a lo largo de varios fotogramas en lugar de explotar en uno solo.
+
+### Euler semi-implícito: por qué la velocidad se actualiza antes que la posición
+
+El muelle de arriba avanza fotograma a fotograma: es **integración numérica**, una simulación por pequeños pasos donde `dt` (la duración de un fotograma, en segundos, véase [el delta time](/?c=fondamentaux&s=graphisme&p=glfw-glad-et-boucle-de-rendu#el-delta-time-una-velocidad-independiente-de-la-maquina)) es el **paso de tiempo**. La regla más simple, el **método de Euler**, dice: «nuevo valor = valor anterior + variación por segundo x `dt`». Un muelle hace evolucionar dos valores a la vez, su posición `pos` y su velocidad `vel`, y el orden de las dos actualizaciones cambia el resultado:
+
+| Método | Orden dentro del paso | Lo que lee cada línea |
+|---|---|---|
+| Euler **explícito** | `pos += vel x dt`, luego `vel += acel x dt` | Las dos líneas leen el estado del **inicio** del paso |
+| Euler **semi-implícito** (el del muelle de arriba) | `vel += acel x dt`, luego `pos += vel x dt` | La posición lee la velocidad **ya actualizada**: un valor del final del paso, de ahí el nombre «semi-implícito» |
+
+La prueba: un muelle **sin amortiguamiento**, estirado a 1 y soltado. En física oscila eternamente con la misma amplitud, porque su **energía** nunca cambia. La energía es la suma de la del movimiento (`0,5 x vel x vel`) y la del estiramiento (`0,5 x rigidez x pos x pos`); aquí, 2 al principio. Un buen método debe mantenerla más o menos constante.
+
+```c
+#include <stdio.h>                                  /* printf */
+
+typedef struct s_spring
+{
+	float	pos;   /* desviación respecto a la posición de reposo */
+	float	vel;   /* velocidad de variación de pos, en unidades por segundo */
+}	t_spring;
+
+void	paso_explicito(t_spring *s, float rigidez, float dt)
+{
+	float	acel;
+
+	acel = -rigidez * s->pos;   /* fuerza de recuperación (sin rozamiento aquí) */
+	s->pos += s->vel * dt;      /* primero la posición, con la velocidad ANTIGUA */
+	s->vel += acel * dt;        /* luego la velocidad, con la posición antigua */
+}
+
+void	paso_semi_implicito(t_spring *s, float rigidez, float dt)
+{
+	float	acel;
+
+	acel = -rigidez * s->pos;   /* fuerza de recuperación, calculada una sola vez */
+	s->vel += acel * dt;        /* primero la velocidad... */
+	s->pos += s->vel * dt;      /* ...luego la posición, con la velocidad NUEVA */
+}
+
+float	energia(t_spring s, float rigidez)
+{
+	/* energía de movimiento + energía de estiramiento */
+	return (0.5f * s.vel * s.vel + 0.5f * rigidez * s.pos * s.pos);
+}
+
+int	main(void)
+{
+	t_spring	a = {1.0f, 0.0f};   /* muelle estirado a 1, soltado sin velocidad */
+	t_spring	b = {1.0f, 0.0f};   /* mismo inicio, para el segundo método */
+	int			n;
+
+	for (n = 1; n <= 10000; n++)
+	{
+		paso_explicito(&a, 4.0f, 0.016f);        /* rigidez 4, paso de 16 ms */
+		paso_semi_implicito(&b, 4.0f, 0.016f);   /* mismos valores */
+		if (n == 1 || n == 100 || n == 1000 || n == 10000)
+			printf("paso %5d : explícito %.4f, semi-implícito %.4f\n",
+				n, energia(a, 4.0f), energia(b, 4.0f));
+	}
+	return (0);
+}
+```
+
+Salida real del programa (compilado con `gcc -Wall -Wextra`):
+
+```text
+paso     1 : explícito 2.0020, semi-implícito 1.9980
+paso   100 : explícito 2.2155, semi-implícito 1.9963
+paso  1000 : explícito 5.5657, semi-implícito 1.9708
+paso 10000 : explícito 55710.1133, semi-implícito 2.0244
+```
+
+| Método | Energía tras 10 000 pasos (inicio: 2) | Qué pasa |
+|---|---|---|
+| Euler explícito | 55710,1133 | Cada paso multiplica la energía por `1 + rigidez x dt x dt` (aquí 1,001024): el muelle **gana** energía y sus oscilaciones crecen sin fin |
+| Euler semi-implícito | 2,0244 (entre 1,9685 y 2,0325 durante toda la duración) | La energía **oscila** alrededor de 2 sin derivar: la amplitud se mantiene estable todo el tiempo que se quiera |
+
+El factor del explícito se comprueba: 1,001024 elevado a 1000 da 2,7829, y 5,5657 / 2 da efectivamente 2,7829. Un error minúsculo por paso (0,1 %), repetido en cada fotograma, se vuelve enorme en pocos minutos. Con el amortiguamiento de la sección anterior, el defecto persiste: con rigidez 4 y amortiguamiento 0,01 (mismo paso), la energía medida tras 10 000 pasos vale 11240 en explícito, aunque el rozamiento debería apagarla, y 0,41 en semi-implícito, que sí la apaga. Por eso `spring_update` actualiza `vel` **antes** que `pos`, y por eso el orden de las dos líneas no se puede permutar «porque da lo mismo».
+
+El tope sobre `dt` sigue siendo necesario, incluso en semi-implícito: este método solo es estable si `dt` es menor que `2 / sqrt(rigidez)` (`sqrt`: la raíz cuadrada). Para una rigidez de 400, el límite medido por bisección (se corta el intervalo en dos hasta encontrarlo) es 0,10000, es decir `2 / sqrt(400)`. La función de abajo mide la mayor desviación alcanzada en 200 pasos (`isnan` comprueba si un valor es `NaN`, *Not a Number*, el resultado de un cálculo imposible como `inf - inf`, donde `inf` es el infinito):
+
+```c
+#include <math.h>                         /* fabsf: valor absoluto; isnan */
+
+/* usa t_spring y paso_semi_implicito, definidos más arriba */
+float	pos_max(float rigidez, float dt, int pasos)
+{
+	t_spring	s = {1.0f, 0.0f};   /* inicio: estirado a 1, sin velocidad */
+	float		grande = 1.0f;      /* mayor desviación vista, 1 al principio */
+	int			i;
+
+	for (i = 0; i < pasos; i++)
+	{
+		paso_semi_implicito(&s, rigidez, dt);   /* un paso del método */
+		if (isnan(s.pos))                       /* ha explotado: nos detenemos */
+			return (s.pos);
+		if (fabsf(s.pos) > grande)              /* nuevo récord de desviación */
+			grande = fabsf(s.pos);
+	}
+	return (grande);
+}
+```
+
+| `dt` (rigidez 400) | Mayor desviación en 200 pasos | Veredicto |
+|---|---|---|
+| 0,016 (un fotograma a 60 por segundo) | 1,01305 | Estable |
+| 0,050 (el tope del muelle de arriba) | 1 | Estable |
+| 0,090 | 2,29416 | Amplitud hinchada |
+| 0,099 | 7,08858 | Justo por debajo del límite de 0,1: muy hinchada |
+| 0,101 | 1,4314e+25 | Justo por encima: divergencia |
+| 0,110 | `NaN` (mostrado `-nan`) | Explotado |
+| 1,000 (una segunda de pausa) | `NaN` (mostrado `-nan`) | Explotado |
+
+El tope de 0,05 es, pues, seguro mientras la rigidez se mantenga por debajo de 1600 (`2 / 0,05` = 40, y 40 al cuadrado = 1600); con un muelle más rígido, hay que bajar el tope.
+
+> **Trampa:** invertir las dos líneas de actualización no produce ningún error ni advertencia: el muelle parece funcionar, y solo tras segundos o minutos, o con un amortiguamiento débil, la oscilación toma amplitud. Conservar `vel` antes que `pos`, y luego acotar `dt` teniendo en cuenta la rigidez.
 
 ## Acotar una deformación con `tanh`
 
@@ -257,7 +426,7 @@ Concretamente, el clic 2D se convierte primero a coordenadas normalizadas (entre
 
 | | |
 |---|---|
-| **Para recordar** | La aberración cromática simula la dispersión de la luz calculando la refracción 3 veces (una por canal de color), con un índice de refracción ligeramente distinto cada vez. Una animación procedural recalcula una posición en cada fotograma vía una fórmula que depende del tiempo real transcurrido, sin datos externos. El picking con el ratón convierte un clic 2D en un rayo 3D vía las matrices de proyección/vista invertidas, en el orden inverso del renderizado normal. El reflejo de Fresnel (aproximación de Schlick) hace crecer la parte reflejada con el ángulo de refilón. El ray-marching acumula una densidad con pasos pequeños para una nube interior. Un objeto transparente se dibuja después de los opacos, en dos pasadas (dorso y luego frente) con `GL_SRC_ALPHA`. Un muelle amortiguado alcanza su objetivo sin saltos, y `tanh` acota una deformación con suavidad. El mapeado triplanar texturiza un objeto sin UV proyectando según los tres ejes. |
-| **Herramientas utilizables** | Un cubemap para el entorno refractado y reflejado, `reflect`, `mix`, `pow`. `glBlendFunc`, `glCullFace`, `glFrontFace` para la transparencia. Una fórmula temporal (`sinf(tiempo * velocidad)`) o un muelle amortiguado para animar. `tanhf` para acotar. Tres lecturas de textura ponderadas por la normal para el triplanar. La inversa de las matrices de proyección y vista para el picking. |
-| **Trampas a evitar** | Una diferencia demasiado grande entre los índices de refracción (resultado irreal). Animar según el número de fotogramas en lugar del tiempo real transcurrido. Dibujar un transparente antes de los opacos, o invertir el orden de los vértices (objeto negro o vacío, sin error). Un muelle sin tope en el paso de tiempo (divergencia, `NaN`). Un `ray-marching` con demasiados pasos (coste por píxel). |
-| **Buenas prácticas** | Mantener los índices de refracción cercanos entre sí para un resultado creíble. Basar siempre una animación en el tiempo real, nunca en el número de fotogramas transcurridos. Acotar `dt` en un muelle y rechazar un límite nulo o negativo para `tanh`. Con un objeto negro, probar primero sin `GL_CULL_FACE`. |
+| **Para recordar** | La aberración cromática simula la dispersión de la luz calculando la refracción 3 veces (una por canal de color), con un índice de refracción ligeramente distinto cada vez. Una animación procedural recalcula una posición en cada fotograma vía una fórmula que depende del tiempo real transcurrido, sin datos externos. El picking con el ratón convierte un clic 2D en un rayo 3D vía las matrices de proyección/vista invertidas, en el orden inverso del renderizado normal. El reflejo de Fresnel (aproximación de Schlick) hace crecer la parte reflejada con el ángulo de refilón. El ray-marching acumula una densidad con pasos pequeños para una nube interior, y la ley de Beer-Lambert (`opacidad = 1 - exp(-densidad x grosor)`) mantiene la opacidad entre 0 y 1. Un objeto transparente se dibuja después de los opacos, en dos pasadas (dorso y luego frente) con `GL_SRC_ALPHA`. Un muelle amortiguado alcanza su objetivo sin saltos, avanzado por Euler semi-implícito (la velocidad se actualiza antes que la posición, lo que mantiene estable la energía, mientras que el Euler explícito la gana en cada paso), y `tanh` acota una deformación con suavidad. El mapeado triplanar texturiza un objeto sin UV proyectando según los tres ejes. |
+| **Herramientas utilizables** | Un cubemap para el entorno refractado y reflejado, `reflect`, `mix`, `pow`, `exp` para la atenuación de Beer-Lambert. `glBlendFunc`, `glCullFace`, `glFrontFace` para la transparencia. Una fórmula temporal (`sinf(tiempo * velocidad)`) o un muelle amortiguado para animar. `tanhf` para acotar. Tres lecturas de textura ponderadas por la normal para el triplanar. La inversa de las matrices de proyección y vista para el picking. |
+| **Trampas a evitar** | Una diferencia demasiado grande entre los índices de refracción (resultado irreal). Animar según el número de fotogramas en lugar del tiempo real transcurrido. Dibujar un transparente antes de los opacos, o invertir el orden de los vértices (objeto negro o vacío, sin error). Un muelle sin tope en el paso de tiempo (divergencia, `NaN`). Un `ray-marching` con demasiados pasos (coste por píxel). Una opacidad sumada sin `exp` (supera 1). Dos líneas de actualización del muelle en el orden equivocado (la oscilación crece sin error visible). |
+| **Buenas prácticas** | Mantener los índices de refracción cercanos entre sí para un resultado creíble. Basar siempre una animación en el tiempo real, nunca en el número de fotogramas transcurridos. Sumar la densidad a lo largo del rayo y aplicar `1.0 - exp(-optico)` una sola vez. Actualizar `vel` antes que `pos`, acotar `dt` bajo `2 / sqrt(rigidez)` en un muelle y rechazar un límite nulo o negativo para `tanh`. Con un objeto negro, probar primero sin `GL_CULL_FACE`. |
