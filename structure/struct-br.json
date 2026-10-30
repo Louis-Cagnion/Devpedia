@@ -1365,6 +1365,10 @@
         {
           "id": "tests-de-mutation",
           "label": "Os testes de mutação"
+        },
+        {
+          "id": "tests-navigateur-sans-fenetre",
+          "label": "Testar uma interface em um navegador sem janela (29/10/2026)"
         }
       ]
     },

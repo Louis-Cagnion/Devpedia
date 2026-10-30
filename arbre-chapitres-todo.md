@@ -1,8 +1,8 @@
-# Arbre : chapitres du todo (chapitres commités 18/45, audio complet 18/45)
+# Arbre : chapitres du todo (chapitres commités 19/45, audio complet 19/45)
 
 Statuts : [ ] à faire, [~] en cours, [x] faite, [v] validée (commitée, audio des 4 langues généré), [!] bloquée, [>] reportée.
 Arbre validé par Louis le 28/10/2026 (lancement des 3 Haiku de traduction par chapitre compris).
-Prochaine feuille prête : C23.a (builder arrêté à 08:28 le 30/10/2026, aucun fichier écrit), puis C30.f, C06, C09 et suivants. C05 : FR relue le 30/10/2026, trio Haiku de traduction lancé à 09:18.
+Prochaine feuille prête : C30.f, puis C06, C09 et suivants (fenêtre des agents rouverte par Louis le 30/10/2026 pour C05 et C23 seulement : à redemander avant de lancer C30.f). C23 : audio des 4 langues en cours, puis commit.
 Fenêtre de travail des agents fixée par Louis le 30/10/2026 : jusqu'à 08:28 ; arrêt des agents encore actifs à cette heure, chapitres complets récupérés.
 Moniteur : claude-sonnet-5-5, effort high (`modelSettings` de `settings.json`, `CLAUDE_CODE_EFFORT_LEVEL` non défini), réévalué à la clôture du premier chapitre. Chapitres de faits spécialisés (Drupal, NCM, ft_linux) : revue `analyst` d'un niveau supérieur au moniteur entre a et b.
 Une seule rédaction FR à la fois, traductions Haiku par trio, un seul audio à la fois. Autorisé par Louis le 28/10/2026 : pendant qu'un trio Haiku traduit le chapitre N, un builder rédige déjà le FR du chapitre N+1 (jamais deux rédacteurs FR en même temps) ; commit dès les 4 langues relues.
@@ -28,7 +28,7 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 | C02 | API de page : `matchMedia`, `scrollIntoView`, `visibilitychange`, `AbortController` (`Langages/JavaScript/`) | point 2 | [v] |
 | C03 | Événements pointeur et chargement des polices (`Langages/JavaScript/`) | point 2 | [v] |
 | C04 | Unités et fonctions de taille, police à 200 et 300 % (`Langages/CSS/`) | point 2 | [v] |
-| C05 | Tester une interface dans un navigateur sans fenêtre (`Tests/`) | point 2 | [~] a faite le 29/10/2026, b faite le 30/10/2026 (FR relue, non commitée) ; c en cours (trio Haiku lancé à 09:18) ; d à faire |
+| C05 | Tester une interface dans un navigateur sans fenêtre (`Tests/`) | point 2 | [v] |
 | C06 | `node:test` (`Tests/`) | point 2 | [ ] |
 | C07 | `constexpr` et constantes (`Langages/C++/`) | point 3 | [v] |
 | C08 | Boucle de jeu avec SFML (`Fondamentaux/Graphisme/`) | point 3 | [v] |
@@ -46,7 +46,7 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 | C20 | Précision des `float` loin de l'origine (`Données/Représentation des données/flottants-loin-de-l-origine.md`, `order: 10`) | point 5 | [v] |
 | C21 | GLSL : `flat`, bruit de valeur et hash de shader | point 5 | [v] |
 | C22 | Beer-Lambert et Euler semi-implicite (sections ajoutées à `effets-de-rendu-et-interaction-3d.md`) | point 5 | [v] |
-| C23 | Blocage de cardan et rotation incrémentale | point 5 | [ ] builder arrêté le 30/10/2026 à 08:28, aucun fichier écrit |
+| C23 | Blocage de cardan et rotation incrémentale | point 5 | [~] a, b, c faites le 30/10/2026 (FR relue, trio Haiku contrôlé) ; d : struct faits, audio des 4 langues en cours, commit à faire |
 | C24 | Liens de l'introduction de la Cybersécurité vers les chapitres cités (9 liens, 4 langues) | cybersécurité | [v] |
 | C25 | Signaler une faille trouvée sur un site : légalité et divulgation responsable | cybersécurité | [v] |
 | C26 | Mots de passe : bonnes pratiques côté utilisateur et côté site | cybersécurité | [v] |

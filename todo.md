@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : C05 (point 2) : traductions en cours, puis `struct-*.json`, audio des 4 langues et commit ; ensuite C23.a (blocage de cardan, `Fondamentaux/Graphisme/`), puis C30.f, C06, C09 et suivants selon `arbre-chapitres-todo.md`. Point 1 : en attente de Louis (test navigateur).
+> Prochaine tâche : commit de C23 (blocage de cardan) une fois son audio des 4 langues généré (en cours le 30/10/2026) ; puis C30.f, C06, C09 et suivants selon `arbre-chapitres-todo.md` (fenêtre des agents à redemander à Louis). Point 1 : en attente de Louis (test navigateur).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -11,7 +11,6 @@ Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il
 ## 2. Chapitres issus du projet Portfolio (sujets absents de Devpedia)
 Sujets utilisés dans le Portfolio de Louis, sans chapitre dédié. Procédure : français, puis 3 agents de traduction (EN, ES, BR), puis audio des 4 langues généré avant de passer au chapitre suivant. Écrire dans l'ordre, un chapitre à la fois ; chaque chapitre renvoie vers les chapitres voisins existants plutôt que de les répéter.
 - `Tests/` : `node:test` (banc de tests Node, en complément de `tests-end-to-end.md` et du chapitre `tests-navigateur-sans-fenetre.md`).
-- `Tests/tests-navigateur-sans-fenetre.md` (C05) : FR relu ; reste : traductions EN, ES et BR, `struct-*.json`, audio des 4 langues, commit.
 
 ## 4. Notions de Drupal 11 multisite (revue d'un projet Drupal)
 Même procédure que le point 2. Déjà couverts (recherche du 12/10/2026 dans `content/`) : injection SQL, CSRF, XSS, cron, injection de dépendances de base et trait PHP (`Langages/PHP/poo.md`), idempotence, redirection ouverte, traversée de chemin et téléversement (`Sécurité/Cybersécurité/upload-de-fichiers.md`), affectation en masse. Exemples génériques de Drupal uniquement, jamais le code du projet revu. Un chapitre par notion, rangé dans la catégorie existante où elle se rattache (décision de Louis du 29/10/2026 : aucun sujet « Drupal », Drupal n'apparaît que comme exemple dans le texte, jamais dans le titre du chapitre ni dans son dossier). Recherche de recouvrement avec les chapitres voisins à faire avant chaque rédaction :
