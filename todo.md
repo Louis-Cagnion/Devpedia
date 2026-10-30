@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : C05 (feuille b) : relire `content/Tests/tests-navigateur-sans-fenetre.md` (rédigé, non commité), puis le trio Haiku de traduction, `struct-*.json`, audio de C05 et de C07 (point 6, un seul job `generate-audio.mjs` à la fois), commit ; ensuite suivre `arbre-chapitres-todo.md` (C06, C30 à rédiger). Point 1 : en attente de Louis (test navigateur).
+> Prochaine tâche : audio es et br de C21 (point 2), puis C23.a (blocage de cardan, `Fondamentaux/Graphisme/`), puis C30.f, C06, C09 et suivants selon `arbre-chapitres-todo.md` ; C05 : récupérer le fichier sur l'autre poste de Louis (point 2). Point 1 : en attente de Louis (test navigateur).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -11,6 +11,8 @@ Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il
 ## 2. Chapitres issus du projet Portfolio (sujets absents de Devpedia)
 Sujets utilisés dans le Portfolio de Louis, sans chapitre dédié. Procédure : français, puis 3 agents de traduction (EN, ES, BR), puis audio des 4 langues généré avant de passer au chapitre suivant. Écrire dans l'ordre, un chapitre à la fois ; chaque chapitre renvoie vers les chapitres voisins existants plutôt que de les répéter.
 - `Tests/` : `node:test` (banc de tests Node, en complément de `tests-end-to-end.md` et du chapitre `tests-navigateur-sans-fenetre.md`).
+- `Tests/tests-navigateur-sans-fenetre.md` (C05) : chapitre FR rédigé le 29/10/2026 mais absent de cette machine et de l'historique Git ; Louis le récupère sur son autre poste. Ensuite : relecture, trio Haiku de traduction, `struct-*.json`, audio des 4 langues, commit.
+- `Fondamentaux/Graphisme/glsl-flat-bruit-de-valeur-et-hash.md` (C21) : générer l'audio es et br (`node scripts/generate-audio.mjs --lang=es,br "Fondamentaux/Graphisme/glsl-flat-bruit-de-valeur-et-hash"`, un seul job à la fois), puis commit.
 
 ## 4. Notions de Drupal 11 multisite (revue d'un projet Drupal)
 Même procédure que le point 2. Déjà couverts (recherche du 12/10/2026 dans `content/`) : injection SQL, CSRF, XSS, cron, injection de dépendances de base et trait PHP (`Langages/PHP/poo.md`), idempotence, redirection ouverte, traversée de chemin et téléversement (`Sécurité/Cybersécurité/upload-de-fichiers.md`), affectation en masse. Exemples génériques de Drupal uniquement, jamais le code du projet revu. Un chapitre par notion, rangé dans la catégorie existante où elle se rattache (décision de Louis du 29/10/2026 : aucun sujet « Drupal », Drupal n'apparaît que comme exemple dans le texte, jamais dans le titre du chapitre ni dans son dossier). Recherche de recouvrement avec les chapitres voisins à faire avant chaque rédaction :
@@ -50,8 +52,6 @@ tu parles de "Haskell, l'outil historique du domaine", mais on ne sait pas de qu
 ## 5. Notions de la revue finale de scop (19/10/2026)
 Vues pendant la revue de `collect_lines_file.c` et du parseur ; recherche dans `content/` faite, les autres notions (atexit, `O_NONBLOCK`/FIFO/`fstat`, caractères de contrôle, `strtod`, valgrind « definitely lost », `realloc`) sont déjà couvertes.
 
-- `Fondamentaux/Graphisme/` : qualificateur `flat` des variables GLSL (une valeur par triangle, non interpolée entre ses sommets) : `shader.geom:10-15` (aucune occurrence de `flat` dans `content/`).
-- `Fondamentaux/Graphisme/` : bruit de valeur 3D (valeurs pseudo-aléatoires aux coins d'une grille, lissées entre elles) et deux hash de shader, `fract(sin(dot(...)))` et hash entier sans état (xor-décalages et multiplications par `0x7feb352d`, `0x846ca68b`) : `crystal.frag:17-30`, `shader.frag:27-32` (aucune occurrence de « bruit de valeur » ni de ce type de hash dans `content/`).
 - `Fondamentaux/Graphisme/` ou `Mathématiques/` : blocage de cardan (gimbal lock) des angles d'Euler et rotation incrémentale, accumuler chaque petit pas dans une matrice puis la ré-orthonormaliser pour effacer l'erreur d'arrondi : `inputs.c:232-264` (aucune occurrence de « cardan » ni de « gimbal » dans `content/`).
 
 ## 7. Notions de SQL pour un premier contact (session `/professor` du 29/10/2026)
@@ -78,4 +78,4 @@ PowerShell est absent de la machine Linux : les blocs du chapitre `Langages/Powe
 - `Langages/PowerShell/` : `powershell.md` et `permissions-et-fichiers.md` portent tous deux `order: 11` ; en choisir un autre pour l'un des deux.
 
 ## 11. Vérifications à faire sur une machine qui a un compilateur GLSL
-- `glslangValidator` absent ici : compiler le bloc `cloud_opacity_beer` de `Fondamentaux/Graphisme/effets-de-rendu-et-interaction-3d.md` (résultat attendu : aucune erreur) et ceux des chapitres GLSL rédigés ensuite.
+- `glslangValidator` absent ici : compiler le bloc `cloud_opacity_beer` de `Fondamentaux/Graphisme/effets-de-rendu-et-interaction-3d.md` et les blocs ```glsl de `Fondamentaux/Graphisme/glsl-flat-bruit-de-valeur-et-hash.md` (résultat attendu : aucune erreur) ; sur un pilote réel, vérifier aussi que `flat` prend bien le dernier sommet par défaut.
