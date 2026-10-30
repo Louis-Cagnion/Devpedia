@@ -200,6 +200,10 @@
             {
               "id": "boucle-de-jeu-sfml",
               "label": "O loop de jogo com SFML (28/10/2026)"
+            },
+            {
+              "id": "glsl-flat-bruit-de-valeur-et-hash",
+              "label": "GLSL: o qualificador `flat`, o ruído de valor e as funções de hash"
             }
           ]
         }

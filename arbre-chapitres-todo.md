@@ -1,11 +1,11 @@
-# Arbre : chapitres du todo (chapitres commités 17/45, audio complet 17/45)
+# Arbre : chapitres du todo (chapitres commités 18/45, audio complet 17/45)
 
 Statuts : [ ] à faire, [~] en cours, [x] faite, [v] validée (commitée, audio des 4 langues généré), [!] bloquée, [>] reportée.
 Arbre validé par Louis le 28/10/2026 (lancement des 3 Haiku de traduction par chapitre compris).
-Prochaine feuille prête : aucune rédaction FR en cours. Louis a arrêté les agents hors Haiku le 29/10/2026 (~21h) : C22 (puis C21, C23, C30.f, C06, C09 et suivants, dans l'ordre de la liste triée donnée à Louis) attend une décision sur le modèle des builders FR.
-Arrêt demandé par Louis le 29/10/2026 une fois le builder C05 revenu et les Haiku C07 finis ; à reprendre ici.
+Prochaine feuille prête : C23.a (builder arrêté à 08:28 le 30/10/2026, aucun fichier écrit), puis C30.f, C06, C09 et suivants. C05 attend le fichier de l'autre poste de Louis.
+Fenêtre de travail des agents fixée par Louis le 30/10/2026 : jusqu'à 08:28 ; arrêt des agents encore actifs à cette heure, chapitres complets récupérés.
 Moniteur : claude-sonnet-5-5, effort high (`modelSettings` de `settings.json`, `CLAUDE_CODE_EFFORT_LEVEL` non défini), réévalué à la clôture du premier chapitre. Chapitres de faits spécialisés (Drupal, NCM, ft_linux) : revue `analyst` d'un niveau supérieur au moniteur entre a et b.
-Lot parallèle du 28/10/2026 (8 rédactions FR) arrêté par Louis à 14h : 5 chapitres FR récupérés (C03, C04, C08, C25, C26), 3 à relancer (C05, C07, C30). Retour aux conditions normales : une seule rédaction FR à la fois, traductions Haiku par trio, un seul audio à la fois. Autorisé par Louis le 28/10/2026 : pendant qu'un trio Haiku traduit le chapitre N, un builder rédige déjà le FR du chapitre N+1 (jamais deux rédacteurs FR en même temps) ; commit dès les 4 langues relues, audio noté au todo point 6.
+Une seule rédaction FR à la fois, traductions Haiku par trio, un seul audio à la fois. Autorisé par Louis le 28/10/2026 : pendant qu'un trio Haiku traduit le chapitre N, un builder rédige déjà le FR du chapitre N+1 (jamais deux rédacteurs FR en même temps) ; commit dès les 4 langues relues.
 Échéance du 28/10/2026 (tout commité avant 17h) : dépassée à la reprise du 29/10/2026 (18h56), Louis ne l'a pas rappelée.
 
 ## Pipeline d'un chapitre (un seul à la fois, audio compris avant le suivant)
@@ -28,7 +28,7 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 | C02 | API de page : `matchMedia`, `scrollIntoView`, `visibilitychange`, `AbortController` (`Langages/JavaScript/`) | point 2 | [v] |
 | C03 | Événements pointeur et chargement des polices (`Langages/JavaScript/`) | point 2 | [v] |
 | C04 | Unités et fonctions de taille, police à 200 et 300 % (`Langages/CSS/`) | point 2 | [v] |
-| C05 | Tester une interface dans un navigateur sans fenêtre (`Tests/`) | point 2 | [~] a faite (29/10, `Tests/tests-navigateur-sans-fenetre.md`, `order: 12`, non commité) ; b, c, d à faire |
+| C05 | Tester une interface dans un navigateur sans fenêtre (`Tests/`) | point 2 | [~] a faite le 29/10/2026 mais fichier absent de cette machine (non commité, sur l'autre poste de Louis) ; b, c, d à faire |
 | C06 | `node:test` (`Tests/`) | point 2 | [ ] |
 | C07 | `constexpr` et constantes (`Langages/C++/`) | point 3 | [v] |
 | C08 | Boucle de jeu avec SFML (`Fondamentaux/Graphisme/`) | point 3 | [v] |
@@ -44,9 +44,9 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 | C18 | `offsetof` et littéral composé (`Langages/C/offsetof-et-litteral-compose.md`, `order: 31`) | point 5 | [v] |
 | C19 | Tri puis balayage (`Fondamentaux/Algorithmes/tri-puis-balayage.md`, `order: 13`) | point 5 | [v] |
 | C20 | Précision des `float` loin de l'origine (`Données/Représentation des données/flottants-loin-de-l-origine.md`, `order: 10`) | point 5 | [v] |
-| C21 | GLSL : `flat`, bruit de valeur et hash de shader | point 5 | [ ] |
+| C21 | GLSL : `flat`, bruit de valeur et hash de shader | point 5 | [~] commité ; audio fr et en faits, es et br à faire (job arrêté par Louis le 30/10/2026) |
 | C22 | Beer-Lambert et Euler semi-implicite (sections ajoutées à `effets-de-rendu-et-interaction-3d.md`) | point 5 | [v] |
-| C23 | Blocage de cardan et rotation incrémentale | point 5 | [ ] |
+| C23 | Blocage de cardan et rotation incrémentale | point 5 | [ ] builder arrêté le 30/10/2026 à 08:28, aucun fichier écrit |
 | C24 | Liens de l'introduction de la Cybersécurité vers les chapitres cités (9 liens, 4 langues) | cybersécurité | [v] |
 | C25 | Signaler une faille trouvée sur un site : légalité et divulgation responsable | cybersécurité | [v] |
 | C26 | Mots de passe : bonnes pratiques côté utilisateur et côté site | cybersécurité | [v] |
@@ -86,3 +86,6 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 - `||` dans une cellule de tableau : toujours `\|\|` (le site coupe la ligne sinon) ; les briefs de rédaction le disent depuis C18. Défaut préexistant de `boucles.md` au todo (section fix).
 - Les sorties d'un programme d'essai sont recopiées dans le chapitre ; depuis C17 les traducteurs recompilent et réexécutent leurs blocs (sorties identiques exigées) ; un bloc de mesure non autonome se complète pour le test.
 - C20 : les traducteurs ont relevé une phrase fausse dans le FR (le cast `(double)` ne porte que sur le premier opérande) ; corrigée aux 4 langues avant le commit. Le builder avait aussi constaté que le pas de puissance de deux n'améliore pas l'exactitude de la soustraction en `double` (lemme de Sterbenz) : le chapitre le dit au lieu de reprendre l'argument du todo.
+
+- C21 : le hash entier (`0x7feb352d`, `0x846ca68b`) du todo n'existe pas dans les sources de scop ; l'agent l'a écrit d'après les constantes puis mesuré. C22 : la référence `inputs.c:276-282` était fausse (l'intégration est à `inputs.c:245-249`) : le brief demande de relire les lignes citées et de rapporter l'écart.
+- C21 : les traducteurs écrivent la décimale des chaînes `printf` avec un point (sortie recopiée) ; des lignes de code de 95 caractères ou plus sont apparues dans des commentaires ajoutés ou traduits : le moniteur les recompte (tabulation = 4) après chaque relecture.
