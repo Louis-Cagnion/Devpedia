@@ -1365,6 +1365,10 @@
         {
           "id": "tests-de-mutation",
           "label": "Mutation testing"
+        },
+        {
+          "id": "tests-navigateur-sans-fenetre",
+          "label": "Testing an Interface in a Headless Browser (29/10/2026)"
         }
       ]
     },
