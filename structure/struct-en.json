@@ -869,6 +869,10 @@
             {
               "id": "lire-une-touche-au-clavier",
               "label": "Reading a Key from the Keyboard in zsh: `read -k`, Escape and Arrows"
+            },
+            {
+              "id": "alias-avances",
+              "label": "Advanced aliases in Zsh"
             }
           ]
         },

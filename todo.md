@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : C30.f2 (alias avancés de Zsh, en cours le 30/10/2026), puis C06, C09 et suivants selon `arbre-chapitres-todo.md` (Louis a demandé l'arrêt après C30.f2 le 30/10/2026). Point 1 : en attente de Louis (test navigateur).
+> Prochaine tâche : C06, C09 et suivants selon `arbre-chapitres-todo.md` (Louis a demandé l'arrêt après C30.f2 le 30/10/2026 : reprise sur son instruction). Point 1 : en attente de Louis (test navigateur).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -31,9 +31,6 @@ Même procédure que le point 2. Déjà couverts (recherche du 12/10/2026 dans `
 - `Sécurité/Cybersécurité/` : désactiver la vérification TLS (`verify => FALSE`) et ses risques.
 - `Sécurité/Cybersécurité/` (voisin de `securite-api-web.md`) : ressource REST (plugin) et authentification HTTP Basic.
 - `Sécurité/Cybersécurité/` : données personnelles dans les journaux d'erreur et les réplications (RGPD hors IA).
-
-## powershell
-- `Langages/Bash/` puis `Langages/Zsh/` : un chapitre d'alias avancés pour chacun (les niveaux au-delà de l'alias simple sont absents de `Bash/variables-denvironnement.md` et de `Zsh/fichiers-de-demarrage.md`) : alias contre fonction avec arguments (`$1`, `"$@"`), alias dans un script (`shopt -s expand_aliases`), contournement (`\nom`, `command`), et pour Zsh les alias globaux (`alias -g`) et de suffixe (`alias -s`). Le chapitre PowerShell `alias-et-raccourcis-de-commandes.md` renvoie vers les chapitres Bash et Zsh actuels : y ajouter un lien vers les nouveaux.
 
 ## ajouter une partie sur les serveurs web
 - en lisant un chapitre sur les modeles de decision sctructuree, j'ai appris que les serveur peuvent renvoyer des 'retry-after', j'ai trouve ca interessant et je n'en ai jamais entendu parler, je pense donc que ce serait bien d'avoir une rubrique qui parle de la chose la plus commune qui soit sur internet : les serveurs web/sites internets.

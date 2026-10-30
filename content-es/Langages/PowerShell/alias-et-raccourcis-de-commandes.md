@@ -424,7 +424,7 @@ Las mismas preguntas se plantean en [Bash](/?c=langages&s=bash&p=bash) y [Zsh](/
 | En un script | Ausente, salvo definición en el script o dot sourcing | No se expande por defecto en un script | Definido en `~/.zshrc`, leído solo por un shell interactivo: un script no lo ve |
 | Necesidad de lógica o parámetros | Función (niveles 2 y 3) | Función (véase [las funciones Bash](/?c=langages&s=bash&p=fonctions)) | Función |
 
-Los alias avanzados propios de Bash y Zsh no se tratan aquí: corresponden a los capítulos de esos shells.
+Los alias avanzados propios de Bash y Zsh no se tratan aquí: corresponden a los capítulos [Alias avanzados en Bash](/?c=langages&s=bash&p=alias-avances) y [Alias avanzados en Zsh](/?c=langages&s=zsh&p=alias-avances).
 
 ## Las trampas
 

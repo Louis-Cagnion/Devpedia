@@ -869,6 +869,10 @@
             {
               "id": "lire-une-touche-au-clavier",
               "label": "Lire une touche au clavier en zsh : `read -k`, Échap et flèches"
+            },
+            {
+              "id": "alias-avances",
+              "label": "Alias avancés en Zsh"
             }
           ]
         },

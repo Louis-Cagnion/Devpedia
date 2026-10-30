@@ -1,8 +1,8 @@
-# Arbre : chapitres du todo (chapitres commités 21/45, audio complet 21/45)
+# Arbre : chapitres du todo (chapitres commités 22/45, audio complet 22/45)
 
 Statuts : [ ] à faire, [~] en cours, [x] faite, [v] validée (commitée, audio des 4 langues généré), [!] bloquée, [>] reportée.
 Arbre validé par Louis le 28/10/2026 (lancement des 3 Haiku de traduction par chapitre compris).
-Prochaine feuille : C30.f2 (Zsh, builder lancé à 12:30), puis arrêt demandé par Louis le 30/10/2026 (C06, C09 et suivants restent à faire). C23 commité avec son audio le 30/10/2026.
+Prochaine feuille : C06, puis C09 et suivants. Louis a demandé l'arrêt après C30.f2 le 30/10/2026 : reprise sur son instruction. C30.f2 commité avec son audio le 30/10/2026.
 Fenêtre de travail des agents fixée par Louis le 30/10/2026 (12:00) : jusqu'à 17:00 ; arrêt des agents encore actifs à cette heure, chapitres complets récupérés.
 Moniteur : claude-sonnet-5-5, effort high (`modelSettings` de `settings.json`, `CLAUDE_CODE_EFFORT_LEVEL` non défini), réévalué à la clôture du premier chapitre. Chapitres de faits spécialisés (Drupal, NCM, ft_linux) : revue `analyst` d'un niveau supérieur au moniteur entre a et b.
 Une seule rédaction FR à la fois, traductions Haiku par trio, un seul audio à la fois. Autorisé par Louis le 28/10/2026 : pendant qu'un trio Haiku traduit le chapitre N, un builder rédige déjà le FR du chapitre N+1 (jamais deux rédacteurs FR en même temps) ; commit dès les 4 langues relues.
@@ -53,7 +53,7 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 | C27 | Serveurs web : rôle et fonctionnement (nouvelle sous-section) | serveurs web | [ ] |
 | C28 | Serveurs web : codes de statut et en-têtes de contrôle (`Retry-After`) | serveurs web | [ ] |
 | C29 | Serveurs web : proxy inverse et limitation de débit | serveurs web | [ ] |
-| C30 | Alias PowerShell, des simples aux complexes (`Langages/PowerShell/alias-et-raccourcis-de-commandes.md`, `order: 14`) | powershell | [v] ; C30.f1 `Langages/Bash/alias-avances.md` (`order: 16`) [v] ; reste C30.f2 `Langages/Zsh/alias-avances.md` (`order: 8`) [ ] ; ensuite lien vers les deux dans la section « Et dans Bash et Zsh ? » du chapitre PowerShell (4 langues) |
+| C30 | Alias PowerShell, des simples aux complexes (`Langages/PowerShell/alias-et-raccourcis-de-commandes.md`, `order: 14`) | powershell | [v] ; C30.f1 `Langages/Bash/alias-avances.md` (`order: 16`) [v] ; C30.f2 `Langages/Zsh/alias-avances.md` (`order: 8`) [v] ; liens vers les deux posés dans la section « Et dans Bash et Zsh ? » du chapitre PowerShell (4 langues) |
 | C31 | SQL pour un premier contact : lire des lignes, types de colonne, variable de table (sections de `Langages/Domain-specific Languages (DSL)/sql.md`) | point 7 | [ ] |
 | C32 | Lire une base avec SSMS (`Infrastructure & DevOps/` ou `Outils/`) | point 7 | [ ] |
 | C33 | QEMU, KVM, deux sens de « hôte », disque `qcow2` et snapshots (`Infrastructure & DevOps/Administration système/`) | point 8 | [ ] |
@@ -78,6 +78,7 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 - Contrôle croisé des 4 langues (fences, titres, tableaux, liens identiques) : `bash ~/.claude/references/projects/devpedia/verif-chapitre.sh "<chemin sous content/>"`.
 - Les notions de revue de projet pro n'entrent dans aucun chapitre sous forme de nom de fichier ou de ligne du projet revu.
 - C30 : a sonnet/high en 7 min 30 s, juste du premier coup sauf une cellule de tableau Zsh (corrigée par le moniteur) ; c haiku/medium x3 en 3 min chacun, comptes identiques ; libellés de la ligne « À retenir » du tableau final à aligner sur le chapitre voisin (`Key takeaways`, `Para recordar`, `Para lembrar`), brief à compléter pour les prochains chapitres.
+- C30.f2 : a sonnet/high a rendu 1043 lignes ; c haiku/medium x3 en 6 à 7 min, comptes identiques. Sous Windows, `generate-audio.mjs` veut le chemin avec antislashs (`'Langages\Zsh\alias-avances'`) pour un id partagé avec un autre sujet. Le moniteur a rejoué les blocs sous Zsh 5.9 (WSL) : une phrase du FR fausse (`alias_func_def` crée plusieurs fonctions, ici `grep` et `.`) corrigée aux 4 langues.
 - C30 : PowerShell absent de cette machine, blocs non exécutés (`@args` avec paramètres nommés, `$PSDefaultParameterValues` avec `-Force`) : vérification à faire sur une machine qui a `pwsh` (todo point 10).
 - `verif-chapitre.sh` pointe vers un chemin Windows : copie Linux dans le scratchpad (`sed 's#^cd /c/Users/lcagnion/Desktop/perso/Devpedia#cd <dépôt>#'`).
 - Liens internes : forme canonique `c=langages` (`c=shells` n'est qu'une redirection historique, `js/legacy-category-redirects.js`).
