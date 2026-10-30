@@ -830,6 +830,10 @@
             {
               "id": "fichiers-temporaires-trap-et-timeout",
               "label": "Un script qui nettoie et s'arrête proprement : `mktemp`, `trap` et `timeout`"
+            },
+            {
+              "id": "alias-avances",
+              "label": "Alias avancés en Bash"
             }
           ]
         },

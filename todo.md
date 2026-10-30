@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : C30.f, C06, C09 et suivants selon `arbre-chapitres-todo.md` (fenêtre des agents à redemander à Louis). Point 1 : en attente de Louis (test navigateur).
+> Prochaine tâche : C30.f2 (alias avancés de Zsh, en cours le 30/10/2026), puis C06, C09 et suivants selon `arbre-chapitres-todo.md` (Louis a demandé l'arrêt après C30.f2 le 30/10/2026). Point 1 : en attente de Louis (test navigateur).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
