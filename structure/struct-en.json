@@ -204,7 +204,11 @@
             {
               "id": "glsl-flat-bruit-de-valeur-et-hash",
               "label": "GLSL: the `flat` qualifier, value noise and hash functions"
-            }
+            },
+        {
+          "id": "blocage-de-cardan-et-rotation-incrementale",
+          "label": "Gimbal lock and incremental rotation"
+        }
           ]
         }
       ]

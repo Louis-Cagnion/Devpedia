@@ -204,7 +204,11 @@
             {
               "id": "glsl-flat-bruit-de-valeur-et-hash",
               "label": "GLSL: o qualificador `flat`, o ruído de valor e as funções de hash"
-            }
+            },
+        {
+          "id": "blocage-de-cardan-et-rotation-incrementale",
+          "label": "Bloqueio de cardã e rotação incremental"
+        }
           ]
         }
       ]

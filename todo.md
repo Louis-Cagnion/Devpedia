@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : commit de C23 (blocage de cardan) une fois son audio des 4 langues généré (en cours le 30/10/2026) ; puis C30.f, C06, C09 et suivants selon `arbre-chapitres-todo.md` (fenêtre des agents à redemander à Louis). Point 1 : en attente de Louis (test navigateur).
+> Prochaine tâche : C30.f, C06, C09 et suivants selon `arbre-chapitres-todo.md` (fenêtre des agents à redemander à Louis). Point 1 : en attente de Louis (test navigateur).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -50,7 +50,6 @@ tu parles de "Haskell, l'outil historique du domaine", mais on ne sait pas de qu
 ## 5. Notions de la revue finale de scop (19/10/2026)
 Vues pendant la revue de `collect_lines_file.c` et du parseur ; recherche dans `content/` faite, les autres notions (atexit, `O_NONBLOCK`/FIFO/`fstat`, caractères de contrôle, `strtod`, valgrind « definitely lost », `realloc`) sont déjà couvertes.
 
-- `Fondamentaux/Graphisme/` ou `Mathématiques/` : blocage de cardan (gimbal lock) des angles d'Euler et rotation incrémentale, accumuler chaque petit pas dans une matrice puis la ré-orthonormaliser pour effacer l'erreur d'arrondi : `inputs.c:232-264` (aucune occurrence de « cardan » ni de « gimbal » dans `content/`).
 
 ## 7. Notions de SQL pour un premier contact (session `/professor` du 29/10/2026)
 Même procédure que le point 2. Recherche dans `content/` faite le 29/10/2026 : `Langages/Domain-specific Languages (DSL)/sql.md` couvre déjà les agrégats, `JOIN`, `CREATE TABLE` avec `PRIMARY KEY`, `NULL`, les index, PDO, l'injection SQL et le moindre privilège ; `Données/Bases de données/schemas-et-tables-techniques.md` couvre le schéma et `dbo` ; SSMS n'est cité que pour restaurer une sauvegarde `.bak`. Exemples génériques uniquement (clients, livres, films), jamais le nom d'une base ou d'une table d'un serveur de travail. Ce qui manque, pour quelqu'un qui n'a jamais écrit de requête :
