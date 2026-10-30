@@ -869,6 +869,10 @@
             {
               "id": "lire-une-touche-au-clavier",
               "label": "Leer una tecla del teclado en zsh: `read -k`, Escape y flechas"
+            },
+            {
+              "id": "alias-avances",
+              "label": "Alias avanzados en Zsh"
             }
           ]
         },
