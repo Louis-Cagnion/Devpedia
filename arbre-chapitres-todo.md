@@ -1,9 +1,9 @@
-# Arbre : chapitres du todo (chapitres commités 20/45, audio complet 20/45)
+# Arbre : chapitres du todo (chapitres commités 21/45, audio complet 21/45)
 
 Statuts : [ ] à faire, [~] en cours, [x] faite, [v] validée (commitée, audio des 4 langues généré), [!] bloquée, [>] reportée.
 Arbre validé par Louis le 28/10/2026 (lancement des 3 Haiku de traduction par chapitre compris).
-Prochaine feuille prête : C30.f, puis C06, C09 et suivants (fenêtre des agents rouverte par Louis le 30/10/2026 pour C05 et C23 seulement : à redemander avant de lancer C30.f). C23 commité avec son audio le 30/10/2026.
-Fenêtre de travail des agents fixée par Louis le 30/10/2026 : jusqu'à 08:28 ; arrêt des agents encore actifs à cette heure, chapitres complets récupérés.
+Prochaine feuille : C30.f2 (Zsh, builder lancé à 12:30), puis arrêt demandé par Louis le 30/10/2026 (C06, C09 et suivants restent à faire). C23 commité avec son audio le 30/10/2026.
+Fenêtre de travail des agents fixée par Louis le 30/10/2026 (12:00) : jusqu'à 17:00 ; arrêt des agents encore actifs à cette heure, chapitres complets récupérés.
 Moniteur : claude-sonnet-5-5, effort high (`modelSettings` de `settings.json`, `CLAUDE_CODE_EFFORT_LEVEL` non défini), réévalué à la clôture du premier chapitre. Chapitres de faits spécialisés (Drupal, NCM, ft_linux) : revue `analyst` d'un niveau supérieur au moniteur entre a et b.
 Une seule rédaction FR à la fois, traductions Haiku par trio, un seul audio à la fois. Autorisé par Louis le 28/10/2026 : pendant qu'un trio Haiku traduit le chapitre N, un builder rédige déjà le FR du chapitre N+1 (jamais deux rédacteurs FR en même temps) ; commit dès les 4 langues relues.
 Échéance du 28/10/2026 (tout commité avant 17h) : dépassée à la reprise du 29/10/2026 (18h56), Louis ne l'a pas rappelée.
@@ -53,7 +53,7 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 | C27 | Serveurs web : rôle et fonctionnement (nouvelle sous-section) | serveurs web | [ ] |
 | C28 | Serveurs web : codes de statut et en-têtes de contrôle (`Retry-After`) | serveurs web | [ ] |
 | C29 | Serveurs web : proxy inverse et limitation de débit | serveurs web | [ ] |
-| C30 | Alias PowerShell, des simples aux complexes (`Langages/PowerShell/alias-et-raccourcis-de-commandes.md`, `order: 14`) | powershell | [v] ; reste C30.f : alias avancés de Bash puis de Zsh (todo section « powershell ») |
+| C30 | Alias PowerShell, des simples aux complexes (`Langages/PowerShell/alias-et-raccourcis-de-commandes.md`, `order: 14`) | powershell | [v] ; C30.f1 `Langages/Bash/alias-avances.md` (`order: 16`) [v] ; reste C30.f2 `Langages/Zsh/alias-avances.md` (`order: 8`) [ ] ; ensuite lien vers les deux dans la section « Et dans Bash et Zsh ? » du chapitre PowerShell (4 langues) |
 | C31 | SQL pour un premier contact : lire des lignes, types de colonne, variable de table (sections de `Langages/Domain-specific Languages (DSL)/sql.md`) | point 7 | [ ] |
 | C32 | Lire une base avec SSMS (`Infrastructure & DevOps/` ou `Outils/`) | point 7 | [ ] |
 | C33 | QEMU, KVM, deux sens de « hôte », disque `qcow2` et snapshots (`Infrastructure & DevOps/Administration système/`) | point 8 | [ ] |
