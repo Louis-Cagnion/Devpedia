@@ -86,6 +86,59 @@ The result is blended with the glass color: `mix(glass_color, cloud_color, cloud
 | Half-step offset (`+ 0.5`) | Samples the middle of the step rather than its edge | Without it, the bands of the steps show |
 | Distance crossed | An approximate value is enough (for example the object's diameter) | Computing it exactly requires the ray/object intersection |
 
+### The Beer-Lambert law: why opacity follows an exponential
+
+The line `opacity += (1.0 - opacity) * ...` of the loop above adds "what is left to cover" at each step: it imitates a physical law, the Beer-Lambert law. In a medium of uniform density (fog, smoke, frosted glass), each slice of the same thickness absorbs the same **fraction** of the light reaching it, not the same amount. The share of light that gets through (the **transmission**) therefore decreases exponentially with thickness:
+
+```text
+transmission = exp(-density x thickness)   share of light that gets through, between 0 and 1
+opacity      = 1 - transmission            share stopped: 1 - exp(-density x thickness)
+
+density: absorption per unit of thickness (2 = two units of absorption per unit crossed)
+```
+
+`exp(x)` is the **exponential** function ([reference page](https://registry.khronos.org/OpenGL-Refpages/gl4/html/exp.xhtml)): the number e (about 2.718281828) raised to the power `x`. It equals 1 for `x = 0`, and `exp(-x)` gets closer to 0 as `x` grows, without ever reaching it or becoming negative. The opacity therefore always stays between 0 and 1, however thick or dense the medium is. For a density of 2 (values computed by a script):
+
+| Thickness | Transmission `exp(-2 x thickness)` | Opacity `1 - exp(-2 x thickness)` | Opacity if we simply added (`2 x thickness`) |
+|---|---|---|---|
+| 0 | 1.0000 | 0.0000 | 0 |
+| 0.25 | 0.6065 | 0.3935 | 0.5 |
+| 0.5 | 0.3679 | 0.6321 | 1 |
+| 1 | 0.1353 | 0.8647 | 2 (impossible) |
+| 2 | 0.0183 | 0.9817 | 4 (impossible) |
+| 3 | 0.0025 | 0.9975 | 6 (impossible) |
+
+Two half-thicknesses **multiply**: 0.3679 x 0.3679 = 0.1353, which is exactly the transmission of thickness 1 (0.135335 in both cases, to within a millionth). This is what makes the loop possible: crossing the cloud slice by slice and multiplying the transmissions amounts to crossing its total thickness in one go.
+
+The loop above applies this multiplication step by step, but it replaces `exp(-x)` with `1 - x`, a good approximation only when `x` (here `density x step`) is small. A more faithful version adds up the density along the whole ray (the total is called the **optical thickness**), then applies `exp` **only once**, at the end:
+
+```glsl
+float cloud_opacity_beer(vec3 entry, vec3 dir, float thickness)   // same parameters
+{
+	const int STEPS = 24;                             // number of steps, fixed
+	float step_len = thickness / float(STEPS);        // length of one step
+	float optical = 0.0;                              // accumulated optical thickness
+	for (int i = 0; i < STEPS && optical < 3.0; i++)  // 3.0: opacity of about 0.95
+	{
+		vec3 p = entry + dir * (float(i) + 0.5) * step_len;   // middle of step i
+		optical += density(p) * step_len * 4.0;               // we add, without capping
+	}
+	return 1.0 - exp(-optical);                       // a single exp, outside the loop
+}
+```
+
+The early exit tested `opacity < 0.95`; here, `1 - exp(-3)` equals 0.9502, hence the threshold of 3 on the optical thickness. Comparison for a constant density of 2 (the factor `4.0` set to 1, without early exit), with the exact result `1 - exp(-density x thickness)`:
+
+| Thickness | Exact | Loop above, 4 steps | Loop above, 24 steps | Sum then `exp`, 4 or 24 steps |
+|---|---|---|---|---|
+| 0.5 | 0.6321 | 0.6836 | 0.6399 | 0.6321 |
+| 1 | 0.8647 | 0.9375 | 0.8761 | 0.8647 |
+| 2 | 0.9817 | 1.0000 | 0.9874 | 0.9817 |
+
+The sum followed by an `exp` gives the exact result whatever the step size when the density is constant; when it varies, the error comes only from the sampling resolution. The trap of the recurrence is more serious than this gap: with 4 steps, a thickness of 3, a constant density of 2 and the `4.0` factor set to 1 as in the comparison above, the first step already adds `density x step = 1.5`: the opacity reaches 1.5 on the first pass, the early exit stops the loop and returns 1.5, an impossible opacity. With `1.0 - exp(-optical)`, the result never leaves the interval from 0 to 1.
+
+> **Pitfall:** a negative density (a badly bounded `density` function) gives `exp` of a positive number, hence a negative opacity. That is why `density` above has `clamp(..., 0.0, 1.0)`: keep it.
+
 ## Drawing a transparent object
 
 A crystal shows what is behind it: its color has to be **blended** with what is already on screen. OpenGL does this with **blending**, enabled by `glEnable(GL_BLEND)`, with the formula chosen by `glBlendFunc`:
@@ -166,6 +219,122 @@ void	spring_update(t_spring *s, float target, float stiffness, float damping, fl
 | High | Reaches the target slowly, without overshooting |
 
 > **Pitfall (the unbounded time step):** if a frame lasts very long (window dragged, program suspended for a second), `dt` is large and the step above overshoots the target by more than the starting gap: at every frame the gap grows, the value diverges, then becomes `inf` or `NaN`. Hence the `dt <= 0.05` cap (50 ms): the spring catches up over several frames rather than blowing up in one.
+
+### Semi-implicit Euler: why speed is updated before position
+
+The spring above advances frame by frame: this is **numerical integration**, a simulation in small steps where `dt` (the duration of a frame, in seconds, see [delta time](/?c=fondamentaux&s=graphisme&p=glfw-glad-et-boucle-de-rendu#delta-time-a-speed-that-does-not-depend-on-the-machine)) is the **time step**. The simplest rule, the **Euler method**, says: "new value = old value + change per second x `dt`". A spring makes two values evolve at once, its position `pos` and its speed `vel`, and the order of the two updates changes the result:
+
+| Method | Order within the step | What each line reads |
+|---|---|---|
+| Euler **explicit** | `pos += vel x dt`, then `vel += accel x dt` | Both lines read the state from the **start** of the step |
+| Euler **semi-implicit** (the one used by the spring above) | `vel += accel x dt`, then `pos += vel x dt` | The position reads the speed **already updated**: a value from the end of the step, hence "half implicit" |
+
+The test: a **spring without damping**, pulled to 1 then released. In physics it oscillates forever with the same amplitude, because its **energy** never changes. The energy is the sum of the motion energy (`0.5 x vel x vel`) and the stretch energy (`0.5 x stiffness x pos x pos`); here, 2 at the start. A good method must keep it roughly constant.
+
+```c
+#include <stdio.h>                                  /* printf */
+
+typedef struct s_spring
+{
+	float	pos;   /* offset from the rest position */
+	float	vel;   /* rate of change of pos, in units per second */
+}	t_spring;
+
+void	step_explicit(t_spring *s, float stiffness, float dt)
+{
+	float	accel;
+
+	accel = -stiffness * s->pos;   /* restoring force (no target or friction here) */
+	s->pos += s->vel * dt;         /* position first, with the OLD speed */
+	s->vel += accel * dt;          /* then speed, with the old position */
+}
+
+void	step_semi_implicit(t_spring *s, float stiffness, float dt)
+{
+	float	accel;
+
+	accel = -stiffness * s->pos;   /* restoring force, computed only once */
+	s->vel += accel * dt;          /* speed first... */
+	s->pos += s->vel * dt;         /* ...then position, with the NEW speed */
+}
+
+float	energy(t_spring s, float stiffness)
+{
+	/* motion energy + stretch energy */
+	return (0.5f * s.vel * s.vel + 0.5f * stiffness * s.pos * s.pos);
+}
+
+int	main(void)
+{
+	t_spring	a = {1.0f, 0.0f};   /* spring pulled to 1, released with no speed */
+	t_spring	b = {1.0f, 0.0f};   /* same start for the second method */
+	int			n;
+
+	for (n = 1; n <= 10000; n++)
+	{
+		step_explicit(&a, 4.0f, 0.016f);        /* stiffness 4, step of 16 ms */
+		step_semi_implicit(&b, 4.0f, 0.016f);   /* same values */
+		if (n == 1 || n == 100 || n == 1000 || n == 10000)
+			printf("step %5d : explicit %.4f, semi-implicit %.4f\n",
+				n, energy(a, 4.0f), energy(b, 4.0f));
+	}
+	return (0);
+}
+```
+
+Actual output of the program (compiled with `gcc -Wall -Wextra`):
+
+```text
+step     1 : explicit 2.0020, semi-implicit 1.9980
+step   100 : explicit 2.2155, semi-implicit 1.9963
+step  1000 : explicit 5.5657, semi-implicit 1.9708
+step 10000 : explicit 55710.1133, semi-implicit 2.0244
+```
+
+| Method | Energy after 10 000 steps (start: 2) | What happens |
+|---|---|---|
+| Euler explicit | 55710.1133 | Each step multiplies the energy by `1 + stiffness x dt x dt` (here 1.001024): the spring **gains** energy and its oscillations grow without end |
+| Euler semi-implicit | 2.0244 (between 1.9685 and 2.0325 over the whole run) | The energy **oscillates** around 2 without drifting: the amplitude stays stable for as long as you like |
+
+The explicit factor can be checked: 1.001024 to the power 1000 gives 2.7829, and 5.5657 / 2 indeed gives 2.7829. A tiny error per step (0.1%), repeated at every frame, becomes huge within a few minutes. With the damping of the previous section, the flaw persists: at stiffness 4 and damping 0.01 (same step), the energy measured after 10 000 steps is 11240 with explicit, although friction should wipe it out, and 0.41 with semi-implicit, which does wipe it out. This is why `spring_update` updates `vel` **before** `pos`, and why the order of the two lines must not be swapped "because it comes to the same thing".
+
+The cap on `dt` is still needed, even with semi-implicit: this method is stable only if `dt` is below `2 / sqrt(stiffness)` (`sqrt`: the square root). For a stiffness of 400, the limit measured by bisection (cutting the interval in two until the limit is found) is 0.10000, that is `2 / sqrt(400)`. The function below measures the largest deviation reached over 200 steps (`isnan` tests whether a value is `NaN`, *Not a Number*, the result of an impossible computation such as `inf - inf`, where `inf` is infinity):
+
+```c
+#include <math.h>                         /* fabsf: absolute value; isnan */
+
+/* uses t_spring and step_semi_implicit, defined above */
+float	max_pos(float stiffness, float dt, int steps)
+{
+	t_spring	s = {1.0f, 0.0f};   /* start: pulled to 1, no speed */
+	float		big = 1.0f;         /* largest deviation seen, 1 at the start */
+	int			i;
+
+	for (i = 0; i < steps; i++)
+	{
+		step_semi_implicit(&s, stiffness, dt);   /* one step of the method */
+		if (isnan(s.pos))                        /* exploded: we stop */
+			return (s.pos);
+		if (fabsf(s.pos) > big)                  /* new record of deviation */
+			big = fabsf(s.pos);
+	}
+	return (big);
+}
+```
+
+| `dt` (stiffness 400) | Largest deviation over 200 steps | Verdict |
+|---|---|---|
+| 0.016 (one frame at 60 frames per second) | 1.01305 | Stable |
+| 0.050 (the cap of the spring above) | 1 | Stable |
+| 0.090 | 2.29416 | Amplitude inflated |
+| 0.099 | 7.08858 | Just under the 0.1 limit: very inflated |
+| 0.101 | 1.4314e+25 | Just above: divergence |
+| 0.110 | `NaN` (displayed as `-nan`) | Exploded |
+| 1.000 (a one-second pause) | `NaN` (displayed as `-nan`) | Exploded |
+
+The cap of 0.05 is therefore safe as long as the stiffness stays under 1600 (`2 / 0.05` = 40, and 40 squared = 1600); with a stiffer spring, the cap must be lowered.
+
+> **Pitfall:** swapping the two update lines produces no error and no warning: the spring seems to work, and only after seconds or minutes, or with weak damping, does the oscillation grow. Keep `vel` before `pos`, then cap `dt` taking the stiffness into account.
 
 ## Bounding a deformation with `tanh`
 
@@ -257,7 +426,7 @@ Concretely, the 2D click is first converted to normalized coordinates (between -
 
 | | |
 |---|---|
-| **Key takeaways** | Chromatic aberration simulates light dispersion by computing refraction 3 times (once per color channel), with a slightly different index of refraction each time. A procedural animation recomputes a position on every frame via a formula depending on actual elapsed time, with no external data. Mouse picking converts a 2D click into a 3D ray via the inverted projection/view matrices, in the reverse order of normal rendering. Fresnel reflection (Schlick's approximation) makes the reflected share grow with the slant angle. Ray-marching accumulates a density in small steps for an interior cloud. A transparent object is drawn after the opaque ones, in two passes (back then front) with `GL_SRC_ALPHA`. A damped spring reaches its target without a jump, and `tanh` bounds a deformation smoothly. Triplanar mapping textures an object without UVs by projecting along the three axes. |
-| **Tools you can use** | A cubemap for the refracted and reflected environment, `reflect`, `mix`, `pow`. `glBlendFunc`, `glCullFace`, `glFrontFace` for transparency. A time-based formula (`sinf(time * speed)`) or a damped spring to animate. `tanhf` to bound. Three texture reads weighted by the normal for triplanar mapping. The inverse of the projection and view matrices for picking. |
-| **Pitfalls to avoid** | Too large a gap between the indices of refraction (unrealistic result). Animating by frame count rather than actual elapsed time. Drawing a transparent object before the opaque ones, or reversing the vertex order (black or empty object, with no error). A spring with no cap on the time step (divergence, `NaN`). A `ray-marching` with too many steps (per-pixel cost). |
-| **Best practices** | Keep the indices of refraction close to each other for a believable result. Always base an animation on actual time, never on the number of elapsed frames. Cap `dt` in a spring and refuse a zero or negative limit for `tanh`. For a black object, test first without `GL_CULL_FACE`. |
+| **Key takeaways** | Chromatic aberration simulates light dispersion by computing refraction 3 times (once per color channel), with a slightly different index of refraction each time. A procedural animation recomputes a position on every frame via a formula depending on actual elapsed time, with no external data. Mouse picking converts a 2D click into a 3D ray via the inverted projection/view matrices, in the reverse order of normal rendering. Fresnel reflection (Schlick's approximation) makes the reflected share grow with the slant angle. Ray-marching accumulates a density in small steps for an interior cloud, and the Beer-Lambert law (`opacity = 1 - exp(-density x thickness)`) keeps the opacity between 0 and 1. A transparent object is drawn after the opaque ones, in two passes (back then front) with `GL_SRC_ALPHA`. A damped spring reaches its target without a jump, advanced by semi-implicit Euler (speed is updated before position, which keeps the energy stable where explicit Euler gains energy at every step), and `tanh` bounds a deformation smoothly. Triplanar mapping textures an object without UVs by projecting along the three axes. |
+| **Tools you can use** | A cubemap for the refracted and reflected environment, `reflect`, `mix`, `pow`, `exp` for Beer-Lambert attenuation. `glBlendFunc`, `glCullFace`, `glFrontFace` for transparency. A time-based formula (`sinf(time * speed)`) or a damped spring to animate. `tanhf` to bound. Three texture reads weighted by the normal for triplanar mapping. The inverse of the projection and view matrices for picking. |
+| **Pitfalls to avoid** | Too large a gap between the indices of refraction (unrealistic result). Animating by frame count rather than actual elapsed time. Drawing a transparent object before the opaque ones, or reversing the vertex order (black or empty object, with no error). A spring with no cap on the time step (divergence, `NaN`). A `ray-marching` with too many steps (per-pixel cost). An opacity summed without `exp` (it exceeds 1). The two spring update lines in the wrong order (the oscillation grows with no visible error). |
+| **Best practices** | Keep the indices of refraction close to each other for a believable result. Always base an animation on actual time, never on the number of elapsed frames. Sum the density along the ray, then apply `1.0 - exp(-optical)` only once. Update `vel` before `pos`, cap `dt` below `2 / sqrt(stiffness)` in a spring, and refuse a zero or negative limit for `tanh`. For a black object, test first without `GL_CULL_FACE`. |

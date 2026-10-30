@@ -45,7 +45,7 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 | C19 | Tri puis balayage (`Fondamentaux/Algorithmes/tri-puis-balayage.md`, `order: 13`) | point 5 | [v] |
 | C20 | Précision des `float` loin de l'origine (`Données/Représentation des données/flottants-loin-de-l-origine.md`, `order: 10`) | point 5 | [v] |
 | C21 | GLSL : `flat`, bruit de valeur et hash de shader | point 5 | [ ] |
-| C22 | Beer-Lambert et Euler semi-implicite (sections ajoutées à `effets-de-rendu-et-interaction-3d.md`) | point 5 | [>] builder sonnet arrêté le 29/10/2026 à la demande de Louis ; travail partiel (359 lignes, non vérifié) sauvegardé dans `/tmp/claude-1000/-home-sung-jinwoo/ea39f87b-96b3-4b22-b60a-997f31188c59/scratchpad/c22a-partiel.patch` (à ne pas compter sur lui : le dossier `/tmp` peut disparaître), fichier du dépôt remis à l'état commité |
+| C22 | Beer-Lambert et Euler semi-implicite (sections ajoutées à `effets-de-rendu-et-interaction-3d.md`) | point 5 | [v] |
 | C23 | Blocage de cardan et rotation incrémentale | point 5 | [ ] |
 | C24 | Liens de l'introduction de la Cybersécurité vers les chapitres cités (9 liens, 4 langues) | cybersécurité | [v] |
 | C25 | Signaler une faille trouvée sur un site : légalité et divulgation responsable | cybersécurité | [v] |
