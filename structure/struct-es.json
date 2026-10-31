@@ -468,6 +468,10 @@
             {
               "id": "php-fpm",
               "label": "Responder al cliente y luego seguir trabajando (PHP-FPM)"
+            },
+            {
+              "id": "alias-d-adresse-et-conversion-de-parametre",
+              "label": "Alias de dirección, redirección 301 y conversión de parámetro de ruta"
             }
           ]
         },
@@ -1031,6 +1035,22 @@
             {
               "id": "un-message-d-erreur-par-cause",
               "label": "Un mensaje de error para cada causa"
+            },
+            {
+              "id": "inversion-de-controle-et-points-d-extension",
+              "label": "Inversión de control y puntos de extensión: hooks, eventos, dependencia opcional"
+            },
+            {
+              "id": "conteneur-de-services",
+              "label": "El contenedor de servicios y los proveedores de servicios"
+            },
+            {
+              "id": "architecture-a-plugins",
+              "label": "La arquitectura de plugins"
+            },
+            {
+              "id": "machine-a-etats-applicative",
+              "label": "La máquina de estados de una aplicación"
             }
           ]
         },
@@ -1203,6 +1223,14 @@
             {
               "id": "elasticsearch",
               "label": "Elasticsearch: la base orientada a documentos para la búsqueda"
+            },
+            {
+              "id": "cycle-de-vie-d-une-entite",
+              "label": "Ciclo de vida de una entidad, esquema por código y campo calculado"
+            },
+            {
+              "id": "migrations-de-donnees-sures",
+              "label": "Migraciones de datos seguras"
             }
           ]
         },
@@ -1381,6 +1409,10 @@
         {
           "id": "tests-navigateur-sans-fenetre",
           "label": "Probar una interfaz en un navegador sin ventana (29/10/2026)"
+        },
+        {
+          "id": "node-test",
+          "label": "El ejecutor de pruebas integrado de Node: node:test (31/10/2026)"
         }
       ]
     },

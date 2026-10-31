@@ -1,9 +1,9 @@
-# Arbre : chapitres du todo (chapitres commités 22/45, audio complet 22/45)
+# Arbre : chapitres du todo (chapitres commités 30/45, audio complet 22/45)
 
 Statuts : [ ] à faire, [~] en cours, [x] faite, [v] validée (commitée, audio des 4 langues généré), [!] bloquée, [>] reportée.
 Arbre validé par Louis le 28/10/2026 (lancement des 3 Haiku de traduction par chapitre compris).
-Prochaine feuille : C06, puis C09 et suivants. Louis a demandé l'arrêt après C30.f2 le 30/10/2026 : reprise sur son instruction. C30.f2 commité avec son audio le 30/10/2026.
-Fenêtre de travail des agents fixée par Louis le 30/10/2026 (12:00) : jusqu'à 17:00 ; arrêt des agents encore actifs à cette heure, chapitres complets récupérés.
+Prochaine feuille : audio des 8 chapitres C06 et C09 à C15 (statut [x]), puis C27 et suivants. Arrêt demandé par Louis le 31/10/2026 à 12h20 : les 8 chapitres, complets en 4 langues, sont commités.
+Fenêtre de travail des agents fixée par Louis le 31/10/2026 : lancements jusqu'à 12h20, arrêt des agents encore actifs à cette heure, chapitres complets récupérés.
 Moniteur : claude-sonnet-5-5, effort high (`modelSettings` de `settings.json`, `CLAUDE_CODE_EFFORT_LEVEL` non défini), réévalué à la clôture du premier chapitre. Chapitres de faits spécialisés (Drupal, NCM, ft_linux) : revue `analyst` d'un niveau supérieur au moniteur entre a et b.
 Une seule rédaction FR à la fois, traductions Haiku par trio, un seul audio à la fois. Autorisé par Louis le 28/10/2026 : pendant qu'un trio Haiku traduit le chapitre N, un builder rédige déjà le FR du chapitre N+1 (jamais deux rédacteurs FR en même temps) ; commit dès les 4 langues relues.
 Échéance du 28/10/2026 (tout commité avant 17h) : dépassée à la reprise du 29/10/2026 (18h56), Louis ne l'a pas rappelée.
@@ -29,16 +29,16 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 | C03 | Événements pointeur et chargement des polices (`Langages/JavaScript/`) | point 2 | [v] |
 | C04 | Unités et fonctions de taille, police à 200 et 300 % (`Langages/CSS/`) | point 2 | [v] |
 | C05 | Tester une interface dans un navigateur sans fenêtre (`Tests/`) | point 2 | [v] |
-| C06 | `node:test` (`Tests/`) | point 2 | [ ] |
+| C06 | `node:test` (`Tests/`) | point 2 | [x] |
 | C07 | `constexpr` et constantes (`Langages/C++/`) | point 3 | [v] |
 | C08 | Boucle de jeu avec SFML (`Fondamentaux/Graphisme/`) | point 3 | [v] |
-| C09 | Inversion de contrôle et points d'extension : hooks, événements, dépendance optionnelle (`Qualité, performance et outils/Qualité et architecture du code/`) | point 4 | [ ] |
-| C10 | Le conteneur de services (`Qualité et architecture du code/`) | point 4 | [ ] |
-| C11 | L'architecture à plugins (`Qualité et architecture du code/`) | point 4 | [ ] |
-| C12 | Machine à états applicative (`Qualité et architecture du code/`) | point 4 | [ ] |
-| C13 | Cycle de vie d'une entité, schéma par code, champ calculé (`Données/Bases de données/`) | point 4 | [ ] |
-| C14 | Migrations de données sûres (`Données/Bases de données/`) | point 4 | [ ] |
-| C15 | Alias d'adresse, redirection 301, conversion de paramètre de route (`Langages/PHP/`) | point 4 | [ ] |
+| C09 | Inversion de contrôle et points d'extension : hooks, événements, dépendance optionnelle (`Qualité, performance et outils/Qualité et architecture du code/`) | point 4 | [x] |
+| C10 | Le conteneur de services (`Qualité et architecture du code/`) | point 4 | [x] |
+| C11 | L'architecture à plugins (`Qualité et architecture du code/`) | point 4 | [x] |
+| C12 | Machine à états applicative (`Qualité et architecture du code/`) | point 4 | [x] |
+| C13 | Cycle de vie d'une entité, schéma par code, champ calculé (`Données/Bases de données/`) | point 4 | [x] |
+| C14 | Migrations de données sûres (`Données/Bases de données/`) | point 4 | [x] |
+| C15 | Alias d'adresse, redirection 301, conversion de paramètre de route (`Langages/PHP/`) | point 4 | [x] |
 | C16 | Appel système interrompu (`EINTR`) (`Langages/C/appel-systeme-interrompu-eintr.md`, `order: 29`) | point 5 | [v] |
 | C17 | Filtrage sur place à deux pointeurs (`Langages/C/filtrage-sur-place-deux-pointeurs.md`, `order: 30`) | point 5 | [v] |
 | C18 | `offsetof` et littéral composé (`Langages/C/offsetof-et-litteral-compose.md`, `order: 31`) | point 5 | [v] |
