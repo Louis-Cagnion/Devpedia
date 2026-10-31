@@ -468,6 +468,10 @@
             {
               "id": "php-fpm",
               "label": "Répondre au client puis continuer de travailler (PHP-FPM)"
+            },
+            {
+              "id": "alias-d-adresse-et-conversion-de-parametre",
+              "label": "Alias d'adresse, redirection 301 et conversion de paramètre de route"
             }
           ]
         },
@@ -1031,6 +1035,22 @@
             {
               "id": "un-message-d-erreur-par-cause",
               "label": "Un message d'erreur pour chaque cause"
+            },
+            {
+              "id": "inversion-de-controle-et-points-d-extension",
+              "label": "Inversion de contrôle et points d'extension : hooks, événements, dépendance optionnelle"
+            },
+            {
+              "id": "conteneur-de-services",
+              "label": "Le conteneur de services et les fournisseurs de services"
+            },
+            {
+              "id": "architecture-a-plugins",
+              "label": "L'architecture à plugins"
+            },
+            {
+              "id": "machine-a-etats-applicative",
+              "label": "La machine à états applicative"
             }
           ]
         },
@@ -1203,6 +1223,14 @@
             {
               "id": "elasticsearch",
               "label": "Elasticsearch : la base orientée documents pour la recherche"
+            },
+            {
+              "id": "cycle-de-vie-d-une-entite",
+              "label": "Cycle de vie d'une entité, schéma par code et champ calculé"
+            },
+            {
+              "id": "migrations-de-donnees-sures",
+              "label": "Migrations de données sûres"
             }
           ]
         },
@@ -1381,6 +1409,10 @@
         {
           "id": "tests-navigateur-sans-fenetre",
           "label": "Tester une interface dans un navigateur sans fenêtre (29/10/2026)"
+        },
+        {
+          "id": "node-test",
+          "label": "Le banc de tests intégré de Node : node:test (31/10/2026)"
         }
       ]
     },

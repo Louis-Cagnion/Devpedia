@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : C06, C09 et suivants selon `arbre-chapitres-todo.md` (Louis a demandé l'arrêt après C30.f2 le 30/10/2026 : reprise sur son instruction). Point 1 : en attente de Louis (test navigateur).
+> Prochaine tâche : audio des 8 chapitres C06 et C09 à C15 (point 2), puis C27 et suivants selon `arbre-chapitres-todo.md`. Point 1 : en attente de Louis (test navigateur).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -10,17 +10,10 @@ Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il
 
 ## 2. Chapitres issus du projet Portfolio (sujets absents de Devpedia)
 Sujets utilisés dans le Portfolio de Louis, sans chapitre dédié. Procédure : français, puis 3 agents de traduction (EN, ES, BR), puis audio des 4 langues généré avant de passer au chapitre suivant. Écrire dans l'ordre, un chapitre à la fois ; chaque chapitre renvoie vers les chapitres voisins existants plutôt que de les répéter.
-- `Tests/` : `node:test` (banc de tests Node, en complément de `tests-end-to-end.md` et du chapitre `tests-navigateur-sans-fenetre.md`).
+- Audio des quatre langues à générer, un chapitre à la fois, un seul job : `node scripts/generate-audio.mjs "<chemin sans .md>"` (fr), puis `--lang=en,es,br`. Chapitres : `Tests/node-test`, `Qualité, performance et outils/Qualité et architecture du code/` (`inversion-de-controle-et-points-d-extension`, `conteneur-de-services`, `architecture-a-plugins`, `machine-a-etats-applicative`), `Données/Bases de données/` (`cycle-de-vie-d-une-entite`, `migrations-de-donnees-sures`), `Langages/PHP/alias-d-adresse-et-conversion-de-parametre`.
 
 ## 4. Notions de Drupal 11 multisite (revue d'un projet Drupal)
 Même procédure que le point 2. Déjà couverts (recherche du 12/10/2026 dans `content/`) : injection SQL, CSRF, XSS, cron, injection de dépendances de base et trait PHP (`Langages/PHP/poo.md`), idempotence, redirection ouverte, traversée de chemin et téléversement (`Sécurité/Cybersécurité/upload-de-fichiers.md`), affectation en masse. Exemples génériques de Drupal uniquement, jamais le code du projet revu. Un chapitre par notion, rangé dans la catégorie existante où elle se rattache (décision de Louis du 29/10/2026 : aucun sujet « Drupal », Drupal n'apparaît que comme exemple dans le texte, jamais dans le titre du chapitre ni dans son dossier). Recherche de recouvrement avec les chapitres voisins à faire avant chaque rédaction :
-- `Qualité et architecture du code/` : inversion de contrôle (le framework appelle le code du projet via des déclarations : route, hook, service, plugin) ; hook et abonné d'événement avec priorité ; hook personnalisé (déclarer et appeler son propre point d'extension : `invokeAll`, `alter`) ; dépendance optionnelle (`moduleExists`) et dépendance non déclarée.
-- `Qualité et architecture du code/` : conteneur de services et fournisseur de services (déclarer, injecter, remplacer un service du noyau).
-- `Qualité et architecture du code/` : architecture à plugins (annotation ou attribut de classe, gestionnaire de plugins, un plugin de bloc, de contrainte de validation ou de ressource comme exemples).
-- `Qualité et architecture du code/` : machine à états applicative (statut, statut de publication).
-- `Données/Bases de données/` (voisin de `orm.md`) : cycle de vie d'une entité (`preSave`, `postSave`, `preDelete`, `postDelete`) et effets de bord ; schéma de données construit par du code (définitions de champs) et champ calculé.
-- `Données/Bases de données/` : migration versionnée, mode simulation avant application, SQL en masse contre enregistrement un par un, garde-fou avant suppression.
-- `Langages/PHP/` (voisin de `routage.md`) : alias d'adresse, processeur d'adresse entrant et redirection 301 ; conversion automatique d'un paramètre de route en objet (param converter).
 - `Langages/PHP/` : affichage d'une entité (view builder, route d'entité `_entity_view`, contrôle d'accès d'entité).
 - `Infrastructure & DevOps/Conception à grande échelle/` : un code, plusieurs sites, plusieurs bases (préfixes de tables).
 - `Infrastructure & DevOps/Conception à grande échelle/` : réplication applicative d'un référentiel vers des satellites (propagation synchrone par HTTP, identifiant externe, satellites désynchronisés).
@@ -43,10 +36,6 @@ Même procédure que le point 2. Déjà couverts (recherche du 12/10/2026 dans `
 ## fix
 tu parles de "Haskell, l'outil historique du domaine", mais on ne sait pas de quel domaine tu parles
 - `Langages/C/boucles.md` (fr, en, es, br), ligne 139 : `&&`/`||` nu dans une cellule de tableau, ce qui coupe la ligne ; écrire `\|\|` comme dans `operateurs-binaires.md`.
-
-## 5. Notions de la revue finale de scop (19/10/2026)
-Vues pendant la revue de `collect_lines_file.c` et du parseur ; recherche dans `content/` faite, les autres notions (atexit, `O_NONBLOCK`/FIFO/`fstat`, caractères de contrôle, `strtod`, valgrind « definitely lost », `realloc`) sont déjà couvertes.
-
 
 ## 7. Notions de SQL pour un premier contact (session `/professor` du 29/10/2026)
 Même procédure que le point 2. Recherche dans `content/` faite le 29/10/2026 : `Langages/Domain-specific Languages (DSL)/sql.md` couvre déjà les agrégats, `JOIN`, `CREATE TABLE` avec `PRIMARY KEY`, `NULL`, les index, PDO, l'injection SQL et le moindre privilège ; `Données/Bases de données/schemas-et-tables-techniques.md` couvre le schéma et `dbo` ; SSMS n'est cité que pour restaurer une sauvegarde `.bak`. Exemples génériques uniquement (clients, livres, films), jamais le nom d'une base ou d'une table d'un serveur de travail. Ce qui manque, pour quelqu'un qui n'a jamais écrit de requête :
