@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : audio des 8 chapitres C06 et C09 à C15 (point 2), puis C27 et suivants selon `arbre-chapitres-todo.md`. Point 1 : en attente de Louis (test navigateur).
+> Prochaine tâche : corrections puis intégration des 17 chapitres rédigés et traduits (worktrees `.claude/worktrees`, voir « État à l'arrêt » de `arbre-chapitres-todo.md`), puis audio des chapitres manquants.
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 

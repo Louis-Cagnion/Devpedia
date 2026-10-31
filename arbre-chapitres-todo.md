@@ -2,11 +2,39 @@
 
 Statuts : [ ] à faire, [~] en cours, [x] faite, [v] validée (commitée, audio des 4 langues généré), [!] bloquée, [>] reportée.
 Arbre validé par Louis le 28/10/2026 (lancement des 3 Haiku de traduction par chapitre compris).
-Prochaine feuille : audio des 8 chapitres C06 et C09 à C15 (statut [x]), puis C27 et suivants. Arrêt demandé par Louis le 31/10/2026 à 12h20 : les 8 chapitres, complets en 4 langues, sont commités.
+Prochaine feuille : corrections listées dans « État à l'arrêt », puis relecture, intégration des worktrees et audio.
 Fenêtre de travail des agents fixée par Louis le 31/10/2026 : lancements jusqu'à 12h20, arrêt des agents encore actifs à cette heure, chapitres complets récupérés.
 Moniteur : claude-sonnet-5-5, effort high (`modelSettings` de `settings.json`, `CLAUDE_CODE_EFFORT_LEVEL` non défini), réévalué à la clôture du premier chapitre. Chapitres de faits spécialisés (Drupal, NCM, ft_linux) : revue `analyst` d'un niveau supérieur au moniteur entre a et b.
 Une seule rédaction FR à la fois, traductions Haiku par trio, un seul audio à la fois. Autorisé par Louis le 28/10/2026 : pendant qu'un trio Haiku traduit le chapitre N, un builder rédige déjà le FR du chapitre N+1 (jamais deux rédacteurs FR en même temps) ; commit dès les 4 langues relues.
 Échéance du 28/10/2026 (tout commité avant 17h) : dépassée à la reprise du 29/10/2026 (18h56), Louis ne l'a pas rappelée.
+
+Vagues décidées par Louis le 31/10/2026 (remplacent « une seule rédaction FR à la fois ») : vague 1 de 9 rédacteurs sonnet/high (C27, C28, C29, C31, C32, C33, C36, C37, C38), puis vague 2 de 8 (C35, C39 à C45). Dès qu'un FR est rendu, ses 3 traducteurs haiku/medium partent aussitôt ; la relecture du moniteur (b) et la revue `analyst` des chapitres de faits tournent en parallèle ; tout écart se corrige par un agent dédié à un chapitre et une langue ; audio de tous les chapitres manquants à la fin, un seul job à la fois. Un worktree par chapitre (`.claude/worktrees/<ID>`, branche `agent/<ID>`, sans `audio/`), partagé par son rédacteur et ses traducteurs (fichiers distincts) ; `structure/` modifiée par le moniteur seul, sur `main`, après fusion.
+
+| ID | Fichier FR | order |
+|---|---|---|
+| C27 | `Infrastructure & DevOps/Serveurs web/serveurs-web.md` (page de sous-section) | 9 |
+| C28 | `Serveurs web/codes-de-statut-et-en-tetes-de-controle.md` | 1 |
+| C29 | `Serveurs web/proxy-inverse-et-limitation-de-debit.md` | 2 |
+| C31 | sections ajoutées à `Langages/Domain-specific Languages (DSL)/sql.md` | inchangé |
+| C32 | `Données/Bases de données/lire-une-base-avec-ssms.md` | 13 |
+| C33 | `Infrastructure & DevOps/Administration système/qemu-kvm-et-disques-qcow2.md` | 11 |
+| C35 | `IA/NLP et LLM/generation-parallele-de-texte.md` | 11 |
+| C36 | `Langages/PHP/afficher-une-entite.md` | 17 |
+| C37 | `Conception à grande échelle/un-code-plusieurs-sites.md` | 6 |
+| C38 | `Conception à grande échelle/repliquer-un-referentiel-vers-des-satellites.md` | 7 |
+| C39 | `Infrastructure & DevOps/Automatisation/file-d-attente-worker-et-verrou.md` | 6 |
+| C40 | `Qualité, performance et outils/Performance/metadonnees-de-cache-et-invalidation.md` | 12 |
+| C41 | `Performance/chargement-differe-et-espace-reserve.md` | 13 |
+| C42 | `Performance/redimensionner-des-images-et-servir-du-webp.md` | 14 |
+| C43 | `Sécurité/Cybersécurité/desactiver-la-verification-tls.md` | 23 |
+| C44 | `Cybersécurité/authentification-http-basic-et-ressource-rest.md` | 24 |
+| C45 | `Cybersécurité/donnees-personnelles-dans-les-journaux.md` | 25 |
+
+État à l'arrêt du 31/10/2026 : les 17 chapitres sont rédigés en FR et traduits en EN, ES, BR (51 traductions), aucun agent en cours. Rien n'est commité ni fusionné : tout vit dans `.claude/worktrees/<ID>` (C27, C28, C29, C31, C32, C33, C35 à C45), branches `agent/<ID>` sans commit, plafond de 20 agents simultanés.
+- Briefs et faits : `scratchpad/brief-fr.md`, `brief-tr.md`, `faits-C<ID>.md`, script `verif-chapitre.sh` (variable `REPO`), dans `/tmp/claude-1000/-home-sung-jinwoo-Bureau-code-JavaScript-Devpedia/49910c88-5923-4094-ab76-e4cf5d43a8fb/scratchpad/`.
+- Corrections à faire (un agent dédié par chapitre et par langue) : `sql.md` (C31) phrase « ordre alphabétique » fausse, ligne 485 du FR ; C28 phrase qui renvoie à un schéma « de début de chapitre » ; C29 pause de 3 s avant la falsification `X-Forwarded-For` et commande de lancement du proxy absentes ; C33 schéma désaligné (lignes 175 à 191 du FR) ; C35 phrase cassée ligne 145 du FR ; C39 code de dépôt de la tâche avant `lancer_worker.py w.db` absent ; C42 création de `originales/gato.jpg` absente ; C43 serveur A à relancer avant les exemples PHP et `ssl`, deux lignes de code à 97 caractères (lignes 174 et 435 du FR).
+- À arbitrer : noms d'exemple traduits différemment d'une langue à l'autre (fichiers PHP de C36, modules Python de C39 et C45, `mdp` du motif de masquage de C45, dossier `caché/` de C42, `boutique`/`tienda`/`loja` de C37, libellé `Trampas que evitar` contre `Trampas a evitar`) ; identifiants mixtes dans `sql.md` en EN, ES, BR.
+- Ensuite : relecture terme par terme des 17 FR ; revue `analyst` des faits Drupal (C36 à C45) ; liens entre chapitres frères (C27/C28/C29, C37/C38, C40/C41/C42, C43/C44/C45) ; commit et fusion de chaque worktree dans `main` ; entrées `structure/struct*.json` ; audio de tous les chapitres manquants, un seul job à la fois ; ancres de `sql.md` à double tiret, noms de bases réels `base_*` dans `sql.md`.
 
 ## Pipeline d'un chapitre (un seul à la fois, audio compris avant le suivant)
 
