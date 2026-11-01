@@ -149,9 +149,11 @@ function buildChapterList(dir, fileNames) {
 function buildSubject(categoryDir, subjectFolder) {
     const subjectDir = path.join(categoryDir, subjectFolder);
     const files = listMarkdownFiles(subjectDir);
-    const mainFile = files.find(fileName =>
-        readTitle(path.join(subjectDir, fileName)).toLowerCase() === subjectFolder.toLowerCase()
-    );
+    const mainFile = files.find(fileName => {
+        const title = readTitle(path.join(subjectDir, fileName))
+            .replace(/\s*\(\d{2}\/\d{2}\/\d{4}\)$/, "");
+        return title.toLowerCase() === subjectFolder.toLowerCase();
+    });
     if (!mainFile) {
         console.warn(`Aucun fichier principal trouvé pour le sujet "${subjectFolder}" (aucun titre ne correspond au nom du dossier) ; tous ses fichiers seront listés comme chapitres.`);
     }
