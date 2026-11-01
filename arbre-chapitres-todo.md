@@ -2,7 +2,7 @@
 
 Statuts : [ ] à faire, [~] en cours, [x] faite, [v] validée (commitée, audio des 4 langues généré), [!] bloquée, [>] reportée.
 Arbre validé par Louis le 28/10/2026 (lancement des 3 Haiku de traduction par chapitre compris).
-Prochaine feuille : corrections listées dans « État à l'arrêt », puis relecture, intégration des worktrees et audio.
+Prochaine feuille : relecture terme par terme des 17 FR (agents `analyst`, un par chapitre, lecture seule) puis corrections ciblées, revue des faits Drupal, intégration des worktrees, anonymisation du FR, audio.
 Fenêtre de travail des agents fixée par Louis le 31/10/2026 : lancements jusqu'à 12h20, arrêt des agents encore actifs à cette heure, chapitres complets récupérés.
 Moniteur : claude-sonnet-5-5, effort high (`modelSettings` de `settings.json`, `CLAUDE_CODE_EFFORT_LEVEL` non défini), réévalué à la clôture du premier chapitre. Chapitres de faits spécialisés (Drupal, NCM, ft_linux) : revue `analyst` d'un niveau supérieur au moniteur entre a et b.
 Une seule rédaction FR à la fois, traductions Haiku par trio, un seul audio à la fois. Autorisé par Louis le 28/10/2026 : pendant qu'un trio Haiku traduit le chapitre N, un builder rédige déjà le FR du chapitre N+1 (jamais deux rédacteurs FR en même temps) ; commit dès les 4 langues relues.
@@ -30,7 +30,7 @@ Vagues décidées par Louis le 31/10/2026 (remplacent « une seule rédaction FR
 | C44 | `Cybersécurité/authentification-http-basic-et-ressource-rest.md` | 24 |
 | C45 | `Cybersécurité/donnees-personnelles-dans-les-journaux.md` | 25 |
 
-État à l'arrêt du 31/10/2026 : les 17 chapitres sont rédigés en FR et traduits en EN, ES, BR (51 traductions), aucun agent en cours. Rien n'est commité ni fusionné : tout vit dans `.claude/worktrees/<ID>` (C27, C28, C29, C31, C32, C33, C35 à C45), branches `agent/<ID>` sans commit, plafond de 20 agents simultanés.
+État à l'arrêt du 01/11/2026 : les 17 chapitres sont rédigés en FR et traduits en EN, ES, BR (51 traductions), les huit corrections de fond sont faites en 4 langues, aucun agent en cours. Rien n'est commité ni fusionné : tout vit dans `.claude/worktrees/<ID>` (C27, C28, C29, C31, C32, C33, C35 à C45), branches `agent/<ID>` sans commit, plafond de 20 agents simultanés.
 - Briefs et faits : `scratchpad/brief-fr.md`, `brief-tr.md`, `faits-C<ID>.md`, script `verif-chapitre.sh` (variable `REPO`), dans `/tmp/claude-1000/-home-sung-jinwoo-Bureau-code-JavaScript-Devpedia/49910c88-5923-4094-ab76-e4cf5d43a8fb/scratchpad/`.
 - Reprises à faire (huit chapitres corrigés en 4 langues le 01/11/2026, comptes croisés identiques) : `sql.md` EN, ES, BR : liens internes manquants par rapport au FR (13 liens FR, 9 EN, 11 ES, 11 BR : regex, mémoire C, PHP) et slugs historiques `langages-de-programmation` du FR à passer en `langages` ; parenthèse « 26B A4B » de C35 (taille totale et active) recoupée seulement par des sites secondaires, à confirmer sur la fiche Google ou à retirer.
 - À arbitrer : noms d'exemple traduits différemment d'une langue à l'autre (ports du laboratoire de C43 par langue : FR 7231, EN 7241, ES 7251, BR 7261 ; dossier `tls-lab` et journaux `log-a*.txt` en EN ; dossier `caché/` avec accent en ES pour C42 ; `deposer_taches.py` traduit en `depositar_tareas.py` en ES seulement ; fichiers PHP de C36, modules Python de C39 et C45, `mdp` du motif de masquage de C45, dossier `caché/` de C42, `boutique`/`tienda`/`loja` de C37, libellé `Trampas que evitar` contre `Trampas a evitar`) ; identifiants mixtes dans `sql.md` en EN, ES, BR.

@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : corrections puis intégration des 17 chapitres rédigés et traduits (worktrees `.claude/worktrees`, voir « État à l'arrêt » de `arbre-chapitres-todo.md`), puis audio des chapitres manquants.
+> Prochaine tâche : relecture terme par terme des 17 chapitres FR (C27 à C45 sauf C30 et C34) dans leurs worktrees `.claude/worktrees`, revue `analyst` des faits Drupal, liens entre chapitres frères, fusion dans `main`, entrées `structure/`, contrôle d'anonymisation du FR avec les termes de Louis, puis audio (voir « État à l'arrêt » de `arbre-chapitres-todo.md`).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
