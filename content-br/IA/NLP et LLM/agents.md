@@ -26,7 +26,7 @@ O modelo não consegue executar essa função ele mesmo; ele apenas **decide** q
 { "chamada": "obter_clima", "argumentos": { "cidade": "Curitiba" } }
 ```
 
-É o código em volta do modelo que recebe essa decisão, executa de fato a função correspondente (Python, a chamada [HTTP](/?c=infrastructure&p=api-et-http), a consulta [SQL](/?c=domain-specific-languages-dsl&p=sql)...), e devolve seu resultado ao modelo para que ele continue.
+É o código em volta do modelo que recebe essa decisão, executa de fato a função correspondente ([Python](/?c=langages-de-programmation&s=python&p=python), a chamada [HTTP](/?c=infrastructure&p=api-et-http), a consulta [SQL](/?c=domain-specific-languages-dsl&p=sql)...), e devolve seu resultado ao modelo para que ele continue.
 
 > **Cuidado:** confiar cegamente nos argumentos produzidos pelo modelo antes de passá-los para a função real: o modelo nunca "sabe" de verdade o que uma função faz além de sua descrição em texto; uma descrição imprecisa ou ambígua produz chamadas com os argumentos errados tão certeiramente quanto uma função mal documentada engana um desenvolvedor humano que só lesse sua assinatura.
 >
@@ -47,7 +47,7 @@ Uma linguagem tipada clássica valida uma chamada descrita em JSON Schema com su
 
 ## Um parâmetro livre em vez de um valor fixo: de onde vem a variação
 
-O parâmetro `cidade` do exemplo anterior só assume valores de um conjunto limitado e previsível (nomes de cidades). Nada obriga um parâmetro a ser tão restrito: ele pode igualmente ser um **texto livre que o próprio modelo escreve**, como um comando shell, uma consulta SQL ou um trecho de código:
+O parâmetro `cidade` do exemplo anterior só assume valores de um conjunto limitado e previsível (nomes de cidades). Nada obriga um parâmetro a ser tão restrito: ele pode igualmente ser um **texto livre que o próprio modelo escreve**, como um comando shell, uma consulta [SQL](/?c=domain-specific-languages-dsl&p=sql) ou um trecho de código:
 
 ```json
 {
@@ -137,14 +137,14 @@ Qualquer que seja o padrão escolhido, cada subagente começa por padrão com um
 Os quatro padrões acima supõem todos um agente CHAMADOR que decompõe uma tarefa e inicia subagentes com contexto vazio (veja a observação logo acima da tabela). Existe outro caso: duas sessões já em andamento, cada uma com seu próprio histórico completo (e potencialmente seu próprio humano na conversa), sem vínculo pai/filho entre elas.
 
 ```text
-Sessão A (repo "site-web")                  Sessão B (repo "scraper", ja em andamento)
+Sessão A (repo "site-web")                  Sessão B (repo "backend", já em andamento)
      |                                                |
      | 1. consulta um REGISTRO das sessões ativas     |
      |------------------------------------------------>
      | 2. envia uma mensagem assíncrona (caixa de correio)
      |------------------------------------------------>
-     |                                                | 3. processada no PRÓXIMO turno de ferramenta de B, nao imediatamente
-     |                                                | 4. B responde, ou continua seu proprio trabalho
+     |                                                | 3. processada no PRÓXIMO turno de ferramenta de B, não imediatamente
+     |                                                | 4. B responde, ou continua seu próprio trabalho
 ```
 
 Esse padrão se apoia em dois mecanismos distintos: a **descoberta** (um registro reúne as sessões ativas, para que uma possa encontrar outra sem configuração prévia) e a **mensagem assíncrona** (ao contrário de uma chamada de ferramenta clássica, bloqueante, ela é depositada e processada no próximo turno do agente destinatário, sem garantia de prazo nem de resposta). Um mecanismo complementar costuma completar esse padrão: a **assinatura** («me avise quando você estiver ocioso de novo»), que evita ter que consultar em loop (*polling*) se um par terminou sua tarefa.

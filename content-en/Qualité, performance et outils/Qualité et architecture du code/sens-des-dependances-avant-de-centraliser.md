@@ -8,26 +8,26 @@ Centralizing shared configuration in a single place is generally a good idea (se
 
 ## A concrete example
 
-A scraping project organized in layers: a low-level `browser.py` module (open a page, click, wait) with no knowledge of specific sites, and a higher-level `sites/` folder that imports `browser.py` to implement scraping for each site:
+A report export program organized in layers: a low-level `writer.py` module (open a file, write, close) with no knowledge of specific formats, and a higher-level `formats/` folder that imports `writer.py` to implement the export of each format:
 
 ```text
-sites/leboncoin.py  --imports-->  browser.py
-sites/lacentrale.py --imports-->  browser.py
+formats/csv.py   --imports-->  writer.py
+formats/json.py  --imports-->  writer.py
 ```
 
-Some settings (delays specific to a site, random variation ranges to look less robotic) seemed, at first glance, to logically belong in a centralized site registry (`SITE_REGISTRY`, located in `sites/__init__.py`). But `browser.py` itself needs to read these settings to work, and `browser.py` is imported BY `sites/`, not the other way around. Moving them would create:
+Some settings (buffer sizes and encodings specific to a format) seemed, at first glance, to logically belong in a centralized format registry (`FORMAT_REGISTRY`, located in `formats/__init__.py`). But `writer.py` itself needs to read these settings to work, and `writer.py` is imported BY `formats/`, not the other way around. Moving them would create:
 
 ```text
-browser.py  --would import-->  sites/__init__.py  --imports-->  browser.py
+writer.py  --would import-->  formats/__init__.py  --imports-->  writer.py
 ```
 
-A cycle: `browser.py` would import a module that, transitively, already imports it. Depending on the language, this produces either a load-time error or a partially initialized import (often worse: the bug only shows up in certain execution orders). The solution chosen: keep these site-specific settings in `browser.py` itself, at the cost of a small exception to the "everything about a site goes in the registry" rule, documented in a comment so the next person doesn't try to "fix" what's actually a structural constraint.
+A cycle: `writer.py` would import a module that, transitively, already imports it. Depending on the language, this produces either a load-time error or a partially initialized import (often worse: the bug only shows up in certain execution orders). The solution chosen: keep these format-specific settings in `writer.py` itself, at the cost of a small exception to the "everything about a format goes in the registry" rule, documented in a comment so the next person doesn't try to "fix" what's actually a structural constraint.
 
 ## The question to ask before centralizing
 
 *Who imports whom, today?* If the new centralized location would need to be imported by a module that sits **below**, in the dependency graph, the module where the information to centralize currently lives, moving it reverses the direction of an existing dependency, and a cycle appears as soon as a low-level module needs, even indirectly, information living in a high-level module that depends on it.
 
-> **Practical rule of thumb:** in a layered architecture (low level ↔ high level), information should only flow one way: from the low layers up to the high layers that use them. A centralization that seems "logical" from a domain point of view (grouping everything about a site) can still violate this direction if the information is used by a layer lower than the intended destination.
+> **Practical rule of thumb:** in a layered architecture (low level ↔ high level), information should only flow one way: from the low layers up to the high layers that use them. A centralization that seems "logical" from a domain point of view (grouping everything about a format) can still violate this direction if the information is used by a layer lower than the intended destination.
 
 ## This isn't a reason to never centralize
 

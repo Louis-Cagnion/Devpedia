@@ -9,9 +9,9 @@ A classic sign of code that's going to become painful to maintain: the same stat
 ## The symptom
 
 ```python
-parser.add_argument("--profile-dir", default=str(Path.home() / ".scraper_profile"))
-parser.add_argument("--headless", action="store_true")
-parser.add_argument("--site", choices=["leboncoin", "lacentrale", "vivacar", "zoomcar"])
+parser.add_argument("--profile-dir", default=str(Path.home() / ".rapport_profil"))
+parser.add_argument("--verbose", action="store_true")
+parser.add_argument("--format", choices=["csv", "json", "xml", "html"])
 parser.add_argument("--output", default="reports/report.txt")
 # ... a dozen others, each on its own call
 ```
@@ -24,9 +24,9 @@ The principle: describe each element only once, in a data structure (list, dicti
 
 ```python
 CLI_ARGUMENTS = [
-    {"flag": "--profile-dir", "default": str(Path.home() / ".scraper_profile")},
-    {"flag": "--headless", "action": "store_true"},
-    {"flag": "--site", "choices": ["leboncoin", "lacentrale", "vivacar", "zoomcar"]},
+    {"flag": "--profile-dir", "default": str(Path.home() / ".rapport_profil")},
+    {"flag": "--verbose", "action": "store_true"},
+    {"flag": "--format", "choices": ["csv", "json", "xml", "html"]},
     {"flag": "--output", "default": "reports/report.txt"},
 ]
 
@@ -42,27 +42,27 @@ Adding an option becomes an entry in a list, not a new line of code written to m
 The same idea applies when the repetition is over a condition rather than a function call:
 
 ```python
-# Before: one branch per case, to keep in sync with the list of sites
-if site == "leboncoin":
-    scraper = scrape_leboncoin
-elif site == "lacentrale":
-    scraper = scrape_lacentrale
-elif site == "vivacar":
-    scraper = scrape_vivacar
-elif site == "zoomcar":
-    scraper = scrape_zoomcar
+# Before: one branch per case, to keep in sync with the list of formats
+if format_name == "csv":
+    exporter = export_csv
+elif format_name == "json":
+    exporter = export_json
+elif format_name == "xml":
+    exporter = export_xml
+elif format_name == "html":
+    exporter = export_html
 
 # After: a dictionary acts as a dispatch table
-SITE_SCRAPERS = {
-    "leboncoin": scrape_leboncoin,
-    "lacentrale": scrape_lacentrale,
-    "vivacar": scrape_vivacar,
-    "zoomcar": scrape_zoomcar,
+FORMAT_EXPORTERS = {
+    "csv": export_csv,
+    "json": export_json,
+    "xml": export_xml,
+    "html": export_html,
 }
-scraper = SITE_SCRAPERS[site]
+exporter = FORMAT_EXPORTERS[format_name]
 ```
 
-The dictionary plays exactly the same role as the `if`/`elif` chain, but adding a site amounts to adding an entry, without touching the logic that picks the right scraper.
+The dictionary plays exactly the same role as the `if`/`elif` chain, but adding a format amounts to adding an entry, without touching the logic that picks the right exporter.
 
 ## Where to stop
 

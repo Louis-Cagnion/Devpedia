@@ -83,30 +83,30 @@ def desenhar_frame(tela, cena, zonas_modificadas):
 
 É a lógica do **dirty rectangle** (retângulo sujo): a própria cena sinaliza quais zonas mudaram desde a última renderização, e só essas são redesenhadas. Em um cenário 90% estático, isso reduz o custo de cada frame a uma fração do de uma renderização completa, para um resultado visualmente idêntico.
 
-## Um exemplo tirado de um scraper: não confirmar o que já está provado
+## Um exemplo tirado de um catálogo: não confirmar o que já está provado
 
-Um scraper de anúncios classificados comparava dois anúncios para saber se descreviam o mesmo veículo (duplicata) ou dois veículos diferentes. A verificação completa abria a página detalhada de cada anúncio para comparar cerca de dez características (quilometragem, opcionais, histórico de manutenção): uma chamada de rede e um tempo de renderização não desprezíveis.
+Um programa de deduplicação de fichas de produtos comparava duas fichas para saber se descreviam o mesmo artigo (duplicata) ou dois artigos diferentes. A verificação completa carregava o dossiê detalhado de cada ficha para comparar cerca de dez características (dimensões, materiais, histórico de revisões): uma leitura em disco e um tempo de processamento não desprezíveis.
 
 ```python
-def sao_potencialmente_duplicados(anuncio_a, anuncio_b):
-    # tudo já está disponível nos cartões da página de resultados
+def sao_potencialmente_duplicados(ficha_a, ficha_b):
+    # tudo já está disponível no índice do catálogo
     return (
-        anuncio_a.marca == anuncio_b.marca
-        and anuncio_a.modelo == anuncio_b.modelo
-        and abs(anuncio_a.preco - anuncio_b.preco) < 200
+        ficha_a.marca == ficha_b.marca
+        and ficha_a.modelo == ficha_b.modelo
+        and abs(ficha_a.preco - ficha_b.preco) < 200
     )
 
-def sao_duplicados(anuncio_a, anuncio_b):
-    if not sao_potencialmente_duplicados(anuncio_a, anuncio_b):
+def sao_duplicados(ficha_a, ficha_b):
+    if not sao_potencialmente_duplicados(ficha_a, ficha_b):
         return False    # já decidido: marca ou modelo diferente, ou preco muito distante
-    detalhe_a = abrir_pagina_anuncio(anuncio_a)
-    detalhe_b = abrir_pagina_anuncio(anuncio_b)
+    detalhe_a = carregar_detalhe_ficha(ficha_a)
+    detalhe_b = carregar_detalhe_ficha(ficha_b)
     return comparar_especificacoes(detalhe_a, detalhe_b)
 ```
 
-Assim que a comparação "leve" (os campos já presentes no cartão de resultados) estabelece que dois anúncios são diferentes, a questão **já está resolvida**: abrir as duas páginas detalhadas para confirmar isso só recalcularia, a preço alto, um resultado que o dado barato já produziu. A verificação custosa só roda no caso ambíguo, aquele em que o dado leve não basta para decidir.
+Assim que a comparação "leve" (os campos já presentes no índice do catálogo) estabelece que duas fichas são diferentes, a questão **já está resolvida**: carregar os dois dossiês detalhados para confirmar isso só recalcularia, a preço alto, um resultado que o dado barato já produziu. A verificação custosa só roda no caso ambíguo, aquele em que o dado leve não basta para decidir.
 
-> Não confundir com uma otimização da **latência de rede**. Aqui, o que se evita é um trabalho redundante do lado CPU/lógica (recalcular uma resposta já conhecida), não um atraso de E/S. As pausas voluntárias entre requisições (limite de taxa, cortesia com um servidor remoto) ou a espera de uma animação de interface não fazem parte desse princípio: continuam necessárias mesmo quando nenhum recálculo está em jogo, e removê-las expõe a um bloqueio, não a uma simples lentidão. É exatamente a distinção colocada no final de [Esperar sem perder tempo](/?c=performance&p=attentes-et-temps-morts): um atraso de proteção não é um desperdício a eliminar.
+> Não confundir com uma otimização da **latência de entrada/saída**. Aqui, o que se evita é um trabalho redundante do lado CPU/lógica (recalcular uma resposta já conhecida), não um atraso de E/S. As pausas voluntárias (limite de taxa de uma API chamada, atraso de proteção) ou a espera de uma animação de interface não fazem parte desse princípio: continuam necessárias mesmo quando nenhum recálculo está em jogo, e removê-las expõe a um bloqueio, não a uma simples lentidão. É exatamente a distinção colocada no final de [Esperar sem perder tempo](/?c=performance&p=attentes-et-temps-morts): um atraso de proteção não é um desperdício a eliminar.
 
 ## Reaproveitar o resultado anterior: o cálculo incremental com resultado idêntico
 
@@ -324,7 +324,7 @@ int main(int argc, char **argv)
             listas[i].d = pool + tomadas;
             for (int k = 0; k < listas[i].n; k++)
                 pool[tomadas++] = (int)(estado >> (8 * k + 8));
-            marca[i / 64] |= 1ull << (i % 64);      /* invariante: não vazia implica marcada */
+            marca[i / 64] |= 1ull << (i % 64);  /* invariante: não vazia implica marcada */
         }
     }
     esperado = contar_tudo();

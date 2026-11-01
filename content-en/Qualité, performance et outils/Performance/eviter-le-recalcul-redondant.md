@@ -83,30 +83,30 @@ def draw_frame(screen, scene, changed_zones):
 
 This is the **dirty rectangle** logic: the scene itself flags which zones have changed since the last render, and only those are redrawn. On a scene that's 90% static, this cuts the cost of each frame down to a fraction of a full render, for a visually identical result.
 
-## An example from a scraper: don't reconfirm what's already proven
+## An example from a catalog: don't reconfirm what's already proven
 
-A classifieds scraper compared two listings to tell whether they described the same vehicle (a duplicate) or two different vehicles. The full check opened each listing's detail page to compare a dozen characteristics (mileage, options, service history): a non-trivial network call and render time.
+A product-deduplication program compared two product records to tell whether they described the same item (a duplicate) or two different items. The full check loaded the detail file of each record to compare a dozen characteristics (dimensions, materials, revision history): a non-trivial disk read and processing time.
 
 ```python
-def are_potentially_duplicates(listing_a, listing_b):
-    # everything is already available on the search results cards
+def are_potentially_duplicates(record_a, record_b):
+    # everything is already available in the catalog index
     return (
-        listing_a.make == listing_b.make
-        and listing_a.model == listing_b.model
-        and abs(listing_a.price - listing_b.price) < 200
+        record_a.make == record_b.make
+        and record_a.model == record_b.model
+        and abs(record_a.price - record_b.price) < 200
     )
 
-def are_duplicates(listing_a, listing_b):
-    if not are_potentially_duplicates(listing_a, listing_b):
+def are_duplicates(record_a, record_b):
+    if not are_potentially_duplicates(record_a, record_b):
         return False    # already settled: different make/model, or price too far apart
-    detail_a = open_listing_page(listing_a)
-    detail_b = open_listing_page(listing_b)
+    detail_a = load_record_details(record_a)
+    detail_b = load_record_details(record_b)
     return compare_specifications(detail_a, detail_b)
 ```
 
-As soon as the "light" comparison (the fields already present on the results card) establishes that two listings are different, the question is **already resolved**: opening both detail pages to confirm it would only recompute, at a steep price, a result the cheap data already produced. The expensive check only runs in the ambiguous case, the one where the light data isn't enough to decide.
+As soon as the "light" comparison (the fields already present in the catalog index) establishes that two records are different, the question is **already resolved**: loading both detail files to confirm it would only recompute, at a steep price, a result the cheap data already produced. The expensive check only runs in the ambiguous case, the one where the light data isn't enough to decide.
 
-> Not to be confused with a **network latency** optimization. What's being avoided here is redundant CPU/logic work (recomputing an already-known answer), not an I/O delay. Deliberate pauses between requests (rate limiting, courtesy toward a remote server) or waiting for an interface animation don't fall under this principle: they remain necessary even when no recomputation is at stake, and removing them risks getting blocked, not just being slow. This is exactly the distinction drawn at the end of [Waiting Without Wasting Time](/?c=performance&p=attentes-et-temps-morts): a protective delay isn't waste to eliminate.
+> Not to be confused with an optimization of **I/O latency**. What's being avoided here is redundant CPU/logic work (recomputing an already-known answer), not an I/O delay. Deliberate pauses (rate limit of a called API, protective delay) or waiting for an interface animation don't fall under this principle: they remain necessary even when no recomputation is at stake, and removing them risks getting blocked, not just being slow. This is exactly the distinction drawn at the end of [Waiting Without Wasting Time](/?c=performance&p=attentes-et-temps-morts): a protective delay isn't waste to eliminate.
 
 ## Reusing the previous result: incremental computation with an identical result
 
@@ -328,7 +328,7 @@ int main(int argc, char **argv)
         }
     }
     expected = count_all();
-    for (int round = 0; round < 5; round++) {       /* 5 alternating rounds, the best counts */
+    for (int round = 0; round < 5; round++) {       /* 5 alternating rounds, best counts */
         double t0 = now();
         double elapsed;
 

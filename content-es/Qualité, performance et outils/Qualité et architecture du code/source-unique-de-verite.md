@@ -9,44 +9,44 @@ Cuando una misma familia de información existe en dos lugares diferentes, las d
 ## El caso más visible: varias estructuras paralelas
 
 ```python
-SITE_LABELS = {
-    "leboncoin": "Leboncoin",
-    "lacentrale": "La Centrale Pro",
-    "vivacar": "Vivacar",
+FORMAT_LABELS = {
+    "csv": "CSV",
+    "json": "JSON",
+    "xml": "XML",
 }
-SITE_SCRAPERS = {
-    "leboncoin": scrape_leboncoin,
-    "lacentrale": scrape_lacentrale,
-    "vivacar": scrape_vivacar,
+FORMAT_EXPORTERS = {
+    "csv": export_csv,
+    "json": export_json,
+    "xml": export_xml,
 }
-SITE_AD_SPEC_FETCHERS = {
-    "leboncoin": fetch_leboncoin_specs,
-    "lacentrale": fetch_lacentrale_specs,
-    "vivacar": fetch_vivacar_specs,
+FORMAT_VALIDATORS = {
+    "csv": validate_csv,
+    "json": validate_json,
+    "xml": validate_xml,
 }
 ```
 
-Tres diccionarios, mantenidos sincronizados manualmente por convención en lugar de por construcción: añadir un sitio supone recordar actualizar los tres. Olvidar uno no siempre produce un error inmediato: a veces solo un comportamiento silenciosamente incompleto para ese sitio, descubierto mucho más tarde.
+Tres diccionarios, mantenidos sincronizados manualmente por convención en lugar de por construcción: añadir un formato supone recordar actualizar los tres. Olvidar uno no siempre produce un error inmediato: a veces solo un comportamiento silenciosamente incompleto para ese formato, descubierto mucho más tarde.
 
 La consolidación en una sola fuente resuelve el problema por construcción:
 
 ```python
-SITE_REGISTRY = {
-    "leboncoin": {
-        "label": "Leboncoin",
-        "scraper": scrape_leboncoin,
-        "ad_spec_fetcher": fetch_leboncoin_specs,
+FORMAT_REGISTRY = {
+    "csv": {
+        "label": "CSV",
+        "exporter": export_csv,
+        "validator": validate_csv,
     },
-    "lacentrale": {
-        "label": "La Centrale Pro",
-        "scraper": scrape_lacentrale,
-        "ad_spec_fetcher": fetch_lacentrale_specs,
+    "json": {
+        "label": "JSON",
+        "exporter": export_json,
+        "validator": validate_json,
     },
     # ...
 }
 ```
 
-Añadir un sitio ahora es **una sola** entrada que añadir, con todo lo que le concierne en el mismo lugar: imposible sincronizar solo la mitad.
+Añadir un formato ahora es **una sola** entrada que añadir, con todo lo que le concierne en el mismo lugar: imposible sincronizar solo la mitad.
 
 ## El caso menos visible: la duplicación entre archivos que no se referencian entre sí
 

@@ -9,44 +9,44 @@ When the same family of information exists in two different places, the two copi
 ## The most visible case: several parallel structures
 
 ```python
-SITE_LABELS = {
-    "leboncoin": "Leboncoin",
-    "lacentrale": "La Centrale Pro",
-    "vivacar": "Vivacar",
+FORMAT_LABELS = {
+    "csv": "CSV",
+    "json": "JSON",
+    "xml": "XML",
 }
-SITE_SCRAPERS = {
-    "leboncoin": scrape_leboncoin,
-    "lacentrale": scrape_lacentrale,
-    "vivacar": scrape_vivacar,
+FORMAT_EXPORTERS = {
+    "csv": export_csv,
+    "json": export_json,
+    "xml": export_xml,
 }
-SITE_AD_SPEC_FETCHERS = {
-    "leboncoin": fetch_leboncoin_specs,
-    "lacentrale": fetch_lacentrale_specs,
-    "vivacar": fetch_vivacar_specs,
+FORMAT_VALIDATORS = {
+    "csv": validate_csv,
+    "json": validate_json,
+    "xml": validate_xml,
 }
 ```
 
-Three dictionaries, kept in sync manually by convention rather than by construction: adding a site means remembering to update all three. Forgetting one doesn't always produce an immediate error: sometimes just silently incomplete behavior for that site, discovered much later.
+Three dictionaries, kept in sync manually by convention rather than by construction: adding a format means remembering to update all three. Forgetting one doesn't always produce an immediate error: sometimes just silently incomplete behavior for that format, discovered much later.
 
 Consolidating into a single source fixes the problem by construction:
 
 ```python
-SITE_REGISTRY = {
-    "leboncoin": {
-        "label": "Leboncoin",
-        "scraper": scrape_leboncoin,
-        "ad_spec_fetcher": fetch_leboncoin_specs,
+FORMAT_REGISTRY = {
+    "csv": {
+        "label": "CSV",
+        "exporter": export_csv,
+        "validator": validate_csv,
     },
-    "lacentrale": {
-        "label": "La Centrale Pro",
-        "scraper": scrape_lacentrale,
-        "ad_spec_fetcher": fetch_lacentrale_specs,
+    "json": {
+        "label": "JSON",
+        "exporter": export_json,
+        "validator": validate_json,
     },
     # ...
 }
 ```
 
-Adding a site is now **a single** entry to add, with everything about it in one place: impossible to sync only half of it.
+Adding a format is now **a single** entry to add, with everything about it in one place: impossible to sync only half of it.
 
 ## The less visible case: duplication across files that never reference each other
 

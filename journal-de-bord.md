@@ -64,7 +64,7 @@ Vérifié : `struct*.json` identique à une régénération depuis le disque, au
 
 ## Chapitre « Les agents Azure Pipelines auto-hébergés » (2026-10-05)
 
-Rédigé sans le projet source (`scraping_infomediaires` n'est pas sur cette machine) : tout vient de la documentation Microsoft Learn (agent Windows, agents, enregistrement par PAT), et aucune commande Windows n'a été exécutée ; le chapitre le dit. Deux nuances de la documentation contredisent l'intuition du todo : (1) le PAT ne sert qu'à l'enregistrement (il faut aussi un jeton pour `config.cmd remove` en mode sans question), un PAT expiré n'arrête donc pas un agent déjà enregistré ; (2) Microsoft recommande **un seul agent par machine** : plusieurs agents sont possibles (un dossier, un nom et un dossier de travail par agent) mais pas conseillés pour des jobs lourds en disque.
+Rédigé sans le projet source (il n'est pas sur cette machine) : tout vient de la documentation Microsoft Learn (agent Windows, agents, enregistrement par PAT), et aucune commande Windows n'a été exécutée ; le chapitre le dit. Deux nuances de la documentation contredisent l'intuition du todo : (1) le PAT ne sert qu'à l'enregistrement (il faut aussi un jeton pour `config.cmd remove` en mode sans question), un PAT expiré n'arrête donc pas un agent déjà enregistré ; (2) Microsoft recommande **un seul agent par machine** : plusieurs agents sont possibles (un dossier, un nom et un dossier de travail par agent) mais pas conseillés pour des jobs lourds en disque.
 
 ## Chapitre « La stabilité d'un tri, les égalités et le bruit reproductible » (2026-10-05)
 
@@ -109,7 +109,7 @@ Le tas binaire passe avant les solveurs SAT dans Algorithmes, puisque VSIDS s'en
 
 ## Chapitre Windows : accès à distance (2026-09-27)
 
-Point 4 du todo (projet scraping_infomediaires) rédigé en nouveau chapitre d'Administration système, après celui des sessions. Les commandes Windows (`mstsc`, `tscon`, `query session`) n'ont pas pu être exécutées sur la machine de rédaction (Linux) : chaque syntaxe et chaque prérequis vient de la documentation Microsoft Learn, dont le fichier de commandes `tscon` de la page Azure DevOps sur les tests d'interface. La page de l'ancienne commande `shadow` (2008) affirme que la console ne peut pas être observée ; elle ne vaut plus pour `mstsc /shadow` (2012 R2 et après) et n'est citée que pour la règle des droits. Les libellés de la stratégie de groupe restent en anglais dans les versions espagnole et portugaise, faute de source pour leur traduction officielle ; le bloc `bat` est passé en `text`, `highlight.js` ne connaissant pas ce langage sur le site.
+Point 4 du todo (un projet de l'entreprise) rédigé en nouveau chapitre d'Administration système, après celui des sessions. Les commandes Windows (`mstsc`, `tscon`, `query session`) n'ont pas pu être exécutées sur la machine de rédaction (Linux) : chaque syntaxe et chaque prérequis vient de la documentation Microsoft Learn, dont le fichier de commandes `tscon` de la page Azure DevOps sur les tests d'interface. La page de l'ancienne commande `shadow` (2008) affirme que la console ne peut pas être observée ; elle ne vaut plus pour `mstsc /shadow` (2012 R2 et après) et n'est citée que pour la règle des droits. Les libellés de la stratégie de groupe restent en anglais dans les versions espagnole et portugaise, faute de source pour leur traduction officielle ; le bloc `bat` est passé en `text`, `highlight.js` ne connaissant pas ce langage sur le site.
 
 ## Chapitre Mesurer avant d'optimiser complété depuis la recherche rush01 (2026-09-27)
 

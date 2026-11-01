@@ -85,30 +85,30 @@ def dessiner_frame(ecran, scene, zones_modifiees):
 
 C'est la logique du **dirty rectangle** (rectangle sale) : la scène signale elle-même quelles zones ont changé depuis le dernier rendu, et seules celles-là sont redessinées. Sur un décor à 90% statique, ça ramène le coût de chaque frame à une fraction de celui d'un rendu complet, pour un résultat visuellement identique.
 
-## Un exemple tiré d'un scraper : ne pas confirmer ce qui est déjà prouvé
+## Un exemple tiré d'un catalogue : ne pas confirmer ce qui est déjà prouvé
 
-Un scraper de petites annonces comparait deux annonces pour savoir si elles décrivaient le même véhicule (doublon) ou deux véhicules différents. La vérification complète ouvrait la page détaillée de chaque annonce pour comparer une dizaine de caractéristiques (kilométrage, options, historique d'entretien) : un appel réseau et un temps de rendu non négligeables.
+Un programme de déduplication de fiches produits comparait deux fiches pour savoir si elles décrivaient le même article (doublon) ou deux articles différents. La vérification complète chargeait le dossier détaillé de chaque fiche pour comparer une dizaine de caractéristiques (dimensions, matériaux, historique des révisions) : une lecture sur disque et un temps de traitement non négligeables.
 
 ```python
-def sont_potentiellement_dupliquees(annonce_a, annonce_b):
-    # tout est deja disponible sur les cartes de la page de resultats
+def sont_potentiellement_dupliquees(fiche_a, fiche_b):
+    # tout est deja disponible dans l'index du catalogue
     return (
-        annonce_a.marque == annonce_b.marque
-        and annonce_a.modele == annonce_b.modele
-        and abs(annonce_a.prix - annonce_b.prix) < 200
+        fiche_a.marque == fiche_b.marque
+        and fiche_a.modele == fiche_b.modele
+        and abs(fiche_a.prix - fiche_b.prix) < 200
     )
 
-def sont_dupliquees(annonce_a, annonce_b):
-    if not sont_potentiellement_dupliquees(annonce_a, annonce_b):
+def sont_dupliquees(fiche_a, fiche_b):
+    if not sont_potentiellement_dupliquees(fiche_a, fiche_b):
         return False    # deja tranche : marque ou modele different, ou prix trop eloigne
-    detail_a = ouvrir_page_annonce(annonce_a)
-    detail_b = ouvrir_page_annonce(annonce_b)
+    detail_a = charger_dossier_fiche(fiche_a)
+    detail_b = charger_dossier_fiche(fiche_b)
     return comparer_specifications(detail_a, detail_b)
 ```
 
-Dès que la comparaison "légère" (les champs déjà présents sur la carte de résultats) établit que deux annonces sont différentes, la question est **déjà résolue** : ouvrir les deux pages détaillées pour le confirmer ne ferait que recalculer, au prix fort, un résultat que la donnée bon marché a déjà produit. La vérification coûteuse ne s'exécute que dans le cas ambigu, celui où la donnée légère ne suffit pas à trancher.
+Dès que la comparaison "légère" (les champs déjà présents dans l'index du catalogue) établit que deux fiches sont différentes, la question est **déjà résolue** : charger les deux dossiers détaillés pour le confirmer ne ferait que recalculer, au prix fort, un résultat que la donnée bon marché a déjà produit. La vérification coûteuse ne s'exécute que dans le cas ambigu, celui où la donnée légère ne suffit pas à trancher.
 
-> À ne pas confondre avec une optimisation de la **latence réseau**. Ici, ce qu'on évite est un travail redondant côté CPU/logique (recalculer une réponse déjà connue), pas un délai d'E/S. Les pauses volontaires entre requêtes (limite de débit, politesse envers un serveur distant) ou l'attente d'une animation d'interface ne relèvent pas de ce principe : elles restent nécessaires même quand aucun recalcul n'est en jeu, et les supprimer expose à un blocage, pas à une simple lenteur. C'est exactement la distinction posée en fin de [Attendre sans perdre de temps](/?c=performance&p=attentes-et-temps-morts) : un délai de protection n'est pas un gaspillage à éliminer.
+> À ne pas confondre avec une optimisation de la **latence d'entrée/sortie**. Ici, ce qu'on évite est un travail redondant côté CPU/logique (recalculer une réponse déjà connue), pas un délai d'E/S. Les pauses volontaires (limite de débit d'une API appelée, délai de protection) ou l'attente d'une animation d'interface ne relèvent pas de ce principe : elles restent nécessaires même quand aucun recalcul n'est en jeu, et les supprimer expose à un blocage, pas à une simple lenteur. C'est exactement la distinction posée en fin de [Attendre sans perdre de temps](/?c=performance&p=attentes-et-temps-morts) : un délai de protection n'est pas un gaspillage à éliminer.
 
 ## Reprendre le résultat précédent : le calcul incrémental à résultat identique
 
@@ -181,7 +181,7 @@ int main(void)
             int a, b;
 
             if (!(dom[i] >> v & 1) || (dom[i] & (dom[i] - 1)) == 0)
-                continue;                       /* valeur absente, ou la dernière de la case */
+                continue;                       /* valeur absente, ou dernière de la case */
             dom[i] &= ~(1ull << v);
             etapes++;
             for (int k = 0; k < 64; k++)
@@ -262,7 +262,7 @@ Exemple tiré du même solveur : à chaque nettoyage des clauses apprises, il fa
 typedef struct {
     int *d;                         /* les entrées de la liste */
     int n, cap;
-    char reserve[16];               /* la place d'une deuxième liste : 32 octets par en-tête */
+    char reserve[16];               /* place d'une deuxième liste : 32 octets par en-tête */
 } liste;
 
 static liste *listes;
@@ -318,7 +318,7 @@ int main(int argc, char **argv)
     if (!pool || !listes || !marque)
         return 1;
     for (unsigned i = 0; i < N; i++) {
-        etat ^= etat << 13;                         /* xorshift : un tirage pseudo-aléatoire */
+        etat ^= etat << 13;                         /* xorshift : tirage pseudo-aléatoire */
         etat ^= etat >> 7;
         etat ^= etat << 17;
         if (etat % 1000 < pour_mille) {             /* liste non vide, de 1 à 3 entrées */
@@ -326,7 +326,7 @@ int main(int argc, char **argv)
             listes[i].d = pool + pris;
             for (int k = 0; k < listes[i].n; k++)
                 pool[pris++] = (int)(etat >> (8 * k + 8));
-            marque[i / 64] |= 1ull << (i % 64);     /* invariant : non vide implique marquée */
+            marque[i / 64] |= 1ull << (i % 64);     /* invariant : non vide donc marquée */
         }
     }
     attendu = compter_tout();

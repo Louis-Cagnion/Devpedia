@@ -26,7 +26,7 @@ The model cannot execute this function on its own: it merely **determines** that
 { "call": "get_weather", "arguments": { "city": "Montpellier" } }
 ```
 
-It is the code surrounding the model that receives this decision, actually executes the corresponding function (Python, the [HTTP](/?c=infrastructure&p=api-et-http) call, the [SQL](/?c=domain-specific-languages-dsl&p=sql) query...), and returns its result to the model so that it can continue.
+It is the code surrounding the model that receives this decision, actually executes the corresponding function ([Python](/?c=langages-de-programmation&s=python&p=python), the [HTTP](/?c=infrastructure&p=api-et-http) call, the [SQL](/?c=domain-specific-languages-dsl&p=sql) query...), and returns its result to the model so that it can continue.
 
 > **Pitfall:** blindly trusting the arguments produced by the model before passing them to the actual function: the model never truly “knows” what a function does beyond its textual description; an imprecise or ambiguous description results in calls with the wrong arguments just as surely as a poorly documented function misleads a human developer who reads only its signature.
 >
@@ -47,7 +47,7 @@ A classic typed language validates a call described in JSON Schema with its own 
 
 ## A free-form parameter rather than a fixed value: where does the variation come from?
 
-The `city` parameter in the previous example takes values only from a limited and predictable set (city names). There is no requirement for a parameter to be so restricted: it can just as easily be **free-form text written by the model itself**, such as a shell command, an SQL query, or a code snippet:
+The `city` parameter in the previous example takes values only from a limited and predictable set (city names). There is no requirement for a parameter to be so restricted: it can just as easily be **free-form text written by the model itself**, such as a shell command, an [SQL](/?c=domain-specific-languages-dsl&p=sql) query, or a code snippet:
 
 ```json
 {
@@ -85,7 +85,7 @@ Simply having the tools available (as described in the previous section) is not 
 4. Back to step 1, with this new piece of context
 ```
 
-This pattern, often called *ReAct* (*Reasoning + Acting*), enables multi-step sequences: searching for information, using it to refine a second search, calculating an intermediate result, and then constructing the final response, with each step relying on the actual result of the previous one rather than on an assumption made by the model.
+This pattern, often called [*ReAct*](https://arxiv.org/abs/2210.03629) (*Reasoning + Acting*), enables multi-step sequences: searching for information, using it to refine a second search, calculating an intermediate result, and then constructing the final response, with each step relying on the actual result of the previous one rather than on an assumption made by the model.
 
 ## Risks specific to a loop controlled by a non-deterministic model
 
@@ -137,7 +137,7 @@ Whichever pattern is used, every sub-agent starts by default with an **empty** c
 The four patterns above all assume a CALLING agent that breaks down a task and starts sub-agents with an empty context (see the remark just above the table). Another case exists: two sessions already running, each with its own complete history (and potentially its own human in the conversation), with no parent/child relationship between them.
 
 ```text
-Session A ("site-web" repo)                 Session B ("scraper" repo, already running)
+Session A ("site-web" repo)                 Session B ("backend" repo, already running)
      |                                                |
      | 1. checks a REGISTRY of active sessions        |
      |------------------------------------------------>

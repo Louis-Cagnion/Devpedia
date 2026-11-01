@@ -26,7 +26,7 @@ El modelo no puede ejecutar esta función él mismo; solo **decide** que sería 
 { "llamada": "obtener_tiempo", "argumentos": { "ciudad": "Montpellier" } }
 ```
 
-Es el código que rodea al modelo el que recibe esta decisión, ejecuta realmente la función correspondiente (Python, la llamada [HTTP](/?c=infrastructure&p=api-et-http), la consulta [SQL](/?c=domain-specific-languages-dsl&p=sql)...), y devuelve su resultado al modelo para que continúe.
+Es el código que rodea al modelo el que recibe esta decisión, ejecuta realmente la función correspondiente ([Python](/?c=langages-de-programmation&s=python&p=python), la llamada [HTTP](/?c=infrastructure&p=api-et-http), la consulta [SQL](/?c=domain-specific-languages-dsl&p=sql)...), y devuelve su resultado al modelo para que continúe.
 
 > **Trampa:** confiar ciegamente en los argumentos producidos por el modelo antes de pasarlos a la función real: el modelo nunca "sabe" realmente qué hace una función más allá de su descripción de texto, una descripción imprecisa o ambigua produce llamadas con los argumentos equivocados tan seguro como una función mal documentada engaña a un desarrollador humano que solo leyera su firma.
 >
@@ -47,7 +47,7 @@ Un lenguaje tipado clásico valida una llamada descrita en JSON Schema con sus p
 
 ## Un parámetro libre en lugar de un valor fijo: de dónde viene la variación
 
-El parámetro `ciudad` del ejemplo anterior solo toma sus valores de un conjunto limitado y previsible (nombres de ciudades). Nada obliga a que un parámetro esté tan limitado: puede igualmente ser un **texto libre que el propio modelo redacta**, como un comando shell, una consulta SQL o un fragmento de código:
+El parámetro `ciudad` del ejemplo anterior solo toma sus valores de un conjunto limitado y previsible (nombres de ciudades). Nada obliga a que un parámetro esté tan limitado: puede igualmente ser un **texto libre que el propio modelo redacta**, como un comando shell, una consulta [SQL](/?c=domain-specific-languages-dsl&p=sql) o un fragmento de código:
 
 ```json
 {
@@ -137,7 +137,7 @@ Sea cual sea el patrón elegido, cada subagente arranca por defecto con un conte
 Los cuatro patrones anteriores suponen todos un agente LLAMADOR que descompone una tarea e inicia subagentes con contexto vacío (ver la observación justo encima de la tabla). Existe otro caso: dos sesiones ya en curso, cada una con su propio historial completo (y potencialmente su propio humano en la conversación), sin relación padre/hijo entre ellas.
 
 ```text
-Sesión A (repo "site-web")                  Sesión B (repo "scraper", ya en curso)
+Sesión A (repo "site-web")                  Sesión B (repo "backend", ya en curso)
      |                                                |
      | 1. consulta un REGISTRO de sesiones activas    |
      |------------------------------------------------>

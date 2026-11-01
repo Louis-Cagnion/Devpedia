@@ -9,9 +9,9 @@ Una señal clásica de código que se volverá tedioso de mantener: la misma ins
 ## El síntoma
 
 ```python
-parser.add_argument("--profile-dir", default=str(Path.home() / ".scraper_profile"))
-parser.add_argument("--headless", action="store_true")
-parser.add_argument("--site", choices=["leboncoin", "lacentrale", "vivacar", "zoomcar"])
+parser.add_argument("--profile-dir", default=str(Path.home() / ".rapport_profil"))
+parser.add_argument("--verbose", action="store_true")
+parser.add_argument("--format", choices=["csv", "json", "xml", "html"])
 parser.add_argument("--output", default="rapports/rapport.txt")
 # ... otras diez, cada una en su propia llamada
 ```
@@ -24,9 +24,9 @@ El principio: describir cada elemento una sola vez, en una estructura de datos (
 
 ```python
 CLI_ARGUMENTS = [
-    {"flag": "--profile-dir", "default": str(Path.home() / ".scraper_profile")},
-    {"flag": "--headless", "action": "store_true"},
-    {"flag": "--site", "choices": ["leboncoin", "lacentrale", "vivacar", "zoomcar"]},
+    {"flag": "--profile-dir", "default": str(Path.home() / ".rapport_profil")},
+    {"flag": "--verbose", "action": "store_true"},
+    {"flag": "--format", "choices": ["csv", "json", "xml", "html"]},
     {"flag": "--output", "default": "rapports/rapport.txt"},
 ]
 
@@ -42,27 +42,27 @@ Añadir una opción se convierte en una entrada en una lista, no en una nueva l�
 La misma idea se aplica cuando la repetición recae sobre una condición en lugar de una llamada a función:
 
 ```python
-# Antes: una rama por caso, a mantener sincronizada con la lista de sitios
-if site == "leboncoin":
-    scraper = scrape_leboncoin
-elif site == "lacentrale":
-    scraper = scrape_lacentrale
-elif site == "vivacar":
-    scraper = scrape_vivacar
-elif site == "zoomcar":
-    scraper = scrape_zoomcar
+# Antes: una rama por caso, a mantener sincronizada con la lista de formatos
+if format_name == "csv":
+    exporter = export_csv
+elif format_name == "json":
+    exporter = export_json
+elif format_name == "xml":
+    exporter = export_xml
+elif format_name == "html":
+    exporter = export_html
 
 # Después: un diccionario hace de tabla de dispatch
-SITE_SCRAPERS = {
-    "leboncoin": scrape_leboncoin,
-    "lacentrale": scrape_lacentrale,
-    "vivacar": scrape_vivacar,
-    "zoomcar": scrape_zoomcar,
+FORMAT_EXPORTERS = {
+    "csv": export_csv,
+    "json": export_json,
+    "xml": export_xml,
+    "html": export_html,
 }
-scraper = SITE_SCRAPERS[site]
+exporter = FORMAT_EXPORTERS[format_name]
 ```
 
-El diccionario cumple exactamente el mismo rol que la cadena de `if`/`elif`, pero añadir un sitio equivale a añadir una entrada, sin tocar la lógica que selecciona el scraper correcto.
+El diccionario cumple exactamente el mismo rol que la cadena de `if`/`elif`, pero añadir un formato equivale a añadir una entrada, sin tocar la lógica que selecciona el exportador correcto.
 
 ## Dónde detenerse
 

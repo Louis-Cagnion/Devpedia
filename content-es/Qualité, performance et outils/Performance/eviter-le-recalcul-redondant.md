@@ -85,30 +85,30 @@ def dibujar_frame(pantalla, escena, zonas_modificadas):
 
 Es la lógica del **dirty rectangle** (rectángulo sucio): la escena señala ella misma qué zonas han cambiado desde el último renderizado, y solo esas se redibujan. En un decorado 90 % estático, esto reduce el coste de cada frame a una fracción del de un renderizado completo, para un resultado visualmente idéntico.
 
-## Un ejemplo tomado de un scraper: no confirmar lo que ya está probado
+## Un ejemplo tomado de un catálogo: no confirmar lo que ya está probado
 
-Un scraper de anuncios clasificados comparaba dos anuncios para saber si describían el mismo vehículo (duplicado) o dos vehículos diferentes. La verificación completa abría la página detallada de cada anuncio para comparar una decena de características (kilometraje, opciones, historial de mantenimiento): una llamada de red y un tiempo de renderizado nada desdeñables.
+Un programa de deduplicación de fichas de producto comparaba dos fichas para saber si describían el mismo artículo (duplicado) o dos artículos diferentes. La verificación completa cargaba el expediente detallado de cada ficha para comparar una decena de características (dimensiones, materiales, historial de revisiones): una lectura en disco y un tiempo de procesamiento nada desdeñables.
 
 ```python
-def son_potencialmente_duplicados(anuncio_a, anuncio_b):
-    # todo ya esta disponible en las tarjetas de la pagina de resultados
+def son_potencialmente_duplicados(ficha_a, ficha_b):
+    # todo ya está disponible en el índice del catálogo
     return (
-        anuncio_a.marca == anuncio_b.marca
-        and anuncio_a.modelo == anuncio_b.modelo
-        and abs(anuncio_a.precio - anuncio_b.precio) < 200
+        ficha_a.marca == ficha_b.marca
+        and ficha_a.modelo == ficha_b.modelo
+        and abs(ficha_a.precio - ficha_b.precio) < 200
     )
 
-def son_duplicados(anuncio_a, anuncio_b):
-    if not son_potencialmente_duplicados(anuncio_a, anuncio_b):
+def son_duplicados(ficha_a, ficha_b):
+    if not son_potencialmente_duplicados(ficha_a, ficha_b):
         return False    # ya decidido: marca o modelo diferente, o precio demasiado distinto
-    detalle_a = abrir_pagina_anuncio(anuncio_a)
-    detalle_b = abrir_pagina_anuncio(anuncio_b)
+    detalle_a = cargar_detalle_ficha(ficha_a)
+    detalle_b = cargar_detalle_ficha(ficha_b)
     return comparar_especificaciones(detalle_a, detalle_b)
 ```
 
-En cuanto la comparación "ligera" (los campos ya presentes en la tarjeta de resultados) establece que dos anuncios son diferentes, la pregunta ya está **resuelta**: abrir las dos páginas detalladas para confirmarlo solo recalcularía, a precio alto, un resultado que el dato barato ya produjo. La verificación costosa solo se ejecuta en el caso ambiguo, aquel donde el dato ligero no basta para decidir.
+En cuanto la comparación "ligera" (los campos ya presentes en el índice del catálogo) establece que dos fichas son diferentes, la pregunta ya está **resuelta**: cargar los dos expedientes detallados para confirmarlo solo recalcularía, a precio alto, un resultado que el dato barato ya produjo. La verificación costosa solo se ejecuta en el caso ambiguo, aquel donde el dato ligero no basta para decidir.
 
-> No confundir con una optimización de la **latencia de red**. Aquí, lo que se evita es un trabajo redundante del lado CPU/lógica (recalcular una respuesta ya conocida), no un retraso de E/S. Las pausas voluntarias entre peticiones (límite de tasa, cortesía hacia un servidor remoto) o la espera de una animación de interfaz no forman parte de este principio: siguen siendo necesarias incluso cuando no hay ningún recálculo en juego, y eliminarlas expone a un bloqueo, no a una simple lentitud. Es exactamente la distinción planteada al final de [Esperar sin perder tiempo](/?c=performance&p=attentes-et-temps-morts): un retraso de protección no es un desperdicio a eliminar.
+> No confundir con una optimización de la **latencia de entrada/salida**. Aquí, lo que se evita es un trabajo redundante del lado CPU/lógica (recalcular una respuesta ya conocida), no un retraso de E/S. Las pausas voluntarias (límite de tasa de una API invocada, retraso de protección) o la espera de una animación de interfaz no forman parte de este principio: siguen siendo necesarias incluso cuando no hay ningún recálculo en juego, y eliminarlas expone a un bloqueo, no a una simple lentitud. Es exactamente la distinción planteada al final de [Esperar sin perder tiempo](/?c=performance&p=attentes-et-temps-morts): un retraso de protección no es un desperdicio a eliminar.
 
 ## Reutilizar el resultado anterior: el cálculo incremental con resultado idéntico
 
@@ -125,7 +125,8 @@ static long busquedas, valores_visitados;       /* contadores de trabajo */
 
 /* Empareja las casillas partiendo de poseedor: las parejas aún válidas se conservan,
    solo las casillas sin valor buscan un camino aumentante. */
-static int emparejar_desde(int n, const uint64_t *dominio, int *poseedor, uint64_t *conj_fallo)
+static int emparejar_desde(int n, const uint64_t *dominio, int *poseedor,
+                           uint64_t *conj_fallo)
 {
     uint64_t conservadas = 0;                   /* casillas cuya pareja se conserva */
     uint64_t vistas;
@@ -257,7 +258,7 @@ Ejemplo tomado del mismo solucionador: en cada limpieza de las cláusulas aprend
 #include <stdlib.h>
 #include <time.h>
 
-#define N 13600000u                 /* número de listas, como los literales del solucionador */
+#define N 13600000u                 /* número de listas, como literales del solucionador */
 
 typedef struct {
     int *d;                         /* las entradas de la lista */
@@ -434,7 +435,9 @@ def valor_con_cache(clave):
         return recalcular_y_guardar(clave)
 
     if entrada.esta_obsoleta() and bloqueo_recalculo.acquire(blocking=False):
-        threading.Thread(target=lambda: recalcular_y_guardar(clave, bloqueo_recalculo)).start()
+        threading.Thread(
+            target=lambda: recalcular_y_guardar(clave, bloqueo_recalculo)
+        ).start()
 
     return entrada.valor   # responde inmediatamente, obsoleto o no
 ```
@@ -456,7 +459,7 @@ Por defecto, un servidor PHP mantiene en memoria todo lo que un script produce c
 ini_set('output_buffering', 'off');   // desactiva el almacenamiento en búfer de la salida
 ini_set('implicit_flush', true);      // fuerza el envio inmediato tras cada echo
 while (ob_get_level() > 0) {
-    ob_end_flush();                   // vacía también cualquier búfer ya abierto por PHP mismo
+    ob_end_flush();                   // vacía también todo búfer ya abierto por PHP mismo
 }
 
 foreach ($filasAImportar as $fila) {

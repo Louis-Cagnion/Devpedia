@@ -137,14 +137,14 @@ Quel que soit le patron retenu, chaque sous-agent démarre par défaut avec un c
 Les quatre patrons ci-dessus supposent tous un agent APPELANT qui décompose une tâche et démarre des sous-agents à contexte vide (voir la remarque juste au-dessus du tableau). Un autre cas existe : deux sessions déjà en cours, chacune avec son propre historique complet (et potentiellement son propre humain en conversation), sans lien parent/enfant entre elles.
 
 ```text
-Session A (depot "site-web")               Session B (depot "scraper", deja en cours)
+Session A (dépôt "site-web")               Session B (dépôt "backend", déjà en cours)
      |                                                |
      | 1. consulte un REGISTRE des sessions actives   |
      |------------------------------------------------>
-     | 2. envoie un message asynchrone (boite aux lettres)
+     | 2. envoie un message asynchrone (boîte aux lettres)
      |------------------------------------------------>
-     |                                                | 3. traite au PROCHAIN tour d'outil de B, pas immediatement
-     |                                                | 4. B repond, ou continue son propre travail
+     |                                                | 3. traite au PROCHAIN tour d'outil de B, pas immédiatement
+     |                                                | 4. B répond, ou continue son propre travail
 ```
 
 Ce patron repose sur deux mécanismes distincts : la **découverte** (un registre recense les sessions actives, pour que l'une puisse en trouver une autre sans configuration préalable) et le **message asynchrone** (contrairement à un appel d'outil classique, bloquant, il est déposé et traité au prochain tour de l'agent destinataire, sans garantie de délai ni de réponse). Un mécanisme annexe complète souvent ce patron : la **souscription** (« préviens-moi quand tu es de nouveau inactif »), qui évite d'avoir à interroger en boucle (*polling*) si un pair a terminé sa tâche.
