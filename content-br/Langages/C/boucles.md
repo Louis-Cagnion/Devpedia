@@ -135,7 +135,7 @@ Lê-se como uma cadeia `if`/`else if`: `&&` tem prioridade maior que `||`, entã
 
 | | |
 |---|---|
-| **Para lembrar** | `while` testa antes, `do while` testa depois (pelo menos uma execução), `for` agrupa inicialização/condição/incremento. Sem `foreach` nativo: um array se percorre por índice. `&&`/`||` fazem curto-circuito no segundo operando, mas sempre retornam `0`/`1`, nunca um operando como em Python. |
-| **Ferramentas utilizáveis** | `break` (para o laço), `continue` (passa para a próxima volta). Encadear `&&`/`||` para combinar um teste e uma chamada condicional em uma única expressão. |
-| **Armadilhas a evitar** | `break` só sai do laço mais próximo: uma variável de controle é necessária para sair de vários laços aninhados. Uma cadeia `&&`/`||` supõe que cada função chamada retorna `1` em caso de sucesso; uma função que retorna `0` em caso de sucesso (convenção inversa) a quebra silenciosamente. |
-| **Boas práticas** | Sempre transmitir explicitamente o tamanho de um array a uma função que o percorre, em vez de supor que pode ser deduzido. Reservar o encadeamento `&&`/`||` para funções que seguem a convenção "1 = sucesso"; usar um `if` explícito caso contrário. |
+| **Para lembrar** | `while` testa antes, `do while` testa depois (pelo menos uma execução), `for` agrupa inicialização/condição/incremento. Sem `foreach` nativo: um array se percorre por índice. `&&`/`\|\|` fazem curto-circuito no segundo operando, mas sempre retornam `0`/`1`, nunca um operando como em Python. |
+| **Ferramentas utilizáveis** | `break` (para o laço), `continue` (passa para a próxima volta). Encadear `&&`/`\|\|` para combinar um teste e uma chamada condicional em uma única expressão. |
+| **Armadilhas a evitar** | `break` só sai do laço mais próximo: uma variável de controle é necessária para sair de vários laços aninhados. Uma cadeia `&&`/`\|\|` supõe que cada função chamada retorna `1` em caso de sucesso; uma função que retorna `0` em caso de sucesso (convenção inversa) a quebra silenciosamente. |
+| **Boas práticas** | Sempre transmitir explicitamente o tamanho de um array a uma função que o percorre, em vez de supor que pode ser deduzido. Reservar o encadeamento `&&`/`\|\|` para funções que seguem a convenção "1 = sucesso"; usar um `if` explícito caso contrário. |

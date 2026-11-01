@@ -33,7 +33,7 @@ Property: "sorting twice gives the same result as sorting once"
   For any list L: sort(sort(L)) == sort(L)
 ```
 
-A property-based testing tool (for example [fast-check](https://fast-check.dev) in [JavaScript](/?c=langages&s=javascript&p=javascript), [Hypothesis](https://hypothesis.readthedocs.io) in [Python](/?c=langages&s=python&p=python), or [QuickCheck](https://hackage.haskell.org/package/QuickCheck), the field's original tool in Haskell) then automatically generates hundreds of random inputs meeting the given constraints, and checks the property on each.
+A property-based testing tool (for example [fast-check](https://fast-check.dev) in [JavaScript](/?c=langages&s=javascript&p=javascript), [Hypothesis](https://hypothesis.readthedocs.io) in [Python](/?c=langages&s=python&p=python), or [QuickCheck](https://hackage.haskell.org/package/QuickCheck), the original tool for this technique, born in Haskell) then automatically generates hundreds of random inputs meeting the given constraints, and checks the property on each.
 
 ```text
 Property-based test for "sorting doesn't change the size":
@@ -126,6 +126,6 @@ print(f"{disagreements} disagreement(s) out of 500 generated inputs")
 | | |
 |---|---|
 | **To remember** | Property-based testing describes a property valid for any input, rather than checking hand-picked examples; a tool automatically generates hundreds of inputs trying to disprove it, and shrinks any counter-example found toward the simplest possible case. Differential testing, a neighboring case, instead compares the result of a rewrite to that of the old implementation on many generated inputs. |
-| **Usable tools** | fast-check (JavaScript), Hypothesis (Python), QuickCheck (Haskell, the field's original tool); differential testing: no dedicated tool required, a comparison script is enough. |
+| **Usable tools** | fast-check (JavaScript), Hypothesis (Python), QuickCheck (Haskell, the original tool for this technique); differential testing: no dedicated tool required, a comparison script is enough. |
 | **Pitfalls to avoid** | Forcing a property onto a behavior with no simple general rule; believing that agreement between two implementations in differential testing proves the absence of a bug shared by both. |
 | **Best practices** | Reserve property-based testing for behaviors with a clear general rule (mathematical functions, sorting, parsers); keep classic tests for business logic rich in special cases; in differential testing, also generate edge cases and combine with a test against the specification when one exists. |

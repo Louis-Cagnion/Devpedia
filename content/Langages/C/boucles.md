@@ -135,7 +135,7 @@ Se lit comme une chaîne `if`/`else if` : `&&` a une priorité plus forte que `|
 
 | | |
 |---|---|
-| **À retenir** | `while` teste avant, `do while` teste après (au moins une exécution), `for` regroupe initialisation/condition/incrémentation. Pas de `foreach` natif : un tableau se parcourt par index. `&&`/`||` court-circuitent leur second opérande, mais renvoient toujours `0`/`1`, jamais un opérande comme en Python. |
-| **Outils utilisables** | `break` (arrête la boucle), `continue` (passe au tour suivant). Chaîner `&&`/`||` pour combiner un test et un appel conditionnel en une expression. |
-| **Pièges à éviter** | `break` ne sort que de la boucle la plus proche : une variable de contrôle est nécessaire pour sortir de plusieurs boucles imbriquées. Une chaîne `&&`/`||` suppose que chaque fonction appelée renvoie `1` en cas de succès ; une fonction qui renvoie `0` en cas de succès (convention inverse) la casse silencieusement. |
-| **Bonnes pratiques** | Toujours transmettre explicitement la taille d'un tableau à une fonction qui le parcourt, plutôt que de supposer qu'elle peut être déduite. Réserver le chaînage `&&`/`||` à des fonctions qui suivent la convention "1 = succès", garder un `if` explicite sinon. |
+| **À retenir** | `while` teste avant, `do while` teste après (au moins une exécution), `for` regroupe initialisation/condition/incrémentation. Pas de `foreach` natif : un tableau se parcourt par index. `&&`/`\|\|` court-circuitent leur second opérande, mais renvoient toujours `0`/`1`, jamais un opérande comme en Python. |
+| **Outils utilisables** | `break` (arrête la boucle), `continue` (passe au tour suivant). Chaîner `&&`/`\|\|` pour combiner un test et un appel conditionnel en une expression. |
+| **Pièges à éviter** | `break` ne sort que de la boucle la plus proche : une variable de contrôle est nécessaire pour sortir de plusieurs boucles imbriquées. Une chaîne `&&`/`\|\|` suppose que chaque fonction appelée renvoie `1` en cas de succès ; une fonction qui renvoie `0` en cas de succès (convention inverse) la casse silencieusement. |
+| **Bonnes pratiques** | Toujours transmettre explicitement la taille d'un tableau à une fonction qui le parcourt, plutôt que de supposer qu'elle peut être déduite. Réserver le chaînage `&&`/`\|\|` à des fonctions qui suivent la convention "1 = succès", garder un `if` explicite sinon. |

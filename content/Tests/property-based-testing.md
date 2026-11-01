@@ -33,7 +33,7 @@ Propriété : "trier deux fois donne le même résultat que trier une fois"
   Pour toute liste L : trier(trier(L)) == trier(L)
 ```
 
-Un outil de property-based testing (par exemple [fast-check](https://fast-check.dev) en [JavaScript](/?c=langages&s=javascript&p=javascript), [Hypothesis](https://hypothesis.readthedocs.io) en [Python](/?c=langages&s=python&p=python), ou [QuickCheck](https://hackage.haskell.org/package/QuickCheck), l'outil historique du domaine en Haskell) génère ensuite automatiquement des centaines d'entrées aléatoires respectant les contraintes données, et vérifie la propriété sur chacune.
+Un outil de property-based testing (par exemple [fast-check](https://fast-check.dev) en [JavaScript](/?c=langages&s=javascript&p=javascript), [Hypothesis](https://hypothesis.readthedocs.io) en [Python](/?c=langages&s=python&p=python), ou [QuickCheck](https://hackage.haskell.org/package/QuickCheck), l'outil historique de cette technique, né en Haskell) génère ensuite automatiquement des centaines d'entrées aléatoires respectant les contraintes données, et vérifie la propriété sur chacune.
 
 ```text
 Test property-based pour "trier ne change pas la taille" :
@@ -126,6 +126,6 @@ print(f"{desaccords} désaccord(s) sur 500 entrées générées")
 | | |
 |---|---|
 | **À retenir** | Le property-based testing décrit une propriété valable pour n'importe quelle entrée, plutôt que de vérifier des exemples choisis à la main ; un outil génère automatiquement des centaines d'entrées pour tenter de la contredire, et réduit (shrinking) tout contre-exemple trouvé vers le cas le plus simple possible. Le test différentiel, un cas voisin, compare plutôt le résultat d'une réécriture à celui de l'ancienne implémentation sur beaucoup d'entrées générées. |
-| **Outils utilisables** | fast-check (JavaScript), Hypothesis (Python), QuickCheck (Haskell, l'outil historique du domaine) ; test différentiel : aucun outil dédié requis, un script de comparaison suffit. |
+| **Outils utilisables** | fast-check (JavaScript), Hypothesis (Python), QuickCheck (Haskell, l'outil historique de cette technique) ; test différentiel : aucun outil dédié requis, un script de comparaison suffit. |
 | **Pièges à éviter** | Forcer une propriété sur un comportement qui n'a pas de règle générale simple ; croire qu'un accord entre deux implémentations en test différentiel prouve l'absence de bug partagé par les deux. |
 | **Bonnes pratiques** | Réserver le property-based testing aux comportements avec une règle générale claire (fonctions mathématiques, tri, parseurs) ; garder des tests classiques pour la logique métier riche en cas particuliers ; en test différentiel, générer aussi des cas limites et combiner avec un test contre la spécification quand elle existe. |

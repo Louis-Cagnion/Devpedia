@@ -33,7 +33,7 @@ Propiedad: "ordenar dos veces da el mismo resultado que ordenar una vez"
   Para toda lista L: ordenar(ordenar(L)) == ordenar(L)
 ```
 
-Una herramienta de property-based testing (por ejemplo [fast-check](https://fast-check.dev) en [JavaScript](/?c=langages&s=javascript&p=javascript), [Hypothesis](https://hypothesis.readthedocs.io) en [Python](/?c=langages&s=python&p=python), o [QuickCheck](https://hackage.haskell.org/package/QuickCheck), la herramienta histórica del campo en Haskell) genera después automáticamente cientos de entradas aleatorias que cumplen las restricciones dadas, y verifica la propiedad en cada una.
+Una herramienta de property-based testing (por ejemplo [fast-check](https://fast-check.dev) en [JavaScript](/?c=langages&s=javascript&p=javascript), [Hypothesis](https://hypothesis.readthedocs.io) en [Python](/?c=langages&s=python&p=python), o [QuickCheck](https://hackage.haskell.org/package/QuickCheck), la herramienta histórica de esta técnica, nacida en Haskell) genera después automáticamente cientos de entradas aleatorias que cumplen las restricciones dadas, y verifica la propiedad en cada una.
 
 ```text
 Prueba property-based para "ordenar no cambia el tamaño":
@@ -126,6 +126,6 @@ print(f"{desacuerdos} desacuerdo(s) de 500 entradas generadas")
 | | |
 |---|---|
 | **A recordar** | El property-based testing describe una propiedad válida para cualquier entrada, en lugar de verificar ejemplos elegidos a mano; una herramienta genera automáticamente cientos de entradas para intentar contradecirla, y reduce (shrinking) todo contraejemplo encontrado hacia el caso más simple posible. El test diferencial, un caso vecino, compara en cambio el resultado de una reescritura con el de la implementación antigua sobre muchas entradas generadas. |
-| **Herramientas utilizables** | fast-check (JavaScript), Hypothesis (Python), QuickCheck (Haskell, la herramienta histórica del campo); test diferencial: no requiere herramienta dedicada, basta un script de comparación. |
+| **Herramientas utilizables** | fast-check (JavaScript), Hypothesis (Python), QuickCheck (Haskell, la herramienta histórica de esta técnica); test diferencial: no requiere herramienta dedicada, basta un script de comparación. |
 | **Trampas a evitar** | Forzar una propiedad sobre un comportamiento sin regla general simple; creer que el acuerdo entre dos implementaciones en un test diferencial prueba la ausencia de un error compartido por ambas. |
 | **Buenas prácticas** | Reservar el property-based testing a comportamientos con una regla general clara (funciones matemáticas, ordenación, parsers); mantener pruebas clásicas para la lógica de negocio rica en casos particulares; en el test diferencial, generar también casos límite y combinar con una prueba contra la especificación cuando exista. |

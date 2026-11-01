@@ -135,7 +135,7 @@ Reads like an `if`/`else if` chain: `&&` has higher precedence than `||`, so eac
 
 | | |
 |---|---|
-| **Key takeaways** | `while` checks before, `do while` checks after (at least one execution), `for` combines initialization/condition/increment. No native `foreach`: an array is iterated through by index. `&&`/`||` short-circuit their second operand, but always return `0`/`1`, never an operand as in Python. |
-| **Tools you can use** | `break` (stops the loop), `continue` (skips to the next iteration). Chain `&&`/`||` to combine a test and a conditional call in a single expression. |
-| **Pitfalls to avoid** | `break` only exits the nearest loop: a control variable is needed to exit multiple nested loops. A `&&`/`||` chain assumes every called function returns `1` on success; a function that returns `0` on success (opposite convention) silently breaks it. |
-| **Best practices** | Always pass an array's size explicitly to a function that iterates through it, rather than assuming it can be deduced. Reserve `&&`/`||` chaining for functions that follow the "1 = success" convention; use an explicit `if` otherwise. |
+| **Key takeaways** | `while` checks before, `do while` checks after (at least one execution), `for` combines initialization/condition/increment. No native `foreach`: an array is iterated through by index. `&&`/`\|\|` short-circuit their second operand, but always return `0`/`1`, never an operand as in Python. |
+| **Tools you can use** | `break` (stops the loop), `continue` (skips to the next iteration). Chain `&&`/`\|\|` to combine a test and a conditional call in a single expression. |
+| **Pitfalls to avoid** | `break` only exits the nearest loop: a control variable is needed to exit multiple nested loops. A `&&`/`\|\|` chain assumes every called function returns `1` on success; a function that returns `0` on success (opposite convention) silently breaks it. |
+| **Best practices** | Always pass an array's size explicitly to a function that iterates through it, rather than assuming it can be deduced. Reserve `&&`/`\|\|` chaining for functions that follow the "1 = success" convention; use an explicit `if` otherwise. |

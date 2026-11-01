@@ -135,7 +135,7 @@ Se lee como una cadena `if`/`else if`: `&&` tiene mayor prioridad que `||`, así
 
 | | |
 |---|---|
-| **Para recordar** | `while` comprueba antes, `do while` comprueba después (al menos una ejecución), `for` reúne inicialización/condición/incremento. No hay `foreach` nativo: un array se recorre por índice. `&&`/`||` cortocircuitan su segundo operando, pero siempre devuelven `0`/`1`, nunca un operando como en Python. |
-| **Herramientas utilizables** | `break` (detiene el bucle), `continue` (pasa a la siguiente vuelta). Encadenar `&&`/`||` para combinar una prueba y una llamada condicional en una sola expresión. |
-| **Trampas a evitar** | `break` solo sale del bucle más cercano: se necesita una variable de control para salir de varios bucles anidados. Una cadena `&&`/`||` supone que cada función llamada devuelve `1` en caso de éxito; una función que devuelve `0` en caso de éxito (convención inversa) la rompe silenciosamente. |
-| **Buenas prácticas** | Transmitir siempre explícitamente el tamaño de un array a una función que lo recorre, en lugar de suponer que se puede deducir. Reservar el encadenamiento `&&`/`||` a funciones que siguen la convención "1 = éxito"; usar un `if` explícito en caso contrario. |
+| **Para recordar** | `while` comprueba antes, `do while` comprueba después (al menos una ejecución), `for` reúne inicialización/condición/incremento. No hay `foreach` nativo: un array se recorre por índice. `&&`/`\|\|` cortocircuitan su segundo operando, pero siempre devuelven `0`/`1`, nunca un operando como en Python. |
+| **Herramientas utilizables** | `break` (detiene el bucle), `continue` (pasa a la siguiente vuelta). Encadenar `&&`/`\|\|` para combinar una prueba y una llamada condicional en una sola expresión. |
+| **Trampas a evitar** | `break` solo sale del bucle más cercano: se necesita una variable de control para salir de varios bucles anidados. Una cadena `&&`/`\|\|` supone que cada función llamada devuelve `1` en caso de éxito; una función que devuelve `0` en caso de éxito (convención inversa) la rompe silenciosamente. |
+| **Buenas prácticas** | Transmitir siempre explícitamente el tamaño de un array a una función que lo recorre, en lugar de suponer que se puede deducir. Reservar el encadenamiento `&&`/`\|\|` a funciones que siguen la convención "1 = éxito"; usar un `if` explícito en caso contrario. |
