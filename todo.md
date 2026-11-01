@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : purge de l'historique Git des noms de bases de l'entreprise (confirmation avant le push forcé). Les 17 chapitres C27 à C45 sont corrigés, traduits et fusionnés dans `main`.
+> Prochaine tâche : purge de l'historique Git des noms de bases de l'entreprise (confirmation avant le push forcé), puis audio des chapitres C27 à C45 en 4 langues (aucun n'en a encore ; C31 : régénérer celui de `Langages/Domain-specific Languages (DSL)/sql`, texte ajouté). Les 17 chapitres C27 à C45 sont corrigés, traduits et fusionnés dans `main`.
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
