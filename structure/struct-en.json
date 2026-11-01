@@ -472,6 +472,10 @@
             {
               "id": "alias-d-adresse-et-conversion-de-parametre",
               "label": "Address aliases, 301 redirects and route parameter conversion"
+            },
+            {
+              "id": "afficher-une-entite",
+              "label": "Displaying an entity: render builder, route and access control (31/10/2026)"
             }
           ]
         },
@@ -1102,6 +1106,18 @@
             {
               "id": "comparer-deux-reglages",
               "label": "Comparing Two Settings: Pairing, the Sign Test and Multiple Comparisons"
+            },
+            {
+              "id": "metadonnees-de-cache-et-invalidation",
+              "label": "Cache Metadata and Invalidation (31/10/2026)"
+            },
+            {
+              "id": "chargement-differe-et-espace-reserve",
+              "label": "Deferred Loading and Placeholders (31/10/2026)"
+            },
+            {
+              "id": "redimensionner-des-images-et-servir-du-webp",
+              "label": "Resizing Images and Serving WebP (31/10/2026)"
             }
           ]
         },
@@ -1231,6 +1247,10 @@
             {
               "id": "migrations-de-donnees-sures",
               "label": "Safe data migrations"
+            },
+            {
+              "id": "lire-une-base-avec-ssms",
+              "label": "Read a database with SSMS (31/10/2026)"
             }
           ]
         },
@@ -1593,6 +1613,10 @@
             {
               "id": "touche-coincee-clavier-virtuel-xtest",
               "label": "Stuck key: the XTEST virtual keyboard and `xdotool`"
+            },
+            {
+              "id": "qemu-kvm-et-disques-qcow2",
+              "label": "QEMU, KVM and qcow2 Disks (31/10/2026)"
             }
           ]
         },
@@ -1643,6 +1667,10 @@
             {
               "id": "n8n-lindustrialisation",
               "label": "n8n: going to production"
+            },
+            {
+              "id": "file-d-attente-worker-et-verrou",
+              "label": "Queue, worker and application lock (31/10/2026)"
             }
           ]
         },
@@ -1670,6 +1698,14 @@
             {
               "id": "direct-et-chat-a-grande-echelle",
               "label": "Large-scale live streaming and chat"
+            },
+            {
+              "id": "un-code-plusieurs-sites",
+              "label": "One code, several sites: the multisite pattern"
+            },
+            {
+              "id": "repliquer-un-referentiel-vers-des-satellites",
+              "label": "Replicating a source of truth to satellites"
             }
           ]
         },
@@ -1679,8 +1715,27 @@
           "folder": "Systèmes d'exploitation",
           "chapters": [
             {
+              "id": "composants-dun-ordinateur-et-demarrage",
+              "label": "Computer Components and How a Computer Boots"
+            },
+            {
               "id": "creer-un-systeme-d-exploitation",
               "label": "Building an Operating System, Step by Step"
+            }
+          ]
+        },
+        {
+          "id": "serveurs-web",
+          "label": "Serveurs web",
+          "folder": "Serveurs web",
+          "chapters": [
+            {
+              "id": "codes-de-statut-et-en-tetes-de-controle",
+              "label": "HTTP status codes and control headers"
+            },
+            {
+              "id": "proxy-inverse-et-limitation-de-debit",
+              "label": "Reverse proxy and rate limiting"
             }
           ]
         }
@@ -1783,6 +1838,18 @@
             {
               "id": "signaler-une-faille-trouvee",
               "label": "Reporting a Vulnerability You Found on a Website: What the Law Allows and Responsible Disclosure (28/10/2026)"
+            },
+            {
+              "id": "desactiver-la-verification-tls",
+              "label": "Disabling TLS Verification: What the Option Really Turns Off (01/11/2026)"
+            },
+            {
+              "id": "authentification-http-basic-et-ressource-rest",
+              "label": "REST resource and HTTP Basic authentication (31/10/2026)"
+            },
+            {
+              "id": "donnees-personnelles-dans-les-journaux",
+              "label": "Personal data in logs and copies (31/10/2026)"
             }
           ]
         },
@@ -1979,6 +2046,10 @@
             {
               "id": "openapi",
               "label": "OpenAPI: Describing an API Contract, for Humans and Machines"
+            },
+            {
+              "id": "generation-parallele-de-texte",
+              "label": "Parallel text generation: diffusion and NCM (31/10/2026)"
             }
           ]
         },

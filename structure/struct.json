@@ -472,6 +472,10 @@
             {
               "id": "alias-d-adresse-et-conversion-de-parametre",
               "label": "Alias d'adresse, redirection 301 et conversion de paramètre de route"
+            },
+            {
+              "id": "afficher-une-entite",
+              "label": "Afficher une entité : constructeur de rendu, route et contrôle d'accès (31/10/2026)"
             }
           ]
         },
@@ -1102,6 +1106,18 @@
             {
               "id": "comparer-deux-reglages",
               "label": "Comparer deux réglages : appariement, test du signe et comparaisons multiples"
+            },
+            {
+              "id": "metadonnees-de-cache-et-invalidation",
+              "label": "Métadonnées de cache et invalidation (31/10/2026)"
+            },
+            {
+              "id": "chargement-differe-et-espace-reserve",
+              "label": "Chargement différé et espace réservé (31/10/2026)"
+            },
+            {
+              "id": "redimensionner-des-images-et-servir-du-webp",
+              "label": "Redimensionner des images et servir du WebP (31/10/2026)"
             }
           ]
         },
@@ -1231,6 +1247,10 @@
             {
               "id": "migrations-de-donnees-sures",
               "label": "Migrations de données sûres"
+            },
+            {
+              "id": "lire-une-base-avec-ssms",
+              "label": "Lire une base de données avec SSMS (31/10/2026)"
             }
           ]
         },
@@ -1593,6 +1613,10 @@
             {
               "id": "touche-coincee-clavier-virtuel-xtest",
               "label": "Touche coincée : le clavier virtuel XTEST et `xdotool`"
+            },
+            {
+              "id": "qemu-kvm-et-disques-qcow2",
+              "label": "QEMU, KVM et disques qcow2 (31/10/2026)"
             }
           ]
         },
@@ -1643,6 +1667,10 @@
             {
               "id": "n8n-lindustrialisation",
               "label": "n8n : l'industrialisation"
+            },
+            {
+              "id": "file-d-attente-worker-et-verrou",
+              "label": "File d'attente, worker et verrou applicatif (31/10/2026)"
             }
           ]
         },
@@ -1670,6 +1698,14 @@
             {
               "id": "direct-et-chat-a-grande-echelle",
               "label": "Diffusion en direct et chat à grande échelle"
+            },
+            {
+              "id": "un-code-plusieurs-sites",
+              "label": "Un code, plusieurs sites : le patron multisite"
+            },
+            {
+              "id": "repliquer-un-referentiel-vers-des-satellites",
+              "label": "Répliquer un référentiel vers des satellites"
             }
           ]
         },
@@ -1685,6 +1721,21 @@
             {
               "id": "creer-un-systeme-d-exploitation",
               "label": "Créer un système d'exploitation, étape par étape"
+            }
+          ]
+        },
+        {
+          "id": "serveurs-web",
+          "label": "Serveurs web",
+          "folder": "Serveurs web",
+          "chapters": [
+            {
+              "id": "codes-de-statut-et-en-tetes-de-controle",
+              "label": "Codes de statut HTTP et en-têtes de contrôle"
+            },
+            {
+              "id": "proxy-inverse-et-limitation-de-debit",
+              "label": "Proxy inverse et limitation de débit"
             }
           ]
         }
@@ -1787,6 +1838,18 @@
             {
               "id": "signaler-une-faille-trouvee",
               "label": "Signaler une faille trouvée sur un site : ce que la loi permet et la divulgation responsable (28/10/2026)"
+            },
+            {
+              "id": "desactiver-la-verification-tls",
+              "label": "Désactiver la vérification TLS : ce que l'option coupe vraiment (01/11/2026)"
+            },
+            {
+              "id": "authentification-http-basic-et-ressource-rest",
+              "label": "Ressource REST et authentification HTTP Basic (31/10/2026)"
+            },
+            {
+              "id": "donnees-personnelles-dans-les-journaux",
+              "label": "Données personnelles dans les journaux et les copies (31/10/2026)"
             }
           ]
         },
@@ -1983,6 +2046,10 @@
             {
               "id": "openapi",
               "label": "OpenAPI : décrire un contrat d'API, pour des humains et pour des machines"
+            },
+            {
+              "id": "generation-parallele-de-texte",
+              "label": "Génération parallèle de texte : diffusion et NCM (31/10/2026)"
             }
           ]
         },
