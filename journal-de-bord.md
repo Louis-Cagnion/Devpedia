@@ -2,6 +2,14 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`todo.md`) garde les points restants ; `git log` garde le détail mécanique de ce qui a été fait. Ce qui a été traité et commité n'apparaît pas ici comme une reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Chantier C27 à C45 : corrections, revue Drupal et purge de l'historique (2026-11-01)
+
+- Une limite d'usage de 5 heures coupe les agents en plein travail : `SendMessage` vers l'agent interrompu reprend là où il s'était arrêté, rien n'est perdu.
+- La revue des faits Drupal se fait sans installation : documentation officielle et code source de la branche 11.x (`git.drupalcode.org/project/drupal/-/raw/11.x/core/...`, un tag précis date une classe par 200 ou 404). Deux erreurs de fond trouvées (jeton des dérivés d'image en C42, « Guzzle s'appuie sur cURL » en C43).
+- `scripts/generate-struct.js` ne reconnaissait pas le chapitre principal d'une sous-section dont le titre porte une date de vérification : la date est ignorée dans la comparaison avec le nom du dossier.
+- Purge de l'historique (noms de bases et d'agent de l'entreprise) : `git filter-repo --replace-text` dans un clone de travail, vérification sur tout l'historique, puis push forcé. Un push forcé direct échoue (GitHub coupe la connexion) : l'historique réécrit renvoie environ 1,9 Go de blobs audio que le remote possède déjà mais que Git ne reconnaît pas comme communs. Contournement : pousser par tranches de 20 commits vers une branche temporaire, puis forcer `main` dessus (aucun objet à envoyer) et supprimer la branche temporaire. 238 commits ont changé de hash, 978 sont restés identiques.
+- Le scraping et les noms de sites de petites annonces ont quitté les exemples (domaine neutre : export de rapports vers plusieurs formats). Seul le chapitre pédagogique sur les attaques par navigateur automatisé en parle encore.
+
 ## Chapitre « Graphèmes, points de code et unités UTF-16 » (2026-10-11)
 
 Les 16 blocs de code ont été exécutés avec Node.js 22.22.3 (Unicode 17.0) et chaque résultat annoncé comparé à la sortie réelle : 69 vérifications, aucun écart. Piège de méthode : l'outil d'écriture transforme les séquences `\uXXXX` en caractères littéraux, ce qui rend invisible la différence entre les deux « é » (U+00E9 et `e` + accent combinant) ; relire le source pour vérifier que les échappements sont restés. Rédigé en français seulement : traductions, entrées de `struct-en/es/br.json` et audio restent à faire.
