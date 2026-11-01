@@ -77,6 +77,59 @@ source ~/.bashrc
 . ~/.bashrc
 ```
 
+## Uma variável exportada só vive no seu terminal
+
+`export` transmite uma variável aos programas lançados **a partir deste shell**: não a outro [terminal](/?c=fondamentaux&s=bases-de-l-informatique&p=le-terminal) aberto ao lado, que é outro shell, com o seu próprio ambiente. Para verificar, abra dois terminais:
+
+```bash
+# Terminal 1: exporta uma variável e depois a exibe entre colchetes
+export MINHA_VAR=ola
+echo "terminal 1: [$MINHA_VAR]"
+```
+
+```bash
+# Terminal 2 (outra janela): a mesma variável não existe aqui
+echo "terminal 2: [$MINHA_VAR]"
+```
+
+```text
+terminal 1: [ola]
+terminal 2: []
+```
+
+Para que uma variável esteja presente em cada novo terminal, é preciso escrevê-la em `~/.bashrc` (veja mais acima).
+
+## Uma variável vazia em um `rm -rf`
+
+`rm -rf` apaga um diretório e todo o seu conteúdo, sem lixeira nem confirmação. Se a variável colocada antes do `/` estiver **vazia** (nunca definida, erro de digitação no nome, valor não transmitido), o shell a substitui por nada: o comando passa a ter como alvo a raiz do sistema, `/`. Nunca o execute para verificar: `echo` mostra o que o shell calculou, sem apagar nada.
+
+```bash
+# VAR está definida, mas vazia
+VAR=""
+# echo mostra o comando como o shell o montaria, sem executá-lo
+echo rm -rf $VAR/
+# os colchetes continuam visíveis mesmo quando o valor é vazio
+echo "[$VAR]"
+# com um valor normal, o comando visa o diretório desejado
+VAR=/tmp/teste
+echo rm -rf $VAR/
+echo "[$VAR]"
+```
+
+```text
+rm -rf /
+[]
+rm -rf /tmp/teste/
+[/tmp/teste]
+```
+
+| Escrita | Se `VAR` estiver vazia |
+|---|---|
+| `rm -rf $VAR/` | Vira `rm -rf /`: a raiz é o alvo |
+| `rm -rf "${VAR:?variável vazia}/"` | O Bash para com o erro `VAR: variável vazia`, nada é apagado |
+
+Antes de qualquer remoção, `echo "[$VAR]"` mostra o valor: `[]` denuncia uma variável vazia, enquanto um `echo $VAR` sozinho só exibiria uma linha em branco, fácil de não notar.
+
 ---
 
 ## 📋 Recapitulando
@@ -85,5 +138,5 @@ source ~/.bashrc
 |---|---|
 | **Para lembrar** | Uma variável de ambiente é transmitida automaticamente aos processos filhos, ao contrário de uma variável Bash comum: `export` a faz passar de uma para outra, em um único sentido (pai para filho). |
 | **Ferramentas utilizáveis** | `export`, `$PATH`, `~/.bashrc` (terminal interativo) vs `~/.bash_profile` (login), `alias`, `source`. |
-| **Armadilhas a evitar** | Modificar uma variável exportada em um subscript esperando que isso se reflita no script chamador: cada processo tem sua própria cópia do ambiente. |
-| **Boas práticas** | Colocar os `export`/`alias` destinados a cada novo terminal em `~/.bashrc`; usar `source ~/.bashrc` para aplicar uma mudança sem reabrir um terminal. |
+| **Armadilhas a evitar** | Modificar uma variável exportada em um subscript esperando que isso se reflita no script chamador: cada processo tem sua própria cópia do ambiente. Esperar que outro terminal veja uma variável exportada em outro lugar. Escrever `rm -rf $VAR/`: se `VAR` estiver vazia, o comando visa a raiz. |
+| **Boas práticas** | Colocar os `export`/`alias` destinados a cada novo terminal em `~/.bashrc`; usar `source ~/.bashrc` para aplicar uma mudança sem reabrir um terminal. Exibir `echo "[$VAR]"` antes de uma remoção (os colchetes revelam um valor vazio) e proteger a variável com `"${VAR:?}"`. |

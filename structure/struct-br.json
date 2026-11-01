@@ -842,6 +842,10 @@
             {
               "id": "alias-avances",
               "label": "Alias avançados no Bash"
+            },
+            {
+              "id": "environnement-propre-d-un-shell",
+              "label": "O ambiente limpo de um shell"
             }
           ]
         },
