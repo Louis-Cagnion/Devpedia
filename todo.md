@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : corriger en FR les chapitres C32, C33, C35 à C45 d'après les rapports de relecture (C27, C28, C29, C31 sont corrigés et traduits, non commités), puis revue des faits Drupal, liens entre chapitres frères, fusion dans `main`, entrées `structure/`, contrôle d'anonymisation du FR avec les termes de Louis, purge de l'historique Git (`base_*`) et audio (voir « État à l'arrêt » de `arbre-chapitres-todo.md`). Louis a interdit tout nouvel agent sonnet le 01/11/2026 : redemander le modèle des correcteurs.
+> Prochaine tâche : corriger en FR C43, C44, C45 d'après les rapports de relecture, puis traduire en EN, ES, BR (14/17 corrigés et traduits ; Louis a suspendu les correcteurs le 01/11/2026, pas le modèle sonnet : choisir un modèle adapté à la tâche à la reprise et le lui dire, traducteurs Haiku autorisés), puis revue des faits Drupal, liens entre chapitres frères, fusion dans `main`, entrées `structure/`, retrait des références au scraping (point 13), contrôle d'anonymisation du FR avec les termes de Louis, purge de l'historique Git (`base_*`, confirmation avant le push forcé), et seulement ensuite l'audio (voir « État à l'arrêt » de `arbre-chapitres-todo.md`).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -24,6 +24,9 @@ Même procédure que le point 2. Déjà couverts (recherche du 12/10/2026 dans `
 - `Sécurité/Cybersécurité/` : désactiver la vérification TLS (`verify => FALSE`) et ses risques.
 - `Sécurité/Cybersécurité/` (voisin de `securite-api-web.md`) : ressource REST (plugin) et authentification HTTP Basic.
 - `Sécurité/Cybersécurité/` : données personnelles dans les journaux d'erreur et les réplications (RGPD hors IA).
+
+## 13. Retirer les références au scraping (consigne de Louis du 01/11/2026)
+Chercher toutes les références au scraping dans le projet et les retirer, sauf dans un chapitre dédié à but pédagogique : aucune allusion à des pratiques illégales. Scanner une seule langue (FR, `content/` et worktrees `.claude/worktrees/C*` non fusionnés) et répercuter chaque modification dans EN, ES, BR sans les rescanner. Terminer en tout dernier chantier de contenu, après la fusion des worktrees.
 
 ## ajouter une partie sur les serveurs web
 - en lisant un chapitre sur les modeles de decision sctructuree, j'ai appris que les serveur peuvent renvoyer des 'retry-after', j'ai trouve ca interessant et je n'en ai jamais entendu parler, je pense donc que ce serait bien d'avoir une rubrique qui parle de la chose la plus commune qui soit sur internet : les serveurs web/sites internets.
