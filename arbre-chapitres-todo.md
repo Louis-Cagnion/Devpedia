@@ -30,8 +30,7 @@ Vagues décidées par Louis le 31/10/2026 (remplacent « une seule rédaction FR
 | C44 | `Cybersécurité/authentification-http-basic-et-ressource-rest.md` | 24 |
 | C45 | `Cybersécurité/donnees-personnelles-dans-les-journaux.md` | 25 |
 
-État au 01/11/2026 : les 17 chapitres C27 à C45 sont corrigés, traduits en EN, ES, BR et vérifiés (faits Drupal compris), commités et fusionnés dans `main` (commits locaux, non poussés), worktrees supprimés, `structure/struct*.json` à jour. Aucun agent en cours.
-- Liens entre chapitres frères à poser en 4 langues (C27/C28/C29, C37/C38, C40/C41/C42, C43/C44/C45) : les cibles existent maintenant dans `main`.
+État au 01/11/2026 : les 17 chapitres C27 à C45 sont corrigés, traduits en EN, ES, BR et vérifiés (faits Drupal compris), commités et fusionnés dans `main`, worktrees supprimés, `structure/struct*.json` à jour. Aucun agent en cours.
 - Parenthèse « 26B A4B » de C35 (taille totale et active) recoupée seulement par des sites secondaires : à confirmer sur la fiche Google ou à retirer.
 - À arbitrer : noms d'exemple traduits différemment d'une langue à l'autre (ports du laboratoire de C43 par langue : FR 7231, EN 7241, ES 7251, BR 7261 ; dossier `tls-lab` et journaux `log-a*.txt` en EN ; dossier `caché/` avec accent en ES pour C42 ; `deposer_taches.py` traduit en `depositar_tareas.py` en ES seulement ; fichiers PHP de C36, modules Python de C39 et C45, `mdp` du motif de masquage de C45, dossier `caché/` de C42, `boutique`/`tienda`/`loja` de C37, libellé `Trampas que evitar` contre `Trampas a evitar`) ; identifiants mixtes dans `sql.md` en EN, ES, BR.
 - Ensuite : purge de l'historique Git des noms de bases de l'entreprise (confirmation avant le push forcé, puis push), audio de tous les chapitres manquants (un seul job à la fois).

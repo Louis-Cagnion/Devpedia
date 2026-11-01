@@ -4,7 +4,7 @@ order: 7
 
 # Replicating a source of truth to satellites
 
-Picture a chain of shops: a central catalog describes each item (title, price), and each shop keeps its own copy to answer its customers quickly, even when head office is closed. Whenever a price changes at head office, the shops must know about it. This chapter explains how an application goes about **copying data from one central place to several others**, and above all what happens when a copy cannot be reached. It only assumes the notion of an [HTTP request](/?c=infrastructure-devops&s=infrastructure&p=api-et-http) (a message that one program sends to another across the network, which answers with a status code) and that of a [database](/?c=donnees&s=bases-de-donnees&p=bases-de-donnees) (the software that stores data in tables).
+Picture a chain of shops: a central catalog describes each item (title, price), and each shop keeps its own copy to answer its customers quickly, even when head office is closed. Whenever a price changes at head office, the shops must know about it. This chapter explains how an application goes about **copying data from one central place to several others**, and above all what happens when a copy cannot be reached. It only assumes the notion of an [HTTP request](/?c=infrastructure-devops&s=infrastructure&p=api-et-http) (a message that one program sends to another across the network, which answers with a status code) and that of a [database](/?c=donnees&s=bases-de-donnees&p=bases-de-donnees) (the software that stores data in tables). The case of several sites built on one code base is described in [One code, several sites: the multisite pattern](/?c=infrastructure-devops&s=conception-a-grande-echelle&p=un-code-plusieurs-sites).
 
 Three words come up everywhere:
 

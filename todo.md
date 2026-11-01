@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : poser les liens entre chapitres frères en 4 langues (C27/C28/C29, C37/C38, C40/C41/C42, C43/C44/C45 ; voir « État » de `arbre-chapitres-todo.md`), purge de l'historique Git des noms de bases de l'entreprise (confirmation avant le push forcé). Les 17 chapitres C27 à C45 sont corrigés, traduits et fusionnés dans `main`.
+> Prochaine tâche : purge de l'historique Git des noms de bases de l'entreprise (confirmation avant le push forcé). Les 17 chapitres C27 à C45 sont corrigés, traduits et fusionnés dans `main`.
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
