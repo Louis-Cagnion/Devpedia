@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : relecture terme par terme des 17 chapitres FR (C27 à C45 sauf C30 et C34) dans leurs worktrees `.claude/worktrees`, revue `analyst` des faits Drupal, liens entre chapitres frères, fusion dans `main`, entrées `structure/`, contrôle d'anonymisation du FR avec les termes de Louis, puis audio (voir « État à l'arrêt » de `arbre-chapitres-todo.md`).
+> Prochaine tâche : corriger en FR les chapitres C32, C33, C35 à C45 d'après les rapports de relecture (C27, C28, C29, C31 sont corrigés et traduits, non commités), puis revue des faits Drupal, liens entre chapitres frères, fusion dans `main`, entrées `structure/`, contrôle d'anonymisation du FR avec les termes de Louis, purge de l'historique Git (`base_*`) et audio (voir « État à l'arrêt » de `arbre-chapitres-todo.md`). Louis a interdit tout nouvel agent sonnet le 01/11/2026 : redemander le modèle des correcteurs.
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
