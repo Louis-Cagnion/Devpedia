@@ -30,14 +30,11 @@ Vagues décidées par Louis le 31/10/2026 (remplacent « une seule rédaction FR
 | C44 | `Cybersécurité/authentification-http-basic-et-ressource-rest.md` | 24 |
 | C45 | `Cybersécurité/donnees-personnelles-dans-les-journaux.md` | 25 |
 
-État à l'arrêt du 01/11/2026 : les 17 chapitres sont rédigés en FR et traduits en EN, ES, BR (51 traductions), les huit corrections de fond sont faites en 4 langues, aucun agent en cours. Rien n'est commité ni fusionné : tout vit dans `.claude/worktrees/<ID>` (C27, C28, C29, C31, C32, C33, C35 à C45), branches `agent/<ID>` sans commit, plafond de 20 agents simultanés.
-- Briefs et faits : `scratchpad/brief-fr.md`, `brief-tr.md`, `faits-C<ID>.md`, script `verif-chapitre.sh` (variable `REPO`), dans `/tmp/claude-1000/-home-sung-jinwoo-Bureau-code-JavaScript-Devpedia/49910c88-5923-4094-ab76-e4cf5d43a8fb/scratchpad/`.
-- Reprises à faire (huit chapitres corrigés en 4 langues le 01/11/2026, comptes croisés identiques) : `sql.md` EN, ES, BR : liens internes manquants par rapport au FR (13 liens FR, 9 EN, 11 ES, 11 BR : regex, mémoire C, PHP) et slugs historiques `langages-de-programmation` du FR à passer en `langages` ; parenthèse « 26B A4B » de C35 (taille totale et active) recoupée seulement par des sites secondaires, à confirmer sur la fiche Google ou à retirer.
+État au 01/11/2026 : les 17 chapitres C27 à C45 sont corrigés, traduits en EN, ES, BR et vérifiés (faits Drupal compris), commités et fusionnés dans `main` (commits locaux, non poussés), worktrees supprimés, `structure/struct*.json` à jour. Aucun agent en cours.
+- Liens entre chapitres frères à poser en 4 langues (C27/C28/C29, C37/C38, C40/C41/C42, C43/C44/C45) : les cibles existent maintenant dans `main`.
+- Parenthèse « 26B A4B » de C35 (taille totale et active) recoupée seulement par des sites secondaires : à confirmer sur la fiche Google ou à retirer.
 - À arbitrer : noms d'exemple traduits différemment d'une langue à l'autre (ports du laboratoire de C43 par langue : FR 7231, EN 7241, ES 7251, BR 7261 ; dossier `tls-lab` et journaux `log-a*.txt` en EN ; dossier `caché/` avec accent en ES pour C42 ; `deposer_taches.py` traduit en `depositar_tareas.py` en ES seulement ; fichiers PHP de C36, modules Python de C39 et C45, `mdp` du motif de masquage de C45, dossier `caché/` de C42, `boutique`/`tienda`/`loja` de C37, libellé `Trampas que evitar` contre `Trampas a evitar`) ; identifiants mixtes dans `sql.md` en EN, ES, BR.
-- Ensuite : relecture terme par terme des 17 FR ; revue `analyst` des faits Drupal (C36 à C45) ; liens entre chapitres frères (C27/C28/C29, C37/C38, C40/C41/C42, C43/C44/C45) ; commit et fusion de chaque worktree dans `main` ; entrées `structure/struct*.json` ; contrôle complet du FR pour anonymiser toute référence à l'entreprise (exemples fictifs, termes à chercher donnés par Louis, décision du 01/11/2026 ; scan du FR seul, chaque modification répercutée en EN, ES, BR sans nouveau scan), une fois tous les chapitres terminés et avant tout audio ; audio de tous les chapitres manquants, un seul job à la fois ; ancres de `sql.md` à double tiret, noms de bases réels `base_*` dans `sql.md`.
-- Relecture terme par terme des 17 FR faite le 01/11/2026 (17 `analyst` sonnet/high en lecture seule, aucun fichier modifié) : rapports dans `/home/sung-jinwoo/.claude/projects/-home-sung-jinwoo-Bureau-code-JavaScript-Devpedia/reprise-c27-c45/rapports/C<ID>.md`. Totaux P1/P2/P3 : C27 3/17/10, C28 2/15/5, C29 1/20/8, C31 2/10/10, C32 1/16/10, C33 4/22/9, C35 5/15/6, C36 1/14/8, C37 1/16/5, C38 1/11/6, C39 2/16/6, C40 6/18/6, C41 3/14/6, C42 2/21/5, C43 2/21/7, C44 2/21/9, C45 3/23/10. Prochaine étape : corrections ciblées FR (P1 puis P2, P3 si peu coûteux), un `sonnet/medium` à la fois, chaque correction répercutée en EN, ES, BR. Décisions de Louis du 01/11/2026 : purge de l'historique Git pour `base_*` (anonymiser `sql.md` puis réécrire l'historique, en dernier, confirmation juste avant le push forcé) ; parenthèse « 26B A4B » de C35 à confirmer sur la fiche Google (la fiche lue par l'analyste donne 25,2 G au total et 3,8 G actifs).
-- Corrections (état du 01/11/2026, arrêt demandé par Louis) : corrigés en FR par des `sonnet/medium` (autorisés par Louis le 01/11/2026, puis suspendus à son départ : « pas maintenant », sans exclure le modèle) : C27, C28, C29, C31, C32, C33, C35, C36, C37, C38, C39, C40, C41, C42 (14/17). Traduits en EN, ES, BR (`haiku/medium`) et contrôlés par le moniteur (mêmes nombres de titres, blocs, tableaux et liens que le FR, aucune ligne de code au-dessus de 95 caractères, y compris les blocs `text`, aucun tiret cadratin, aucun `base_`, aucun dossier parasite) : C27 à C42 sauf C30 et C34 (14/17). Reste à corriger en FR : C43 (le sonnet lancé a été arrêté avant toute écriture : fichier FR intact), C44, C45, d'après leurs rapports du scratchpad ; choisir à la reprise un modèle adapté à la tâche (consigne de Louis du 01/11/2026 : suspendre les correcteurs pour l'instant, sans exclure sonnet). Rien n'est commité ni fusionné. Restes : sorties SQL Server de C31 écrites à la main (à rejouer sur un vrai SQL Server), syntaxe nginx de C29 non passée dans `nginx -t`, liens de C27/C28/C29 vers leurs frères valides seulement après fusion, faits Drupal à revoir (C36 à C45). Briefs : `/home/sung-jinwoo/.claude/projects/-home-sung-jinwoo-Bureau-code-JavaScript-Devpedia/reprise-c27-c45/brief-correction.md`, `brief-traduction-sync.md`, listes `/home/sung-jinwoo/.claude/projects/-home-sung-jinwoo-Bureau-code-JavaScript-Devpedia/reprise-c27-c45/corrections/C<ID>.md` (copie locale hors dépôt, non versionnée : elle contient les rapports de relecture).
-- Erreurs de fond relevées à ne pas manquer : octet défini comme « plus petite unité » (C42, C44) ; `verify=`/`--cacert` qui remplacent et n'ajoutent pas (C43) ; PSNR plafonné à 255 (C42) ; tableau Sudoku décalé, poids publiés sur Hugging Face, vitesse sur la fiche, points ELO mêlés aux points de pourcentage (C35) ; `Content-Length` trop petit tronque le corps (C28) ; `backupCount` compte des fichiers et `setLevel` manquant (C45) ; double échappement `echapper` + `textContent` (C41) ; sorties SQLite données pour SQL Server (C31) ; test d'isolation sur une table inexistante (C37) ; `max-age=0` et « presque tous » (C40) ; `0 == "abc"` faux en PHP 8 (C36) ; `-drive` avant `qemu-img create` (C33) ; attentes 10/20/40 s avec `MAX_ESSAIS = 3` (C39). Faits Drupal à vérifier sur la doc officielle : `#[RestResource]`/`@RestResource` (C44), `#[QueueWorker]` depuis Drupal 10.3 environ (C39), clés de `$databases` (C37), `invalidateTags` et `node_list` (C40).
+- Ensuite : contrôle complet du FR pour anonymiser toute référence à l'entreprise (exemples fictifs, termes donnés par Louis, scan du FR seul, chaque modification répercutée en EN, ES, BR), purge de l'historique Git pour `base_*` (confirmation avant le push forcé, puis push), audio de tous les chapitres manquants (un seul job à la fois).
 
 ## Pipeline d'un chapitre (un seul à la fois, audio compris avant le suivant)
 
@@ -81,25 +78,25 @@ Une feuille c revue en échec monte à sonnet/medium. Une notion spécialisée (
 | C24 | Liens de l'introduction de la Cybersécurité vers les chapitres cités (9 liens, 4 langues) | cybersécurité | [v] |
 | C25 | Signaler une faille trouvée sur un site : légalité et divulgation responsable | cybersécurité | [v] |
 | C26 | Mots de passe : bonnes pratiques côté utilisateur et côté site | cybersécurité | [v] |
-| C27 | Serveurs web : rôle et fonctionnement (nouvelle sous-section) | serveurs web | [ ] |
-| C28 | Serveurs web : codes de statut et en-têtes de contrôle (`Retry-After`) | serveurs web | [ ] |
-| C29 | Serveurs web : proxy inverse et limitation de débit | serveurs web | [ ] |
+| C27 | Serveurs web : rôle et fonctionnement (nouvelle sous-section) | serveurs web | [v] |
+| C28 | Serveurs web : codes de statut et en-têtes de contrôle (`Retry-After`) | serveurs web | [v] |
+| C29 | Serveurs web : proxy inverse et limitation de débit | serveurs web | [v] |
 | C30 | Alias PowerShell, des simples aux complexes (`Langages/PowerShell/alias-et-raccourcis-de-commandes.md`, `order: 14`) | powershell | [v] ; C30.f1 `Langages/Bash/alias-avances.md` (`order: 16`) [v] ; C30.f2 `Langages/Zsh/alias-avances.md` (`order: 8`) [v] ; liens vers les deux posés dans la section « Et dans Bash et Zsh ? » du chapitre PowerShell (4 langues) |
-| C31 | SQL pour un premier contact : lire des lignes, types de colonne, variable de table (sections de `Langages/Domain-specific Languages (DSL)/sql.md`) | point 7 | [ ] |
-| C32 | Lire une base avec SSMS (`Infrastructure & DevOps/` ou `Outils/`) | point 7 | [ ] |
-| C33 | QEMU, KVM, deux sens de « hôte », disque `qcow2` et snapshots (`Infrastructure & DevOps/Administration système/`) | point 8 | [ ] |
+| C31 | SQL pour un premier contact : lire des lignes, types de colonne, variable de table (sections de `Langages/Domain-specific Languages (DSL)/sql.md`) | point 7 | [v] |
+| C32 | Lire une base avec SSMS (`Infrastructure & DevOps/` ou `Outils/`) | point 7 | [v] |
+| C33 | QEMU, KVM, deux sens de « hôte », disque `qcow2` et snapshots (`Infrastructure & DevOps/Administration système/`) | point 8 | [v] |
 | C34 | Deux pièges de débutant dans `composants-dun-ordinateur-et-demarrage.md` (RAM, taille du stockage) | point 8 | [v] |
-| C35 | Génération parallèle de texte : NCM et modèles de diffusion (`IA/`) | point 9 | [ ] |
-| C36 | Afficher une entité : view builder, route, contrôle d'accès (`Langages/PHP/`) | point 4 | [ ] |
-| C37 | Un code, plusieurs sites (`Infrastructure & DevOps/Conception à grande échelle/`) | point 4 | [ ] |
-| C38 | Répliquer un référentiel vers des satellites (`Conception à grande échelle/`) | point 4 | [ ] |
-| C39 | File d'attente, worker, verrou, méthode modèle (`Infrastructure & DevOps/Automatisation/`) | point 4 | [ ] |
-| C40 | Métadonnées de cache et invalidation (`Qualité, performance et outils/Performance/`) | point 4 | [ ] |
-| C41 | Chargement différé : lazy builder et espace réservé (`Performance/`) | point 4 | [ ] |
-| C42 | Redimensionner des images et servir du WebP (`Performance/`) | point 4 | [ ] |
-| C43 | Désactiver la vérification TLS et ses risques (`Sécurité/Cybersécurité/`) | point 4 | [ ] |
-| C44 | Authentification HTTP Basic et ressource REST (`Cybersécurité/`) | point 4 | [ ] |
-| C45 | Données personnelles dans les journaux et les réplications (`Cybersécurité/`) | point 4 | [ ] |
+| C35 | Génération parallèle de texte : NCM et modèles de diffusion (`IA/`) | point 9 | [v] |
+| C36 | Afficher une entité : view builder, route, contrôle d'accès (`Langages/PHP/`) | point 4 | [v] |
+| C37 | Un code, plusieurs sites (`Infrastructure & DevOps/Conception à grande échelle/`) | point 4 | [v] |
+| C38 | Répliquer un référentiel vers des satellites (`Conception à grande échelle/`) | point 4 | [v] |
+| C39 | File d'attente, worker, verrou, méthode modèle (`Infrastructure & DevOps/Automatisation/`) | point 4 | [v] |
+| C40 | Métadonnées de cache et invalidation (`Qualité, performance et outils/Performance/`) | point 4 | [v] |
+| C41 | Chargement différé : lazy builder et espace réservé (`Performance/`) | point 4 | [v] |
+| C42 | Redimensionner des images et servir du WebP (`Performance/`) | point 4 | [v] |
+| C43 | Désactiver la vérification TLS et ses risques (`Sécurité/Cybersécurité/`) | point 4 | [v] |
+| C44 | Authentification HTTP Basic et ressource REST (`Cybersécurité/`) | point 4 | [v] |
+| C45 | Données personnelles dans les journaux et les réplications (`Cybersécurité/`) | point 4 | [v] |
 
 ## Faits pour la suite
 - Audio : UN SEUL job à la fois. Seul, un chapitre de 3 000 clips sort en 4 à 5 minutes (C01) ; à trois en parallèle, moins de 100 clips par minute (saturation du processeur par Piper), donc plus lent au total. Les répertoires `.audio-tmp-*` appartiennent à des jobs vivants : ne jamais en supprimer sans avoir lu la ligne de commande de leurs processus Piper.

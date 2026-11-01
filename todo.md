@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : corriger en FR C43, C44, C45 d'après les rapports de relecture, puis traduire en EN, ES, BR (14/17 corrigés et traduits ; Louis a suspendu les correcteurs le 01/11/2026, pas le modèle sonnet : choisir un modèle adapté à la tâche à la reprise et le lui dire, traducteurs Haiku autorisés), puis revue des faits Drupal, liens entre chapitres frères, fusion dans `main`, entrées `structure/`, retrait des références au scraping (point 13), contrôle d'anonymisation du FR avec les termes de Louis, purge de l'historique Git (`base_*`, confirmation avant le push forcé), et seulement ensuite l'audio (voir « État à l'arrêt » de `arbre-chapitres-todo.md`).
+> Prochaine tâche : poser les liens entre chapitres frères en 4 langues (C27/C28/C29, C37/C38, C40/C41/C42, C43/C44/C45 ; voir « État » de `arbre-chapitres-todo.md`), puis retrait des références au scraping (point 13), contrôle d'anonymisation du FR avec les termes de Louis, purge de l'historique Git (`base_*`, confirmation avant le push forcé, puis push des 19 commits locaux), et seulement ensuite l'audio. Les 17 chapitres C27 à C45 sont corrigés, traduits et fusionnés dans `main`.
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -24,6 +24,9 @@ Même procédure que le point 2. Déjà couverts (recherche du 12/10/2026 dans `
 - `Sécurité/Cybersécurité/` : désactiver la vérification TLS (`verify => FALSE`) et ses risques.
 - `Sécurité/Cybersécurité/` (voisin de `securite-api-web.md`) : ressource REST (plugin) et authentification HTTP Basic.
 - `Sécurité/Cybersécurité/` : données personnelles dans les journaux d'erreur et les réplications (RGPD hors IA).
+
+## 14. Vérification Drupal à faire quand une installation sera disponible
+Louis n'a pas Drupal sur cette machine (01/11/2026) : les exemples Drupal de C36 à C45 ne sont contrôlés que par `php -l` et par la documentation officielle. Ne pas redemander tant que la machine ne change pas. À faire sur une machine avec Drupal 11 : exécuter chaque exemple (route d'entité C36, `#[QueueWorker]` C39, `invalidateTags` C40, `#[RestResource]` C44, `watchdog`/`dblog` C45) et comparer aux sorties annoncées. Sorties SQL Server de C31 à rejouer sur un vrai SQL Server, syntaxe nginx de C29 à passer dans `nginx -t`.
 
 ## 13. Retirer les références au scraping (consigne de Louis du 01/11/2026)
 Chercher toutes les références au scraping dans le projet et les retirer, sauf dans un chapitre dédié à but pédagogique : aucune allusion à des pratiques illégales. Scanner une seule langue (FR, `content/` et worktrees `.claude/worktrees/C*` non fusionnés) et répercuter chaque modification dans EN, ES, BR sans les rescanner. Terminer en tout dernier chantier de contenu, après la fusion des worktrees.
