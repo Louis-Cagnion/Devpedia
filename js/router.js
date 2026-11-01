@@ -173,6 +173,23 @@ function clearChapterNeighbors() {
     currentNextChapter = null;
 }
 
+/** @brief Sets the neighbors of a category's or subject's own page (appState.cur* already set): the page before and after it in the site's reading order. */
+function setIntroPageNeighbors() {
+    currentPreviousChapter = resolvePreviousChapterAcrossSite();
+    currentNextChapter = resolveNextChapterAcrossSite();
+}
+
+/**
+ * @brief Moves the bottom prev/next row below the child list, which is appended after the page
+ * content was generated.
+ *
+ * @param {HTMLElement} pageDiv
+ */
+function moveBottomNavToEnd(pageDiv) {
+    const bottomNav = pageDiv.querySelector(".pageNavBottom");
+    if (bottomNav) pageDiv.append(bottomNav);
+}
+
 /* Chapter auto-advance: reader.js reports only that the plan finished, with no notion of
    navigation itself, so the site-wide "what's next" resolution and the actual page change happen
    here instead. The countdown itself is a silent clip played through reader.js's own audioEl
@@ -219,7 +236,7 @@ onPlaybackComplete(() => {
         () => {
             if (!autoAdvancePending) return; // cancelAutoAdvance() already ran while the silence played
             autoAdvancePending = false;
-            navigateToChapter(next.categoryId, next.subjectId, next.id);
+            navigateToEntry(next);
         },
         secondsRemaining => notices.forEach(notice => { notice.textContent = autoAdvanceNoticeText(secondsRemaining); })
     );
@@ -251,7 +268,7 @@ document.addEventListener("keydown", (e) => {
     const wantsPrevious = (e.key === "ArrowLeft") !== isRtl;
     const chapter = wantsPrevious ? currentPreviousChapter : currentNextChapter;
     if (!chapter) return;
-    navigateToChapter(chapter.categoryId, chapter.subjectId, chapter.id);
+    navigateToEntry(chapter);
 });
 
 /* Single-finger horizontal swipe moves to the previous/next chapter, the touch counterpart to the
@@ -287,7 +304,7 @@ document.addEventListener("touchend", (e) => {
     const wantsNext = (deltaX < 0) !== isRtl;
     const chapter = wantsNext ? currentNextChapter : currentPreviousChapter;
     if (!chapter) return;
-    navigateToChapter(chapter.categoryId, chapter.subjectId, chapter.id);
+    navigateToEntry(chapter);
 }, { passive: true });
 
 /** @brief Removes the page currently displayed, if any. */
@@ -300,6 +317,17 @@ function clearCurrentPage() {
 }
 
 /**
+ * @brief Reports whether opening `target` leaves the category or subject currently displayed.
+ *
+ * @param {{categoryId: string, subjectId: string|null}} target
+ *
+ * @returns {Boolean}
+ */
+function changesSection(target) {
+    return target.categoryId !== appState.curCategory || target.subjectId !== appState.curSubject;
+}
+
+/**
  * @brief Builds a prev/next chapter button as an arrow pinned to its outer edge plus a label
  * that can wrap onto several lines without dragging the arrow along.
  *
@@ -307,13 +335,17 @@ function clearCurrentPage() {
  * @param {string} label
  * @param {string} arrow
  * @param {Boolean} arrowFirst true for the previous-chapter button, false for the next-chapter one
+ * @param {Boolean} announceSectionChange true to add a "new section" tag above the label
  *
  * @returns {HTMLElement}
  */
-function createChapterNavButton(className, label, arrow, arrowFirst) {
+function createChapterNavButton(className, label, arrow, arrowFirst, announceSectionChange) {
     const button = createTag("button", {class: className});
     const arrowSpan = createTag("span", {class: "chapterNavArrow"}, {textContent: arrow});
-    const labelSpan = createTag("span", {class: "chapterNavLabel"}, {textContent: label});
+    const labelSpan = createTag("span", {class: "chapterNavLabel"});
+    if (announceSectionChange)
+        labelSpan.append(createTag("span", {class: "chapterNavNotice"}, {textContent: t("newSection")}));
+    labelSpan.append(label);
     button.append(...(arrowFirst ? [arrowSpan, labelSpan] : [labelSpan, arrowSpan]));
     return button;
 }
@@ -354,17 +386,17 @@ function createChapterNav(pageId, previousChapter, nextChapter) {
     const chapterNav = createTag("div", {class: "chapterNav"});
     if (previousChapter) {
         const arrow = document.documentElement.dir === "rtl" ? "→" : "←";
-        const prevButton = createChapterNavButton(`prevButton ${pageId}PrevButton`, previousChapter.label, arrow, true);
+        const prevButton = createChapterNavButton(`prevButton ${pageId}PrevButton`, previousChapter.label, arrow, true, changesSection(previousChapter));
         prevButton.addEventListener("click", (e) => {
-            navigateToChapter(previousChapter.categoryId, previousChapter.subjectId, previousChapter.id);
+            navigateToEntry(previousChapter);
         })
         chapterNav.append(prevButton);
     }
     if (nextChapter) {
         const arrow = document.documentElement.dir === "rtl" ? "←" : "→";
-        const nextButton = createChapterNavButton(`nextButton ${pageId}NextButton`, nextChapter.label, arrow, false);
+        const nextButton = createChapterNavButton(`nextButton ${pageId}NextButton`, nextChapter.label, arrow, false, changesSection(nextChapter));
         nextButton.addEventListener("click", (e) => {
-            navigateToChapter(nextChapter.categoryId, nextChapter.subjectId, nextChapter.id);
+            navigateToEntry(nextChapter);
         })
         chapterNav.append(nextButton);
     }
@@ -545,10 +577,10 @@ async function renderChapter(categoryId, path, chapter, subjectId = null, resolv
        list) instead of leaving the button off entirely -- appState.cur* is already set to this
        chapter above, so resolve*ChapterAcrossSite() resolves relative to it correctly. */
     currentPreviousChapter = previousChapter
-        ? {categoryId, subjectId, id: previousChapter.id, label: previousChapter.label}
+        ? {kind: "chapter", categoryId, subjectId, id: previousChapter.id, label: previousChapter.label}
         : resolvePreviousChapterAcrossSite();
     currentNextChapter = nextChapter
-        ? {categoryId, subjectId, id: nextChapter.id, label: nextChapter.label}
+        ? {kind: "chapter", categoryId, subjectId, id: nextChapter.id, label: nextChapter.label}
         : resolveNextChapterAcrossSite();
     generatePageContent(chapterInfos, chapter.id, true, currentPreviousChapter, currentNextChapter, createBreadcrumb(category, subject), fallbackNoticeFor(lang), null, "chapterPage");
 }
@@ -562,19 +594,20 @@ async function renderChapter(categoryId, path, chapter, subjectId = null, resolv
  */
 async function renderSubject(category, subject, lang = appState.lang) {
     clearCurrentPage();
-    clearChapterNeighbors();
     appState.curCategory = category.id;
     appState.curSubject = subject.id;
     appState.curPageId = subject.id;
+    setIntroPageNeighbors();
     const contentDir = getContentDir(lang);
     const path = `./${contentDir}/${category.folder}/${subject.folder}/${subject.id}.md`;
     const subjectInfos = await fetchFileToTextOrJson(path, 'text');
-    const pageDiv = generatePageContent(subjectInfos, subject.id, true, null, null, createBreadcrumb(category, null), fallbackNoticeFor(lang), tEntityLabel("subjectLabels", subject.id, subject.label));
+    const pageDiv = generatePageContent(subjectInfos, subject.id, true, currentPreviousChapter, currentNextChapter, createBreadcrumb(category, null), fallbackNoticeFor(lang), tEntityLabel("subjectLabels", subject.id, subject.label));
     generateChildList(pageDiv, subject.chapters ?? [], subject.id, (chapter) => {
         appState.navigationStack.push({type: 'subject', categoryId: category.id, subjectId: subject.id});
         pushNavUrl(buildNavUrl(category.id, subject.id, chapter.id));
         renderChapter(category.id, `./${contentDir}/${category.folder}/${subject.folder}/${chapter.id}.md`, chapter, subject.id, category, subject, lang);
     });
+    moveBottomNavToEnd(pageDiv);
 }
 
 /**
@@ -586,13 +619,13 @@ async function renderSubject(category, subject, lang = appState.lang) {
  */
 async function renderCategory(category, lang = appState.lang) {
     clearCurrentPage();
-    clearChapterNeighbors();
     appState.curCategory = category.id;
     appState.curSubject = null;
     appState.curPageId = category.id;
+    setIntroPageNeighbors();
     const contentDir = getContentDir(lang);
     const pageInfos = await fetchFileToTextOrJson(`./${contentDir}/${category.folder}/description.md`, 'text');
-    const pageDiv = generatePageContent(pageInfos, category.id, true, null, null, null, fallbackNoticeFor(lang));
+    const pageDiv = generatePageContent(pageInfos, category.id, true, currentPreviousChapter, currentNextChapter, null, fallbackNoticeFor(lang));
     if (category.subjects) {
         generateChildList(pageDiv, category.subjects, category.id, (subject) => {
             appState.navigationStack.push({type: 'category', categoryId: category.id});
@@ -606,6 +639,7 @@ async function renderCategory(category, lang = appState.lang) {
             renderChapter(category.id, `./${contentDir}/${category.folder}/${chapter.id}.md`, chapter, null, category, null, lang);
         });
     }
+    moveBottomNavToEnd(pageDiv);
 }
 
 /**
@@ -702,4 +736,15 @@ export function navigateToChapter(categoryId, subjectId, chapterId) {
         appState.navigationStack = [{type: 'home'}, {type: 'category', categoryId}];
         renderChapter(categoryId, `./${getContentDir()}/${category.folder}/${chapter.id}.md`, chapter);
     }
+}
+
+/**
+ * @brief Opens a page of the site's reading order: a category's or subject's own page, or a chapter.
+ *
+ * @param {{kind: "category"|"subject"|"chapter", categoryId: string, subjectId: string|null, id: string}} entry
+ */
+function navigateToEntry(entry) {
+    if (entry.kind === "category") loadCategory(entry.categoryId);
+    else if (entry.kind === "subject") navigateToSubject(entry.categoryId, entry.subjectId);
+    else navigateToChapter(entry.categoryId, entry.subjectId, entry.id);
 }

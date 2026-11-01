@@ -318,6 +318,16 @@ em {
     line-height: 1.35;
 }
 
+/* Tag above a prev/next label announcing that the target belongs to another category/subject. */
+.chapterNavNotice {
+    display: block;
+    font-size: 0.75em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 0.75;
+}
+
 /* markdown content lists (bullet/numbered lists inside a page's text) */
 .content-list {
     margin: 0.5rem 0 1.5rem 0;

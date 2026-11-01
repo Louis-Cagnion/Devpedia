@@ -171,8 +171,18 @@ function renderOutline(container) {
     container.append(ul);
 }
 
+/**
+ * @brief Scrolls the desktop sidebar just enough to show the current page's entry (a long
+ * subject's chapter list otherwise leaves it out of sight after a prev/next navigation).
+ */
+function scrollCurrentEntryIntoView() {
+    const current = leftSidebarDiv.querySelector(".sidebarTree .current");
+    if (current) current.scrollIntoView({ block: "nearest" });
+}
+
 function renderAll() {
     renderTree(leftSidebarDiv.querySelector(".sidebarTreeContainer"), desktopOpenState);
+    scrollCurrentEntryIntoView();
     renderOutline(rightSidebarDiv.querySelector(".sidebarOutlineContainer"));
     renderTree(mobileMenuDiv.querySelector(".sidebarTreeContainer"), mobileOpenState);
     renderOutline(mobileMenuDiv.querySelector(".sidebarOutlineContainer"));
